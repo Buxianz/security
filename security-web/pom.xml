@@ -150,6 +150,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
+        <finalName>security-web</finalName>
     </build>
 
 </project>
