@@ -2,6 +2,9 @@ package com.rbi.security.entity;
 
 import java.io.Serializable;
 
+/**
+ * 此类是shiro认证缓存用户信息类
+ */
 public class AuthenticationUserDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     private  String userName;//用户名
