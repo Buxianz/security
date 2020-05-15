@@ -2,8 +2,8 @@ package com.rbi.security.entity.web.entity;
 
 import lombok.Data;
 
-import java.util.Date;
 import java.io.Serializable;
+import java.sql.Date;
 
 /**
  * (SysCompanyPersonnel)实体类
@@ -49,7 +49,7 @@ public class SysCompanyPersonnel implements Serializable {
     /**
     * 出生日期
     */
-    private String dateOfBirth;
+    private Date dateOfBirth;
     /**
     * 文化程度
     */
@@ -69,7 +69,7 @@ public class SysCompanyPersonnel implements Serializable {
     /**
     * 入厂时间
     */
-    private String entryTime;
+    private Date entryTime;
     /**
     * 备注
     */
@@ -78,4 +78,8 @@ public class SysCompanyPersonnel implements Serializable {
     * 创建时间
     */
     private String idt;
+    /**
+     * 更新时间
+     */
+    private String udt;
 }
