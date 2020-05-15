@@ -68,8 +68,8 @@ public class CompanyPersonnelServiceImpl implements CompanyPersonnelService {
                 String remarks = map.get("remarks");
 
                 long organizationId;
-                SysOrganization organizationDO = organizationDAO.queryOrganizationInfoByOrganizationName(organizationName);
-                if (null == organizationDO){
+                List<SysOrganization> organizationList = organizationDAO.queryOrganizationInfoByOrganizationName(organizationName);
+                if (1 != organizationList.size()){
                     ImportCompanyPersonnelLogDTO importCompanyPersonnelLogDTO = new ImportCompanyPersonnelLogDTO();
                     importCompanyPersonnelLogDTO.setCode(importCode);
                     importCompanyPersonnelLogDTO.setResult("导入失败");
@@ -80,9 +80,9 @@ public class CompanyPersonnelServiceImpl implements CompanyPersonnelService {
                     importCompanyPersonnelLogDTOS.add(importCompanyPersonnelLogDTO);
                     continue;
                 }
-                organizationId = organizationDO.getId();
+                organizationId = organizationList.get(0).getId();
                 if (StringUtils.isNotBlank(factoryName)){
-                    SysOrganization organizationDOFactory = organizationDAO.queryOrganizationInfoByOrganizationName(factoryName);
+                    SysOrganization organizationDOFactory = organizationDAO.queryOrganizationInfoByOrganizationNameAndParentId(factoryName,organizationId);
                     if (null == organizationDOFactory){
                         ImportCompanyPersonnelLogDTO importCompanyPersonnelLogDTO = new ImportCompanyPersonnelLogDTO();
                         importCompanyPersonnelLogDTO.setCode(importCode);
@@ -98,7 +98,7 @@ public class CompanyPersonnelServiceImpl implements CompanyPersonnelService {
                 }
 
                 if (StringUtils.isNotBlank(workshopName)){
-                    SysOrganization organizationDOWorkshop = organizationDAO.queryOrganizationInfoByOrganizationName(workshopName);
+                    SysOrganization organizationDOWorkshop = organizationDAO.queryOrganizationInfoByOrganizationNameAndParentId(workshopName,organizationId);
                     if (null == organizationDOWorkshop){
                         ImportCompanyPersonnelLogDTO importCompanyPersonnelLogDTO = new ImportCompanyPersonnelLogDTO();
                         importCompanyPersonnelLogDTO.setCode(importCode);
@@ -114,7 +114,7 @@ public class CompanyPersonnelServiceImpl implements CompanyPersonnelService {
                 }
 
                 if (StringUtils.isNotBlank(teamName)){
-                    SysOrganization organizationDOTeam = organizationDAO.queryOrganizationInfoByOrganizationName(teamName);
+                    SysOrganization organizationDOTeam = organizationDAO.queryOrganizationInfoByOrganizationNameAndParentId(teamName,organizationId);
                     if (null == organizationDOTeam){
                         ImportCompanyPersonnelLogDTO importCompanyPersonnelLogDTO = new ImportCompanyPersonnelLogDTO();
                         importCompanyPersonnelLogDTO.setCode(importCode);

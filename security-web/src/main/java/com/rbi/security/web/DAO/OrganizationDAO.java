@@ -12,7 +12,11 @@ import java.util.List;
 public interface OrganizationDAO {
 
     @Select("SELECT * FROM sys_organization WHERE organization_name = #{organizationName}")
-    SysOrganization queryOrganizationInfoByOrganizationName(@Param("organizationName") String organizationName);
+    List<SysOrganization> queryOrganizationInfoByOrganizationName(@Param("organizationName") String organizationName);
+
+    @Select("SELECT * FROM sys_organization WHERE organization_name = #{organizationName} AND parent_id = #{parentId}")
+    SysOrganization queryOrganizationInfoByOrganizationNameAndParentId(@Param("organizationName") String organizationName,
+                                                                       @Param("parentId") long organizationId);
 
     @Select("SELECT\n" +
             "\tT2.id,\n" +
