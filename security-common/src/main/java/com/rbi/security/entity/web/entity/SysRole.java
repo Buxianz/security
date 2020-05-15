@@ -19,11 +19,6 @@ public class SysRole implements Serializable {
     */
     private String roleName;
     /**
-    * 角色所属组织id
-    */
-    private Integer organizationId;
-
-    /**
      * 是否可看下级数据 0：不可以  1：可以
      * */
     private Integer whetherSee;
@@ -42,14 +37,6 @@ public class SysRole implements Serializable {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
-    }
-
-    public Integer getOrganizationId() {
-        return organizationId;
-    }
-
-    public void setOrganizationId(Integer organizationId) {
-        this.organizationId = organizationId;
     }
 
     public static long getSerialVersionUID() {
