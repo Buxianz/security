@@ -23,6 +23,10 @@ public class SysRole implements Serializable {
     */
     private Integer organizationId;
 
+    /**
+     * 是否可看下级数据 0：不可以  1：可以
+     * */
+    private Integer whetherSee;
 
     public Integer getId() {
         return id;
@@ -48,4 +52,15 @@ public class SysRole implements Serializable {
         this.organizationId = organizationId;
     }
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public Integer getWhetherSee() {
+        return whetherSee;
+    }
+
+    public void setWhetherSee(Integer whetherSee) {
+        this.whetherSee = whetherSee;
+    }
 }
