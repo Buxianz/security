@@ -3,7 +3,6 @@ package com.rbi.security.web.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.tool.PageData;
-import com.rbi.security.tool.ResponseVo;
 import com.rbi.security.web.service.CompanyPersonnelService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
