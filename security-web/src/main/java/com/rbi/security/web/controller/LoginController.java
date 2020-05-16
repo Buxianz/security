@@ -22,7 +22,7 @@ public class LoginController {
     @ResponseBody
     public JSONObject showHello(){
         JSONObject jsonObject=new JSONObject();
-        jsonObject.put("status", 1012);
+        jsonObject.put("status", 1002);
         jsonObject.put("msg", "未登录");
         return jsonObject;
     }
@@ -31,7 +31,7 @@ public class LoginController {
     @ExceptionHandler(UnauthorizedException.class)
     public JSONObject noAccess(){
         JSONObject jsonObject=new JSONObject();
-        jsonObject.put("status", 1015);
+        jsonObject.put("status", 1003);
         jsonObject.put("msg", "无权访问");
         return jsonObject;
     }
@@ -40,7 +40,7 @@ public class LoginController {
     @ExceptionHandler(AuthorizationException.class)
     public JSONObject failed(){
         JSONObject jsonObject=new JSONObject();
-        jsonObject.put("status", 1016);
+        jsonObject.put("status", 1004);
         jsonObject.put("msg", "权限认证失败");
         return jsonObject;
     }
@@ -48,7 +48,7 @@ public class LoginController {
     @ResponseBody
     public  JSONObject kickOut(){
         JSONObject jsonObject=new JSONObject();
-        jsonObject.put("status", 1013);
+        jsonObject.put("status", 1005);
         jsonObject.put("msg", "他人登陆，被迫下线");
         return jsonObject;
     }
@@ -72,14 +72,14 @@ public class LoginController {
             if(e.getClass().getName()!=null){
                 if(DisabledAccountException.class.getName().equals(e.getClass().getName())) {
 
-                    jsonObject.put("status", 1018);//账号被锁定
+                    jsonObject.put("status", 1006);//账号被锁定
                 }else  if(UnknownAccountException.class.getName().equals(e.getClass().getName())){
                     //抛出账号不存在异常
-                    jsonObject.put("status", 1017);//无此账号
+                    jsonObject.put("status", 1007);//无此账号
                 }else   if(IncorrectCredentialsException.class.getName().equals(e.getClass().getName())){
-                    jsonObject.put("status", 1007);//密码错误
+                    jsonObject.put("status", 1008);//密码错误
                 }else if(UnknownSessionException.class.getName().equals(e.getClass().getName())){
-                    jsonObject.put("status", 1014);//会话失效
+                    jsonObject.put("status", 1009);//会话失效
                 }else if(NullPointerException.class.getName().equals(e.getClass().getName())){
                     System.out.println(e);
                 }else {
