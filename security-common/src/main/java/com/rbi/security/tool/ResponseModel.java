@@ -15,9 +15,17 @@ public class ResponseModel<T> implements Serializable {
     public static <T> ResponseModel<T> build(String status, String message, String token, T data) {
         return new ResponseModel<T>().setStatus(status).setMessage(message).setToken(token).setData(data);
     }
+
+    public static <T> ResponseModel<T> build(String status, String message, T data) {
+        return new ResponseModel<T>().setStatus(status).setMessage(message).setData(data);
+    }
     
     public static <E> ResponseModel<E> build(String status, String message, String token) {
         return new ResponseModel<E>().setStatus(status).setMessage(message).setToken(token);
+    }
+
+    public static <E> ResponseModel<E> build(String status, String message) {
+        return new ResponseModel<E>().setStatus(status).setMessage(message);
     }
 
     public ResponseModel() {
