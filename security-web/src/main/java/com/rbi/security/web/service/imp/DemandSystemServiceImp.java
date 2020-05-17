@@ -31,6 +31,7 @@ public class DemandSystemServiceImp implements DemandSystemService {
                         .substring(multipartFiles[i].getOriginalFilename().lastIndexOf("."));
                 String fileName = multipartFiles[i].getOriginalFilename();
                         //UUID.randomUUID().toString() + fileSuffix;
+                System.out.println(fileDir.toString());
                 File file = new File(fileDir + "/" + fileName);
                 // 上传
                 multipartFiles[i].transferTo(file);
