@@ -74,15 +74,21 @@ public class UserServiceImp implements UserService {
     @Transactional(propagation=Propagation.NOT_SUPPORTED)
     public PageData<PagingUser> pagingQueryUserInfo(int pageNo,int pageSize ,int startIndex) throws RuntimeException {
         List<PagingUser> pagingUserList=null;
+        try{
 
-
-        int count = sysUSerDAO.getUserCount();
-        int totalPage;
-        if (count%pageSize==0){
-            totalPage = count/pageSize;
-        }else {
-            totalPage = count/pageSize+1;
+            int count = sysUSerDAO.getUserCount();
+            int totalPage;
+            if (count%pageSize==0){
+                totalPage = count/pageSize;
+            }else {
+                totalPage = count/pageSize+1;
+            }
+            return new PageData<PagingUser>(pageNo,pageSize,totalPage,count,pagingUserList);
+        }catch (Exception e){
+            logger.error("分页获取用户信息失败，异常为{}",e);
+            throw new RuntimeException("分页获取用户信息失败");
         }
-        return new PageData<PagingUser>(pageNo,pageSize,totalPage,count,pagingUserList);
+
+
     }
 }

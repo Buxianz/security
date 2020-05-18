@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
-@CrossOrigin(origins = "*",allowCredentials = "true")
 @RestController
 @RequestMapping("/company_personnel")
 public class CompanyPersonnelController {

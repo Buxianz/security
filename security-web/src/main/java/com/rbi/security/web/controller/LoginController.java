@@ -15,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-@CrossOrigin(origins = "*",allowCredentials = "true")
 @Controller
 public class LoginController {
     @RequestMapping("/notLanded")
