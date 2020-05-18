@@ -72,10 +72,10 @@ public class UserController {
             int pageNo = date.getInteger("pageNo");
             int pageSize = date.getInteger("pageSize");
             int startIndex=(pageNo-1)*pageSize;
-
-            return null;
+            PageData<PagingUser> data=userService.pagingQueryUserInfo(pageNo,pageSize,startIndex);
+            return  ResponseModel.build("1000", "查询成功",data);
         }catch (Exception e){
-            return null;
+            return ResponseModel.build("1001", e.getMessage());
         }
     }
 }
