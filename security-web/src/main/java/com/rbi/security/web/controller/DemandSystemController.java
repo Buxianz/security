@@ -15,7 +15,7 @@ public class DemandSystemController {
     @Value("${uploadfile.path}")
     private String filePath;
     /**
-     * 上传文件
+     * 上传教育制度文件
      * @param multipartFile
      * @return
      */

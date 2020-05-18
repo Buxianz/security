@@ -22,7 +22,14 @@ public class SysUserRole implements Serializable {
     * 用户id
     */
     private Integer userId;
-
+    /**
+     * 操作人员（公司人员信息id）
+     */
+    private int operatingStaff;
+    /**
+     * 创建时间
+     */
+    private String idt;
 
     public Integer getId() {
         return id;
@@ -48,4 +55,22 @@ public class SysUserRole implements Serializable {
         this.userId = userId;
     }
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public int getOperatingStaff() {
+        return operatingStaff;
+    }
+
+    public void setOperatingStaff(int operatingStaff) {
+        this.operatingStaff = operatingStaff;
+    }
+    public String getIdt() {
+        return idt;
+    }
+
+    public void setIdt(String idt) {
+        this.idt = idt;
+    }
 }
