@@ -83,10 +83,12 @@ public interface CompanyPersonnelDAO {
     int queryCountByIdCardNoAndNotId(@Param("idCardNo") String idCardNo,@Param("id") long id);
 
     //分页查询公司人员数据
-    @Select("SELECT * FROM sys_company_personnel LIMIT ${pageNo},${pageSize}")
-    List<SysCompanyPersonnel> queryDataByPage(@Param("pageNo") int pageNo,@Param("pageSize") int pageSize);
+    @Select("SELECT sys_company_personnel.* FROM sys_company_personnel ${searchCriteria} LIMIT ${pageNo},${pageSize}")
+    List<SysCompanyPersonnel> queryDataByPage(@Param("searchCriteria") String searchCriteria,
+                                              @Param("pageNo") int pageNo,
+                                              @Param("pageSize") int pageSize);
 
     //查询公司人员条数
-    @Select("SELECT COUNT(*) FROM sys_company_personnel")
-    int queryCountByPage();
+    @Select("SELECT COUNT(*) FROM sys_company_personnel ${searchCriteria}")
+    int queryCountByPage(@Param("searchCriteria") String searchCriteria);
 }

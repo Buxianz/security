@@ -197,8 +197,44 @@ public class CompanyPersonnelServiceImpl implements CompanyPersonnelService {
     public PageData<SysCompanyPersonnel> queryByPage(JSONObject jsonObject) {
         int pageNum = jsonObject.getInteger("pageNo");
         int pageSize = jsonObject.getInteger("pageSize");
+        String searchCriteria = "";
+        try {
+            long organizationId = jsonObject.getLong("organizationId");
+            searchCriteria = "INNER JOIN (select id from sys_organization where FIND_IN_SET(id,getOrganizationChildList("+
+                    organizationId+"))) AS oi ON sys_company_personnel.organization_id = oi.id";
+        } catch (NullPointerException e){
+            //不能并行收搜
+            String employeeNumber = jsonObject.getString("employeeNumber");
+            String name = jsonObject.getString("name");
+            String idCardNo = jsonObject.getString("idCardNo");
+            String position = jsonObject.getString("position");
+            if (StringUtils.isNotBlank(employeeNumber)){
+                searchCriteria = "WHERE employee_number LIKE '%"+employeeNumber+"%'";
+            }
+            if (StringUtils.isNotBlank(name)){
+                if (StringUtils.isNotBlank(searchCriteria)){
+                    searchCriteria = searchCriteria + " AND name LIKE '%"+name+"%'";
+                }else {
+                    searchCriteria = "WHERE name LIKE '%"+name+"%'";
+                }
+            }
+            if (StringUtils.isNotBlank(name)){
+                if (StringUtils.isNotBlank(searchCriteria)){
+                    searchCriteria = searchCriteria + " AND id_card_no LIKE '%"+idCardNo+"%'";
+                }else {
+                    searchCriteria = "WHERE id_card_no LIKE '%"+idCardNo+"%'";
+                }
+            }
+            if (StringUtils.isNotBlank(name)){
+                if (StringUtils.isNotBlank(searchCriteria)){
+                    searchCriteria = searchCriteria + " AND position LIKE '%"+position+"%'";
+                }else {
+                    searchCriteria = "WHERE position LIKE '%"+position+"%'";
+                }
+            }
+        }
         int pageNo = (pageNum-1)*pageSize;
-        List<SysCompanyPersonnel> sysCompanyPersonnelList = companyPersonnelDAO.queryDataByPage(pageNo,pageSize);
+        List<SysCompanyPersonnel> sysCompanyPersonnelList = companyPersonnelDAO.queryDataByPage(searchCriteria,pageNo,pageSize);
         sysCompanyPersonnelList.forEach(sysCompanyPersonnel ->{
             List<SysOrganization> organizationList = organizationDAO.queryAllParentDate(sysCompanyPersonnel.getOrganizationId());
             organizationList.forEach(sysOrganization -> {
@@ -223,7 +259,7 @@ public class CompanyPersonnelServiceImpl implements CompanyPersonnelService {
             });
         });
 
-        int count = companyPersonnelDAO.queryCountByPage();
+        int count = companyPersonnelDAO.queryCountByPage(searchCriteria);
         int totalPage;
         if (count%pageSize==0){
             totalPage = count/pageSize;
@@ -273,3 +309,5 @@ public class CompanyPersonnelServiceImpl implements CompanyPersonnelService {
         companyPersonnelDAO.delete(idList);
     }
 }
+
+
