@@ -67,7 +67,7 @@ public class CompanyPersonnelServiceImpl implements CompanyPersonnelService {
                 String entryTime = map.get("entryTime");
                 String remarks = map.get("remarks");
 
-                long organizationId;
+                Integer organizationId;
                 List<SysOrganization> organizationList = organizationDAO.queryOrganizationInfoByOrganizationName(organizationName);
                 if (1 != organizationList.size()){
                     ImportCompanyPersonnelLogDTO importCompanyPersonnelLogDTO = new ImportCompanyPersonnelLogDTO();
