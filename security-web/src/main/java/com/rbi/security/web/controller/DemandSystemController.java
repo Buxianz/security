@@ -22,7 +22,7 @@ public class DemandSystemController {
     @Autowired
     DemandSystemService demandSystemService;
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public ResponseModel uploadFiles(MultipartFile[] multipartFiles) {
+    public ResponseModel uploadFiles(MultipartFile[] multipartFiles,int order) {
         try {
             demandSystemService.uploadDemandSystemFiles(multipartFiles);
         } catch (Exception e) {
