@@ -9,6 +9,6 @@ public interface UserService {
     void insertUser(SysUser sysUser) throws RuntimeException;
     void updateUserInfo(SysUser sysUser) throws RuntimeException;
     void deleteUser(int id)throws  RuntimeException;
-    PageData<PagingUser> pagingQueryUserInfo() throws RuntimeException;
+    PageData<PagingUser> pagingQueryUserInfo(int pageNo,int pageSize ,int startIndex) throws RuntimeException;
 
 }
