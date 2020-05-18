@@ -1,5 +1,7 @@
 package com.rbi.security.entity.web.entity;
 
+import lombok.Data;
+
 import java.util.Date;
 import java.io.Serializable;
 
@@ -9,12 +11,13 @@ import java.io.Serializable;
  * @author makejava
  * @since 2020-05-14 16:09:49
  */
+@Data
 public class SysPermission implements Serializable {
     private static final long serialVersionUID = -64220275797145303L;
     /**
     * 权限id
     */
-    private Long id;
+    private Integer id;
     /**
     * 权限名称
     */
@@ -42,81 +45,10 @@ public class SysPermission implements Serializable {
     /**
     * 创建时间
     */
-    private Date idt;
+    private String idt;
     
-    private Date udt;
+    private String udt;
 
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getPermissionName() {
-        return permissionName;
-    }
-
-    public void setPermissionName(String permissionName) {
-        this.permissionName = permissionName;
-    }
-
-    public String getOperateCode() {
-        return operateCode;
-    }
-
-    public void setOperateCode(String operateCode) {
-        this.operateCode = operateCode;
-    }
-
-    public Integer getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Integer parentId) {
-        this.parentId = parentId;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getSystemId() {
-        return systemId;
-    }
-
-    public void setSystemId(Integer systemId) {
-        this.systemId = systemId;
-    }
-
-    public Integer getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Integer enabled) {
-        this.enabled = enabled;
-    }
-
-    public Date getIdt() {
-        return idt;
-    }
-
-    public void setIdt(Date idt) {
-        this.idt = idt;
-    }
-
-    public Date getUdt() {
-        return udt;
-    }
-
-    public void setUdt(Date udt) {
-        this.udt = udt;
-    }
 
 }

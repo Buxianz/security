@@ -1,5 +1,7 @@
 package com.rbi.security.entity.web.entity;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -8,12 +10,13 @@ import java.io.Serializable;
  * @author makejava
  * @since 2020-05-14 16:09:49
  */
+@Data
 public class SysSystem implements Serializable {
     private static final long serialVersionUID = 635112247982037272L;
     /**
     * 系统id
     */
-    private Long id;
+    private Integer id;
     /**
     * 系统key
     */
@@ -24,28 +27,5 @@ public class SysSystem implements Serializable {
     private String systemName;
 
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getSystemKey() {
-        return systemKey;
-    }
-
-    public void setSystemKey(String systemKey) {
-        this.systemKey = systemKey;
-    }
-
-    public String getSystemName() {
-        return systemName;
-    }
-
-    public void setSystemName(String systemName) {
-        this.systemName = systemName;
-    }
 
 }

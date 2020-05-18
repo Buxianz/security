@@ -17,7 +17,7 @@ public class SysCompanyPersonnel implements Serializable {
     /**
     * 公司人员id
     */
-    private Long id;
+    private Integer id;
     /**
     * 员工号
     */
@@ -25,14 +25,14 @@ public class SysCompanyPersonnel implements Serializable {
     /**
     * 组织id
     */
-    private Long organizationId;
-    private long companyId; //单位ID
+    private Integer organizationId;
+    private Integer companyId; //单位ID
     private String companyName;//单位名称
-    private long factoryId;//工厂ID
+    private Integer factoryId;//工厂ID
     private String factoryName;//厂名称
-    private long workshopId;//车间ID
+    private Integer workshopId;//车间ID
     private String workshopName;//车间名称
-    private long teamId;//班组ID
+    private Integer teamId;//班组ID
     private String teamName;//班组名称
     /**
     * 姓名

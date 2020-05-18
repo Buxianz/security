@@ -1,5 +1,7 @@
 package com.rbi.security.entity.web.entity;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -8,6 +10,7 @@ import java.io.Serializable;
  * @author makejava
  * @since 2020-05-14 16:09:49
  */
+@Data
 public class SysRole implements Serializable {
     private static final long serialVersionUID = -90027394134821660L;
     /**
@@ -23,31 +26,4 @@ public class SysRole implements Serializable {
      * */
     private Integer whetherSee;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
-    public Integer getWhetherSee() {
-        return whetherSee;
-    }
-
-    public void setWhetherSee(Integer whetherSee) {
-        this.whetherSee = whetherSee;
-    }
 }

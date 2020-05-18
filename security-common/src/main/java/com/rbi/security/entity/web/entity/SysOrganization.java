@@ -1,5 +1,7 @@
 package com.rbi.security.entity.web.entity;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -8,12 +10,13 @@ import java.io.Serializable;
  * @author makejava
  * @since 2020-05-14 16:09:47
  */
+@Data
 public class SysOrganization implements Serializable {
     private static final long serialVersionUID = 464531677728519551L;
     /**
     * 组织id
     */
-    private Long id;
+    private Integer id;
     /**
     * 组织名称
     */
@@ -26,38 +29,5 @@ public class SysOrganization implements Serializable {
      * 组织级别
      */
     private Integer level;
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getOrganizationName() {
-        return organizationName;
-    }
-
-    public void setOrganizationName(String organizationName) {
-        this.organizationName = organizationName;
-    }
-
-    public Integer getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Integer parentId) {
-        this.parentId = parentId;
-    }
-
-    public Integer getLevel() {
-        return level;
-    }
-
-    public void setLevel(Integer level) {
-        this.level = level;
-    }
 
 }

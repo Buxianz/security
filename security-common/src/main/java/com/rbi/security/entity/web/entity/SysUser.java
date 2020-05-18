@@ -1,5 +1,7 @@
 package com.rbi.security.entity.web.entity;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -9,6 +11,7 @@ import java.util.List;
  * @author makejava
  * @since 2020-05-14 16:09:49
  */
+@Data
 public class SysUser implements Serializable {
     private static final long serialVersionUID = 360253428883446542L;
     /**
@@ -38,89 +41,14 @@ public class SysUser implements Serializable {
     /**
      * 操作人员（公司人员信息id）
      */
-    private int operatingStaff;
+    private Integer operatingStaff;
     /**
      * 是否启用
      */
-    private int enabled;
+    private Integer enabled;
     /**
      * 创建时间
      */
     private String idt;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getSalf() {
-        return salf;
-    }
-
-    public void setSalf(String salf) {
-        this.salf = salf;
-    }
-
-    public Integer getCompanyPersonnelId() {
-        return companyPersonnelId;
-    }
-
-    public void setCompanyPersonnelId(Integer companyPersonnelId) {
-        this.companyPersonnelId = companyPersonnelId;
-    }
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
-    public List<SysUserRole> getSysUserRoleList() {
-        return sysUserRoleList;
-    }
-
-    public void setSysUserRoleList(List<SysUserRole> sysUserRoleList) {
-        this.sysUserRoleList = sysUserRoleList;
-    }
-
-    public int getOperatingStaff() {
-        return operatingStaff;
-    }
-
-    public void setOperatingStaff(int operatingStaff) {
-        this.operatingStaff = operatingStaff;
-    }
-
-    public int getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(int enabled) {
-        this.enabled = enabled;
-    }
-
-    public String getIdt() {
-        return idt;
-    }
-
-    public void setIdt(String idt) {
-        this.idt = idt;
-    }
 }
