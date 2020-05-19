@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.entity.SysPermission;
 import com.rbi.security.entity.web.permission.PagingPermission;
+import com.rbi.security.entity.web.permission.SysPermissionDTO;
 import com.rbi.security.tool.EncapsulationTreeUtil;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.TimeStampTool;
@@ -22,10 +23,12 @@ public class SysPermissionServiceImp implements SysPermissionService {
     SysPermissionDAO sysPermissionDAO;
 
     @Override
-    public List<SysPermission> findSysPermissionAll() {
+    public List<SysPermissionDTO> findSysPermissionAll() {
         try {
             List<SysPermission> sysPermissionList = sysPermissionDAO.findSysPermissionAll();
-            return EncapsulationTreeUtil.getTree(sysPermissionList,"id","parentId","pagingPermissions");
+            List<SysPermissionDTO> sysPermissionDTOList= JSONObject.parseArray(JSONArray.toJSON(sysPermissionList).toString(),SysPermissionDTO.class);
+            return EncapsulationTreeUtil.getTree(sysPermissionDTOList,"id","parentId","sysPermissionDTO");
+//            return sysPermissionDTOList;
         } catch (Exception e) {
             e.printStackTrace();
             return null;

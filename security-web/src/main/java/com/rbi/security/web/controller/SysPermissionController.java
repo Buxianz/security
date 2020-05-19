@@ -3,6 +3,7 @@ package com.rbi.security.web.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.entity.SysPermission;
+import com.rbi.security.entity.web.permission.SysPermissionDTO;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.SysPermissionService;
@@ -26,11 +27,11 @@ public class SysPermissionController {
      * @return
      */
     @PostMapping("/findSysPermissionAll")
-    public ResponseModel<List<SysPermission>> findSysPermissionAll(){
+    public ResponseModel<List<SysPermissionDTO>> findSysPermissionAll(){
         try {
-            List<SysPermission> sysPermissionList=sysPermissionService.findSysPermissionAll();
-            if (sysPermissionList!=null) {
-                return ResponseModel.build("1000", "查询成功",sysPermissionList);
+            List<SysPermissionDTO> sysPermissionDTOList=sysPermissionService.findSysPermissionAll();
+            if (sysPermissionDTOList!=null) {
+                return ResponseModel.build("1000", "查询成功",sysPermissionDTOList);
             }else {
                 return ResponseModel.build("1001","查询失败");
             }

@@ -22,7 +22,7 @@ public class EncapsulationTreeUtil {
         for (int i = 0; i < originalList.size(); i++) {
             T t = originalList.get(i);
             String parentId = BeanUtils.getProperty(t, parentFieldName);
-            if (StringUtils.isBlank(parentId)) {
+            if (parentId.equals("0")) {
                 topList.add(t);
             }
         }
