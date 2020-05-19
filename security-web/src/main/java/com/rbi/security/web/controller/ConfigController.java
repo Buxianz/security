@@ -39,4 +39,16 @@ public class ConfigController {
             return ResponseModel.build("1001", e.getMessage());
         }
     }
+
+    /**
+     * 获取公司人员树状结构
+     */
+    @RequestMapping("/getCompanyPersonnelTree")
+    public ResponseModel<List<OrganizationTree>> getCompanyPersonnelTree(){
+        try{
+            return ResponseModel.build("1000", "查询成功",configService.getCompanyPersonnelTree());
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
 }

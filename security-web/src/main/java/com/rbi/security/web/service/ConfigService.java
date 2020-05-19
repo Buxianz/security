@@ -8,4 +8,5 @@ import java.util.List;
 public interface ConfigService {
     List<OrganizationTree> getOrganizationTree() throws RuntimeException;
     List<SysRole> getRole() throws RuntimeException;
+    List<OrganizationTree> getCompanyPersonnelTree() throws RuntimeException;
 }

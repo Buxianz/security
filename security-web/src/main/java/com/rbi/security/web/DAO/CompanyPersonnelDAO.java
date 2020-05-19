@@ -1,6 +1,7 @@
 package com.rbi.security.web.DAO;
 
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
+import com.rbi.security.entity.web.user.CompanyPersonnelBox;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -91,4 +92,8 @@ public interface CompanyPersonnelDAO {
     //查询公司人员条数
     @Select("SELECT COUNT(*) FROM sys_company_personnel ${searchCriteria}")
     int queryCountByPage(@Param("searchCriteria") String searchCriteria);
+
+    //获取公司所有人员信息
+    @Select("select id,`name`,organization_id from sys_company_personnel")
+    List<CompanyPersonnelBox> getAllCompanyPersonnel();
 }

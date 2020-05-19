@@ -38,11 +38,11 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setFilters(filtersMap);
         // 权限控制map.
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
-        /*filterChainDefinitionMap.put("/notLanded", "anon");
+        filterChainDefinitionMap.put("/notLanded", "anon");
         filterChainDefinitionMap.put("/kickout", "anon");
         filterChainDefinitionMap.put("/logout", "logout");
-        filterChainDefinitionMap.put("/**", "authc");*/
-        filterChainDefinitionMap.put("/**", "anon");
+        filterChainDefinitionMap.put("/**", "authc,kickout");
+        /*filterChainDefinitionMap.put("/**", "anon");*/
        // shiroFilterFactoryBean.setF
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
