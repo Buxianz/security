@@ -1,5 +1,6 @@
 package com.rbi.security.web.controller;
 
+import com.alibaba.druid.sql.visitor.functions.If;
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.hid.HidDangerDTO;
 import com.rbi.security.tool.ResponseModel;
@@ -24,10 +25,14 @@ public class HidDangerCotroller {
                                 @RequestParam(value="report",required=false) MultipartFile report){
         try {
             int userId  = 1;
-            System.out.println("实体："+hidDangerDTO.getHiddenDangerContent());
-            hidDangerService.addReport(userId,hidDangerDTO,beforeImg,afterImg,plan,report);
-            return ResponseModel.build("1000","隐患上报成功！");
+            String result = hidDangerService.addReport(userId,hidDangerDTO,beforeImg,afterImg,plan,report);
+            if(result.equals("1000")){
+                return ResponseModel.build("1000","隐患上报成功！");
+            }else {
+                return ResponseModel.build("1000",result);
+            }
         }catch (Exception e){
+            System.out.println(e);
             return ResponseModel.build("1001","处理异常");
         }
 
