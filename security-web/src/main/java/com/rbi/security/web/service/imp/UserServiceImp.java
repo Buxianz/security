@@ -1,5 +1,6 @@
 package com.rbi.security.web.service.imp;
 
+import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.entity.web.entity.SysOrganization;
 import com.rbi.security.entity.web.entity.SysUser;
 import com.rbi.security.entity.web.entity.SysUserRole;
@@ -12,7 +13,9 @@ import com.rbi.security.web.DAO.OrganizationDAO;
 import com.rbi.security.web.DAO.SysUSerDAO;
 import com.rbi.security.web.DAO.SysUserRoleDAO;
 import com.rbi.security.web.service.UserService;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.Md5Hash;
+import org.apache.shiro.subject.Subject;
 import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,11 +43,13 @@ public class UserServiceImp implements UserService {
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void insertUser(SysUser sysUser) throws RuntimeException {
         try {
+            Subject subject = SecurityUtils.getSubject();
             String idt = LocalDateUtils.localDateTimeFormat(LocalDateTime.now(), LocalDateUtils.FORMAT_PATTERN);
             String salt = Tools.uuid();
             Md5Hash md5Hash=new Md5Hash(sysUser.getPassword(),salt,2);
             sysUser.setPassword(md5Hash.toString());
             sysUser.setSalf(salt);
+            sysUser.setOperatingStaff(((AuthenticationUserDTO)subject.getPrincipal()).getCompanyPersonnelId());
             sysUser.setIdt(idt);
             if (sysUSerDAO.increaseDuplicateCheck(sysUser.getUsername()) == null) {
                 sysUSerDAO.insertUser(sysUser);
@@ -71,8 +76,10 @@ public class UserServiceImp implements UserService {
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void updateUserInfo(SysUser sysUser) throws RuntimeException {
         try{
-            if (sysUSerDAO.updateDuplicateCheck(sysUser)==null)
+            if (sysUSerDAO.updateDuplicateCheck(sysUser)==null) {
                 sysUSerDAO.updateUser(sysUser);
+                sysUserRoleDAO.updateUserRoleInfo(sysUser.getSysUserRoleList());
+            }
             else throw new RepeatException("更新用户信息重复");
         }catch (RepeatException e){
             logger.error("更新用户信息重复，用户信息为{}",sysUser.toString());
@@ -118,19 +125,26 @@ public class UserServiceImp implements UserService {
     }
     //处理数据，通过代码进行分页操作
     private List<PagingUser> processingPagingData(List<PagingUser> pagingUserList,int pageNo,int pageSize ,int startIndex){
-        List<PagingUser> pagingUsers =null;
+            List<PagingUser> pagingUsers =null;
             pagingUsers = new LinkedList<PagingUser>();
             int endIndex=0;
+        //执行筛选操作，降不符合规则的remove掉
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        //。。。。。。。。。。。。。
+        for(int i=0;i<pagingUserList.size();i++){
+            if(pagingUserList.get(i).getUsername().equals(currentUser.getUserName())){
+                pagingUserList.remove(i);
+                break;
+            }
+        }
             if(pagingUserList.size()-startIndex>=pageSize){
                 endIndex=startIndex+pageSize;
             }else{
                 endIndex=pagingUserList.size()-startIndex;
             }
-             //执行筛选操作，降不符合规则的remove掉
-             //。。。。。。。。。。。。。
              //将符合规格的添加到
             for(int i=startIndex;i<endIndex;i++){
-
                 pagingUsers.add(pagingUserList.get(i));
             }
         return pagingUsers;
@@ -142,7 +156,9 @@ public class UserServiceImp implements UserService {
             for(int i=0;i<pagingUserList.size();i++){
                 userIds.add(pagingUserList.get(i).getId());
             }
-            List<SysUserRole> sysUserRoleList=sysUserRoleDAO.getUserRole(userIds);
+            List<SysUserRole> sysUserRoleList=null;
+            if(userIds.size()!=0)
+            sysUserRoleList=sysUserRoleDAO.getUserRole(userIds);
             pagingUserList.forEach(pagingUser ->{
                 //此处可优化为放在redis
                 List<SysOrganization> organizationList = organizationDAO.queryAllParentDate(pagingUser.getOrganizationId());

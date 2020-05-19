@@ -34,7 +34,7 @@ public class ConfigController {
     @RequestMapping("/getRole")
     public ResponseModel<List<SysRole>> getRole(){
         try{
-            return ResponseModel.build("1000", "查询成功");
+            return ResponseModel.build("1000", "查询成功",configService.getRole());
         }catch (Exception e){
             return ResponseModel.build("1001", e.getMessage());
         }

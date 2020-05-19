@@ -33,7 +33,7 @@ public interface SysUSerDAO {
      * @param sysUser
      * @return
      */
-    @Select("Select * from sys_user where company_personnel_id=#{company_personnel_id} and id!=#{id}")
+    @Select("Select * from sys_user where company_personnel_id=#{companyPersonnelId} and id!=#{id}")
     SysUser updateDuplicateCheck(SysUser sysUser);
 
     /**
@@ -41,7 +41,7 @@ public interface SysUSerDAO {
      * @param sysUser
      * @return
      */
-    @Update("update sys_user set password=#{password},salf=#{salt},company_personnel_id=#{companyPersonnelId},enabled=#{enabled}")
+    @Update("update sys_user set company_personnel_id=#{companyPersonnelId},enabled=#{enabled} where id=#{id}")
     int updateUser(SysUser sysUser);
 
     /**
