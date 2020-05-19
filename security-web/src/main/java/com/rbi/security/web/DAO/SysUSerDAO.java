@@ -16,7 +16,7 @@ public interface SysUSerDAO {
      * @param sysUser
      * @return
      */
-    @Insert("insert into sys_user (username,password,salt,company_personnel_id,operating_staff,enabled,idt) values (#{username},#{password},#{salt},#{companyPersonnelId},#{operatingStaff},#{enabled},#{idt})")
+    @Insert("insert into sys_user (username,password,salf,company_personnel_id,operating_staff,enabled,idt) values (#{username},#{password},#{salf},#{companyPersonnelId},#{operatingStaff},#{enabled},#{idt})")
     @Options(useGeneratedKeys = true, keyProperty = "id",keyColumn="id")//此语句代表添加后返回主键
     int insertUser(SysUser sysUser);
 

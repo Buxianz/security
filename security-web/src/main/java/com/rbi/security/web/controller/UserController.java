@@ -34,7 +34,7 @@ public class UserController {
     /**
      * 更新用户
      */
-    @RequestMapping("/updateUserInfo")
+    @RequestMapping("/updateUser")
     @ResponseBody
     public ResponseModel updateCompanyInfo(@RequestBody JSONObject date){
         try{

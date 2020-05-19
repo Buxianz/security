@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,7 +40,14 @@ public class Tools {
         String mon = format.format(m);
         return mon;
     }
-
+    /**
+     * 生成UUID码
+     * @return
+     */
+    public static String uuid(){
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
+    }
     public static String getSpecialFormatMonth(Integer count){
         SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
         Calendar calendar = Calendar.getInstance();

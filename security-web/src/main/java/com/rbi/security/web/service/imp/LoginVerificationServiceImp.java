@@ -15,10 +15,10 @@ public class LoginVerificationServiceImp implements LoginVerificationService {
     @Autowired
     LoginVerificationDAO loginVerificationDAO;
     @Override
-    public AuthenticationUserDTO getUserPrincipalInfo(String userName) throws RuntimeException {
+    public AuthenticationUserDTO getUserPrincipalInfo(String username) throws RuntimeException {
         AuthenticationUserDTO authenticationUserDTO=null;
         try{
-            authenticationUserDTO=loginVerificationDAO.getUserByUserName(userName);
+            authenticationUserDTO=loginVerificationDAO.getUserByUserName(username);
 
         }catch (Exception e){
             logger.error("系统异常，异常信息为{}",e);

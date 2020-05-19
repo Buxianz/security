@@ -48,7 +48,7 @@ public class MyShiroRealm extends AuthorizingRealm {
             logger.info("---------------- Shiro 凭证认证成功 ----------------------");
             SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(user,
                     user.getPassword(),
-                    ByteSource.Util.bytes(user.getSalt()),
+                    ByteSource.Util.bytes(user.getSalf()),
                     getName());
             return authenticationInfo;
         }

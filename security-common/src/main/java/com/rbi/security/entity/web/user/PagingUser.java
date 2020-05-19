@@ -1,6 +1,9 @@
 package com.rbi.security.entity.web.user;
 
+import com.rbi.security.entity.web.entity.SysUserRole;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * 用户信息分页查看
@@ -24,4 +27,8 @@ public class PagingUser {
     private String teamName;//班组名称
     private String name;//姓名
     private String idCardNo;//身份证号码
+    /**
+     * 角色信息
+     */
+    private List<SysUserRole> sysUserRoleList;
 }

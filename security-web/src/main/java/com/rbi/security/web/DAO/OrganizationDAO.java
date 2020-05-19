@@ -1,5 +1,6 @@
 package com.rbi.security.web.DAO;
 
+import com.rbi.security.entity.config.OrganizationTree;
 import com.rbi.security.entity.web.entity.SysOrganization;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -47,4 +48,6 @@ public interface OrganizationDAO {
             "\tid;")
     List<SysOrganization> queryAllParentDate(@Param("id") long organizationId);
 
+    @Select("select id,organization_name,parent_id from sys_organization")
+    List<OrganizationTree> getAllOrganization();
 }
