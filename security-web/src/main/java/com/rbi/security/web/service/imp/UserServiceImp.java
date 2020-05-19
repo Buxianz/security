@@ -133,7 +133,7 @@ public class UserServiceImp implements UserService {
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         //。。。。。。。。。。。。。
         for(int i=0;i<pagingUserList.size();i++){
-            if(pagingUserList.get(i).getUsername().equals(currentUser.getUserName())){
+            if(pagingUserList.get(i).getUsername().equals(currentUser.getUsername())){
                 pagingUserList.remove(i);
                 break;
             }
