@@ -9,8 +9,10 @@ import com.rbi.security.entity.web.hid.HidDangerProcessDTO;
 import com.rbi.security.tool.DateUtil;
 import com.rbi.security.web.DAO.hid.HidDangerDAO;
 import com.rbi.security.web.service.HidDangerService;
+import lombok.Data;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,8 +20,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
+@ConfigurationProperties(prefix="path")
+@Data
 @Service
 public class HidDangerServiceImpl implements HidDangerService {
+    private String hiddenPath;
+    private String findHiddenPath;
+
+
     @Autowired
     HidDangerDAO hidDangerDAO;
 
@@ -39,9 +47,9 @@ public class HidDangerServiceImpl implements HidDangerService {
                 String contentType = beforeImg[i].getContentType();
                 if (contentType.startsWith("image")) {
                     String timestamps = DateUtil.timeStamp();
-                    String newFileName = timestamps + "" + new Random().nextInt() + ".jpg";
-                    FileUtils.copyInputStreamToFile(beforeImg[i].getInputStream(), new File("E:", newFileName));
-                    hidDangerDAO.addBeforeImg(hidDangerCode,newFileName);
+                    String newFileName = timestamps + new Random().nextInt() + ".jpg";
+                    FileUtils.copyInputStreamToFile(beforeImg[i].getInputStream(), new File(hiddenPath, newFileName));
+                    hidDangerDAO.addBeforeImg(hidDangerCode,findHiddenPath+newFileName);
                 }
             }
         }
@@ -54,10 +62,9 @@ public class HidDangerServiceImpl implements HidDangerService {
                 String contentType = afterImg[i].getContentType();
                 if (contentType.startsWith("image")) {
                     String timestamps = DateUtil.timeStamp();
-                    String newFileName = timestamps + "" + new Random().nextInt() + ".jpg";
-                    FileUtils.copyInputStreamToFile(afterImg[i].getInputStream(), new File("E:", newFileName));
-                    hidDangerDAO.addBeforeImg(hidDangerCode,newFileName);
-                    hidDangerDAO.addAfterImg(hidDangerCode,newFileName);
+                    String newFileName = timestamps + new Random().nextInt() + ".jpg";
+                    FileUtils.copyInputStreamToFile(afterImg[i].getInputStream(), new File(hiddenPath, newFileName));
+                    hidDangerDAO.addAfterImg(hidDangerCode,findHiddenPath+newFileName);
                 }
             }
         }
@@ -65,18 +72,17 @@ public class HidDangerServiceImpl implements HidDangerService {
         if (plan!=null){
             String filename = plan.getOriginalFilename();
             String timestamps = DateUtil.timeStamp();
-            String newFileName = timestamps + "" + new Random().nextInt() + filename;
+            String newFileName = timestamps + new Random().nextInt() + filename;
             System.out.println(newFileName);
-            FileUtils.copyInputStreamToFile(plan.getInputStream(), new File("E:", newFileName));
-            hidDangerDTO.setRectificationPlan(newFileName);
+            FileUtils.copyInputStreamToFile(plan.getInputStream(), new File(hiddenPath, newFileName));
+            hidDangerDTO.setRectificationPlan(findHiddenPath+newFileName);
         }
         if (report != null){
             String filename = report.getOriginalFilename();
             String timestamps = DateUtil.timeStamp();
-            String newFileName = timestamps + "" + new Random().nextInt() + filename;
-            System.out.println(newFileName);
-            FileUtils.copyInputStreamToFile(report.getInputStream(), new File("E:", newFileName));
-            hidDangerDTO.setAcceptanceReport(newFileName);
+            String newFileName = timestamps +  new Random().nextInt() + filename;
+            FileUtils.copyInputStreamToFile(report.getInputStream(), new File(hiddenPath, newFileName));
+            hidDangerDTO.setAcceptanceReport(findHiddenPath+newFileName);
         }
 
 //        进程表添加
@@ -84,33 +90,44 @@ public class HidDangerServiceImpl implements HidDangerService {
         HidDangerProcessDTO hidDangerProcessDTO = new HidDangerProcessDTO();
         SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
         if (sysRole.getWhetherSee() == 1) {//判断角色权限等级
-            hidDangerProcessDTO.setReportOrganizationId(sysOrganization.getParentId());
+            hidDangerProcessDTO.setOrganizationId(sysOrganization.getParentId());
             SysOrganization sysOrganization2 = hidDangerDAO.findAllByOrganizationId(sysOrganization.getParentId());
-            hidDangerProcessDTO.setReportOrganizationName(sysOrganization2.getOrganizationName());
+            hidDangerProcessDTO.setOrganizationName(sysOrganization2.getOrganizationName());
         }else {
-            hidDangerProcessDTO.setReportOrganizationId(sysOrganization.getId());
-            hidDangerProcessDTO.setReportOrganizationName(sysOrganization.getOrganizationName());
+            hidDangerProcessDTO.setOrganizationId(sysOrganization.getId());
+            hidDangerProcessDTO.setOrganizationName(sysOrganization.getOrganizationName());
         }
         String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
         hidDangerProcessDTO.setHidDangerCode(hidDangerCode);
-        hidDangerProcessDTO.setReportPersonId(sysCompanyPersonnel.getId());
-        hidDangerProcessDTO.setReportPersonName(sysCompanyPersonnel.getName());
+        hidDangerProcessDTO.setOperatorId(sysCompanyPersonnel.getId());
+        hidDangerProcessDTO.setOperatorName(sysCompanyPersonnel.getName());
         if (hidDangerDTO.getIfDeal() == 1){ //判断是否能处理
             hidDangerProcessDTO.setIfDeal(1);
-            hidDangerProcessDTO.setDealWay(1);
+            hidDangerProcessDTO.setDealWay("处理");
             hidDangerDTO.setCorrectorId(sysCompanyPersonnel.getId());
             hidDangerDTO.setCorrectorName(sysCompanyPersonnel.getName());
+            hidDangerDTO.setProcessingStatus("4");//已处理待审核
         }else {
             hidDangerProcessDTO.setIfDeal(0);
-            hidDangerProcessDTO.setDealWay(2);
+            hidDangerProcessDTO.setDealWay("上报");
+            hidDangerDTO.setProcessingStatus("1");//上报
         }
         hidDangerProcessDTO.setDealTime(hidDangerDTO.getCompletionTime());
         hidDangerProcessDTO.setIdt(idt);
         hidDangerDAO.addProcess(hidDangerProcessDTO);
-
         hidDangerDTO.setIdt(idt);
         hidDangerDTO.setHidDangerCode(hidDangerCode);
         hidDangerDAO.addHidDanger(hidDangerDTO);
+        //所属组织表
+        int level = sysOrganization.getLevel();
+        hidDangerDAO.addOrganization(hidDangerCode,sysOrganization.getId(),sysOrganization.getOrganizationName(),sysOrganization.getLevel());
+        Integer parentId = sysOrganization.getParentId();
+        while (level !=1){
+            SysOrganization sysOrganization2 = hidDangerDAO.findAllByOrganizationId(parentId);
+            hidDangerDAO.addOrganization(hidDangerCode,sysOrganization2.getId(),sysOrganization2.getOrganizationName(),sysOrganization2.getLevel());
+            parentId = sysOrganization2.getParentId();
+            level=level - 1;
+        }
         return "1000";
     }
 }

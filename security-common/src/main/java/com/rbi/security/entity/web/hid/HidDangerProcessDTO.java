@@ -5,23 +5,22 @@ import lombok.Data;
 @Data
 public class HidDangerProcessDTO {
     private Integer id;
+
     private String hidDangerCode;
+    private Integer operatorId;
+    private String operatorName;
+    private Integer operatorOrganizationId;
+    private String operatorOrganizationName;
     private Integer organizationId;
-    private Integer reportPersonId;
-    private Integer reportOrganizationId;
-    private Integer orderSendPersonId;
-    private Integer orderSendOrganizationId;
-    private String organizationPrincipalId;
+    private String organizationName;
     private Integer ifDeal;
-    private Integer dealWay;
-    private Integer auditorId;
+    private String dealWay;//处理方式 1隐患上报 2责令下发 3处理 4通报整改 5审核通过 6审核不通过
     private String dealTime;
-    private String reportPersonName;
-    private String reportOrganizationName;
-    private String orderSendPersonName;
-    private String orderSendOrganizationName;
+    private Integer correctorId;
+    private String correctorName;
+    private Integer organizationPrincipalId;
     private String organizationPrincipalName;
-    private String idt;//隐患处理状态：1、上报未整改 2、责令未整改 3、已通知待整改 4、已整改待审核 5、审核通过 6、审核不通过
+    private String idt;
     private String udt;
 
 }

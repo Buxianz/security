@@ -16,3 +16,7 @@ spring:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
+
+path:
+  hiddenPath: /usr/work/wx/hidden
+  findHiddenPath: http://rbi7301.gyrbi.com/hidden/

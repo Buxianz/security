@@ -8,12 +8,13 @@ public class HidDangerDTO {
     private Integer id;
 
     private String hidDangerCode;
+    private String hidDangerType;//
     private Integer organizationId;
     private String organizationName;
 
     private String troubleshootingTime;//
-    private String hiddenDangerContent;//
-    private Integer hiddenDangerGrade;//
+    private String hidDangerContent;//
+    private Integer hidDangerGrade;//
     private Integer ifControlMeasures;//
     private Integer ifRectificationPlan;//
     private Integer copyOrganizationId;
