@@ -94,8 +94,8 @@ public class SysRolePermissionController {
     @RequestMapping(value = "/insertSysRolePermission", method = RequestMethod.POST)
     public ResponseModel insertSysRolePermission(@RequestBody JSONObject request) {
         try {
-//            JSONArray result=request.getJSONArray("data");
-            sysRolePermissionService.insertSysRolePermission(request);
+            JSONArray result=request.getJSONArray("data");
+            sysRolePermissionService.insertSysRolePermission(request,result);
             return ResponseModel.build("1000", "添加成功");
         } catch (Exception e) {
             logger.error("添加异常，ERROR：{}", e);

@@ -20,7 +20,7 @@ public interface SysRolePermissionService {
     /**
      * 添加
      */
-    void insertSysRolePermission(JSONObject json);
+    void insertSysRolePermission(JSONObject json,JSONArray result);
 
     /**
      * 删除
