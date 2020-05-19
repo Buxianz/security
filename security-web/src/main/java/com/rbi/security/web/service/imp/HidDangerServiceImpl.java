@@ -1,11 +1,15 @@
 package com.rbi.security.web.service.imp;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.entity.SysOrganization;
 import com.rbi.security.entity.web.entity.SysRole;
 import com.rbi.security.entity.web.hid.HidDangerDTO;
 import com.rbi.security.entity.web.hid.HidDangerProcessDTO;
+import com.rbi.security.entity.web.hid.SystemSettingDTO;
 import com.rbi.security.tool.DateUtil;
 import com.rbi.security.web.DAO.hid.HidDangerDAO;
 import com.rbi.security.web.service.HidDangerService;
@@ -18,6 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @ConfigurationProperties(prefix="path")
@@ -71,8 +78,10 @@ public class HidDangerServiceImpl implements HidDangerService {
         //整改方案
         if (plan!=null){
             String filename = plan.getOriginalFilename();
+
+//            String fileType = filename.substring(filename.lastIndexOf(".")+1);
             String timestamps = DateUtil.timeStamp();
-            String newFileName = timestamps + new Random().nextInt() + filename;
+            String newFileName = timestamps + filename;
             System.out.println(newFileName);
             FileUtils.copyInputStreamToFile(plan.getInputStream(), new File(hiddenPath, newFileName));
             hidDangerDTO.setRectificationPlan(findHiddenPath+newFileName);
@@ -80,7 +89,7 @@ public class HidDangerServiceImpl implements HidDangerService {
         if (report != null){
             String filename = report.getOriginalFilename();
             String timestamps = DateUtil.timeStamp();
-            String newFileName = timestamps +  new Random().nextInt() + filename;
+            String newFileName = timestamps+ filename;
             FileUtils.copyInputStreamToFile(report.getInputStream(), new File(hiddenPath, newFileName));
             hidDangerDTO.setAcceptanceReport(findHiddenPath+newFileName);
         }
@@ -101,14 +110,14 @@ public class HidDangerServiceImpl implements HidDangerService {
         hidDangerProcessDTO.setHidDangerCode(hidDangerCode);
         hidDangerProcessDTO.setOperatorId(sysCompanyPersonnel.getId());
         hidDangerProcessDTO.setOperatorName(sysCompanyPersonnel.getName());
-        if (hidDangerDTO.getIfDeal() == 1){ //判断是否能处理
-            hidDangerProcessDTO.setIfDeal(1);
+        if (hidDangerDTO.getIfDeal().equals("是")){ //判断是否能处理
+            hidDangerProcessDTO.setIfDeal("是");
             hidDangerProcessDTO.setDealWay("处理");
             hidDangerDTO.setCorrectorId(sysCompanyPersonnel.getId());
             hidDangerDTO.setCorrectorName(sysCompanyPersonnel.getName());
             hidDangerDTO.setProcessingStatus("4");//已处理待审核
         }else {
-            hidDangerProcessDTO.setIfDeal(0);
+            hidDangerProcessDTO.setIfDeal("否");
             hidDangerProcessDTO.setDealWay("上报");
             hidDangerDTO.setProcessingStatus("1");//上报
         }
@@ -130,4 +139,18 @@ public class HidDangerServiceImpl implements HidDangerService {
         }
         return "1000";
     }
+
+    @Override
+    public Map<String, Object> findAdmChoose(JSONArray array) {
+            Map<String,Object> map = new HashMap<>();
+            for (int i=0;i<array.size();i++){
+                System.out.println(array.get(i).toString());
+                JSONObject json = JSON.parseObject(array.get(i).toString());
+                String settingType = json.getString("settingType");
+                List<SystemSettingDTO> systemSettingDTOS = hidDangerDAO.findChoose2(settingType);
+                map.put(settingType,systemSettingDTOS);
+            }
+            return map;
+    }
+
 }

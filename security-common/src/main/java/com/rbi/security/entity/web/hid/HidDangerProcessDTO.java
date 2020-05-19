@@ -13,7 +13,7 @@ public class HidDangerProcessDTO {
     private String operatorOrganizationName;
     private Integer organizationId;
     private String organizationName;
-    private Integer ifDeal;
+    private String ifDeal;
     private String dealWay;//处理方式 1隐患上报 2责令下发 3处理 4通报整改 5审核通过 6审核不通过
     private String dealTime;
     private Integer correctorId;

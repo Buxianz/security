@@ -15,12 +15,12 @@ public class HidDangerDTO {
     private String troubleshootingTime;//
     private String hidDangerContent;//
     private Integer hidDangerGrade;//
-    private Integer ifControlMeasures;//
-    private Integer ifRectificationPlan;//
+    private String ifControlMeasures;//
+    private String ifRectificationPlan;//
     private Integer copyOrganizationId;
     private String copyOrganizationName;
 
-    private Integer ifDeal;//
+    private String ifDeal;//
     private Double governanceFunds;//
     private String completionTime;//
     private String completionSituation;//
@@ -43,6 +43,9 @@ public class HidDangerDTO {
     private String auditorName;
     private String correctorName;
 
+    private Integer hidTypeThing;
+    private Integer hidTypePerson;
+    private Integer hidTypeManage;
     private String idt;
     private String udt;
 

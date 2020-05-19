@@ -1,6 +1,7 @@
 package com.rbi.security.web.controller;
 
 import com.alibaba.druid.sql.visitor.functions.If;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.hid.HidDangerDTO;
 import com.rbi.security.tool.ResponseModel;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
 @RestController
@@ -24,7 +26,7 @@ public class HidDangerCotroller {
                                 @RequestParam(value="plan",required=false) MultipartFile plan,
                                 @RequestParam(value="report",required=false) MultipartFile report){
         try {
-            int userId  = 1;
+            int userId  = 8;
             String result = hidDangerService.addReport(userId,hidDangerDTO,beforeImg,afterImg,plan,report);
             if(result.equals("1000")){
                 return ResponseModel.build("1000","隐患上报成功！");
@@ -37,4 +39,18 @@ public class HidDangerCotroller {
         }
 
     }
+
+    @PostMapping("/findAdmChoose")
+    public ResponseModel<Map<String,Object>> findAdmChoose(@RequestBody JSONObject json) {
+        try {
+            JSONArray array = json.getJSONArray("data");
+            Map<String,Object> map = hidDangerService.findAdmChoose(array);
+            return ResponseModel.build("1000", "查询成功",map);
+        } catch (Exception e) {
+            System.out.println("错误:" + e);
+            return ResponseModel.build("1001", "服务器处理异常");
+        }
+    }
+
+
 }

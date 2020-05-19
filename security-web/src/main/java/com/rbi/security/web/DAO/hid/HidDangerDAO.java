@@ -5,10 +5,13 @@ import com.rbi.security.entity.web.entity.SysOrganization;
 import com.rbi.security.entity.web.entity.SysRole;
 import com.rbi.security.entity.web.hid.HidDangerDTO;
 import com.rbi.security.entity.web.hid.HidDangerProcessDTO;
+import com.rbi.security.entity.web.hid.SystemSettingDTO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 @Mapper
 public interface HidDangerDAO {
@@ -35,14 +38,17 @@ public interface HidDangerDAO {
 
     //***********开始：
     @Insert("insert into hid_danger (hid_danger_code,hid_danger_type,organization_id,organization_name,troubleshooting_time,hid_danger_content,hid_danger_grade,if_control_measures,if_rectification_plan," +
-            "copy_organization_id,copy_organization_name,if_deal,governance_funds,completion_time,completion_situation,rectification_plan,acceptance_report,processing_status,idt)values" +
+            "copy_organization_id,copy_organization_name,if_deal,governance_funds,completion_time,completion_situation,rectification_plan,acceptance_report,processing_status,idt,hid_type_thing,hid_type_person,hid_type_manage)values" +
             "(#{hidDangerCode},#{hidDangerType},#{organizationId},#{organizationName},#{troubleshootingTime},#{hidDangerContent},#{hidDangerGrade},#{ifControlMeasures},#{ifRectificationPlan}," +
             "#{copyOrganizationId},#{copyOrganizationName},#{ifDeal},#{governanceFunds},#{completionTime},#{completionSituation},#{rectificationPlan},#{acceptanceReport},#{processingStatus}," +
-            "#{idt})")
+            "#{idt},#{hidTypeThing},#{hidTypePerson},#{hidTypeManage})")
     void addHidDanger(HidDangerDTO hidDangerDTO);
 
     @Insert("insert into hid_danger_organization (hid_danger_code,organization_id,organization_name,level) values" +
             "(#{hidDangerCode},#{organizationId},#{organizationName},#{level})")
     void addOrganization(@Param("hidDangerCode") String hidDangerCode,@Param("organizationId") Integer organizationId,
                          @Param("organizationName") String organizationName,@Param("level") Integer level);
+
+    @Select("select setting_code,setting_name from system_setting where setting_type = #{settingType} and organization_id = 'RBI'")
+    List<SystemSettingDTO> findChoose2(String settingType);
 }
