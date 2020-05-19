@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.entity.SysRolePermission;
 import com.rbi.security.tool.PageData;
 
+import java.util.List;
+
 public interface SysRolePermissionService {
 
     /**
@@ -16,6 +18,9 @@ public interface SysRolePermissionService {
      * 单个查询
      */
     SysRolePermission findSysRolePermissionById(Integer id);
+
+
+    PageData findSysPermissionByRoleCode(Integer RoleId,int pageNo, int pageSize);
 
     /**
      * 添加

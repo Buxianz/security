@@ -2,6 +2,7 @@ package com.rbi.security.web.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.rbi.security.entity.web.entity.SysPermission;
 import com.rbi.security.entity.web.entity.SysRolePermission;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
@@ -67,22 +68,24 @@ public class SysRolePermissionController {
 
 
 
-//    /**
-//     * 根据角色编号查询权限信息
-//     * @param json
-//     * @return
-//     */
-//    @RequestMapping(value = "/findSysPermissionByRoleCode",method = RequestMethod.POST)
-//    public ResponseModel<SysPermission> findSysPermissionByRoleId(@RequestBody JSONObject json) {
-//        try {
-//            Integer RoleId = json.getInteger("RoleId");
-//            SysPermission sysPermission = sysPermissionService.findSysPermissionByRoleCode(RoleId);
-//            return ResponseModel.build("1000", "查询成功", sysPermission);
-//        } catch (Exception e) {
-//            logger.error("单个查询异常，ERROR：{}", e);
-//            return ResponseModel.build("1001", "服务器处理异常");
-//        }
-//    }
+    /**
+     * 根据角色编号查询权限信息
+     * @param json
+     * @return
+     */
+    @RequestMapping(value = "/findSysPermissionByRoleCode",method = RequestMethod.POST)
+    public ResponseModel findSysPermissionByRoleId(@RequestBody JSONObject json) {
+        try {
+            int pageNo = json.getInteger("pageNo");
+            int pageSize = json.getByteValue("pageSize");
+            Integer RoleId = json.getInteger("roleId");
+            PageData pageData = sysRolePermissionService.findSysPermissionByRoleCode(RoleId,pageNo, pageSize);
+            return ResponseModel.build("1000", "查询成功", pageData);
+        } catch (Exception e) {
+            logger.error("单个查询异常，ERROR：{}", e);
+            return ResponseModel.build("1001", "服务器处理异常");
+        }
+    }
 
 
     /**
