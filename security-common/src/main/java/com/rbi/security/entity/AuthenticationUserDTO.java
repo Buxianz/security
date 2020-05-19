@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Data
 public class AuthenticationUserDTO implements Serializable {
     private static final long serialVersionUID = 1L;
-    private  String userName;//用户名
+    private  String username;//用户名
     private  String password;//用户密码
     private  Integer companyPersonnelId;
     private String salf;
