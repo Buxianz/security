@@ -29,8 +29,15 @@ public interface HidDangerDAO {
     SysOrganization findAllByOrganizationId(@Param("id") int organizationId);
 
     //***********开始：
+    @Insert("insert into hid_danger_process (hid_danger_code,report_person_id,report_person_name,report_organization_id,report_organization_name,if_deal,deal_way,deal_time,idt) values" +
+            "(#{hidDangerCode},#{reportPersonId},#{reportPersonName},#{reportOrganizationId},#{reportOrganizationName},#{ifDeal},#{dealWay},#{dealTime},#{idt})")
     void addProcess(HidDangerProcessDTO hidDangerProcessDTO);
 
     //***********开始：
+    @Insert("insert into hid_danger (hid_danger_code,organization_id,organization_name,troubleshooting_time,hidden_danger_content,hidden_danger_grade,if_control_measures,if_rectification_plan," +
+            "copy_organization_id,copy_organization_name,if_deal,governance_funds,completion_time,completion_situation,rectification_plan,acceptance_report,processing_status,idt)values" +
+            "(#{hidDangerCode},#{organizationId},#{organizationName},#{troubleshootingTime},#{hiddenDangerContent},#{hiddenDangerGrade},#{ifControlMeasures},#{ifRectificationPlan}," +
+            "#{copyOrganizationId},#{copyOrganizationName},#{ifDeal},#{governanceFunds},#{completionTime,#{completionSituation},#{rectificationPlan},#{acceptanceReport},#{processingStatus}," +
+            "#{idt})")
     void addHidDanger(HidDangerDTO hidDangerDTO);
 }
