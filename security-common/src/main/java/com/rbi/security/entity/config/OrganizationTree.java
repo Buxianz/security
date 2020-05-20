@@ -9,5 +9,6 @@ import java.util.List;
 @Data
 public class OrganizationTree extends AbTreeInfo<OrganizationTree> {
     private String organizationName;
+    private Integer level;
     private List<CompanyPersonnelBox> companyPersonnelBoxList;
 }

@@ -79,7 +79,7 @@ public class UserServiceImp implements UserService {
             throw new RuntimeException(e.getMessage());
         }
         catch (NonExistentException e) {
-            logger.error("添加用户信息重复，用户信息为{},异常为", sysUser.toString(),e.getMessage());
+            logger.error("添加用户信息失败，异常为{}", e.getMessage());
             throw new RuntimeException(e.getMessage());
         } catch (Exception e) {
             logger.error("添加用户信息失败，用户信息为{}，异常为{}", sysUser.toString(), e);

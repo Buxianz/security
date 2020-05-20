@@ -29,5 +29,8 @@ public class SysOrganization implements Serializable {
      * 组织级别
      */
     private Integer level;
-
+    /**
+     * 不在表中，父级组织级别
+     */
+    private Integer parentLevel;
 }
