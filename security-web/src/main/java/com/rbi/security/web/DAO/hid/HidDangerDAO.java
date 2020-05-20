@@ -38,10 +38,13 @@ public interface HidDangerDAO {
 
     //***********开始：
     @Insert("insert into hid_danger (hid_danger_code,hid_danger_type,organization_id,organization_name,troubleshooting_time,hid_danger_content,hid_danger_grade,if_control_measures,if_rectification_plan," +
-            "copy_organization_id,copy_organization_name,if_deal,governance_funds,completion_time,completion_situation,rectification_plan,acceptance_report,processing_status,idt,hid_type_thing,hid_type_person,hid_type_manage)values" +
+            "copy_organization_id,copy_organization_name,if_deal,governance_funds,completion_time,completion_situation,rectification_plan,acceptance_report,processing_status,idt," +
+            "hid_type_thing,hid_type_person,hid_type_manage,corrector_id,corrector_name," +
+            "rectification_opinions,specified_rectification_time,rectification_notice_annex,rectification_unit_id,rectification_unit_name)values" +
             "(#{hidDangerCode},#{hidDangerType},#{organizationId},#{organizationName},#{troubleshootingTime},#{hidDangerContent},#{hidDangerGrade},#{ifControlMeasures},#{ifRectificationPlan}," +
             "#{copyOrganizationId},#{copyOrganizationName},#{ifDeal},#{governanceFunds},#{completionTime},#{completionSituation},#{rectificationPlan},#{acceptanceReport},#{processingStatus}," +
-            "#{idt},#{hidTypeThing},#{hidTypePerson},#{hidTypeManage})")
+            "#{idt},#{hidTypeThing},#{hidTypePerson},#{hidTypeManage},#{correctorId},#{correctorName}," +
+            "#{rectificationOpinions},#{specifiedRectificationTime},#{rectificationNoticeAnnex},#{rectificationUnitId},#{rectificationUnitName})")
     void addHidDanger(HidDangerDTO hidDangerDTO);
 
     @Insert("insert into hid_danger_organization (hid_danger_code,organization_id,organization_name,level) values" +

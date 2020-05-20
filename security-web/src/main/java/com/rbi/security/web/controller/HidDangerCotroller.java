@@ -52,5 +52,23 @@ public class HidDangerCotroller {
         }
     }
 
+    @PostMapping("/addOrder")
+    public ResponseModel addOrder(HidDangerDTO hidDangerDTO,@RequestParam(value="beforeImg",required=false) MultipartFile[] beforeImg,
+                                  @RequestParam(value="notice",required=false) MultipartFile notice){
+        try {
+            int userId  = 14;
+            String result = hidDangerService.addOrder(userId,hidDangerDTO,beforeImg,notice);
+            if(result.equals("1000")){
+                return ResponseModel.build("1000","责令下发成功！");
+            }else {
+                return ResponseModel.build("1001",result);
+            }
+        }catch (Exception e){
+            System.out.println(e);
+            return ResponseModel.build("1001","处理异常");
+        }
+
+    }
+
 
 }

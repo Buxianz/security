@@ -12,4 +12,6 @@ public interface HidDangerService {
     String addReport(int userId, HidDangerDTO hidDangerDTO, MultipartFile[] beforeImg, MultipartFile[] afterImg, MultipartFile plan, MultipartFile report) throws IOException;
 
     Map<String, Object> findAdmChoose(JSONArray array);
+
+    String addOrder(int userId, HidDangerDTO hidDangerDTO, MultipartFile[] beforeImg, MultipartFile notice) throws IOException;
 }
