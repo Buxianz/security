@@ -34,22 +34,21 @@ public class SysRolePermissionServiceImp implements SysRolePermissionService {
     @Autowired(required = false)
     SysPermissionDAO sysPermissionDAO;
 
-
-
     @Override
     public PageData findSysRolePermissionByPage(int pageNo, int pageSize) {
         int recNo = pageSize * (pageNo - 1);
         int totalPage = 0;
         int count = 0;
-            List<SysRolePermission> sysRolePermissionList =sysRolePermissionDAO.findSysRolePermissionByPage(recNo, pageSize);
-            count = sysRolePermissionDAO.findNumSysRolePermission();
-            if (0 == count % pageSize) {
-                totalPage = count / pageSize;
-            } else {
-                totalPage = count / pageSize + 1;
-            }
-            return new PageData(pageNo, pageSize, totalPage, count, sysRolePermissionList);
+        List<SysRolePermission> sysRolePermissionList =sysRolePermissionDAO.findSysRolePermissionByPage(recNo, pageSize);
+        count = sysRolePermissionDAO.findNumSysRolePermission();
+        if (0 == count % pageSize) {
+            totalPage = count / pageSize;
+        } else {
+            totalPage = count / pageSize + 1;
+        }
+        return new PageData(pageNo, pageSize, totalPage, count, sysRolePermissionList);
     }
+
 
     @Override
     public SysRolePermission findSysRolePermissionById(Integer id) {
@@ -59,29 +58,21 @@ public class SysRolePermissionServiceImp implements SysRolePermissionService {
 
     @Override
     public PageData findSysPermissionByRoleCode(Integer RoleId, int pageNo, int pageSize) {
+        List<SysRolePermission> sysRolePermissionList=sysRolePermissionDAO.findSysRolePermissionList();
+        PageData pageData=processingPagingDataByRoleCode(sysRolePermissionList,RoleId,pageSize,pageNo);
+        return pageData;
+    }
+    //处理数据，通过代码进行分页操作
+    private PageData processingPagingDataByRoleCode(List<SysRolePermission> sysRolePermissionList,Integer RoleId,int pageSize ,int pageNo){
         int recNo = pageSize * (pageNo - 1);
         int totalPage = 0;
         int count = 0;
-        List<SysRolePermission> sysRolePermissionList=sysRolePermissionDAO.findSysRolePermissionList();
-        List<SysPermission> newsysPermissionList=processingPagingData(sysRolePermissionList,RoleId,pageSize,recNo);
-        count =newsysPermissionList.size();
-        if (0 == count % pageSize) {
-            totalPage = count / pageSize;
-        } else {
-            totalPage = count / pageSize + 1;
-        }
-        return new PageData(pageNo, pageSize, totalPage, count, newsysPermissionList);
-    }
-    //处理数据，通过代码进行分页操作
-    private List<SysPermission> processingPagingData(List<SysRolePermission> sysRolePermissionList,Integer RoleId,int pageSize ,int startIndex){
-        List<SysRolePermission> sysRolePermissionList1 =null;
+        List<SysRolePermission> sysRolePermissionList1 =new ArrayList<>();
         int endIndex=0;
-        int j=0;
         for(int i=0;i<sysRolePermissionList.size();i++){
             if(sysRolePermissionList.get(i).getRoleId()==RoleId){
                 SysRolePermission sysRolePermission=sysRolePermissionList.get(i);
-                sysRolePermissionList1.add(j,sysRolePermission);
-                j++;
+                sysRolePermissionList1.add(sysRolePermission);
             }
         }
         List<SysPermission> sysPermissionList=sysPermissionDAO.findSysPermissionAll();
@@ -93,18 +84,26 @@ public class SysRolePermissionServiceImp implements SysRolePermissionService {
                 break;
             }
         }
+        count =newsysPermissionList.size();
+        if (0 == count % pageSize) {
+            totalPage = count / pageSize;
+        } else {
+            totalPage = count / pageSize + 1;
+        }
+
 
         List<SysPermission> newsysPermissionList1=new ArrayList<>();
-        if(newsysPermissionList.size()-startIndex>=pageSize){
-            endIndex=startIndex+pageSize;
+        if(newsysPermissionList.size()-recNo>=pageSize){
+            endIndex=recNo+pageSize;
         }else{
-            endIndex=newsysPermissionList.size()-startIndex;
+            endIndex=newsysPermissionList.size();
         }
         //将符合规格的添加到
-        for(int i=startIndex;i<endIndex;i++){
+        for(int i=recNo;i<endIndex;i++){
             newsysPermissionList1.add(newsysPermissionList.get(i));
         }
-        return newsysPermissionList1;
+
+        return new PageData(pageNo, pageSize, totalPage, count, newsysPermissionList1);
     }
 
     @Override
