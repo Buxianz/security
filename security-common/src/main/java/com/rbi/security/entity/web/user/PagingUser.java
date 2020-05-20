@@ -13,6 +13,7 @@ public class PagingUser {
     private int id;//用户id
     private String username;//用户账号
     private int companyPersonnelId;//公司人员id
+    private Integer enabled;
     /**
      * 组织id
      */
@@ -31,4 +32,6 @@ public class PagingUser {
      * 角色信息
      */
     private List<SysUserRole> sysUserRoleList;
+
+    private String roleName;
 }

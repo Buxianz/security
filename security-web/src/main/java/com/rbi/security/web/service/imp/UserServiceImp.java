@@ -5,10 +5,12 @@ import com.rbi.security.entity.web.entity.SysOrganization;
 import com.rbi.security.entity.web.entity.SysUser;
 import com.rbi.security.entity.web.entity.SysUserRole;
 import com.rbi.security.entity.web.user.PagingUser;
+import com.rbi.security.exception.NonExistentException;
 import com.rbi.security.exception.RepeatException;
 import com.rbi.security.tool.LocalDateUtils;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.Tools;
+import com.rbi.security.web.DAO.CompanyPersonnelDAO;
 import com.rbi.security.web.DAO.OrganizationDAO;
 import com.rbi.security.web.DAO.SysUSerDAO;
 import com.rbi.security.web.DAO.SysUserRoleDAO;
@@ -40,12 +42,21 @@ public class UserServiceImp implements UserService {
     SysUserRoleDAO sysUserRoleDAO;
     @Autowired
     OrganizationDAO organizationDAO;
+    @Autowired
+    CompanyPersonnelDAO companyPersonnelDAO;
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void insertUser(SysUser sysUser) throws RuntimeException {
         try {
+           Integer companyPersonnelId= companyPersonnelDAO.getPersonnelByIdCardNo(sysUser.getIdCardNo());
+           if(companyPersonnelId==null){
+            throw new NonExistentException("身份证不存在");
+           }
             Subject subject = SecurityUtils.getSubject();
             String idt = LocalDateUtils.localDateTimeFormat(LocalDateTime.now(), LocalDateUtils.FORMAT_PATTERN);
             String salt = Tools.uuid();
+            sysUser.setUsername(sysUser.getIdCardNo().substring(sysUser.getIdCardNo().length()-8));
+            sysUser.setPassword(sysUser.getIdCardNo().substring(sysUser.getIdCardNo().length()-8));
+            sysUser.setCompanyPersonnelId(companyPersonnelId);
             Md5Hash md5Hash=new Md5Hash(sysUser.getPassword(),salt,2);
             sysUser.setPassword(md5Hash.toString());
             sysUser.setSalf(salt);
@@ -65,6 +76,10 @@ public class UserServiceImp implements UserService {
             } else throw new RepeatException("添加用户信息重复");
         } catch (RepeatException e) {
             logger.error("添加用户信息重复，用户信息为{}", sysUser.toString());
+            throw new RuntimeException(e.getMessage());
+        }
+        catch (NonExistentException e) {
+            logger.error("添加用户信息重复，用户信息为{},异常为", sysUser.toString(),e.getMessage());
             throw new RuntimeException(e.getMessage());
         } catch (Exception e) {
             logger.error("添加用户信息失败，用户信息为{}，异常为{}", sysUser.toString(), e);
@@ -187,8 +202,10 @@ public class UserServiceImp implements UserService {
                 for(int j=0;j<sysUserRoleList.size();j++){
                     if(sysUserRoleList.get(j).getUserId()==pagingUserList.get(i).getId()){
                         if(pagingUserList.get(i).getSysUserRoleList()==null){
+
                             pagingUserList.get(i).setSysUserRoleList(new LinkedList<SysUserRole>());
                         }
+                        pagingUserList.get(i).setRoleName(sysUserRoleList.get(j).getRoleName());
                         pagingUserList.get(i).getSysUserRoleList().add(sysUserRoleList.get(j));
                     }
                 }

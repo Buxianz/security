@@ -35,7 +35,11 @@ public class SysUser implements Serializable {
     */
     private Integer companyPersonnelId;
     /**
-     * 角色信息
+     * 身份证号码，不在表中
+     */
+    private String idCardNo;
+    /**
+     * 角色信息，不在表中
      */
     private List<SysUserRole> sysUserRoleList;
     /**

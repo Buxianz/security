@@ -25,6 +25,8 @@ public class SysUserRole implements Serializable {
     * 用户id
     */
     private Integer userId;
+
+    private String roleName;
     /**
      * 操作人员（公司人员信息id）
      */
