@@ -49,5 +49,4 @@ public class HidDangerDTO {
     private String idt;
     private String udt;
 
-
 }
