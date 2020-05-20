@@ -2,6 +2,7 @@ package com.rbi.security.web.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.config.OrganizationTree;
+import com.rbi.security.entity.config.SystemMenuPermisson;
 import com.rbi.security.entity.web.entity.SysRole;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.ConfigService;
@@ -41,12 +42,20 @@ public class ConfigController {
     }
 
     /**
-     * 获取公司人员树状结构
+     * 获取公司人员树状结构getSystemMenuPermissonTree
      */
     @RequestMapping("/getCompanyPersonnelTree")
     public ResponseModel<List<OrganizationTree>> getCompanyPersonnelTree(){
         try{
             return ResponseModel.build("1000", "查询成功",configService.getCompanyPersonnelTree());
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
+    @RequestMapping("/getSystemMenuPermissonTree")
+    public ResponseModel<List<SystemMenuPermisson>> 获取公司人员树状结构getSystemMenuPermissonTree(){
+        try{
+            return ResponseModel.build("1000", "查询成功",configService.getSystemMenuPermissonTree());
         }catch (Exception e){
             return ResponseModel.build("1001", e.getMessage());
         }

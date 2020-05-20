@@ -71,7 +71,7 @@ public interface OrganizationDAO {
     /**
      * 添加组织信息
      */
-    @Insert("insert into sys_organization (organization_name,parent_id,level) values (#{organizationName},#{parentId},#{level})")
+    @Insert("insert into sys_organization (organization_name,parent_id,level,operating_staff) values (#{organizationName},#{parentId},#{level},#{operatingStaff})")
     int insertOrganization(SysOrganization sysOrganization);
 
     /**
@@ -80,9 +80,15 @@ public interface OrganizationDAO {
     @Select("select * from sys_organization where id=#{id}")
     SysOrganization getOrganizationById(@Param("id") int id);
     /**
+     * 更新重复判断
+     */
+    @Select("SELECT * FROM sys_organization WHERE organization_name = #{organizationName} AND parent_id = #{parentId} and id!=#{id}")
+    SysOrganization updateDuplicateJudgement(@Param("organizationName") String organizationName,
+                                                                       @Param("parentId") long organizationId,@Param("id") int id);
+    /**
      * 更新组织信息
      */
-    @Update("update sys_organization set organization_name={organizationName},parent_id=#{parentId},level=#{level} where id=#{id}")
+    @Update("update sys_organization set organization_name=#{organizationName},parent_id=#{parentId},level=#{level} where id=#{id}")
     int updateOrganization(SysOrganization sysOrganization);
 
     /**

@@ -32,6 +32,12 @@ public class PagingUser {
      * 角色信息
      */
     private List<SysUserRole> sysUserRoleList;
-
+    /**
+     * 角色名称
+     */
     private String roleName;
+    /**
+     * 操作人名称
+     */
+    private String operatingStaffName;
 }

@@ -33,4 +33,8 @@ public class SysOrganization implements Serializable {
      * 不在表中，父级组织级别
      */
     private Integer parentLevel;
+    /**
+     * 操作人
+     */
+    private Integer operatingStaff;
 }

@@ -1,5 +1,6 @@
 package com.rbi.security.web.DAO;
 
+import com.rbi.security.entity.config.PermissionTreeInfo;
 import com.rbi.security.entity.web.entity.SysPermission;
 import org.apache.ibatis.annotations.*;
 
@@ -39,5 +40,10 @@ public interface SysPermissionDAO{
     @Delete("delete from sys_permission where id=#{id}")
     void  deleteSysPermissionById(@Param("id") Integer id);
 
-
+    /****************吴松达******************/
+    /**
+     * 获取平台的全部权限
+     */
+    @Select("select * from sys_permission")
+    List<PermissionTreeInfo> getAllSsytemPermission();
 }

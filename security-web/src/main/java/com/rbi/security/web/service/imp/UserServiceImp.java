@@ -202,7 +202,6 @@ public class UserServiceImp implements UserService {
                 for(int j=0;j<sysUserRoleList.size();j++){
                     if(sysUserRoleList.get(j).getUserId()==pagingUserList.get(i).getId()){
                         if(pagingUserList.get(i).getSysUserRoleList()==null){
-
                             pagingUserList.get(i).setSysUserRoleList(new LinkedList<SysUserRole>());
                         }
                         pagingUserList.get(i).setRoleName(sysUserRoleList.get(j).getRoleName());

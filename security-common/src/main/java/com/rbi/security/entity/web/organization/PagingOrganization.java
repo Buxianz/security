@@ -32,4 +32,8 @@ public class PagingOrganization {
      * 不在表中，父级组织名称
      */
     private String parentName;
+    /**
+     * 操作人名称
+     */
+    private String operatingStaffName;
 }

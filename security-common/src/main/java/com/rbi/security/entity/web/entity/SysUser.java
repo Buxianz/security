@@ -43,7 +43,7 @@ public class SysUser implements Serializable {
      */
     private List<SysUserRole> sysUserRoleList;
     /**
-     * 操作人员（公司人员信息id）
+     * 操作人员id
      */
     private Integer operatingStaff;
     /**

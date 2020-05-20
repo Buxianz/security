@@ -1,5 +1,6 @@
 package com.rbi.security.web.service.imp;
 
+import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.entity.web.entity.SysOrganization;
 import com.rbi.security.entity.web.organization.PagingOrganization;
 import com.rbi.security.entity.web.user.PagingUser;
@@ -8,30 +9,36 @@ import com.rbi.security.exception.RepeatException;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.web.DAO.OrganizationDAO;
 import com.rbi.security.web.service.OrganizationService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
+@Service
 public class OrganizationServiceImp implements OrganizationService {
     private static final Logger logger = LoggerFactory.getLogger(OrganizationServiceImp.class);
     @Autowired
     OrganizationDAO organizationDAO;
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void insertOrganization(SysOrganization sysOrganization) throws RuntimeException {
        try{
                if (sysOrganization.getParentId() == 0) {
-                   sysOrganization.setLevel(0);
+                   sysOrganization.setLevel(1);
                } else {
                    if(organizationDAO.getOrganizationById(sysOrganization.getParentId())==null)
                        throw new NonExistentException("父级组织不存在");
-                   if(organizationDAO.queryOrganizationInfoByOrganizationNameAndParentId(sysOrganization.getOrganizationName(),sysOrganization.getParentId())==null) {
-                       sysOrganization.setLevel(sysOrganization.getParentLevel()+1);
-                   }else {
-                       throw new RepeatException("添加组织信息重复");
-                   }
+                   sysOrganization.setLevel(sysOrganization.getParentLevel()+1);
                }
+           if(organizationDAO.queryOrganizationInfoByOrganizationNameAndParentId(sysOrganization.getOrganizationName(),sysOrganization.getParentId())==null)
+               throw new RepeatException("添加组织信息重复");
+           Subject subject = SecurityUtils.getSubject();
+           sysOrganization.setOperatingStaff(((AuthenticationUserDTO)subject.getPrincipal()).getCompanyPersonnelId());
            organizationDAO.insertOrganization(sysOrganization);
        }catch (RepeatException e) {
            logger.error("添加组织信息重复，组织信息为{}", sysOrganization.toString());
@@ -47,19 +54,18 @@ public class OrganizationServiceImp implements OrganizationService {
     }
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void updateOrganization(SysOrganization sysOrganization) throws RuntimeException {
         try{
             if (sysOrganization.getParentId() == 0) {
-                sysOrganization.setLevel(0);
+                sysOrganization.setLevel(1);
             } else {
                 if(organizationDAO.getOrganizationById(sysOrganization.getParentId())==null)
                     throw new NonExistentException("父级组织不存在");
-                if(organizationDAO.queryOrganizationInfoByOrganizationNameAndParentId(sysOrganization.getOrganizationName(),sysOrganization.getParentId())==null) {
-                    sysOrganization.setLevel(sysOrganization.getParentLevel()+1);
-                }else {
-                    throw new RepeatException("更新组织信息重复");
-                }
+                sysOrganization.setLevel(sysOrganization.getParentLevel()+1);
             }
+            if(organizationDAO.updateDuplicateJudgement(sysOrganization.getOrganizationName(),sysOrganization.getParentId(),sysOrganization.getId())!=null)
+                 throw new RepeatException("更新组织信息重复");
             organizationDAO.updateOrganization(sysOrganization);
         }catch (RepeatException e) {
             logger.error("更新组织信息重复，组织信息为{}", sysOrganization.toString());
@@ -75,6 +81,7 @@ public class OrganizationServiceImp implements OrganizationService {
     }
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void deleteOrganization(int id) throws RuntimeException {
         try{
             //删除组织下用户账号的角色关联
@@ -88,6 +95,7 @@ public class OrganizationServiceImp implements OrganizationService {
     }
 
     @Override
+    @Transactional(propagation=Propagation.NOT_SUPPORTED)
     public PageData<PagingOrganization> pagingOrganization(int pageNo,int pageSize ,int startIndex) throws RuntimeException {
         List<PagingOrganization> pagingOrganizations=null;
         try{
