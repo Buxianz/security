@@ -16,8 +16,8 @@ import java.util.List;
 @Mapper
 public interface HidDangerDAO {
 
-    @Select("select * from sys_company_personnel where sys_company_personnel.id = (select company_personnel_id from sys_user where sys_user.id = #{userId})")
-    SysCompanyPersonnel findPersonnelByUserId(@Param("userId") Integer userId);
+    @Select("select * from sys_company_personnel where sys_company_personnel.id = #{id}")
+    SysCompanyPersonnel findPersonnelById(@Param("id") Integer id);
 
     @Select("select * from sys_role where sys_role.id = (select role_id from sys_user_role where sys_user_role.user_id = #{userId})")
     SysRole findRoleByUserId(Integer userId);
@@ -32,8 +32,9 @@ public interface HidDangerDAO {
     SysOrganization findAllByOrganizationId(@Param("id") int organizationId);
 
     //***********开始：
-    @Insert("insert into hid_danger_process (hid_danger_code,operator_id,operator_name,organization_id,organization_name,if_deal,deal_way,deal_time,idt) values" +
-            "(#{hidDangerCode},#{operatorId},#{operatorName},#{organizationId},#{organizationName},#{ifDeal},#{dealWay},#{dealTime},#{idt})")
+    @Insert("insert into hid_danger_process (hid_danger_code,operator_id,operator_name,organization_id,organization_name,if_deal,deal_way,deal_time,idt,corrector_id,corrector_name)" +
+            " values" +
+            "(#{hidDangerCode},#{operatorId},#{operatorName},#{organizationId},#{organizationName},#{ifDeal},#{dealWay},#{dealTime},#{idt},#{correctorId},#{correctorName})")
     void addProcess(HidDangerProcessDTO hidDangerProcessDTO);
 
     //***********开始：
@@ -53,5 +54,11 @@ public interface HidDangerDAO {
                          @Param("organizationName") String organizationName,@Param("level") Integer level);
 
     @Select("select setting_code,setting_name from system_setting where setting_type = #{settingType} and organization_id = 'RBI'")
-    List<SystemSettingDTO> findChoose2(String settingType);
+    List<SystemSettingDTO> findChoose(String settingType);
+
+    @Select("select sys_company_personnel.id,sys_company_personnel.name " +
+            "from sys_company_personnel,sys_user,sys_user_role,sys_role where " +
+            "sys_company_personnel.id = sys_user.company_personnel_id and sys_user.id = sys_user_role.user_id and " +
+            "sys_user_role.role_id  =  sys_role.id and sys_role.level = 1 and organization_id = #{organizationId}")
+    SysCompanyPersonnel findFirstUserByOrganizationId(Integer organizationId);
 }

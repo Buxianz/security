@@ -4,6 +4,7 @@ import com.alibaba.druid.sql.visitor.functions.If;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.hid.HidDangerDTO;
+import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.HidDangerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class HidDangerCotroller {
                                 @RequestParam(value="report",required=false) MultipartFile report){
         try {
             int userId  = 8;
-            String result = hidDangerService.addReport(userId,hidDangerDTO,beforeImg,afterImg,plan,report);
+            String result = hidDangerService.addReport(hidDangerDTO,beforeImg,afterImg,plan,report);
             if(result.equals("1000")){
                 return ResponseModel.build("1000","隐患上报成功！");
             }else {
@@ -57,7 +58,7 @@ public class HidDangerCotroller {
                                   @RequestParam(value="notice",required=false) MultipartFile notice){
         try {
             int userId  = 14;
-            String result = hidDangerService.addOrder(userId,hidDangerDTO,beforeImg,notice);
+            String result = hidDangerService.addOrder(hidDangerDTO,beforeImg,notice);
             if(result.equals("1000")){
                 return ResponseModel.build("1000","责令下发成功！");
             }else {
@@ -67,8 +68,23 @@ public class HidDangerCotroller {
             System.out.println(e);
             return ResponseModel.build("1001","处理异常");
         }
-
     }
+
+    @PostMapping("/addOrder")
+    public ResponseModel<PageData> findByPage(@RequestBody JSONObject json){
+        try {
+            int pageNo = json.getInteger("pageNo");
+            int pageSize = json.getInteger("pageSize");
+            PageData pageData = hidDangerService.findDealByPage(pageNo,pageSize);
+            return ResponseModel.build("1000","分页查询成功！",pageData);
+        }catch (Exception e){
+            System.out.println(e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+
+
 
 
 }

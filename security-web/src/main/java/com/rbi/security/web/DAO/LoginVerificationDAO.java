@@ -13,6 +13,6 @@ public interface LoginVerificationDAO {
      * @param
      * @return
      */
-    @Select("SELECT username,`password`,company_personnel_id,enabled,salf FROM sys_user WHERE username=#{username}")
+    @Select("SELECT id,username,`password`,company_personnel_id,enabled,salf FROM sys_user WHERE username=#{username}")
     AuthenticationUserDTO getUserByUserName(@Param("username") String username);
 }
