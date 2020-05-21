@@ -2,7 +2,7 @@ package com.rbi.security.web.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rbi.security.entity.web.hid.HidDangerDO;
+import com.rbi.security.entity.web.hid.HidDangerDTO;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.HidDangerService;
@@ -20,7 +20,7 @@ public class HidDangerCotroller {
 
 
     @PostMapping("/addReport")
-    public ResponseModel report(HidDangerDO hidDangerDO, @RequestParam(value="beforeImg",required=false) MultipartFile[] beforeImg,
+    public ResponseModel report(HidDangerDTO hidDangerDO, @RequestParam(value="beforeImg",required=false) MultipartFile[] beforeImg,
                                 @RequestParam(value="afterImg",required=false) MultipartFile[] afterImg,
                                 @RequestParam(value="plan",required=false) MultipartFile plan,
                                 @RequestParam(value="report",required=false) MultipartFile report){
@@ -52,7 +52,7 @@ public class HidDangerCotroller {
     }
 
     @PostMapping("/addOrder")
-    public ResponseModel addOrder(HidDangerDO hidDangerDO, @RequestParam(value="beforeImg",required=false) MultipartFile[] beforeImg,
+    public ResponseModel addOrder(HidDangerDTO hidDangerDO, @RequestParam(value="beforeImg",required=false) MultipartFile[] beforeImg,
                                   @RequestParam(value="notice",required=false) MultipartFile notice){
         try {
             int userId  = 14;
