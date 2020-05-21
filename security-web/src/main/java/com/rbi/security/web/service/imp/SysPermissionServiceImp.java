@@ -3,12 +3,12 @@ package com.rbi.security.web.service.imp;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.entity.SysPermission;
+import com.rbi.security.entity.web.entity.SysSystem;
 import com.rbi.security.entity.web.permission.PagingPermission;
-import com.rbi.security.entity.web.permission.SysPermissionDTO;
-import com.rbi.security.tool.EncapsulationTreeUtil;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.TimeStampTool;
 import com.rbi.security.web.DAO.SysPermissionDAO;
+import com.rbi.security.web.DAO.SystemDAO;
 import com.rbi.security.web.service.SysPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,19 +21,8 @@ public class SysPermissionServiceImp implements SysPermissionService {
 
     @Autowired(required = false)
     SysPermissionDAO sysPermissionDAO;
-
-    @Override
-    public List<SysPermissionDTO> findSysPermissionAll() {
-        try {
-            List<SysPermission> sysPermissionList = sysPermissionDAO.findSysPermissionAll();
-            List<SysPermissionDTO> sysPermissionDTOList= JSONObject.parseArray(JSONArray.toJSON(sysPermissionList).toString(),SysPermissionDTO.class);
-            return EncapsulationTreeUtil.getTree(sysPermissionDTOList,"id","parentId","sysPermissionDTO");
-//            return sysPermissionDTOList;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+    @Autowired
+    SystemDAO systemDAO;
 
     @Override
     public PageData findSysPermissionByPage(int pageNo, int pageSize) {
@@ -41,19 +30,43 @@ public class SysPermissionServiceImp implements SysPermissionService {
         int totalPage = 0;
         int count =0;
         List<SysPermission> sysPermissionList =sysPermissionDAO.findSysPermissionByPage(recNo, pageSize);
+        List<PagingPermission> pagingPermissionList =new ArrayList<>();
+        for (SysPermission sysPermission:sysPermissionList){
+            PagingPermission pagingPermission=new PagingPermission();
+            pagingPermission.setDescription(sysPermission.getDescription());
+            pagingPermission.setEnabled(sysPermission.getEnabled());
+            pagingPermission.setId(sysPermission.getId());
+            pagingPermission.setIdt(sysPermission.getIdt());
+            pagingPermission.setOperateCode(sysPermission.getOperateCode());
+            pagingPermission.setParentId(sysPermission.getParentId());
+            pagingPermission.setPermissionName(sysPermission.getPermissionName());
+            pagingPermission.setUdt(sysPermission.getUdt());
+            pagingPermission.setSystemName(systemDAO.findSystemById(sysPermission.getSystemId()).getSystemName());
+            pagingPermissionList.add(pagingPermission);
+        }
         count =sysPermissionDAO.findNumSysPermission();
         if (0 == count % pageSize) {
             totalPage = count / pageSize;
         } else {
             totalPage = count / pageSize + 1;
         }
-        return new PageData(pageNo, pageSize, totalPage, count, sysPermissionList);
+        return new PageData(pageNo, pageSize, totalPage, count, pagingPermissionList);
     }
 
     @Override
-    public SysPermission findSysPermissionById(Integer id) {
+    public PagingPermission findSysPermissionById(Integer id) {
         SysPermission sysPermission=sysPermissionDAO.findSysPermissionById(id);
-        return sysPermission;
+        PagingPermission pagingPermission=new PagingPermission();
+        pagingPermission.setDescription(sysPermission.getDescription());
+        pagingPermission.setEnabled(sysPermission.getEnabled());
+        pagingPermission.setId(sysPermission.getId());
+        pagingPermission.setIdt(sysPermission.getIdt());
+        pagingPermission.setOperateCode(sysPermission.getOperateCode());
+        pagingPermission.setParentId(sysPermission.getParentId());
+        pagingPermission.setPermissionName(sysPermission.getPermissionName());
+        pagingPermission.setUdt(sysPermission.getUdt());
+        pagingPermission.setSystemName(systemDAO.findSystemById(sysPermission.getSystemId()).getSystemName());
+        return pagingPermission;
     }
 
     @Override

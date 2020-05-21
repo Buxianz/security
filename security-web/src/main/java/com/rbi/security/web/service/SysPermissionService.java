@@ -3,6 +3,7 @@ package com.rbi.security.web.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.entity.SysPermission;
+import com.rbi.security.entity.web.permission.PagingPermission;
 import com.rbi.security.entity.web.permission.SysPermissionDTO;
 import com.rbi.security.tool.PageData;
 
@@ -10,7 +11,6 @@ import java.util.List;
 
 public interface SysPermissionService {
 
-    List<SysPermissionDTO> findSysPermissionAll();
     /**
      * 分页查询
      **/
@@ -19,7 +19,7 @@ public interface SysPermissionService {
     /**
      * 单个查询
      */
-    SysPermission findSysPermissionById(Integer id);
+    PagingPermission findSysPermissionById(Integer id);
 
     /**
      * 添加

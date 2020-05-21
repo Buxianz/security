@@ -3,6 +3,7 @@ package com.rbi.security.web.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.entity.SysPermission;
+import com.rbi.security.entity.web.permission.PagingPermission;
 import com.rbi.security.entity.web.permission.SysPermissionDTO;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
@@ -21,25 +22,6 @@ public class SysPermissionController {
 
         @Autowired(required = false)
         SysPermissionService sysPermissionService;
-
-    /**
-     * 查询所有权限信息(树型）
-     * @return
-     */
-    @PostMapping("/findSysPermissionAll")
-    public ResponseModel<List<SysPermissionDTO>> findSysPermissionAll(){
-        try {
-            List<SysPermissionDTO> sysPermissionDTOList=sysPermissionService.findSysPermissionAll();
-            if (sysPermissionDTOList!=null) {
-                return ResponseModel.build("1000", "查询成功",sysPermissionDTOList);
-            }else {
-                return ResponseModel.build("1001","查询失败");
-            }
-        } catch (Exception e) {
-            logger.error("【权限配置类】查询权限信息异常，ERROR：{}",e);
-            return ResponseModel.build("1001","服务器处理失败");
-        }
-    }
 
 
         /**
@@ -71,10 +53,10 @@ public class SysPermissionController {
          * @return
          */
         @RequestMapping(value = "/findSysPermissionById", method = RequestMethod.POST)
-        public ResponseModel<SysPermission> findSysPermissionById(@RequestBody JSONObject json) {
+        public ResponseModel<PagingPermission> findSysPermissionById(@RequestBody JSONObject json) {
             try {
                 Integer Id = json.getInteger("id");
-                SysPermission sysPermission = sysPermissionService.findSysPermissionById(Id);
+                PagingPermission sysPermission = sysPermissionService.findSysPermissionById(Id);
                 return ResponseModel.build("1000", "查询成功", sysPermission);
             } catch (Exception e) {
                 logger.error("单个查询异常，ERROR：{}", e);

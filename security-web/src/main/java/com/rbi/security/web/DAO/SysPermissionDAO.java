@@ -15,9 +15,6 @@ public interface SysPermissionDAO{
     @Select("SELECT * FROM sys_permission WHERE id = #{id}")
     SysPermission findSysPermissionById(@Param("id") Integer id);
 
-    @Select("SELECT * FROM sys_permission WHERE permission_name = #{permissionName}")
-    SysPermission findSysPermissionByPermissionName(@Param("permissionName") String permissionName);
-
     @Select("select * from sys_permission ORDER BY idt DESC limit #{pageNo},#{pageSize}")
     List<SysPermission> findSysPermissionByPage(@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
     @Select("select count(id) from sys_permission")
