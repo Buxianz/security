@@ -4,6 +4,7 @@ package com.rbi.security.web.service.imp;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.entity.SysOrganization;
 import com.rbi.security.entity.web.entity.SysRole;
@@ -11,10 +12,13 @@ import com.rbi.security.entity.web.hid.HidDangerDTO;
 import com.rbi.security.entity.web.hid.HidDangerProcessDTO;
 import com.rbi.security.entity.web.hid.SystemSettingDTO;
 import com.rbi.security.tool.DateUtil;
+import com.rbi.security.tool.PageData;
 import com.rbi.security.web.DAO.hid.HidDangerDAO;
 import com.rbi.security.web.service.HidDangerService;
 import lombok.Data;
 import org.apache.commons.io.FileUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
@@ -39,8 +43,13 @@ public class HidDangerServiceImpl implements HidDangerService {
     HidDangerDAO hidDangerDAO;
 
     @Override
-    public String addReport(int userId, HidDangerDTO hidDangerDTO, MultipartFile[] beforeImg, MultipartFile[] afterImg, MultipartFile plan, MultipartFile report) throws IOException {
-        SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelByUserId(userId);
+    public String addReport(HidDangerDTO hidDangerDTO, MultipartFile[] beforeImg, MultipartFile[] afterImg, MultipartFile plan, MultipartFile report) throws IOException {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        int personnelId  =  currentUser.getCompanyPersonnelId();
+        int userId = currentUser.getId();
+
+        SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
         String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
         String hidDangerCode = DateUtil.timeStamp();
 
@@ -103,12 +112,22 @@ public class HidDangerServiceImpl implements HidDangerService {
         HidDangerProcessDTO hidDangerProcessDTO = new HidDangerProcessDTO();
         SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
         if (sysRole.getWhetherSee() == 1) {//判断角色权限等级
+            //上报组织
             hidDangerProcessDTO.setOrganizationId(sysOrganization.getParentId());
             SysOrganization sysOrganization2 = hidDangerDAO.findAllByOrganizationId(sysOrganization.getParentId());
             hidDangerProcessDTO.setOrganizationName(sysOrganization2.getOrganizationName());
+            //责任人
+            SysCompanyPersonnel sysCompanyPersonnel1 = hidDangerDAO.findFirstUserByOrganizationId(sysOrganization2.getId());
+            hidDangerProcessDTO.setCorrectorId(sysCompanyPersonnel1.getId());
+            hidDangerProcessDTO.setCorrectorName(sysCompanyPersonnel1.getName());
         }else {
+            //上报组织
             hidDangerProcessDTO.setOrganizationId(sysOrganization.getId());
             hidDangerProcessDTO.setOrganizationName(sysOrganization.getOrganizationName());
+            SysCompanyPersonnel sysCompanyPersonnel1 = hidDangerDAO.findFirstUserByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+            //责任人
+            hidDangerProcessDTO.setCorrectorId(sysCompanyPersonnel1.getId());
+            hidDangerProcessDTO.setCorrectorName(sysCompanyPersonnel1.getName());
         }
         hidDangerProcessDTO.setHidDangerCode(hidDangerCode);
         hidDangerProcessDTO.setOperatorId(sysCompanyPersonnel.getId());
@@ -149,17 +168,20 @@ public class HidDangerServiceImpl implements HidDangerService {
                 System.out.println(array.get(i).toString());
                 JSONObject json = JSON.parseObject(array.get(i).toString());
                 String settingType = json.getString("settingType");
-                List<SystemSettingDTO> systemSettingDTOS = hidDangerDAO.findChoose2(settingType);
+                List<SystemSettingDTO> systemSettingDTOS = hidDangerDAO.findChoose(settingType);
                 map.put(settingType,systemSettingDTOS);
             }
             return map;
     }
 
     @Override
-    public String addOrder(int userId, HidDangerDTO hidDangerDTO, MultipartFile[] beforeImg, MultipartFile notice) throws IOException {
-        SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelByUserId(userId);
+    public String addOrder(HidDangerDTO hidDangerDTO, MultipartFile[] beforeImg, MultipartFile notice) throws IOException {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        int personnelId  =  currentUser.getCompanyPersonnelId();
+//        int userId = currentUser.getId();
+        SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
         String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
-
         hidDangerDTO.setCopyOrganizationId(123);
         hidDangerDTO.setCopyOrganizationName("安防部");
         hidDangerDTO.setHidDangerType(2);
@@ -198,8 +220,13 @@ public class HidDangerServiceImpl implements HidDangerService {
         hidDangerProcessDTO.setHidDangerCode(hidDangerCode);
         hidDangerProcessDTO.setOperatorId(sysCompanyPersonnel.getId());
         hidDangerProcessDTO.setOperatorName(sysCompanyPersonnel.getName());
+        //整改组织
         hidDangerProcessDTO.setOrganizationId(hidDangerDTO.getRectificationUnitId());
         hidDangerProcessDTO.setOrganizationName(hidDangerDTO.getRectificationUnitName());
+        //整改负责人
+        SysCompanyPersonnel sysCompanyPersonnel1 = hidDangerDAO.findFirstUserByOrganizationId(hidDangerDTO.getRectificationUnitId());
+        hidDangerProcessDTO.setCorrectorId(sysCompanyPersonnel1.getId());
+        hidDangerProcessDTO.setCorrectorName(sysCompanyPersonnel1.getName());
         hidDangerProcessDTO.setIfDeal("");
         hidDangerProcessDTO.setDealWay("责令整改");
         hidDangerProcessDTO.setDealTime(idt);//提交时间
@@ -219,6 +246,17 @@ public class HidDangerServiceImpl implements HidDangerService {
         }
         hidDangerDAO.addHidDanger(hidDangerDTO);
         return "1000";
+    }
+
+    @Override
+    public PageData findDealByPage(int pageNo, int pageSize) {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        int personnelId  =  currentUser.getCompanyPersonnelId();
+        int userId = currentUser.getId();
+
+
+        return null;
     }
 
 
