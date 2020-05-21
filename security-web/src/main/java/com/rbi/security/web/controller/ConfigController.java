@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.config.OrganizationTree;
 import com.rbi.security.entity.config.SystemMenuPermisson;
 import com.rbi.security.entity.web.entity.SysRole;
+import com.rbi.security.entity.web.system.SystemCategory;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.ConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,9 +54,20 @@ public class ConfigController {
         }
     }
     @RequestMapping("/getSystemMenuPermissonTree")
-    public ResponseModel<List<SystemMenuPermisson>> 获取公司人员树状结构getSystemMenuPermissonTree(){
+    public ResponseModel<List<SystemMenuPermisson>> getSystemMenuPermissonTree(){
         try{
             return ResponseModel.build("1000", "查询成功",configService.getSystemMenuPermissonTree());
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
+    /**
+     * 获取制度类型下拉框信息
+     */
+    @RequestMapping("/getSystemTypeBox")
+    public ResponseModel<List<SystemCategory>> getSystemTypeBox(){
+        try{
+            return ResponseModel.build("1000", "查询成功",configService.getSystemCategoryBox());
         }catch (Exception e){
             return ResponseModel.build("1001", e.getMessage());
         }

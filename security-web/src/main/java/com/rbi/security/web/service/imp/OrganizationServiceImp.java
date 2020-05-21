@@ -35,7 +35,7 @@ public class OrganizationServiceImp implements OrganizationService {
                        throw new NonExistentException("父级组织不存在");
                    sysOrganization.setLevel(sysOrganization.getParentLevel()+1);
                }
-           if(organizationDAO.queryOrganizationInfoByOrganizationNameAndParentId(sysOrganization.getOrganizationName(),sysOrganization.getParentId())==null)
+           if(organizationDAO.queryOrganizationInfoByOrganizationNameAndParentId(sysOrganization.getOrganizationName(),sysOrganization.getParentId())!=null)
                throw new RepeatException("添加组织信息重复");
            Subject subject = SecurityUtils.getSubject();
            sysOrganization.setOperatingStaff(((AuthenticationUserDTO)subject.getPrincipal()).getCompanyPersonnelId());

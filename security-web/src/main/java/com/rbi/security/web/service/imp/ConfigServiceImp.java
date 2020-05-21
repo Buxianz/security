@@ -5,9 +5,11 @@ import com.rbi.security.entity.config.PermissionTreeInfo;
 import com.rbi.security.entity.config.SystemMenuPermisson;
 import com.rbi.security.entity.web.entity.SysRole;
 import com.rbi.security.entity.web.entity.SysSystem;
+import com.rbi.security.entity.web.system.SystemCategory;
 import com.rbi.security.entity.web.user.CompanyPersonnelBox;
 import com.rbi.security.tool.TreeDTO;
 import com.rbi.security.web.DAO.*;
+import com.rbi.security.web.DAO.system.SystemCategoryDAO;
 import com.rbi.security.web.service.ConfigService;
 import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
@@ -31,6 +33,8 @@ public class ConfigServiceImp implements ConfigService {
     SystemDAO systemDAO;
 @Autowired
     SysPermissionDAO sysPermissionDAO;
+@Autowired
+    SystemCategoryDAO systemCategoryDAO;
     @Override
     public List<OrganizationTree> getOrganizationTree() throws RuntimeException {
         List<OrganizationTree> organizationTreeList=null;
@@ -136,6 +140,8 @@ public class ConfigServiceImp implements ConfigService {
         }
         return systemMenuPermissonList;
     }
+
+
     public  List<PermissionTreeInfo> listToPermissionTree(List<PermissionTreeInfo> list) {
         //用递归找子。
         List<PermissionTreeInfo> treeList = new ArrayList<PermissionTreeInfo>();
@@ -159,6 +165,17 @@ public class ConfigServiceImp implements ConfigService {
         }
         return tree;
     }
-
-
+    /**
+     * 获取制度类型下拉框信息
+     */
+    public List<SystemCategory> getSystemCategoryBox() throws RuntimeException {
+        List<SystemCategory> systemCategories=null;
+        try{
+            systemCategories=systemCategoryDAO.getAllSystemCategory();
+        }catch (Exception e){
+            logger.error("获取制度类型下拉框信息失败，异常为{}",e);
+            throw new RuntimeException("获取制度类型下拉框信息");
+        }
+        return systemCategories;
+    }
 }
