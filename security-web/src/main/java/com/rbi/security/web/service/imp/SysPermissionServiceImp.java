@@ -39,6 +39,7 @@ public class SysPermissionServiceImp implements SysPermissionService {
             pagingPermission.setIdt(sysPermission.getIdt());
             pagingPermission.setOperateCode(sysPermission.getOperateCode());
             pagingPermission.setParentId(sysPermission.getParentId());
+            pagingPermission.setSystemId(sysPermission.getSystemId());
             pagingPermission.setPermissionName(sysPermission.getPermissionName());
             pagingPermission.setUdt(sysPermission.getUdt());
             pagingPermission.setSystemName(systemDAO.findSystemById(sysPermission.getSystemId()).getSystemName());
@@ -64,6 +65,7 @@ public class SysPermissionServiceImp implements SysPermissionService {
         pagingPermission.setOperateCode(sysPermission.getOperateCode());
         pagingPermission.setParentId(sysPermission.getParentId());
         pagingPermission.setPermissionName(sysPermission.getPermissionName());
+        pagingPermission.setSystemId(sysPermission.getSystemId());
         pagingPermission.setUdt(sysPermission.getUdt());
         pagingPermission.setSystemName(systemDAO.findSystemById(sysPermission.getSystemId()).getSystemName());
         return pagingPermission;

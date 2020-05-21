@@ -33,9 +33,13 @@ public class PagingPermission {
      */
     private String description;
     /**
-     * 所属系统id
+     * 所属系统name
      */
     private String systemName;
+    /**
+     * 所属系统id
+     */
+    private Integer systemId;
     /**
      * 是否启用
      */
