@@ -36,7 +36,7 @@ public interface SysRoleDAO {
     /**
      * 分页获取角色信息
      */
-    @Select("SELECT id,role_name,whether_see,level,enabled from sys_role")
+    @Select("SELECT id,role_name,whether_see,level,enabled from sys_role LIMIT #{startIndex},#{pageSize}")
     List<PagingRole> pagingRole(@Param("startIndex") int startIndex, @Param("pageSize") int pageSize);
     /**
      * 更新角色信息查重

@@ -1,13 +1,19 @@
 package com.rbi.security.web.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
+import com.rbi.security.entity.web.system.PagingSystemInfo;
+import com.rbi.security.entity.web.user.PagingUser;
 import com.rbi.security.exception.NonExistentException;
+import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.SystemManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * 创建人：吴松达
@@ -34,5 +40,42 @@ public class SystemManagementController {
         }
         return ResponseModel.build("1000", "上传文件成功");
     }
+    /**
+    * 删除制度文件
+    */
+    @RequestMapping("/deleteSystemFile")
+    //@RequiresPermissions("user:del")
+    @ResponseBody
+    public ResponseModel deleteSystemFile(@RequestBody JSONObject date){
+        Integer id =date.getInteger("id");
+        try{
+            systemManagementService.deleteSystemFile(id);
+            return ResponseModel.build("1000", "删除成功");
+        }catch (NonExistentException e){
+            return ResponseModel.build("1010", e.getMessage());
+        } catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
+    /**
+     *修改制度文件
+     */
 
+    /**
+     * 分页查看制度文件
+     */
+    @RequestMapping("/getPageSystemInfo")
+    @ResponseBody
+    public ResponseModel<PageData<PagingSystemInfo>> getPagingSystemInfo(@RequestBody JSONObject date){
+
+        try {
+            int pageNo = date.getInteger("pageNo");
+            int pageSize = date.getInteger("pageSize");
+            int startIndex=(pageNo-1)*pageSize;
+            PageData<PagingSystemInfo> data=systemManagementService.getPagingSystemInfo(pageNo,pageSize,startIndex);
+            return  ResponseModel.build("1000", "查询成功",data);
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
 }
