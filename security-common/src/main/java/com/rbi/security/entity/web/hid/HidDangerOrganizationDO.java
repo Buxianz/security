@@ -3,7 +3,7 @@ package com.rbi.security.entity.web.hid;
 import lombok.Data;
 
 @Data
-public class HidDangerOrganizationDTO {
+public class HidDangerOrganizationDO {
     private Integer id;
     private String hidDangerCode;
     private Integer organizationId;
