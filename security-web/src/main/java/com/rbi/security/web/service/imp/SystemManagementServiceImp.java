@@ -69,7 +69,7 @@ public class SystemManagementServiceImp implements SystemManagementService {
                 AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
                 systemFile.setFileName(fileName);
                 systemFile.setSystemCategoryId(systemCategory.getId());
-                systemFile.setFilePath(fileIp+fileDir + "/" + fileName);
+                systemFile.setFilePath(fileDir + "/" + fileName);
                 systemFile.setOperatingStaff(currentUser.getCompanyPersonnelId());
                 systemFile.setIdt(idt);
                 systemFileDAO.insertSystemFile(systemFile);
