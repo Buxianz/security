@@ -109,6 +109,34 @@ public class HidDangerCotroller {
     }
 
 
+    @PostMapping("/findDealDetailByCode")
+    public ResponseModel<Map<String,Object>> findDealDetailByCode(@RequestBody JSONObject json){
+        try {
+            String hidDangerCode = json.getString("hidDangerCode");
+            Map<String,Object> map = hidDangerService.findDealDetailByCode(hidDangerCode);
+            return ResponseModel.build("1000","分页查询成功！",map);
+        }catch (Exception e){
+            System.out.println(e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+    @PostMapping("/findFinishDetailByCode")
+    public ResponseModel<Map<String,Object>> findFinishDetailByCode(@RequestBody JSONObject json){
+        try {
+            String hidDangerCode = json.getString("hidDangerCode");
+            Map<String,Object> map = hidDangerService.findFinishDetailByCode(hidDangerCode);
+            return ResponseModel.build("1000","分页查询成功！",map);
+        }catch (Exception e){
+            System.out.println(e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+
+
+
+
 
 
 

@@ -9,6 +9,7 @@ import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.entity.SysOrganization;
 import com.rbi.security.entity.web.entity.SysRole;
 import com.rbi.security.entity.web.hid.HidDangerDO;
+import com.rbi.security.entity.web.hid.HidDangerPictureDO;
 import com.rbi.security.entity.web.hid.HidDangerProcessDO;
 import com.rbi.security.entity.web.hid.SystemSettingDTO;
 import com.rbi.security.tool.DateUtil;
@@ -327,6 +328,7 @@ public class HidDangerServiceImpl implements HidDangerService {
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         int personnelId  =  currentUser.getCompanyPersonnelId();
         int userId = currentUser.getId();
+
         SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
         int organizationId = sysCompanyPersonnel.getOrganizationId();
         SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(organizationId);
@@ -351,7 +353,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             }
             return new PageData(pageNo, pageSize, totalPage, count, hidDangerDOS);
         }else {
-            List<HidDangerDO> hidDangerDOS = hidDangerDAO.findPersonnelDealByPage(userId,pageNo2,pageSize);
+            List<HidDangerDO> hidDangerDOS = hidDangerDAO.findPersonnelDealByPage(personnelId,pageNo2,pageSize);
             int totalPage = 0;
             int count = hidDangerDAO.findPersonnelDealByPageNum(userId);
             if (0 == count % pageSize) {
@@ -406,5 +408,130 @@ public class HidDangerServiceImpl implements HidDangerService {
         }
     }
 
+    @Override
+    public Map<String, Object> findDealDetailByCode(String hidDangerCode) {
+        Map<String, Object> map = new HashMap<>();
+        HidDangerDO hidDangerDO = hidDangerDAO.findDetailByCode(hidDangerCode);
+        List<HidDangerPictureDO> beforImgs = hidDangerDAO.findBeforPictureByHidDangerCode(hidDangerCode);
+        List<HidDangerPictureDO> afterImgs = hidDangerDAO.findAfterPictureByHidDangerCode(hidDangerCode);
+        List<HidDangerProcessDO> hidDangerProcessDOS = hidDangerDAO.findProcessByHidDangerCode(hidDangerCode);
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        int personnelId  =  currentUser.getCompanyPersonnelId();
+        int userId = currentUser.getId();
+        String processingStatus =  hidDangerDO.getProcessingStatus();
+        int index = hidDangerProcessDOS.size();
+
+        JSONArray jsonArray = new JSONArray();
+        if (hidDangerDO.getHidDangerType()==1) {
+            if (hidDangerProcessDOS.get(index-1).getCorrectorId() == personnelId) {
+                if (processingStatus.equals("1")) {
+                    JSONObject jsonObject1 = new JSONObject();
+                    jsonObject1.put("botton","提交");
+
+                    JSONObject jsonObject2 = new JSONObject();
+                    jsonObject2.put("botton","上报处理");
+
+                    JSONObject jsonObject3 = new JSONObject();
+                    jsonObject3.put("botton","通知整改");
+
+                    jsonArray.add(jsonObject1);
+                    jsonArray.add(jsonObject2);
+                    jsonArray.add(jsonObject3);
+
+                }
+                if (processingStatus.equals("3")) {
+                    JSONObject jsonObject1 = new JSONObject();
+                    jsonObject1.put("botton","提交");
+
+                    JSONObject jsonObject2 = new JSONObject();
+                    jsonObject2.put("botton","通知整改");
+
+                    jsonArray.add(jsonObject1);
+                    jsonArray.add(jsonObject2);
+
+                }
+                if (processingStatus.equals("4")) {
+                    JSONObject jsonObject1 = new JSONObject();
+                    jsonObject1.put("botton","审核通过");
+
+                    JSONObject jsonObject2 = new JSONObject();
+                    jsonObject2.put("botton","审核不通过");
+
+                    jsonArray.add(jsonObject1);
+                    jsonArray.add(jsonObject2);
+                }
+                if (processingStatus.equals("6")) {
+                    map.put("botton1 ", "提交");
+                    JSONObject jsonObject1 = new JSONObject();
+                    jsonObject1.put("botton","提交");
+
+                    jsonArray.add(jsonObject1);
+
+                }
+            }
+        }
+        if (hidDangerDO.getHidDangerType()==2){
+            if (hidDangerProcessDOS.get(index).getCorrectorId() == personnelId){
+                if (processingStatus.equals("2")){
+                    JSONObject jsonObject1 = new JSONObject();
+                    jsonObject1.put("botton","提交");
+
+                    JSONObject jsonObject2 = new JSONObject();
+                    jsonObject2.put("botton","通知整改");
+
+                    JSONObject jsonObject3 = new JSONObject();
+                    jsonObject3.put("botton","查看责令通知书");
+
+                    jsonArray.add(jsonObject1);
+                    jsonArray.add(jsonObject2);
+                    jsonArray.add(jsonObject3);
+                }
+                if (processingStatus.equals("3")){
+                    JSONObject jsonObject1 = new JSONObject();
+                    jsonObject1.put("botton","提交");
+
+                    JSONObject jsonObject2 = new JSONObject();
+                    jsonObject2.put("botton","通知整改");
+
+                    jsonArray.add(jsonObject1);
+                    jsonArray.add(jsonObject2);
+                }
+                if (processingStatus.equals("4")){
+                    JSONObject jsonObject1 = new JSONObject();
+                    jsonObject1.put("botton","审核通过");
+
+                    JSONObject jsonObject2 = new JSONObject();
+                    jsonObject2.put("botton","审核不通过");
+
+                    jsonArray.add(jsonObject1);
+                    jsonArray.add(jsonObject2);
+                }
+                if (processingStatus.equals("6")){
+                    JSONObject jsonObject1 = new JSONObject();
+                    jsonObject1.put("botton","提交");
+
+                    jsonArray.add(jsonObject1);
+                }
+            }
+        }
+        map.put("hidDangerDO",hidDangerDO);
+        map.put("beforImgs",beforImgs);
+        map.put("afterImgs",afterImgs);
+        map.put("botton",jsonArray);
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> findFinishDetailByCode(String hidDangerCode) {
+        Map<String, Object> map = new HashMap<>();
+        HidDangerDO hidDangerDO = hidDangerDAO.findDetailByCode(hidDangerCode);
+        List<HidDangerPictureDO> beforImgs = hidDangerDAO.findBeforPictureByHidDangerCode(hidDangerCode);
+        List<HidDangerPictureDO> afterImgs = hidDangerDAO.findAfterPictureByHidDangerCode(hidDangerCode);
+        map.put("hidDangerDO",hidDangerDO);
+        map.put("beforImgs",beforImgs);
+        map.put("afterImgs",afterImgs);
+        return map;
+    }
 
 }

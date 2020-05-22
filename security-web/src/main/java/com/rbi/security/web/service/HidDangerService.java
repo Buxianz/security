@@ -34,4 +34,8 @@ public interface HidDangerService {
     PageData findDealByPage(int pageNo, int pageSize);
 
     PageData findFinishByPage(int pageNo, int pageSize);
+
+    Map<String, Object> findDealDetailByCode(String hidDangerCode);
+
+    Map<String, Object> findFinishDetailByCode(String hidDangerCode);
 }
