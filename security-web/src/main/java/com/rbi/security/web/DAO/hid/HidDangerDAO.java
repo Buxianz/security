@@ -4,6 +4,7 @@ import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.entity.SysOrganization;
 import com.rbi.security.entity.web.entity.SysRole;
 import com.rbi.security.entity.web.hid.HidDangerDO;
+import com.rbi.security.entity.web.hid.HidDangerPictureDO;
 import com.rbi.security.entity.web.hid.HidDangerProcessDO;
 import com.rbi.security.entity.web.hid.SystemSettingDTO;
 import org.apache.ibatis.annotations.Insert;
@@ -108,16 +109,16 @@ public interface HidDangerDAO {
     @Select("select * from hid_danger where company_id = #{companyId} and processing_status !='5' limit #{pageNo},#{pageSize}")
     List<HidDangerDO> findAllDealHidByPage(@Param("companyId")Integer companyId,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
 
-    @Select("select count(*) from hid_danger where company_id = #{companyId and processing_status !='5'}")
+    @Select("select count(*) from hid_danger where company_id = #{companyId} and processing_status !='5'")
     Integer findAllDealHidByPageNum(int companyId);
 
     @Select("SELECT * FROM hid_danger WHERE processing_status !='5' and hid_danger_code in " +
-            "(SELECT hid_danger_code from hid_danger_process WHERE operator_id = #{userId} or corrector_id = #{userId} GROUP BY hid_danger_code) LIMIT #{pageNo},#{pageSize}")
-    List<HidDangerDO> findPersonnelDealByPage(@Param("userId")Integer userId,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
+            "(SELECT hid_danger_code from hid_danger_process WHERE (operator_id = #{personnelId} or corrector_id = #{personnelId}) GROUP BY hid_danger_code) LIMIT #{pageNo},#{pageSize}")
+    List<HidDangerDO> findPersonnelDealByPage(@Param("personnelId")Integer personnelId,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
 
     @Select("SELECT count(*) FROM hid_danger WHERE processing_status !='5' and hid_danger_code in " +
-            "(SELECT hid_danger_code from hid_danger_process WHERE operator_id = #{userId} or corrector_id = #{userId} GROUP BY hid_danger_code)")
-    int findPersonnelDealByPageNum(@Param("userId")Integer userId);
+            "(SELECT hid_danger_code from hid_danger_process WHERE (operator_id = #{personnelId} or corrector_id = #{personnelId}) GROUP BY hid_danger_code)")
+    int findPersonnelDealByPageNum(@Param("personnelId")Integer personnelId);
 
 
     /**
@@ -130,14 +131,25 @@ public interface HidDangerDAO {
     Integer findAllFinishHidByPageNum(int companyId);
 
     @Select("SELECT * FROM hid_danger WHERE processing_status ='5' and hid_danger_code in " +
-            "(SELECT hid_danger_code from hid_danger_process WHERE operator_id = #{userId} or corrector_id = #{userId} GROUP BY hid_danger_code) LIMIT #{pageNo},#{pageSize}")
-    List<HidDangerDO> findPersonnelFinishByPage(@Param("userId")Integer userId,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
+            "(SELECT hid_danger_code from hid_danger_process WHERE (operator_id = #{personnelId} or corrector_id = #{personnelId}) GROUP BY hid_danger_code) LIMIT #{pageNo},#{pageSize}")
+    List<HidDangerDO> findPersonnelFinishByPage(@Param("personnelId")Integer personnelId,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
 
     @Select("SELECT count(*) FROM hid_danger WHERE processing_status ='5' and hid_danger_code in " +
-            "(SELECT hid_danger_code from hid_danger_process WHERE operator_id = #{userId} or corrector_id = #{userId} GROUP BY hid_danger_code)")
-    int findPersonnelFinishByPageNum(@Param("userId")Integer userId);
+            "(SELECT hid_danger_code from hid_danger_process WHERE (operator_id = #{personnelId} or corrector_id = #{personnelId}) GROUP BY hid_danger_code)")
+    int findPersonnelFinishByPageNum(@Param("personnelId")Integer personnelId);
+
+    @Select("select * from hid_danger where hid_danger_code = #{hidDangerCode}")
+    HidDangerDO findDetailByCode(String hidDangerCode);
+
+    @Select("select * from hid_danger_picture where hid_danger_code = #{hidDangerCode} and before_picture !='' ")
+    List<HidDangerPictureDO> findBeforPictureByHidDangerCode(String hidDangerCode);
+
+    @Select("select * from hid_danger_picture where hid_danger_code = #{hidDangerCode} and after_picture !=''")
+    List<HidDangerPictureDO> findAfterPictureByHidDangerCode(String hidDangerCode);
 
 
 
 
+    @Select("select * from hid_danger_process where hid_danger_code = #{hidDangerCode} group by idt")
+    List<HidDangerProcessDO> findProcessByHidDangerCode(String hidDangerCode);
 }
