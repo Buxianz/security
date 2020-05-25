@@ -7,10 +7,7 @@ import com.rbi.security.entity.web.hid.HidDangerDO;
 import com.rbi.security.entity.web.hid.HidDangerPictureDO;
 import com.rbi.security.entity.web.hid.HidDangerProcessDO;
 import com.rbi.security.entity.web.hid.SystemSettingDTO;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -62,9 +59,12 @@ public interface HidDangerDAO {
     /**
      * 添加隐患内容
      * */
-    @Insert("insert into hid_danger_process (hid_danger_code,operator_id,operator_name,organization_id,organization_name,if_deal,deal_way,deal_time,idt,corrector_id,corrector_name)" +
+    @Insert("insert into hid_danger_process " +
+            "(hid_danger_code,operator_id,operator_name,organization_id,organization_name,if_deal,deal_way,deal_time,idt," +
+            "corrector_id,corrector_name,operator_organization_id,organization_principal_name)" +
             " values" +
-            "(#{hidDangerCode},#{operatorId},#{operatorName},#{organizationId},#{organizationName},#{ifDeal},#{dealWay},#{dealTime},#{idt},#{correctorId},#{correctorName})")
+            "(#{hidDangerCode},#{operatorId},#{operatorName},#{organizationId},#{organizationName},#{ifDeal},#{dealWay}," +
+            "#{dealTime},#{idt},#{correctorId},#{correctorName},#{operatorOrganizationId},#{operatorOrganizationName})")
     void addProcess(HidDangerProcessDO hidDangerProcessDO);
 
     @Insert("insert into hid_danger_picture (hid_danger_code,before_picture) values (#{hidDangerCode},#{beforePicture})")
@@ -81,6 +81,7 @@ public interface HidDangerDAO {
             "hid_type_thing,hid_type_person,hid_type_manage,corrector_id,corrector_name," +
             "rectification_opinions,specified_rectification_time,rectification_notice_annex,rectification_unit_id,rectification_unit_name," +
             "company_id,company_name,factory_id,factory_name,workshop_id,workshop_name,class_id,class_name)values" +
+
             "(#{hidDangerCode},#{hidDangerType},#{organizationId},#{organizationName},#{troubleshootingTime},#{hidDangerContent},#{hidDangerGrade},#{ifControlMeasures},#{ifRectificationPlan}," +
             "#{copyOrganizationId},#{copyOrganizationName},#{ifDeal},#{governanceFunds},#{completionTime},#{completionSituation},#{rectificationPlan},#{acceptanceReport},#{processingStatus}," +
             "#{idt},#{hidTypeThing},#{hidTypePerson},#{hidTypeManage},#{correctorId},#{correctorName}," +
@@ -148,8 +149,24 @@ public interface HidDangerDAO {
     List<HidDangerPictureDO> findAfterPictureByHidDangerCode(String hidDangerCode);
 
 
-
-
     @Select("select * from hid_danger_process where hid_danger_code = #{hidDangerCode} group by idt")
     List<HidDangerProcessDO> findProcessByHidDangerCode(String hidDangerCode);
+
+
+    @Update("update hid_danger set " +
+            "troubleshooting_time=#{troubleshootingTime},hid_danger_content=#{hidDangerContent}," +
+            "hid_danger_grade=#{hidDangerGrade},if_control_measures=#{ifControlMeasures}," +
+            "if_rectification_plan=#{ifRectificationPlan}," +
+            "if_deal=#{ifDeal},governance_funds=#{governanceFunds}," +
+            "completion_time=#{completionTime},completion_situation=#{completionSituation}," +
+            "rectification_plan=#{rectificationPlan},acceptance_report=#{acceptanceReport}," +
+            "processing_status=#{processingStatus},hid_type_thing=#{hidTypeThing}," +
+            "hid_type_person=#{hidTypePerson},hid_type_manage=#{hidTypeManage}," +
+            "corrector_id=#{correctorId},corrector_name=#{correctorName} where hid_danger_code = #{hidDangerCode}")
+    void updateCompleteHidDanger(HidDangerDO hidDangerDO);
+
+    @Update("update hid_danger set processing_status = #{processingStatus},auditor_id=#{auditorId},auditor_name=#{auditorName}," +
+            "audit_time=#{auditTime},rectification_evaluate=#{rectificationEvaluate} " +
+            "where hid_danger_code = #{hidDangerCode}")
+    void auditPass(HidDangerDO hidDangerDO);
 }

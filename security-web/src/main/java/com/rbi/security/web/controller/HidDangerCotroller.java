@@ -33,7 +33,9 @@ public class HidDangerCotroller {
     @Autowired
     HidDangerService hidDangerService;
 
-
+    /**
+     * 上报整改
+     **/
     @PostMapping("/addReport")
     public ResponseModel report(HidDangerDO hidDangerDO, @RequestParam(value="beforeImg",required=false) MultipartFile[] beforeImg,
                                 @RequestParam(value="afterImg",required=false) MultipartFile[] afterImg,
@@ -66,6 +68,9 @@ public class HidDangerCotroller {
         }
     }
 
+    /**
+     * 责令整改
+     * */
     @PostMapping("/addOrder")
     public ResponseModel addOrder(HidDangerDO hidDangerDO, @RequestParam(value="beforeImg",required=false) MultipartFile[] beforeImg,
                                   @RequestParam(value="notice",required=false) MultipartFile notice){
@@ -82,6 +87,9 @@ public class HidDangerCotroller {
         }
     }
 
+    /**
+     * 隐患处理分页
+     * */
     @PostMapping("/findDealByPage")
     public ResponseModel<PageData> findDealByPage(@RequestBody JSONObject json){
         try {
@@ -95,6 +103,9 @@ public class HidDangerCotroller {
         }
     }
 
+    /**
+     * 隐患档案分页
+     * */
     @PostMapping("/findFinishByPage")
     public ResponseModel<PageData> findFinishByPage(@RequestBody JSONObject json){
         try {
@@ -109,6 +120,9 @@ public class HidDangerCotroller {
     }
 
 
+    /**
+     * 隐患处理详情
+     * */
     @PostMapping("/findDealDetailByCode")
     public ResponseModel<Map<String,Object>> findDealDetailByCode(@RequestBody JSONObject json){
         try {
@@ -121,6 +135,9 @@ public class HidDangerCotroller {
         }
     }
 
+    /**
+     * 隐患档案详情
+     * */
     @PostMapping("/findFinishDetailByCode")
     public ResponseModel<Map<String,Object>> findFinishDetailByCode(@RequestBody JSONObject json){
         try {
@@ -131,6 +148,68 @@ public class HidDangerCotroller {
             System.out.println(e);
             return ResponseModel.build("1001","处理异常");
         }
+    }
+
+
+    /**
+     * 上报处理
+     * */
+    @PostMapping("/reportToDeal")
+    public ResponseModel reportToDeal(HidDangerDO hidDangerDO,
+                                @RequestParam(value="plan",required=false) MultipartFile plan,
+                                @RequestParam(value="report",required=false) MultipartFile report){
+        try {
+            String result = hidDangerService.reportToDeal(hidDangerDO,plan,report);
+            if(result.equals("1000")){
+                return ResponseModel.build("1000","隐患上报成功！");
+            }else {
+                return ResponseModel.build("1000",result);
+            }
+        }catch (Exception e){
+            System.out.println(e);
+            return ResponseModel.build("1001","处理异常");
+        }
+
+    }
+
+
+    /**
+     * 完成整改
+     **/
+    @PostMapping("/complete")
+    public ResponseModel complete(HidDangerDO hidDangerDO, @RequestParam(value="beforeImg",required=false) MultipartFile[] beforeImg,
+                                @RequestParam(value="afterImg",required=false) MultipartFile[] afterImg,
+                                @RequestParam(value="plan",required=false) MultipartFile plan,
+                                @RequestParam(value="report",required=false) MultipartFile report){
+        try {
+            String result = hidDangerService.complete(hidDangerDO,beforeImg,afterImg,plan,report);
+            if(result.equals("1000")){
+                return ResponseModel.build("1000","完成整改！");
+            }else {
+                return ResponseModel.build("1000",result);
+            }
+        }catch (Exception e){
+            System.out.println(e);
+            return ResponseModel.build("1001","处理异常");
+        }
+
+    }
+
+    /**
+     * 完成整改
+     **/
+    @PostMapping("/audit-pass")
+    public ResponseModel auditPass(@RequestBody JSONObject json){
+        try {
+            String hidDangerCode = json.getString("hidDangerCode");
+            String rectificationEvaluate = json.getString("rectificationEvaluate");
+            hidDangerService.auditPass(hidDangerCode,rectificationEvaluate);
+            return ResponseModel.build("1000","审核通过");
+        }catch (Exception e){
+            System.out.println(e);
+            return ResponseModel.build("1001","处理异常");
+        }
+
     }
 
 

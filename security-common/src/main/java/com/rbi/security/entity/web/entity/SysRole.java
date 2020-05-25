@@ -26,6 +26,8 @@ public class SysRole implements Serializable {
      * 是否可看下级数据 0：不可以  1：可以
      * */
     private Integer whetherSee;
+
+    private Integer level;
     /**
      * 是否启用
      */

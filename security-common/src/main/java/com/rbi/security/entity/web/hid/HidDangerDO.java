@@ -26,9 +26,12 @@ public class HidDangerDO {
     private String processingStatus;//隐患处理状态：1、上报未整改 2、责令未整改 3、已通知待整改 4、已整改待审核 5、审核通过 6、审核不通过
     private Integer auditorId;
     private String auditorName;
+    private String auditTime;
     private Integer correctorId;
     private String correctorName;
+    private String rectificationNoticeTime;
     private String rectificationOpinions;//整改意见
+    private String rectificationEvaluate;//整改评估
     private String specifiedRectificationTime;//规定整改完成时间
     private Integer rectificationUnitId;//整改单位
     private String rectificationUnitName;//整改单位名

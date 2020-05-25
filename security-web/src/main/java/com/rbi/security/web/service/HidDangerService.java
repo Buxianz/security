@@ -38,4 +38,10 @@ public interface HidDangerService {
     Map<String, Object> findDealDetailByCode(String hidDangerCode);
 
     Map<String, Object> findFinishDetailByCode(String hidDangerCode);
+
+    String reportToDeal(HidDangerDO hidDangerDO, MultipartFile plan, MultipartFile report);
+
+    String complete(HidDangerDO hidDangerDO, MultipartFile[] beforeImg, MultipartFile[] afterImg, MultipartFile plan, MultipartFile report) throws IOException;
+
+    void auditPass(String hidDangerCode, String rectificationEvaluate);
 }
