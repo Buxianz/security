@@ -38,6 +38,16 @@ public interface SystemFileDAO {
     /**
      * 分页获取制度文件
      */
-     @Select("SELECT sf.id,sf.system_category_id,sc.category_name,sf.file_name,sf.file_path from system_file sf INNER JOIN system_category sc ON sf.system_category_id=sc.id  LIMIT #{startIndex},#{pageSize}")
+     @Select("SELECT sf.id,sf.system_category_id,sc.category_name,sf.file_name,sf.file_path from system_file sf INNER JOIN system_category sc ON sf.system_category_id=sc.id ORDER BY id  LIMIT #{startIndex},#{pageSize}")
     List<PagingSystemInfo>  getPagingSystemInfo(@Param("startIndex") int startIndex, @Param("pageSize") int pageSize);
+    /**
+     *@Description: 根据文件类型id分页获取文件信息
+     *@Param: 
+     *@return: 
+     *@创建者: 吴松达
+     *@使用者 ：吴松达
+     *@date: 
+     */
+     @Select("select * from system_file where system_category_id=#{systemCategoryId} ORDER BY id")
+    List<SystemFile>  getSystemFileByTypeId(@Param("systemCategoryId") int systemCategoryId);
 }

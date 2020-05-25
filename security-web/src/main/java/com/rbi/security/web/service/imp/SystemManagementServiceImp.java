@@ -114,6 +114,7 @@ public class SystemManagementServiceImp implements SystemManagementService {
             throw new RuntimeException("删除制度文件失败");
         }
     }
+
     /**
      *修改制度文件
      */
@@ -142,4 +143,18 @@ public class SystemManagementServiceImp implements SystemManagementService {
            }
 
        }
+    /**
+     * 根据类型id获取文件信息
+     */
+    @Override
+    public List<SystemFile> getSystemFileByTypeId(int systemCategoryId) {
+        List<SystemFile> systemFileList=null;
+        try{
+           systemFileList=systemFileDAO.getSystemFileByTypeId(systemCategoryId);
+        }catch (Exception e){
+            logger.error("按照类型id获取制度文件失败，异常为{}",e);
+            throw new RuntimeException("按照类型id获取制度文件失败");
+        }
+        return systemFileList;
+    }
 }

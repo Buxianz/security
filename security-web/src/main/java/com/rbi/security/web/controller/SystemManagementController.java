@@ -3,6 +3,7 @@ package com.rbi.security.web.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.system.PagingSystemInfo;
+import com.rbi.security.entity.web.system.SystemFile;
 import com.rbi.security.entity.web.user.PagingUser;
 import com.rbi.security.exception.NonExistentException;
 import com.rbi.security.tool.PageData;
@@ -73,6 +74,21 @@ public class SystemManagementController {
             int pageSize = date.getInteger("pageSize");
             int startIndex=(pageNo-1)*pageSize;
             PageData<PagingSystemInfo> data=systemManagementService.getPagingSystemInfo(pageNo,pageSize,startIndex);
+            return  ResponseModel.build("1000", "查询成功",data);
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
+    /**
+     * 根据文件类型id，获取文件信息
+     */
+    @RequestMapping("/getSystemFileByTypeId")
+    @ResponseBody
+    public ResponseModel<List<SystemFile>> getSystemFileByTypeId(@RequestBody JSONObject date){
+
+        try {
+            int systemCategoryId = date.getInteger("systemCategoryId");
+            List<SystemFile> data=systemManagementService.getSystemFileByTypeId(systemCategoryId);
             return  ResponseModel.build("1000", "查询成功",data);
         }catch (Exception e){
             return ResponseModel.build("1001", e.getMessage());
