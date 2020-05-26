@@ -34,6 +34,10 @@ public class PagingSpecialTraining {
      */
     private String gender;
     /**
+     * 公司人员id（外键）
+     */
+    private Integer companyPersonnelId;
+    /**
      * 身份证号码
      */
     private String idCardNo;
@@ -54,9 +58,13 @@ public class PagingSpecialTraining {
      */
     private String workingYears;
     /**
-     *取证成绩
+     * 理论成绩
      */
-    private String evidenceCollectionResults;
+    private  String theoreticalAchievements;
+    /**
+     * 实际成绩
+     */
+    private String actualResults;
     /**
      * 操作证号
      */
