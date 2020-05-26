@@ -77,14 +77,24 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
     /**
      * 删除特种培训记录
      */
-    void deleteSpecialTraining() throws RuntimeException{
-
+   public void deleteSpecialTraining(int id) throws RuntimeException{
+              try{
+                  safeSpecialTrainingFilesDao.deleteById(id);
+              }catch (Exception e){
+                  logger.error("删除特种培训信息失败，异常为{}",e);
+                  throw new RuntimeException("删除特种培训信息失败");
+              }
     }
     /**
      * 更新特种培训记录
      */
-    void updateSpecialTraining() throws RuntimeException{
-
+   public void updateSpecialTraining(SafeSpecialTrainingFiles safeSpecialTrainingFiles) throws RuntimeException{
+       try{
+           safeSpecialTrainingFilesDao.update(safeSpecialTrainingFiles);
+       }catch (Exception e){
+           logger.error("更新特种培训信息失败，异常为{}",e);
+           throw new RuntimeException("更新特种培训信息失败");
+       }
     }
     /**
      * 分页查看特种培训记录
@@ -102,10 +112,8 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
             }
             return new PageData<PagingSpecialTraining>(pageNo,pageSize,totalPage,count,pagingSpecialTrainingList);
         }catch (Exception e){
-
+            logger.error("分页获取特种培训信息失败，异常为{}",e);
+            throw new RuntimeException("分页获取特种培训信息失败");
         }
-
-        return null;
-
     }
 }

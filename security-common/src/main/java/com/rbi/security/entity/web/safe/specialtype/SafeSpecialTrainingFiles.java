@@ -34,9 +34,13 @@ public class SafeSpecialTrainingFiles implements Serializable {
     */
     private String workingYears;
     /**
-     *取证成绩
+     * 理论成绩
      */
-    private String evidenceCollectionResults;
+    private  String theoreticalAchievements;
+    /**
+     * 实际成绩
+     */
+    private String actualResults;
     /**
     * 操作证号
     */

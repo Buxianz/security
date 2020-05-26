@@ -59,8 +59,6 @@ public class TrainingFileManagementController {
      * 删除特种培训记录
      */
     @RequestMapping("/deleteSpecialTraining")
-    //@RequiresPermissions("user:del")
-    @ResponseBody
     public ResponseModel deleteSpecialTraining(@RequestBody JSONObject date){
 
         Integer id =date.getInteger("id");
@@ -74,7 +72,17 @@ public class TrainingFileManagementController {
     /**
      * 更新特种培训记录
      */
+    @RequestMapping("/updateSpecialTraining")
+    public ResponseModel updateSpecialTraining(@RequestBody JSONObject date){
 
+        try{
+            SafeSpecialTrainingFiles safeSpecialTrainingFiles= JSONObject.parseObject(date.toJSONString(), SafeSpecialTrainingFiles.class);
+            trainingFileManagementService.updateSpecialTraining(safeSpecialTrainingFiles);
+            return ResponseModel.build("1000", "更新成功");
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
     /**
      * 分页查看特种培训记录
      */
