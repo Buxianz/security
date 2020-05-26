@@ -12,7 +12,7 @@ public class HidDangerDO {
     private String organizationName;//
     private String troubleshootingTime;//
     private String hidDangerContent;//隐患内容
-    private Integer hidDangerGrade;//隐患等级
+    private String hidDangerGrade;//隐患等级
     private String ifControlMeasures;//
     private String ifRectificationPlan;//
     private Integer copyOrganizationId;

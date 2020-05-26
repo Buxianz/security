@@ -263,6 +263,20 @@ public class HidDangerCotroller {
         }
     }
 
+    /**
+     * 上报处理按钮
+     **/
+    @PostMapping("/report")
+    public ResponseModel report(HidDangerDO hidDangerDO){
+        try {
+            String result  = hidDangerService.report(hidDangerDO);
+            return ResponseModel.build("1000","上报成功！");
+        }catch (Exception e){
+            System.out.println(e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
 
 
 

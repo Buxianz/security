@@ -345,7 +345,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             companyId = sysOrganization3.getId();
         }
         SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
-        if (sysRole.getWhetherSee() == 0){
+        if (sysRole.getLevel() == 0){
             List<HidDangerDO> hidDangerDOS = hidDangerDAO.findAllDealHidByPage(companyId,pageNo2,pageSize);
             int totalPage = 0;
             int count = hidDangerDAO.findAllDealHidByPageNum(companyId);
@@ -396,7 +396,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             companyId = sysOrganization3.getId();
         }
         SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
-        if (sysRole.getWhetherSee() == 1){
+        if (sysRole.getLevel() == 0){
             List<HidDangerDO> hidDangerDOS = hidDangerDAO.findAllFinishHidByPage(companyId,pageNo2,pageSize);
             int totalPage = 0;
             int count = hidDangerDAO.findAllFinishHidByPageNum(companyId);
@@ -777,4 +777,52 @@ public class HidDangerServiceImpl implements HidDangerService {
         return map;
     }
 
+    @Override
+    public String report(HidDangerDO hidDangerDO) {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        int personnelId  =  currentUser.getCompanyPersonnelId();
+        int userId = currentUser.getId();
+
+        SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
+        String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
+        String hidDangerCode = hidDangerDO.getHidDangerCode();
+
+        //进程表添加
+        SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
+        SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+        HidDangerProcessDO hidDangerProcessDO = new HidDangerProcessDO();
+        if (sysRole.getLevel() == 1) {//判断角色权限等级
+            //上报组织
+            SysOrganization sysOrganization2 = hidDangerDAO.findAllByOrganizationId(sysOrganization.getParentId());
+            hidDangerProcessDO.setOrganizationId(sysOrganization2.getId());
+            hidDangerProcessDO.setOrganizationName(sysOrganization2.getOrganizationName());
+            //责任人
+            SysCompanyPersonnel sysCompanyPersonnel1 = hidDangerDAO.findFirstUserByOrganizationId(sysOrganization2.getId());
+            hidDangerProcessDO.setCorrectorId(sysCompanyPersonnel1.getId());
+            hidDangerProcessDO.setCorrectorName(sysCompanyPersonnel1.getName());
+        }else {
+            //上报组织
+            hidDangerProcessDO.setOrganizationId(sysOrganization.getId());
+            hidDangerProcessDO.setOrganizationName(sysOrganization.getOrganizationName());
+            SysCompanyPersonnel sysCompanyPersonnel1 = hidDangerDAO.findFirstUserByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+            //责任人
+            hidDangerProcessDO.setCorrectorId(sysCompanyPersonnel1.getId());
+            hidDangerProcessDO.setCorrectorName(sysCompanyPersonnel1.getName());
+        }
+        hidDangerProcessDO.setHidDangerCode(hidDangerCode);
+        //操作人信息
+        hidDangerProcessDO.setOperatorId(sysCompanyPersonnel.getId());
+        hidDangerProcessDO.setOperatorName(sysCompanyPersonnel.getName());
+        hidDangerProcessDO.setOperatorOrganizationId(sysOrganization.getId());
+        hidDangerProcessDO.setOperatorOrganizationName(sysOrganization.getOrganizationName());
+        //处理方式
+        hidDangerProcessDO.setIfDeal("否");
+        hidDangerProcessDO.setDealWay("上报");
+        hidDangerProcessDO.setDealTime(idt);
+        hidDangerProcessDO.setIdt(idt);
+        hidDangerDAO.addProcess(hidDangerProcessDO);
+        hidDangerDAO.reportHidDanger(hidDangerDO);
+        return "1000";
+    }
 }

@@ -50,4 +50,6 @@ public interface HidDangerService {
     void rectificationNotice(String hidDangerCode, String rectificationOpinions, String requiredCompletionTime, Integer correctorId);
 
     Map<String, Object> findCorrector();
+
+    String report(HidDangerDO hidDangerDO);
 }

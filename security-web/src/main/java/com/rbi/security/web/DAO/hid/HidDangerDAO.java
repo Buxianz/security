@@ -202,4 +202,14 @@ public interface HidDangerDAO {
     List<SysPersonnelDTO> findAllFirstUserByOrganizationId(Integer organizationId);
 
 
+    @Update("update hid_danger set " +
+            "troubleshooting_time=#{troubleshootingTime},hid_danger_content=#{hidDangerContent}," +
+            "hid_danger_grade=#{hidDangerGrade},if_control_measures=#{ifControlMeasures}," +
+            "if_rectification_plan=#{ifRectificationPlan}," +
+            "governance_funds=#{governanceFunds},hid_type_thing=#{hidTypeThing}," +
+            "hid_type_person=#{hidTypePerson},hid_type_manage=#{hidTypeManage} " +
+            "where hid_danger_code = #{hidDangerCode}")
+    void reportHidDanger(HidDangerDO hidDangerDO);
+
+
 }
