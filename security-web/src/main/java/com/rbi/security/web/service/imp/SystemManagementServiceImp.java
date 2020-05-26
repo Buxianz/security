@@ -26,7 +26,23 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
-
+/**
+ * @PACKAGE_NAME: com.rbi.security.web.service.imp
+ * @NAME: 制度文件管理模块
+ * @USER: "吴松达"
+ * @DATE: 2020/5/21
+ * @TIME: 17:44
+ * @YEAR: 2020
+ * @MONTH: 05
+ * @MONTH_NAME_SHORT: 五月
+ * @MONTH_NAME_FULL: 五月
+ * @DAY: 21
+ * @DAY_NAME_SHORT: 星期四
+ * @DAY_NAME_FULL: 星期四
+ * @HOUR: 17
+ * @MINUTE: 44
+ * @PROJECT_NAME: security
+ **/
 @Service
 public class SystemManagementServiceImp implements SystemManagementService {
     private static final Logger logger = LoggerFactory.getLogger(SystemManagementServiceImp.class);
@@ -146,11 +162,15 @@ public class SystemManagementServiceImp implements SystemManagementService {
     /**
      * 根据类型id获取文件信息
      */
+
     @Override
     public List<SystemFile> getSystemFileByTypeId(int systemCategoryId) {
         List<SystemFile> systemFileList=null;
         try{
            systemFileList=systemFileDAO.getSystemFileByTypeId(systemCategoryId);
+            for(int i=0;i<systemFileList.size();i++){
+                systemFileList.get(i).setFilePath(fileIp+systemFileList.get(i).getFilePath());
+            }
         }catch (Exception e){
             logger.error("按照类型id获取制度文件失败，异常为{}",e);
             throw new RuntimeException("按照类型id获取制度文件失败");

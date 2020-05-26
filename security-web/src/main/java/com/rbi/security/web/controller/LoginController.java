@@ -17,6 +17,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+/**
+ * @PACKAGE_NAME: com.rbi.security.web.service.imp
+ * @NAME: 登录模块
+ * @USER: "吴松达"
+ * @DATE: 2020/5/21
+ * @TIME: 17:44
+ * @YEAR: 2020
+ * @MONTH: 05
+ * @MONTH_NAME_SHORT: 五月
+ * @MONTH_NAME_FULL: 五月
+ * @DAY: 21
+ * @DAY_NAME_SHORT: 星期四
+ * @DAY_NAME_FULL: 星期四
+ * @HOUR: 17
+ * @MINUTE: 44
+ * @PROJECT_NAME: security
+ **/
 @Controller
 public class LoginController {
     @RequestMapping("/notLanded")
