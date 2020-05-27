@@ -117,4 +117,16 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
             throw new RuntimeException("分页获取特种培训信息失败");
         }
     }
+
+    @Override
+    public PagingSpecialTraining getSpecialTrainingById(int id) throws RuntimeException {
+        PagingSpecialTraining pagingSpecialTraining=null;
+        try{
+            pagingSpecialTraining= safeSpecialTrainingFilesDao.getSpecialTrainingById(id);
+        }catch (Exception e){
+            logger.error("根据id获取特种培训信息失败，异常为{}",e);
+            throw new RuntimeException("根据id获取特种培训信息失败");
+        }
+        return pagingSpecialTraining;
+    }
 }

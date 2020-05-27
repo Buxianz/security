@@ -8,4 +8,5 @@ public interface TrainingFileManagementService {
     void updateSpecialTraining(SafeSpecialTrainingFiles safeSpecialTrainingFiles) throws RuntimeException;
     void insertSpecialTraining(SafeSpecialTrainingFiles safeSpecialTrainingFiles) throws RuntimeException;
     PageData<PagingSpecialTraining> pagingSpecialTraining(int pageNo, int pageSize , int startIndex) throws RuntimeException;
+    PagingSpecialTraining getSpecialTrainingById(int id) throws RuntimeException;
 }

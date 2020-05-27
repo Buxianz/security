@@ -98,6 +98,19 @@ public class TrainingFileManagementController {
             return ResponseModel.build("1001", e.getMessage());
         }
     }
+    /**
+     * 根据特种人员id查询记录
+     */
+    @RequestMapping("/getSpecialTrainingById")
+    public ResponseModel<PagingSpecialTraining> getSpecialTrainingById(@RequestBody JSONObject date){
+        try {
+            int id = date.getInteger("id");
+            PagingSpecialTraining data=trainingFileManagementService.getSpecialTrainingById(id);
+            return  ResponseModel.build("1000", "查询成功",data);
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
     /**************************主要负责人、安全生产管理人员培训台账****************************/
     /**
      * 文件导入特种培训记录
