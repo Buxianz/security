@@ -39,15 +39,13 @@ public interface HidDangerService {
 
     Map<String, Object> findFinishDetailByCode(String hidDangerCode);
 
-    String reportToDeal(HidDangerDO hidDangerDO, MultipartFile plan, MultipartFile report);
-
     String complete(HidDangerDO hidDangerDO, MultipartFile[] beforeImg, MultipartFile[] afterImg, MultipartFile plan, MultipartFile report) throws IOException;
 
     void auditPass(String hidDangerCode, String rectificationEvaluate);
 
     void auditFalse(Integer type, String hidDangerCode, String auditReason, Integer correctorId);
 
-    void rectificationNotice(String hidDangerCode, String rectificationOpinions, String requiredCompletionTime, Integer correctorId);
+    String rectificationNotice(String hidDangerCode, String rectificationOpinions, String requiredCompletionTime, Integer correctorId);
 
     Map<String, Object> findCorrector();
 

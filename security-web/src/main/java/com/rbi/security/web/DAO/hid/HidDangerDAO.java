@@ -42,7 +42,7 @@ public interface HidDangerDAO {
     SysCompanyPersonnel findFirstUserByOrganizationId(Integer organizationId);
 
     /**
-     * 组织id查组织
+     * personnel id查组织
      * */
     @Select("select * from sys_company_personnel where sys_company_personnel.id = #{id}")
     SysCompanyPersonnel findPersonnelById(@Param("id") Integer id);
@@ -78,7 +78,6 @@ public interface HidDangerDAO {
             "hid_type_thing,hid_type_person,hid_type_manage,corrector_id,corrector_name," +
             "rectification_opinions,specified_rectification_time,rectification_notice_annex,rectification_unit_id,rectification_unit_name," +
             "company_id,company_name,factory_id,factory_name,workshop_id,workshop_name,class_id,class_name)values" +
-
             "(#{hidDangerCode},#{hidDangerType},#{organizationId},#{organizationName},#{troubleshootingTime},#{hidDangerContent},#{hidDangerGrade},#{ifControlMeasures},#{ifRectificationPlan}," +
             "#{copyOrganizationId},#{copyOrganizationName},#{ifDeal},#{governanceFunds},#{completionTime},#{completionSituation},#{rectificationPlan},#{acceptanceReport},#{processingStatus}," +
             "#{idt},#{hidTypeThing},#{hidTypePerson},#{hidTypeManage},#{correctorId},#{correctorName}," +
@@ -150,16 +149,25 @@ public interface HidDangerDAO {
     List<HidDangerProcessDO> findProcessByHidDangerCode(String hidDangerCode);
 
 
-    @Update("update hid_danger set " +
-            "troubleshooting_time=#{troubleshootingTime},hid_danger_content=#{hidDangerContent}," +
-            "hid_danger_grade=#{hidDangerGrade},if_control_measures=#{ifControlMeasures}," +
+//    @Update("update hid_danger set " +
+//            "troubleshooting_time=#{troubleshootingTime},hid_danger_content=#{hidDangerContent}," +
+//            "hid_danger_grade=#{hidDangerGrade},if_control_measures=#{ifControlMeasures}," +
+//            "if_rectification_plan=#{ifRectificationPlan}," +
+//            "if_deal=#{ifDeal},governance_funds=#{governanceFunds}," +
+//            "completion_time=#{completionTime},completion_situation=#{completionSituation}," +
+//            "rectification_plan=#{rectificationPlan},acceptance_report=#{acceptanceReport}," +
+//            "processing_status=#{processingStatus},hid_type_thing=#{hidTypeThing}," +
+//            "hid_type_person=#{hidTypePerson},hid_type_manage=#{hidTypeManage}," +
+//            "corrector_id=#{correctorId},corrector_name=#{correctorName} where hid_danger_code = #{hidDangerCode}")
+//    void updateCompleteHidDanger(HidDangerDO hidDangerDO);
+
+    @Update("update hid_danger set if_control_measures=#{ifControlMeasures}," +
             "if_rectification_plan=#{ifRectificationPlan}," +
             "if_deal=#{ifDeal},governance_funds=#{governanceFunds}," +
             "completion_time=#{completionTime},completion_situation=#{completionSituation}," +
             "rectification_plan=#{rectificationPlan},acceptance_report=#{acceptanceReport}," +
-            "processing_status=#{processingStatus},hid_type_thing=#{hidTypeThing}," +
-            "hid_type_person=#{hidTypePerson},hid_type_manage=#{hidTypeManage}," +
-            "corrector_id=#{correctorId},corrector_name=#{correctorName} where hid_danger_code = #{hidDangerCode}")
+            "processing_status=#{processingStatus},corrector_id=#{correctorId}," +
+            "corrector_name=#{correctorName} where hid_danger_code = #{hidDangerCode}")
     void updateCompleteHidDanger(HidDangerDO hidDangerDO);
 
     @Update("update hid_danger set processing_status = #{processingStatus},auditor_id=#{auditorId},auditor_name=#{auditorName}," +
