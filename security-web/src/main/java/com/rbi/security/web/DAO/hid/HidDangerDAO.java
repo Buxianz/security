@@ -188,11 +188,11 @@ public interface HidDangerDAO {
             "where hid_danger_code = #{hidDangerCode}")
     void updateNotice(HidDangerDO hidDangerDO);
 
-    @Select("select * from sys_company_personnel,sys_user where sys_company_personnel.id = sys_user.company_personnel_id and organization_id = #{organizationId} and " +
+    @Select("select sys_company_personnel.id as settingCode,sys_company_personnel.name as settingName from sys_company_personnel,sys_user where sys_company_personnel.id = sys_user.company_personnel_id and organization_id = #{organizationId} and " +
             "sys_company_personnel.id !=#{personnelId}")
     List<SysPersonnelDTO> findPersonnelByOrganizationId(@Param("organizationId")Integer organizationId,@Param("personnelId")Integer personnelId);
 
-    @Select("select * from sys_company_personnel,sys_user where sys_company_personnel.id = sys_user.company_personnel_id and organization_id = #{organizationId} and " +
+    @Select("select sys_company_personnel.id as settingCode,sys_company_personnel.name as settingName from sys_company_personnel,sys_user where sys_company_personnel.id = sys_user.company_personnel_id and organization_id = #{organizationId} and " +
             "sys_company_personnel.id !=#{personnelId} and " +
             "sys_company_personnel.id !=((select sys_company_personnel.id from sys_company_personnel,sys_user,sys_user_role,sys_role where" +
             " sys_company_personnel.id = sys_user.company_personnel_id and sys_user.id = sys_user_role.user_id and " +
@@ -203,7 +203,7 @@ public interface HidDangerDAO {
     /**
      * 组织id找组织负责人id和name
      * */
-    @Select("select sys_company_personnel.id,sys_company_personnel.name " +
+    @Select("select sys_company_personnel.id as settingCode,sys_company_personnel.name as settingName " +
             "from sys_company_personnel,sys_user,sys_user_role,sys_role where " +
             "sys_company_personnel.id = sys_user.company_personnel_id and sys_user.id = sys_user_role.user_id and " +
             "sys_user_role.role_id  =  sys_role.id and sys_role.level = 1 and organization_id in (select id from sys_organization where parent_id = #{organizationId})")
