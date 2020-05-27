@@ -12,7 +12,7 @@ public class HidDangerDO {
     private String organizationName;//
     private String troubleshootingTime;//
     private String hidDangerContent;//隐患内容
-    private Integer hidDangerGrade;//隐患等级
+    private String hidDangerGrade;//隐患等级
     private String ifControlMeasures;//
     private String ifRectificationPlan;//
     private Integer copyOrganizationId;
@@ -27,6 +27,7 @@ public class HidDangerDO {
     private Integer auditorId;
     private String auditorName;
     private String auditTime;
+    private String auditReason;
     private Integer correctorId;
     private String correctorName;
     private String rectificationNoticeTime;
@@ -50,7 +51,7 @@ public class HidDangerDO {
     private String workshopName;
     private Integer classId;
     private String className;
-
+    private String color;
 
 
 }

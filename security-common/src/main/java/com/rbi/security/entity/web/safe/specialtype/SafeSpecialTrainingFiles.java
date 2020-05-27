@@ -22,6 +22,10 @@ public class SafeSpecialTrainingFiles implements Serializable {
     */
     private String idCardNo;
     /**
+     * 公司人员id（外键）
+     */
+    private Integer companyPersonnelId;
+    /**
     * 工种名称
     */
     private String typeOfWork;

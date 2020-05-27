@@ -58,6 +58,7 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
              Subject subject = SecurityUtils.getSubject();
              String idt = LocalDateUtils.localDateTimeFormat(LocalDateTime.now(), LocalDateUtils.FORMAT_PATTERN);
              safeSpecialTrainingFiles.setIdt(idt);
+             safeSpecialTrainingFiles.setCompanyPersonnelId(companyPersonnelId);
              safeSpecialTrainingFiles.setOperatingStaff(((AuthenticationUserDTO)subject.getPrincipal()).getCompanyPersonnelId());
              if(safeSpecialTrainingFilesDao.queryByIdCardNo(safeSpecialTrainingFiles.getIdCardNo())!=null)
                  throw new RepeatException("加特种培训记录重复");

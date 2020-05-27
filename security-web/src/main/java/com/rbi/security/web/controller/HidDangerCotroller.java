@@ -196,20 +196,85 @@ public class HidDangerCotroller {
     }
 
     /**
-     * 完成整改
+     * 审核通过
      **/
-    @PostMapping("/audit-pass")
+    @PostMapping("/audit_pass")
     public ResponseModel auditPass(@RequestBody JSONObject json){
         try {
             String hidDangerCode = json.getString("hidDangerCode");
             String rectificationEvaluate = json.getString("rectificationEvaluate");
             hidDangerService.auditPass(hidDangerCode,rectificationEvaluate);
-            return ResponseModel.build("1000","审核通过");
+            return ResponseModel.build("1000","审核成功");
         }catch (Exception e){
             System.out.println(e);
             return ResponseModel.build("1001","处理异常");
         }
+    }
 
+
+    /**
+     * 审核不通过
+     **/
+    @PostMapping("/audit_false")
+    public ResponseModel auditFalse(@RequestBody JSONObject json){
+        try {
+            String hidDangerCode = json.getString("hidDangerCode");
+            String auditReason = json.getString("auditReason");
+            Integer type = 1;
+            Integer correctorId = json.getInteger("correctorId");
+            hidDangerService.auditFalse(type,hidDangerCode,auditReason,correctorId);
+            return ResponseModel.build("1000","审核成功");
+        }catch (Exception e){
+            System.out.println(e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+
+    /**
+     * 通知整改
+     **/
+    @PostMapping("/rectification_notice")
+    public ResponseModel rectificationNotice(@RequestBody JSONObject json){
+        try {
+            String hidDangerCode = json.getString("hidDangerCode");
+            Integer correctorId = json.getInteger("correctorId");
+            String rectificationOpinions = json.getString("rectificationOpinions");
+            String requiredCompletionTime = json.getString("requiredCompletionTime");
+            hidDangerService.rectificationNotice(hidDangerCode,rectificationOpinions,requiredCompletionTime,correctorId);
+            return ResponseModel.build("1000","通知整改成功！");
+        }catch (Exception e){
+            System.out.println(e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+    /**
+     * 通知整改负责人列表
+     **/
+    @PostMapping("/findCorrector")
+    public ResponseModel findCorrector(){
+        try {
+            Map<String,Object> map = hidDangerService.findCorrector();
+            return ResponseModel.build("1000","查询成功！",map);
+        }catch (Exception e){
+            System.out.println(e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+    /**
+     * 上报处理按钮
+     **/
+    @PostMapping("/report")
+    public ResponseModel report(HidDangerDO hidDangerDO){
+        try {
+            String result  = hidDangerService.report(hidDangerDO);
+            return ResponseModel.build("1000","上报成功！");
+        }catch (Exception e){
+            System.out.println(e);
+            return ResponseModel.build("1001","处理异常");
+        }
     }
 
 
