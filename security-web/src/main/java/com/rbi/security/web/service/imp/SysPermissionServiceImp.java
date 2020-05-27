@@ -3,7 +3,6 @@ package com.rbi.security.web.service.imp;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.entity.SysPermission;
-import com.rbi.security.entity.web.entity.SysSystem;
 import com.rbi.security.entity.web.permission.PagingPermission;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.TimeStampTool;
@@ -15,23 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.*;
-/**
- * @PACKAGE_NAME: com.rbi.security.web.service.imp
- * @NAME: a
- * @USER: "林新元"
- * @DATE: 2020/5/21
- * @TIME: 17:44
- * @YEAR: 2020
- * @MONTH: 05
- * @MONTH_NAME_SHORT: 五月
- * @MONTH_NAME_FULL: 五月
- * @DAY: 21
- * @DAY_NAME_SHORT: 星期四
- * @DAY_NAME_FULL: 星期四
- * @HOUR: 17
- * @MINUTE: 44
- * @PROJECT_NAME: security
- **/
+
 @Service
 public class SysPermissionServiceImp implements SysPermissionService {
 
