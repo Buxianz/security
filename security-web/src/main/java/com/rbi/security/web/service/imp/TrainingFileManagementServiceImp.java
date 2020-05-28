@@ -10,6 +10,7 @@ import com.rbi.security.exception.RepeatException;
 import com.rbi.security.tool.LocalDateUtils;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.web.DAO.CompanyPersonnelDAO;
+import com.rbi.security.web.DAO.safe.SafeAdministratorTrainDAO;
 import com.rbi.security.web.DAO.safe.SafeSpecialTrainingFilesDao;
 import com.rbi.security.web.service.TrainingFileManagementService;
 import org.apache.shiro.SecurityUtils;
@@ -46,6 +47,8 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
     /**
      * 增加特种培训记录
      */
+    @Autowired
+    SafeAdministratorTrainDAO safeAdministratorTrainDAO;
     @Autowired
     CompanyPersonnelDAO companyPersonnelDAO;
     @Autowired
