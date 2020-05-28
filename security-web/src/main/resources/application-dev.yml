@@ -19,4 +19,4 @@ mybatis:
 
 path:
   hiddenPath: /usr/work/wx/hidden
-  findHiddenPath: http://rbi7301.gyrbi.com/hidden/
+  findHiddenPath: http://139.9.153.27/usr/work/wx/hidden/
