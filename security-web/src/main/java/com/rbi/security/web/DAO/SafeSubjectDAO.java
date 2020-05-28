@@ -18,8 +18,9 @@ public interface SafeSubjectDAO {
     /**
      * 获取全部试题
      */
-    @Select("select * from safe_subject where subject_type=#{subjectType}")
-    List<SafeSubject> getSafeSubjectBySubjectType(@Param("subjectType") Integer subjectType);
+    @Select("select safe_subject.*,subject_store_name from safe_subject,safe_subject_store_type WHERE " +
+            "safe_subject.subject_store_id=safe_subject_store_type.id limit #{pageNo},#{pageSize}")
+    List<SafeSubject> getSafeSubjectBySubjectType(@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
 
     /**
      * 根据id获取试题

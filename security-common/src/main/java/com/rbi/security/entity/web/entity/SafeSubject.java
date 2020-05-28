@@ -26,4 +26,8 @@ public class SafeSubject {
    * 题库id
    */
   private Integer subjectStoreId;
+  /**
+   * 题目对应题库的分类
+   */
+  private Integer subjectStoreName;
 }

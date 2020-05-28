@@ -62,8 +62,8 @@ public class SafeSubjectServiceImpl implements SafeSubjectService {
         int count=0;
         int pageNo = json.getInteger("pageNo");
         int pageSize = json.getInteger("pageSize");
-        Integer subjectType = json.getInteger("subjectType");
-        List<SafeSubject> safeSubjectList=safeSubjectDAO.getSafeSubjectBySubjectType(subjectType);
+        int recNo = pageSize * (pageNo - 1);
+        List<SafeSubject> safeSubjectList=safeSubjectDAO.getSafeSubjectBySubjectType(recNo, pageSize);
         List<PagingSafe> pagingSafeArrayList=new ArrayList<>();
         for(int i=0;i<safeSubjectList.size();i++){
             PagingSafe pagingSafe=new PagingSafe();
