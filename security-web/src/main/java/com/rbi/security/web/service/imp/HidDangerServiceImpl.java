@@ -854,7 +854,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerProcessDO.setDealTime(idt);
             hidDangerProcessDO.setIdt(idt);
             hidDangerDAO.addProcess(hidDangerProcessDO);
-            hidDangerDAO.reportHidDanger(hidDangerDO);
+//            hidDangerDAO.reportHidDanger(hidDangerDO);
             return "1000";
         }catch (NullPointerException e){
             return "没有创建完整的单位和对应的角色用户";
