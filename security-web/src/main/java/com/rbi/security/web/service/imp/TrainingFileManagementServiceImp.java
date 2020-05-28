@@ -1,6 +1,7 @@
 package com.rbi.security.web.service.imp;
 
 import com.rbi.security.entity.AuthenticationUserDTO;
+import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrain;
 import com.rbi.security.entity.web.safe.specialtype.PagingSpecialTraining;
 import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFiles;
 import com.rbi.security.entity.web.user.PagingUser;
@@ -61,7 +62,7 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
              safeSpecialTrainingFiles.setCompanyPersonnelId(companyPersonnelId);
              safeSpecialTrainingFiles.setOperatingStaff(((AuthenticationUserDTO)subject.getPrincipal()).getCompanyPersonnelId());
              if(safeSpecialTrainingFilesDao.queryByIdCardNo(safeSpecialTrainingFiles.getIdCardNo())!=null)
-                 throw new RepeatException("加特种培训记录重复");
+                 throw new RepeatException("添加特种培训记录重复");
              safeSpecialTrainingFilesDao.insert(safeSpecialTrainingFiles);
          }catch (RepeatException e) {
              logger.error("添加特种培训记录重复，用户信息为{}", safeSpecialTrainingFiles.toString());
@@ -128,5 +129,15 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
             throw new RuntimeException("根据id获取特种培训信息失败");
         }
         return pagingSpecialTraining;
+    }
+    /****************安全培训管理**********************/
+    @Override
+    public void insertAdministratorTrain(SafeAdministratorTrain safeAdministratorTrain) throws RuntimeException {
+         try{
+
+         }catch (Exception e){
+             logger.error("添加主要负责人/安全生产管理员培训台账失败，异常为{}",e);
+             throw new RuntimeException("添加主要负责人/安全生产管理员培训台账失败");
+         }
     }
 }
