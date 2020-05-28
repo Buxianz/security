@@ -460,7 +460,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                     SysCompanyPersonnel companyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
                     SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(companyPersonnel.getOrganizationId());
                     SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
-                    if (sysOrganization.getLevel() != 1 && sysRole.getLevel() !=1){
+                    if (sysOrganization.getLevel() == 1 || sysRole.getLevel() ==1){
                         JSONObject jsonObject2 = new JSONObject();
                         jsonObject2.put("botton","上报处理");
                         jsonArray.add(jsonObject2);

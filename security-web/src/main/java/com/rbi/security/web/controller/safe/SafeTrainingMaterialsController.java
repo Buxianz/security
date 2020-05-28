@@ -86,9 +86,6 @@ public class SafeTrainingMaterialsController {
     /**
      * 培训内容下拉查询
      * */
-    /**
-     * 分页
-     * */
     @PostMapping("/findByCondition")
     public ResponseModel<PageData> findByCondition(@RequestBody JSONObject json){
         try {

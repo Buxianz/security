@@ -22,5 +22,5 @@ import lombok.Data;
 @Data
 public class SafeContentCategory {
     private Integer id;
-    private Integer contentCategoryName;
+    private String contentCategoryName;
 }
