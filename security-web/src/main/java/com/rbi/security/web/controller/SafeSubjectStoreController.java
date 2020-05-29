@@ -26,7 +26,7 @@ public class SafeSubjectStoreController {
 
 
     /**
-     * 查询所有题库名称
+     * 查询所有题库名称（下拉菜单）
      */
     @PostMapping("/getAllSubjectStoreName")
     public ResponseModel<List<SafeSubjectStore>> getAllSubjectStoreName(){
