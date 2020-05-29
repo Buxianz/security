@@ -3,6 +3,8 @@ package com.rbi.security.entity.web.entity;
 
 import lombok.Data;
 
+import java.sql.Date;
+
 @Data
 public class SafeFourLevel {
   /**
@@ -16,27 +18,27 @@ public class SafeFourLevel {
   /**
    * 身份证号
    */
-  private Integer idCardNo;
+  private String idCardNo;
   /**
    * 组织名
    */
   private String organizationName;
   /**
-   * 性别 男1女2
+   * 性别 男女
    */
-  private Integer gender;
+  private String gender;
+  /**
+   * 出生日期
+   */
+  private Date dateOfBirth;
   /**
    * 入厂时间
    */
-  private Integer dateOfBirth;
-  /**
-   * 整改单位名
-   */
-  private String entryTime;
+  private Date entryTime;
   /**
    * 工种
    */
-  private Integer workType;
+  private String workType;
   /**
    * 岗位
    */
