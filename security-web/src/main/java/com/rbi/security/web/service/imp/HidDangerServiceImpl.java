@@ -57,8 +57,8 @@ public class HidDangerServiceImpl implements HidDangerService {
     public String addReport(HidDangerDO hidDangerDO, MultipartFile[] beforeImg, MultipartFile[] afterImg, MultipartFile plan, MultipartFile report) throws IOException {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-        int personnelId  =  currentUser.getCompanyPersonnelId();
-        int userId = currentUser.getId();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        Integer userId = currentUser.getId();
 
         try {
             SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
@@ -151,14 +151,12 @@ public class HidDangerServiceImpl implements HidDangerService {
             if (hidDangerDO.getIfDeal().equals("是")){ //判断是否能处理
                 hidDangerProcessDO.setIfDeal("是");
                 hidDangerProcessDO.setDealWay("处理");
-
                 hidDangerDO.setCorrectorId(sysCompanyPersonnel.getId());
                 hidDangerDO.setCorrectorName(sysCompanyPersonnel.getName());
                 hidDangerDO.setProcessingStatus("4");//已处理待审核
             }else {
                 hidDangerProcessDO.setIfDeal("否");
                 hidDangerProcessDO.setDealWay("上报");
-
                 hidDangerDO.setProcessingStatus("1");//上报
             }
             hidDangerProcessDO.setDealTime(idt);
@@ -233,8 +231,8 @@ public class HidDangerServiceImpl implements HidDangerService {
     public String addOrder(HidDangerDO hidDangerDO, MultipartFile[] beforeImg, MultipartFile notice) throws IOException {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-        int personnelId  =  currentUser.getCompanyPersonnelId();
-//        int userId = currentUser.getId();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+//        Integer userId = currentUser.getId();
         try {
             SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
             String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
@@ -347,14 +345,14 @@ public class HidDangerServiceImpl implements HidDangerService {
         int pageNo2 = pageSize * (pageNo - 1);
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-        int personnelId  =  currentUser.getCompanyPersonnelId();
-        int userId = currentUser.getId();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        Integer userId = currentUser.getId();
         SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
         SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
 
         int level = sysOrganization.getLevel();
         Integer parentId = sysOrganization.getParentId();
-        Integer companyId = null;
+        Integer companyId = sysOrganization.getId();
         while (level !=1){
             SysOrganization sysOrganization3 = hidDangerDAO.findAllByOrganizationId(parentId);
             parentId = sysOrganization3.getParentId();
@@ -364,6 +362,14 @@ public class HidDangerServiceImpl implements HidDangerService {
         SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
         if (sysRole.getLevel() == 0){
             List<HidDangerDO> hidDangerDOS = hidDangerDAO.findAllDealHidByPage(companyId,pageNo2,pageSize);
+            for (int i = 0; i<hidDangerDOS.size(); i++){
+                List<HidDangerProcessDO> hidDangerProcessDOS = hidDangerDAO.findProcessByHidDangerCode(hidDangerDOS.get(i).getHidDangerCode());
+                if (hidDangerProcessDOS.get(hidDangerProcessDOS.size()-1).getCorrectorId().intValue() == personnelId.intValue()){
+                    hidDangerDOS.get(i).setColor("#D80000");
+                }else {
+                    hidDangerDOS.get(i).setColor("#3B86FF");
+                }
+            }
             int totalPage = 0;
             int count = hidDangerDAO.findAllDealHidByPageNum(companyId);
             if (0 == count % pageSize) {
@@ -376,10 +382,10 @@ public class HidDangerServiceImpl implements HidDangerService {
             List<HidDangerDO> hidDangerDOS = hidDangerDAO.findPersonnelDealByPage(personnelId,pageNo2,pageSize);
             for (int i = 0; i<hidDangerDOS.size(); i++){
                 List<HidDangerProcessDO> hidDangerProcessDOS = hidDangerDAO.findProcessByHidDangerCode(hidDangerDOS.get(i).getHidDangerCode());
-                if (hidDangerProcessDOS.get(hidDangerProcessDOS.size()-1).getCorrectorId() == personnelId){
-                    hidDangerDOS.get(i).setColor("#3B86FF");
+                if (hidDangerProcessDOS.get(hidDangerProcessDOS.size()-1).getCorrectorId().intValue() == personnelId.intValue()){
+                    hidDangerDOS.get(i).setColor("#D80000");
                 }else {
-                    hidDangerDOS.get(i).setColor("#7E0A12");
+                    hidDangerDOS.get(i).setColor("#3B86FF");
                 }
             }
             int totalPage = 0;
@@ -398,14 +404,15 @@ public class HidDangerServiceImpl implements HidDangerService {
         int pageNo2 = pageSize * (pageNo - 1);
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-        int personnelId  =  currentUser.getCompanyPersonnelId();
-        int userId = currentUser.getId();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        Integer userId = currentUser.getId();
+
         SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
         int organizationId = sysCompanyPersonnel.getOrganizationId();
         SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(organizationId);
         int level = sysOrganization.getLevel();
         Integer parentId = sysOrganization.getParentId();
-        Integer companyId = null;
+        Integer companyId = sysOrganization.getId();
         while (level !=1){
             SysOrganization sysOrganization3 = hidDangerDAO.findAllByOrganizationId(parentId);
             parentId = sysOrganization3.getParentId();
@@ -424,9 +431,9 @@ public class HidDangerServiceImpl implements HidDangerService {
             }
             return new PageData(pageNo, pageSize, totalPage, count, hidDangerDOS);
         }else {
-            List<HidDangerDO> hidDangerDOS = hidDangerDAO.findPersonnelFinishByPage(userId,pageNo2,pageSize);
+            List<HidDangerDO> hidDangerDOS = hidDangerDAO.findPersonnelFinishByPage(personnelId,pageNo2,pageSize);
             int totalPage = 0;
-            int count = hidDangerDAO.findPersonnelFinishByPageNum(userId);
+            int count = hidDangerDAO.findPersonnelFinishByPageNum(personnelId);
             if (0 == count % pageSize) {
                 totalPage = count / pageSize;
             } else {
@@ -445,14 +452,13 @@ public class HidDangerServiceImpl implements HidDangerService {
         List<HidDangerProcessDO> hidDangerProcessDOS = hidDangerDAO.findProcessByHidDangerCode(hidDangerCode);
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-        int personnelId  =  currentUser.getCompanyPersonnelId();
-        int userId = currentUser.getId();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        Integer userId = currentUser.getId();
         String processingStatus =  hidDangerDO.getProcessingStatus();
         int index = hidDangerProcessDOS.size();
-
         JSONArray jsonArray = new JSONArray();
         if (hidDangerDO.getHidDangerType()==1) {
-            if (hidDangerProcessDOS.get(index-1).getCorrectorId() == personnelId) {
+            if (hidDangerProcessDOS.get(index-1).getCorrectorId().intValue() == personnelId.intValue()) {
                 if (processingStatus.equals("1")) {
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("botton","完成整改");
@@ -460,7 +466,8 @@ public class HidDangerServiceImpl implements HidDangerService {
                     SysCompanyPersonnel companyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
                     SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(companyPersonnel.getOrganizationId());
                     SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
-                    if (sysOrganization.getLevel() == 1 || sysRole.getLevel() ==1){
+                    if (sysOrganization.getLevel() == 1 && sysRole.getLevel() == 1){
+                    }else {
                         JSONObject jsonObject2 = new JSONObject();
                         jsonObject2.put("botton","上报处理");
                         jsonArray.add(jsonObject2);
@@ -495,7 +502,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             }
         }
         if (hidDangerDO.getHidDangerType()==2){
-            if (hidDangerProcessDOS.get(index-1).getCorrectorId() == personnelId){
+            if (hidDangerProcessDOS.get(index-1).getCorrectorId().intValue() == personnelId.intValue()){
                 if (processingStatus.equals("2")){
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("botton","完成整改");
@@ -563,9 +570,8 @@ public class HidDangerServiceImpl implements HidDangerService {
         }
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-        int personnelId  =  currentUser.getCompanyPersonnelId();
-        int userId = currentUser.getId();
-
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        Integer userId = currentUser.getId();
         try {
             SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
             String udt = DateUtil.date(DateUtil.FORMAT_PATTERN);
@@ -606,27 +612,33 @@ public class HidDangerServiceImpl implements HidDangerService {
                 hidDangerDO.setAcceptanceReport(findHiddenPath+newFileName);
             }
 
+
 //        进程表添加
             SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
             HidDangerProcessDO hidDangerProcessDO = new HidDangerProcessDO();
             SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
-            if (sysRole.getLevel() == 1) {//判断角色权限等级
-                //上报组织
-                hidDangerProcessDO.setOrganizationId(sysOrganization.getParentId());
-                SysOrganization sysOrganization2 = hidDangerDAO.findAllByOrganizationId(sysOrganization.getParentId());
-                hidDangerProcessDO.setOrganizationName(sysOrganization2.getOrganizationName());
-                //责任人
-                SysCompanyPersonnel sysCompanyPersonnel1 = hidDangerDAO.findFirstUserByOrganizationId(sysOrganization2.getId());
-                hidDangerProcessDO.setCorrectorId(sysCompanyPersonnel1.getId());
-                hidDangerProcessDO.setCorrectorName(sysCompanyPersonnel1.getName());
+            if (sysOrganization.getLevel() == 1 && sysRole.getLevel() == 1){
+                hidDangerDO.setProcessingStatus("5");//已处理待审核
             }else {
-                //上报组织
-                hidDangerProcessDO.setOrganizationId(sysOrganization.getId());
-                hidDangerProcessDO.setOrganizationName(sysOrganization.getOrganizationName());
-                SysCompanyPersonnel sysCompanyPersonnel1 = hidDangerDAO.findFirstUserByOrganizationId(sysCompanyPersonnel.getOrganizationId());
-                //责任人
-                hidDangerProcessDO.setCorrectorId(sysCompanyPersonnel1.getId());
-                hidDangerProcessDO.setCorrectorName(sysCompanyPersonnel1.getName());
+                if (sysRole.getLevel() == 1) {//判断角色权限等级
+                    //上报组织
+                    hidDangerProcessDO.setOrganizationId(sysOrganization.getParentId());
+                    SysOrganization sysOrganization2 = hidDangerDAO.findAllByOrganizationId(sysOrganization.getParentId());
+                    hidDangerProcessDO.setOrganizationName(sysOrganization2.getOrganizationName());
+                    //责任人
+                    SysCompanyPersonnel sysCompanyPersonnel1 = hidDangerDAO.findFirstUserByOrganizationId(sysOrganization2.getId());
+                    hidDangerProcessDO.setCorrectorId(sysCompanyPersonnel1.getId());
+                    hidDangerProcessDO.setCorrectorName(sysCompanyPersonnel1.getName());
+                }else {
+                    //上报组织
+                    hidDangerProcessDO.setOrganizationId(sysOrganization.getId());
+                    hidDangerProcessDO.setOrganizationName(sysOrganization.getOrganizationName());
+                    SysCompanyPersonnel sysCompanyPersonnel1 = hidDangerDAO.findFirstUserByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+                    //责任人
+                    hidDangerProcessDO.setCorrectorId(sysCompanyPersonnel1.getId());
+                    hidDangerProcessDO.setCorrectorName(sysCompanyPersonnel1.getName());
+                }
+                hidDangerDO.setProcessingStatus("4");//已处理待审核
             }
             //操作人信息
             hidDangerProcessDO.setHidDangerCode(hidDangerCode);
@@ -642,7 +654,7 @@ public class HidDangerServiceImpl implements HidDangerService {
 
             hidDangerDO.setCorrectorId(sysCompanyPersonnel.getId());
             hidDangerDO.setCorrectorName(sysCompanyPersonnel.getName());
-            hidDangerDO.setProcessingStatus("4");//已处理待审核
+
             hidDangerDAO.addProcess(hidDangerProcessDO);
             hidDangerDAO.updateCompleteHidDanger(hidDangerDO);
             return "1000";
@@ -659,7 +671,7 @@ public class HidDangerServiceImpl implements HidDangerService {
     public void auditPass(String hidDangerCode, String rectificationEvaluate) {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-        int personnelId  =  currentUser.getCompanyPersonnelId();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
         SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
 
         //审核修改
@@ -694,7 +706,7 @@ public class HidDangerServiceImpl implements HidDangerService {
     public void auditFalse(Integer type, String hidDangerCode, String auditReason, Integer correctorId) {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-        int personnelId  =  currentUser.getCompanyPersonnelId();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
         SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
         String time = DateUtil.date(DateUtil.FORMAT_PATTERN);
 
@@ -737,8 +749,8 @@ public class HidDangerServiceImpl implements HidDangerService {
     public String rectificationNotice(String hidDangerCode, String rectificationOpinions, String requiredCompletionTime, Integer correctorId) {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-        int personnelId  =  currentUser.getCompanyPersonnelId();
-        int userId = currentUser.getId();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        Integer userId = currentUser.getId();
         try {
             String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
             SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
@@ -787,8 +799,8 @@ public class HidDangerServiceImpl implements HidDangerService {
     public Map<String, Object> findCorrector() {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-        int personnelId  =  currentUser.getCompanyPersonnelId();
-        int userId = currentUser.getId();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        Integer userId = currentUser.getId();
         SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
         SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
         List<SysPersonnelDTO> sysCompanyPersonnels = new ArrayList<>();
@@ -813,8 +825,8 @@ public class HidDangerServiceImpl implements HidDangerService {
     public String report(HidDangerDO hidDangerDO) {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-        int personnelId  =  currentUser.getCompanyPersonnelId();
-        int userId = currentUser.getId();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        Integer userId = currentUser.getId();
         try {
             SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
             String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
@@ -857,10 +869,13 @@ public class HidDangerServiceImpl implements HidDangerService {
 //            hidDangerDAO.reportHidDanger(hidDangerDO);
             return "1000";
         }catch (NullPointerException e){
+            System.out.println("错误："+e);
             return "没有创建完整的单位和对应的角色用户";
         }catch (NumberFormatException e){
+            System.out.println("错误："+e);
             return "数据格式错误";
         }catch (IndexOutOfBoundsException e){
+            System.out.println("错误："+e);
             return "数组溢出";
         }
     }

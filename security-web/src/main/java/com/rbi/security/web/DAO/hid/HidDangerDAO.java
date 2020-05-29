@@ -127,11 +127,11 @@ public interface HidDangerDAO {
     @Select("select count(*) from hid_danger where company_id = #{companyId} and processing_status ='5' or processing_status ='6'")
     Integer findAllFinishHidByPageNum(int companyId);
 
-    @Select("SELECT * FROM hid_danger WHERE processing_status ='5' or processing_status ='6' and hid_danger_code in " +
+    @Select("SELECT * FROM hid_danger WHERE (processing_status ='5' or processing_status ='6') and hid_danger_code in " +
             "(SELECT hid_danger_code from hid_danger_process WHERE (operator_id = #{personnelId} or corrector_id = #{personnelId}) GROUP BY hid_danger_code) LIMIT #{pageNo},#{pageSize}")
     List<HidDangerDO> findPersonnelFinishByPage(@Param("personnelId")Integer personnelId,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
 
-    @Select("SELECT count(*) FROM hid_danger WHERE processing_status ='5' or processing_status ='6' and hid_danger_code in " +
+    @Select("SELECT count(*) FROM hid_danger WHERE (processing_status ='5' or processing_status ='6') and hid_danger_code in " +
             "(SELECT hid_danger_code from hid_danger_process WHERE (operator_id = #{personnelId} or corrector_id = #{personnelId}) GROUP BY hid_danger_code)")
     int findPersonnelFinishByPageNum(@Param("personnelId")Integer personnelId);
 
@@ -145,7 +145,7 @@ public interface HidDangerDAO {
     List<HidDangerPictureDO> findAfterPictureByHidDangerCode(String hidDangerCode);
 
 
-    @Select("select * from hid_danger_process where hid_danger_code = #{hidDangerCode} group by id")
+    @Select("select * from hid_danger_process where hid_danger_code = #{hidDangerCode} order by id")
     List<HidDangerProcessDO> findProcessByHidDangerCode(String hidDangerCode);
 
 
