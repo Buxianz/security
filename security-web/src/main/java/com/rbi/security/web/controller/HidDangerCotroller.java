@@ -42,7 +42,6 @@ public class HidDangerCotroller {
                                 @RequestParam(value="plan",required=false) MultipartFile plan,
                                 @RequestParam(value="report",required=false) MultipartFile report){
         try {
-            int userId  = 8;
             String result = hidDangerService.addReport(hidDangerDO,beforeImg,afterImg,plan,report);
             if(result.equals("1000")){
                 return ResponseModel.build("1000","隐患上报成功！");
@@ -50,7 +49,7 @@ public class HidDangerCotroller {
                 return ResponseModel.build("1000",result);
             }
         }catch (Exception e){
-            System.out.println(e);
+            System.out.println("错误："+e);
             return ResponseModel.build("1001","处理异常");
         }
 
@@ -82,7 +81,7 @@ public class HidDangerCotroller {
                 return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println(e);
+            System.out.println("错误："+e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -98,7 +97,7 @@ public class HidDangerCotroller {
             PageData pageData = hidDangerService.findDealByPage(pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println(e);
+            System.out.println("错误："+e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -114,7 +113,7 @@ public class HidDangerCotroller {
             PageData pageData = hidDangerService.findFinishByPage(pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println(e);
+            System.out.println("错误："+e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -130,7 +129,7 @@ public class HidDangerCotroller {
             Map<String,Object> map = hidDangerService.findDealDetailByCode(hidDangerCode);
             return ResponseModel.build("1000","分页查询成功！",map);
         }catch (Exception e){
-            System.out.println(e);
+            System.out.println("错误："+e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -145,35 +144,12 @@ public class HidDangerCotroller {
             Map<String,Object> map = hidDangerService.findFinishDetailByCode(hidDangerCode);
             return ResponseModel.build("1000","分页查询成功！",map);
         }catch (Exception e){
-            System.out.println(e);
+            System.out.println("错误："+e);
             return ResponseModel.build("1001","处理异常");
         }
     }
 
-
-    /**
-     * 上报处理
-     * */
-    @PostMapping("/reportToDeal")
-    public ResponseModel reportToDeal(HidDangerDO hidDangerDO,
-                                @RequestParam(value="plan",required=false) MultipartFile plan,
-                                @RequestParam(value="report",required=false) MultipartFile report){
-        try {
-            String result = hidDangerService.reportToDeal(hidDangerDO,plan,report);
-            if(result.equals("1000")){
-                return ResponseModel.build("1000","隐患上报成功！");
-            }else {
-                return ResponseModel.build("1000",result);
-            }
-        }catch (Exception e){
-            System.out.println(e);
-            return ResponseModel.build("1001","处理异常");
-        }
-
-    }
-
-
-    /**
+    /**1
      * 完成整改
      **/
     @PostMapping("/complete")
@@ -186,10 +162,10 @@ public class HidDangerCotroller {
             if(result.equals("1000")){
                 return ResponseModel.build("1000","完成整改！");
             }else {
-                return ResponseModel.build("1000",result);
+                return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println(e);
+            System.out.println("错误："+e);
             return ResponseModel.build("1001","处理异常");
         }
 
@@ -206,11 +182,10 @@ public class HidDangerCotroller {
             hidDangerService.auditPass(hidDangerCode,rectificationEvaluate);
             return ResponseModel.build("1000","审核成功");
         }catch (Exception e){
-            System.out.println(e);
+            System.out.println("错误："+e);
             return ResponseModel.build("1001","处理异常");
         }
     }
-
 
     /**
      * 审核不通过
@@ -225,7 +200,7 @@ public class HidDangerCotroller {
             hidDangerService.auditFalse(type,hidDangerCode,auditReason,correctorId);
             return ResponseModel.build("1000","审核成功");
         }catch (Exception e){
-            System.out.println(e);
+            System.out.println("错误："+e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -241,10 +216,14 @@ public class HidDangerCotroller {
             Integer correctorId = json.getInteger("correctorId");
             String rectificationOpinions = json.getString("rectificationOpinions");
             String requiredCompletionTime = json.getString("requiredCompletionTime");
-            hidDangerService.rectificationNotice(hidDangerCode,rectificationOpinions,requiredCompletionTime,correctorId);
-            return ResponseModel.build("1000","通知整改成功！");
+            String result = hidDangerService.rectificationNotice(hidDangerCode,rectificationOpinions,requiredCompletionTime,correctorId);
+            if (result.equals("1000")){
+                return ResponseModel.build("1000","通知整改成功！");
+            }else {
+                return ResponseModel.build("1001",result);
+            }
         }catch (Exception e){
-            System.out.println(e);
+            System.out.println("错误："+e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -258,7 +237,7 @@ public class HidDangerCotroller {
             Map<String,Object> map = hidDangerService.findCorrector();
             return ResponseModel.build("1000","查询成功！",map);
         }catch (Exception e){
-            System.out.println(e);
+            System.out.println("错误："+e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -270,18 +249,15 @@ public class HidDangerCotroller {
     public ResponseModel report(HidDangerDO hidDangerDO){
         try {
             String result  = hidDangerService.report(hidDangerDO);
-            return ResponseModel.build("1000","上报成功！");
+            if (result.equals("1000")){
+                return ResponseModel.build("1000","上报成功！");
+            }else {
+                return ResponseModel.build("1000",result);
+            }
         }catch (Exception e){
-            System.out.println(e);
+            System.out.println("错误："+e);
             return ResponseModel.build("1001","处理异常");
         }
     }
-
-
-
-
-
-
-
 
 }

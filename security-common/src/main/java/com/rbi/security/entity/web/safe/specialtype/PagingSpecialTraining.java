@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * @PACKAGE_NAME: com.rbi.security.entity.web.safe.specialtype
  * @NAME: PagingSpecialTraining
- * @USER: "吴松达"
+ * @USER: "吴松达"  特种人员培训信息分页拆开
  * @DATE: 2020/5/26
  * @TIME: 10:43
  * @YEAR: 2020
@@ -133,4 +133,8 @@ public class PagingSpecialTraining {
      * 创建时间
      */
     private String idt;
+    /**
+     * 复审年限
+     */
+    private Integer validityPeriod;
 }

@@ -22,6 +22,10 @@ import lombok.Data;
 
 @Data
 public class SysPersonnelDTO {
-    private Integer id;
-    private String name;
+
+    private String settingCode;
+    private String settingName;
+
+//    private Integer id;
+//    private String name;
 }

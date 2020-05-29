@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  * (SafeSpecialTrainingFiles)实体类
- * @USER: "吴松达"
+ * @USER: "吴松达" 特种人员培训信息表
  * @author makejava
  * @since 2020-05-26 10:04:59
  */
@@ -113,6 +113,9 @@ public class SafeSpecialTrainingFiles implements Serializable {
     * 创建时间
     */
     private String idt;
-
+    /**
+     * 复审年限
+     */
+    private Integer validityPeriod;
 
 }

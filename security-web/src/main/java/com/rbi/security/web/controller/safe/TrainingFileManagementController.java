@@ -2,6 +2,7 @@ package com.rbi.security.web.controller.safe;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.entity.SysUser;
+import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrain;
 import com.rbi.security.entity.web.safe.specialtype.PagingSpecialTraining;
 import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFiles;
 import com.rbi.security.entity.web.user.PagingUser;
@@ -98,7 +99,48 @@ public class TrainingFileManagementController {
             return ResponseModel.build("1001", e.getMessage());
         }
     }
+    /**
+     * 根据特种人员id查询记录
+     */
+    @RequestMapping("/getSpecialTrainingById")
+    public ResponseModel<PagingSpecialTraining> getSpecialTrainingById(@RequestBody JSONObject date){
+        try {
+            int id = date.getInteger("id");
+            PagingSpecialTraining data=trainingFileManagementService.getSpecialTrainingById(id);
+            return  ResponseModel.build("1000", "查询成功",data);
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
     /**************************主要负责人、安全生产管理人员培训台账****************************/
+    /**
+     * 文件导入特种培训记录
+     */
+    /**
+     * 增加负责人、安全生产管理人员培训记录
+     */
+    @RequestMapping("/insertAdministratorTrain")
+    public ResponseModel insertAdministratorTrain(@RequestBody JSONObject date) {
+        try{
+            SafeAdministratorTrain safeAdministratorTrain = JSONObject.parseObject(date.toJSONString(), SafeAdministratorTrain.class);
+            trainingFileManagementService.insertAdministratorTrain(safeAdministratorTrain);
+            return ResponseModel.build("1000", "添加成功");
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
+    /**
+     * 删除负责人、安全生产管理人员培训记录
+     */
+
+    /**
+     * 更新负责人、安全生产管理人员培训记录
+     */
+
+    /**
+     * 分页查看负责人、安全生产管理人员培训记录
+     */
+    /*************************四级HSE教育培训台账****************************/
     /**
      * 文件导入特种培训记录
      */
@@ -117,43 +159,7 @@ public class TrainingFileManagementController {
     /**
      * 分页查看特种培训记录
      */
-    /*************************四级HSE教育培训台账****************************/
-/**
- * 文件导入特种培训记录
- */
-    /**
-     * 增加特种培训记录
-     */
-
-    /**
-     * 删除特种培训记录
-     */
-
-    /**
-     * 更新特种培训记录
-     */
-
-    /**
-     * 分页查看特种培训记录
-     */
     /*************************日常培训台账****************************/
-    /**
-     * 增加特种培训记录
-     */
-
-    /**
-     * 删除特种培训记录
-     */
-
-    /**
-     * 更新特种培训记录
-     */
-
-    /**
-     * 分页查看特种培训记录
-     */
-    /*************************班组日常活动****************************/
-
     /**
      * 增加特种培训记录
      */

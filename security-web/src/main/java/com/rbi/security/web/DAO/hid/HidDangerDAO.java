@@ -42,7 +42,7 @@ public interface HidDangerDAO {
     SysCompanyPersonnel findFirstUserByOrganizationId(Integer organizationId);
 
     /**
-     * 组织id查组织
+     * personnel id查组织
      * */
     @Select("select * from sys_company_personnel where sys_company_personnel.id = #{id}")
     SysCompanyPersonnel findPersonnelById(@Param("id") Integer id);
@@ -78,7 +78,6 @@ public interface HidDangerDAO {
             "hid_type_thing,hid_type_person,hid_type_manage,corrector_id,corrector_name," +
             "rectification_opinions,specified_rectification_time,rectification_notice_annex,rectification_unit_id,rectification_unit_name," +
             "company_id,company_name,factory_id,factory_name,workshop_id,workshop_name,class_id,class_name)values" +
-
             "(#{hidDangerCode},#{hidDangerType},#{organizationId},#{organizationName},#{troubleshootingTime},#{hidDangerContent},#{hidDangerGrade},#{ifControlMeasures},#{ifRectificationPlan}," +
             "#{copyOrganizationId},#{copyOrganizationName},#{ifDeal},#{governanceFunds},#{completionTime},#{completionSituation},#{rectificationPlan},#{acceptanceReport},#{processingStatus}," +
             "#{idt},#{hidTypeThing},#{hidTypePerson},#{hidTypeManage},#{correctorId},#{correctorName}," +
@@ -122,17 +121,17 @@ public interface HidDangerDAO {
     /**
      * 已完成得隐患分页查询
      * */
-    @Select("select * from hid_danger where company_id = #{companyId} and processing_status ='5' and processing_status ='6' limit #{pageNo},#{pageSize}")
+    @Select("select * from hid_danger where company_id = #{companyId} and processing_status ='5' or processing_status ='6' limit #{pageNo},#{pageSize}")
     List<HidDangerDO> findAllFinishHidByPage(@Param("companyId")Integer companyId,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
 
-    @Select("select count(*) from hid_danger where company_id = #{companyId} and processing_status ='5' and processing_status ='6'")
+    @Select("select count(*) from hid_danger where company_id = #{companyId} and processing_status ='5' or processing_status ='6'")
     Integer findAllFinishHidByPageNum(int companyId);
 
-    @Select("SELECT * FROM hid_danger WHERE processing_status ='5' and processing_status ='6' and hid_danger_code in " +
+    @Select("SELECT * FROM hid_danger WHERE (processing_status ='5' or processing_status ='6') and hid_danger_code in " +
             "(SELECT hid_danger_code from hid_danger_process WHERE (operator_id = #{personnelId} or corrector_id = #{personnelId}) GROUP BY hid_danger_code) LIMIT #{pageNo},#{pageSize}")
     List<HidDangerDO> findPersonnelFinishByPage(@Param("personnelId")Integer personnelId,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
 
-    @Select("SELECT count(*) FROM hid_danger WHERE processing_status ='5' and processing_status ='6' and hid_danger_code in " +
+    @Select("SELECT count(*) FROM hid_danger WHERE (processing_status ='5' or processing_status ='6') and hid_danger_code in " +
             "(SELECT hid_danger_code from hid_danger_process WHERE (operator_id = #{personnelId} or corrector_id = #{personnelId}) GROUP BY hid_danger_code)")
     int findPersonnelFinishByPageNum(@Param("personnelId")Integer personnelId);
 
@@ -146,20 +145,29 @@ public interface HidDangerDAO {
     List<HidDangerPictureDO> findAfterPictureByHidDangerCode(String hidDangerCode);
 
 
-    @Select("select * from hid_danger_process where hid_danger_code = #{hidDangerCode} group by id")
+    @Select("select * from hid_danger_process where hid_danger_code = #{hidDangerCode} order by id")
     List<HidDangerProcessDO> findProcessByHidDangerCode(String hidDangerCode);
 
 
-    @Update("update hid_danger set " +
-            "troubleshooting_time=#{troubleshootingTime},hid_danger_content=#{hidDangerContent}," +
-            "hid_danger_grade=#{hidDangerGrade},if_control_measures=#{ifControlMeasures}," +
+//    @Update("update hid_danger set " +
+//            "troubleshooting_time=#{troubleshootingTime},hid_danger_content=#{hidDangerContent}," +
+//            "hid_danger_grade=#{hidDangerGrade},if_control_measures=#{ifControlMeasures}," +
+//            "if_rectification_plan=#{ifRectificationPlan}," +
+//            "if_deal=#{ifDeal},governance_funds=#{governanceFunds}," +
+//            "completion_time=#{completionTime},completion_situation=#{completionSituation}," +
+//            "rectification_plan=#{rectificationPlan},acceptance_report=#{acceptanceReport}," +
+//            "processing_status=#{processingStatus},hid_type_thing=#{hidTypeThing}," +
+//            "hid_type_person=#{hidTypePerson},hid_type_manage=#{hidTypeManage}," +
+//            "corrector_id=#{correctorId},corrector_name=#{correctorName} where hid_danger_code = #{hidDangerCode}")
+//    void updateCompleteHidDanger(HidDangerDO hidDangerDO);
+
+    @Update("update hid_danger set if_control_measures=#{ifControlMeasures}," +
             "if_rectification_plan=#{ifRectificationPlan}," +
             "if_deal=#{ifDeal},governance_funds=#{governanceFunds}," +
             "completion_time=#{completionTime},completion_situation=#{completionSituation}," +
             "rectification_plan=#{rectificationPlan},acceptance_report=#{acceptanceReport}," +
-            "processing_status=#{processingStatus},hid_type_thing=#{hidTypeThing}," +
-            "hid_type_person=#{hidTypePerson},hid_type_manage=#{hidTypeManage}," +
-            "corrector_id=#{correctorId},corrector_name=#{correctorName} where hid_danger_code = #{hidDangerCode}")
+            "processing_status=#{processingStatus},corrector_id=#{correctorId}," +
+            "corrector_name=#{correctorName} where hid_danger_code = #{hidDangerCode}")
     void updateCompleteHidDanger(HidDangerDO hidDangerDO);
 
     @Update("update hid_danger set processing_status = #{processingStatus},auditor_id=#{auditorId},auditor_name=#{auditorName}," +
@@ -180,11 +188,11 @@ public interface HidDangerDAO {
             "where hid_danger_code = #{hidDangerCode}")
     void updateNotice(HidDangerDO hidDangerDO);
 
-    @Select("select * from sys_company_personnel,sys_user where sys_company_personnel.id = sys_user.company_personnel_id and organization_id = #{organizationId} and " +
+    @Select("select sys_company_personnel.id as settingCode,sys_company_personnel.name as settingName from sys_company_personnel,sys_user where sys_company_personnel.id = sys_user.company_personnel_id and organization_id = #{organizationId} and " +
             "sys_company_personnel.id !=#{personnelId}")
     List<SysPersonnelDTO> findPersonnelByOrganizationId(@Param("organizationId")Integer organizationId,@Param("personnelId")Integer personnelId);
 
-    @Select("select * from sys_company_personnel,sys_user where sys_company_personnel.id = sys_user.company_personnel_id and organization_id = #{organizationId} and " +
+    @Select("select sys_company_personnel.id as settingCode,sys_company_personnel.name as settingName from sys_company_personnel,sys_user where sys_company_personnel.id = sys_user.company_personnel_id and organization_id = #{organizationId} and " +
             "sys_company_personnel.id !=#{personnelId} and " +
             "sys_company_personnel.id !=((select sys_company_personnel.id from sys_company_personnel,sys_user,sys_user_role,sys_role where" +
             " sys_company_personnel.id = sys_user.company_personnel_id and sys_user.id = sys_user_role.user_id and " +
@@ -195,7 +203,7 @@ public interface HidDangerDAO {
     /**
      * 组织id找组织负责人id和name
      * */
-    @Select("select sys_company_personnel.id,sys_company_personnel.name " +
+    @Select("select sys_company_personnel.id as settingCode,sys_company_personnel.name as settingName " +
             "from sys_company_personnel,sys_user,sys_user_role,sys_role where " +
             "sys_company_personnel.id = sys_user.company_personnel_id and sys_user.id = sys_user_role.user_id and " +
             "sys_user_role.role_id  =  sys_role.id and sys_role.level = 1 and organization_id in (select id from sys_organization where parent_id = #{organizationId})")

@@ -23,12 +23,6 @@ public interface SafeSubjectOptionDAO  {
     @Select("select * from safe_subject_option where subject_id=#{subjectId}")
     List<SafeSubjectOption> getSafeSubjectOptionBySubjectId(@Param("subjectId") Integer subjectId);
 
-    /**
-     * 更新试题选项信息
-     */
-    @Update("update safe_subject_option set subject_id=#{subjectId},option=#{option},order=#{order} where id=#{id}")
-    int updateSafeSubjectOptionById(SafeSubjectOption safeSubjectOption);
-
 
     /**
      * 根据id删除试题选项
