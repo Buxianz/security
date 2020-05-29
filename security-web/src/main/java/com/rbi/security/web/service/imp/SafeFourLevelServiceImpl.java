@@ -14,6 +14,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,6 +63,29 @@ public class SafeFourLevelServiceImpl implements SafeFourLevelService {
     public SafeFourLevel getSafeFourLevelById(JSONObject json) {
         SafeFourLevel safeFourLevel=safeFourLevelDAO.getSafeFourLevelById(json.getInteger("id"));
         return safeFourLevel;
+    }
+
+    @Override
+    public PageData findSafeFourLevel(JSONObject json) {
+        int pageNo = json.getInteger("pageNo");
+        int pageSize = json.getInteger("pageSize");
+        int recNo = pageSize * (pageNo - 1);
+        List<SafeFourLevel> safeFourLevelList=new ArrayList<>();
+        int count =0;
+        if (json.getInteger("key")==0) {
+            safeFourLevelList = safeFourLevelDAO.findSafeFourLevelByName(json.getString("name"),recNo, pageSize);
+            count =safeFourLevelDAO.getCountSafeFourLevelByName(json.getString("name"));
+        }else if (json.getInteger("key")==1) {
+            safeFourLevelList = safeFourLevelDAO.findSafeFourLevelByWorkType(json.getString("workType"),recNo, pageSize);
+            count =safeFourLevelDAO.getCountSafeFourLevelByWorkType(json.getString("workType"));
+        }
+        int totalPage=0;
+        if (0 == count % pageSize) {
+            totalPage = count / pageSize;
+        } else {
+            totalPage = count / pageSize + 1;
+        }
+        return new PageData(pageNo, pageSize, totalPage, count, safeFourLevelList);
     }
 
     @Override

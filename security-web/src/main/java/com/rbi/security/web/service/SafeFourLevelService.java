@@ -14,6 +14,11 @@ public interface SafeFourLevelService {
      * 根据id查询四级HSE教育培训台账
      */
     SafeFourLevel getSafeFourLevelById(JSONObject json);
+
+    /**
+     * 搜索分页查询四级HSE教育培训台账
+     */
+    PageData findSafeFourLevel(JSONObject json);
     /**
      * 添加
      */

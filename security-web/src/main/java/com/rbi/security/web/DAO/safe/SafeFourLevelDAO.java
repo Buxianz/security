@@ -26,6 +26,22 @@ public interface SafeFourLevelDAO {
     SafeFourLevel getSafeFourLevelById(@Param("Id") Integer Id);
 
     /**
+     * 根据姓名获取
+     */
+    @Select("select * from safe_four_level where name=#{name} limit #{pageNo},#{pageSize}")
+    List<SafeFourLevel> findSafeFourLevelByName(@Param("name") String name,@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
+    @Select("select count(id) from safe_four_level where name=#{name}")
+    int getCountSafeFourLevelByName(@Param("name") String name);
+
+    /**
+     * 根据工种获取
+     */
+    @Select("select * from safe_four_level where work_type=#{workType} limit #{pageNo},#{pageSize}")
+    List<SafeFourLevel> findSafeFourLevelByWorkType(@Param("workType") String workType,@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
+    @Select("select count(id) from safe_four_level where work_type=#{workType}")
+    int getCountSafeFourLevelByWorkType(@Param("workType") String workType);
+
+    /**
      * 获取全部试题
      */
     @Select("select * from safe_four_level limit #{pageNo},#{pageSize}")

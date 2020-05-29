@@ -70,6 +70,24 @@ public class SafeFourLevelController {
             return ResponseModel.build("1001", "服务器处理异常");
         }
     }
+
+    /**
+     * 搜索分页查询四级HSE教育培训台账
+     *
+     * @param json
+     * @return
+     */
+    @RequestMapping(value = "/findSafeFourLevel", method = RequestMethod.POST)
+    public ResponseModel<PageData> findSafeFourLevel(@RequestBody JSONObject json) {
+        try {
+            PageData pageData = safeFourLevelService.findSafeFourLevel(json);
+            return ResponseModel.build("1000", "查询成功", pageData);
+        } catch (Exception e) {
+            logger.error("分页查询异常，ERROR：{}", e);
+            return ResponseModel.build("1001", "服务器处理异常");
+        }
+    }
+
     /**
      * 添加四级HSE教育培训台账
      *
