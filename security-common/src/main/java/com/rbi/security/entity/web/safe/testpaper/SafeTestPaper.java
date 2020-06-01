@@ -1,6 +1,7 @@
 package com.rbi.security.entity.web.safe.testpaper;
 
 import lombok.Data;
+import org.omg.PortableInterceptor.INACTIVE;
 
 import java.io.Serializable;
 import java.util.List;
@@ -30,6 +31,10 @@ public class SafeTestPaper implements Serializable {
      * 考试时长
      */
     private Integer duration;
+    /**
+     * 需求计划id
+     */
+    private Integer trainingPlanId;
     /**
      * 试卷的题目
      */
