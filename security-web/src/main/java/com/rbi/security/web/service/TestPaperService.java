@@ -1,5 +1,7 @@
 package com.rbi.security.web.service;
 
+import com.rbi.security.entity.web.safe.testpaper.SafeTestPaper;
+
 /**
  * @PACKAGE_NAME: com.rbi.security.web.service.imp
  * @NAME: TestQuestionsService 试卷服务
@@ -18,4 +20,5 @@ package com.rbi.security.web.service;
  * @PROJECT_NAME: security
  **/
 public interface TestPaperService {
+    SafeTestPaper insertTestQaper(SafeTestPaper safeTestPaper);
 }
