@@ -242,6 +242,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             String hidDangerCode = DateUtil.timeStamp();
             hidDangerDO.setIdt(idt);
             hidDangerDO.setHidDangerCode(hidDangerCode);
+            hidDangerDO.setProcessingStatus("2");
 
             //排查前照片添加
             if (beforeImg.length > 6) {
