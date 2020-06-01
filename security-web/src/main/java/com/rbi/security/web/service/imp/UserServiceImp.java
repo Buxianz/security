@@ -147,7 +147,7 @@ public class UserServiceImp implements UserService {
             }else {
                 totalPage = count/pageSize+1;
             }
-            pagingUserList= setUserOrganization(pagingUserList);
+            newPagingUserList= setUserOrganization(newPagingUserList);
             return new PageData<PagingUser>(pageNo,pageSize,totalPage,count,newPagingUserList);
         }catch (Exception e){
             logger.error("分页获取用户信息失败，异常为{}",e);
@@ -191,8 +191,10 @@ public class UserServiceImp implements UserService {
             if(userIds.size()!=0)
             sysUserRoleList=sysUserRoleDAO.getUserRole(userIds);
             pagingUserList.forEach(pagingUser ->{
+                System.out.println(pagingUser.toString());
                 //此处可优化为放在redis
                 List<SysOrganization> organizationList = organizationDAO.queryAllParentDate(pagingUser.getOrganizationId());
+                if(organizationList.size()!=0)
                 organizationList.forEach(sysOrganization -> {
                     switch (sysOrganization.getLevel()) {
                         case 1: {
