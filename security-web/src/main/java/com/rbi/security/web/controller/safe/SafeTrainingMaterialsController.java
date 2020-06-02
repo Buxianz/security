@@ -84,7 +84,7 @@ public class SafeTrainingMaterialsController {
 
 
     /**
-     * 培训内容下拉查询
+     * 培训内容下拉搜索
      * */
     @PostMapping("/findByCondition")
     public ResponseModel<PageData> findByCondition(@RequestBody JSONObject json){
@@ -101,6 +101,25 @@ public class SafeTrainingMaterialsController {
     }
 
     /**
+     * 名称搜索
+     * */
+    @PostMapping("/findByName")
+    public ResponseModel<PageData> findByName(@RequestBody JSONObject json){
+        try {
+            int pageNo = json.getInteger("pageNo");
+            int pageSize = json.getInteger("pageSize");
+            String value = json.getString("value");
+            PageData pageData = safeTrainingMaterialsService.findByName(pageNo,pageSize,value);
+            return ResponseModel.build("1000","条件查询成功！",pageData);
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+
+
+    /**
      * 内容类型下拉查询
      * */
     @PostMapping("/findType")
@@ -113,10 +132,5 @@ public class SafeTrainingMaterialsController {
             return ResponseModel.build("1001","处理异常");
         }
     }
-
-
-
-
-
 
 }

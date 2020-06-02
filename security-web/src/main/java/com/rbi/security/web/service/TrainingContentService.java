@@ -2,8 +2,10 @@ package com.rbi.security.web.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.rbi.security.entity.web.safe.content.SafeDataPlan;
+import com.rbi.security.entity.web.safe.content.SafeDataPlanDTO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @PACKAGE_NAME: com.rbi.security.web.service
@@ -26,5 +28,11 @@ public interface TrainingContentService {
     /**
      * 关联培训资料库与教育培训需求计划的关联
      */
-    String add(Integer trainingPlanId, JSONArray array);
+    void add(Integer trainingPlanId, JSONArray array);
+
+    List<SafeDataPlanDTO> findAllByTrainingPlanId(Integer trainingPlanId);
+
+    void deleteById(Integer id);
+
+    Map<String, Object> findPreviewById(Integer id);
 }
