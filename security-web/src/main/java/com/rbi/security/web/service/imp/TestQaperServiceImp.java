@@ -6,6 +6,8 @@ import com.rbi.security.entity.web.safe.testpaper.SafeTestQuestionOptions;
 import com.rbi.security.entity.web.safe.testpaper.SafeTestQuestions;
 import com.rbi.security.web.DAO.safe.SafeTestQaperDAO;
 import com.rbi.security.web.service.TestPaperService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -32,6 +34,7 @@ import java.util.List;
  **/
 @Service
 public class TestQaperServiceImp implements TestPaperService {
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImp.class);
     @Autowired(required = false)
     SafeTestQaperDAO safeTestQaperDAO;
     /**
@@ -39,9 +42,15 @@ public class TestQaperServiceImp implements TestPaperService {
      */
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public SafeTestPaper insertTestQaper(SafeTestPaper safeTestPaper) throws RuntimeException{
-        safeTestQaperDAO.insertSafeTestPaper(safeTestPaper);
-        insertTestQuestions(safeTestPaper.getSafeTestQuestionsList(),safeTestPaper.getId());
-       return safeTestPaper;
+        try {
+            safeTestQaperDAO.insertSafeTestPaper(safeTestPaper);
+            insertTestQuestions(safeTestPaper.getSafeTestQuestionsList(),safeTestPaper.getId());
+            return safeTestPaper;
+        }catch (Exception e1) {
+            logger.error("添加试卷失败，异常信息为{}", e1);
+            e1.printStackTrace();
+            throw new RuntimeException(e1.getMessage());
+        }
     }
     /**
      * 修改试卷  目前不开发
@@ -56,22 +65,33 @@ public class TestQaperServiceImp implements TestPaperService {
      */
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public List<SafeTestQuestions> insertTestQuestions(List<SafeTestQuestions> safeTestQuestionsList,Integer TestPapreId) throws RuntimeException{
-        for (int i=0;i<safeTestQuestionsList.size();i++){
-            safeTestQuestionsList.get(i).setTestPapreId(TestPapreId);
-            safeTestQaperDAO.insertSafeTestQuestions(safeTestQuestionsList.get(i));
-            insertTestQuestionOptions(safeTestQuestionsList.get(i).getSafeTestQuestionOptionsList(),safeTestQuestionsList.get(i).getId());
+        try {
+            for (int i = 0; i < safeTestQuestionsList.size(); i++) {
+                safeTestQuestionsList.get(i).setTestPapreId(TestPapreId);
+                safeTestQaperDAO.insertSafeTestQuestions(safeTestQuestionsList.get(i));
+                insertTestQuestionOptions(safeTestQuestionsList.get(i).getSafeTestQuestionOptionsList(), safeTestQuestionsList.get(i).getId());
+            }
+            return safeTestQuestionsList;
+        }catch (Exception e1) {
+            logger.error("添加试题失败，异常信息为{}", e1);
+            e1.printStackTrace();
+            throw new RuntimeException(e1.getMessage());
         }
-
-       return safeTestQuestionsList;
     }
     /**
      * 添加试卷题目的选项
      */
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void insertTestQuestionOptions(List<SafeTestQuestionOptions> safeTestQuestionOptionsList,Integer SubjectId) throws RuntimeException{
-        for (int i=0;i<safeTestQuestionOptionsList.size();i++){
-            safeTestQuestionOptionsList.get(i).setSubjectId(SubjectId);
-            safeTestQaperDAO.insertSafeTestQuestionOptions(safeTestQuestionOptionsList.get(i));
+        try {
+            for (int i = 0; i < safeTestQuestionOptionsList.size(); i++) {
+                safeTestQuestionOptionsList.get(i).setSubjectId(SubjectId);
+                safeTestQaperDAO.insertSafeTestQuestionOptions(safeTestQuestionOptionsList.get(i));
+            }
+        }catch (Exception e1) {
+            logger.error("添加选项失败，异常信息为{}", e1);
+            e1.printStackTrace();
+            throw new RuntimeException(e1.getMessage());
         }
     }
     /**

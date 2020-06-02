@@ -176,16 +176,18 @@ public interface HidDangerDAO {
     void auditPass(HidDangerDO hidDangerDO);
 
     @Update("update hid_danger set processing_status = #{processingStatus},auditor_id=#{auditorId},auditor_name=#{auditorName}," +
-            "audit_time=#{auditTime},audit_reason=#{auditReason} " +
+            "audit_time=#{auditTime},rectification_evaluate=#{rectificationEvaluate} " +
             "where hid_danger_code = #{hidDangerCode}")
     void auditFalse(HidDangerDO hidDangerDO);
 
 
+    /**
+     * 修改sql 修改时间*******************
+     * */
     @Update("update hid_danger set " +
             "processing_status = #{processingStatus},rectification_opinions = #{rectificationOpinions}," +
             "corrector_id = #{correctorId},corrector_name = #{correctorName}," +
-            "rectification_notice_time = #{rectificationNoticeTime},required_completion_time = #{requiredCompletionTime} " +
-            "where hid_danger_code = #{hidDangerCode}")
+            "rectification_notice_time = #{rectificationNoticeTime} where hid_danger_code = #{hidDangerCode}")
     void updateNotice(HidDangerDO hidDangerDO);
 
     @Select("select sys_company_personnel.id as settingCode,sys_company_personnel.name as settingName from sys_company_personnel,sys_user where sys_company_personnel.id = sys_user.company_personnel_id and organization_id = #{organizationId} and " +

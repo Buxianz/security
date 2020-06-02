@@ -1,7 +1,11 @@
 package com.rbi.security.web.service.imp;
 
+import com.alibaba.fastjson.JSONArray;
+import com.rbi.security.entity.web.safe.content.SafeDataPlan;
 import com.rbi.security.web.service.TrainingContentService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @PACKAGE_NAME: com.rbi.security.web.service.imp
@@ -25,5 +29,13 @@ public class TrainingContentServiceImp implements TrainingContentService {
     /**
      * 关联培训资料库与教育培训需求计划的关联
      */
+    @Override
+    public String add(Integer trainingPlanId, JSONArray array) {
+        for (int i = 0;i< array.size();i++){
+            
+        }
 
+
+        return null;
+    }
 }

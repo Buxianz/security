@@ -194,10 +194,10 @@ public class HidDangerCotroller {
     public ResponseModel auditFalse(@RequestBody JSONObject json){
         try {
             String hidDangerCode = json.getString("hidDangerCode");
-            String auditReason = json.getString("auditReason");
+            String rectificationEvaluate = json.getString("rectificationEvaluate");
             Integer type = 1;
             Integer correctorId = json.getInteger("correctorId");
-            hidDangerService.auditFalse(type,hidDangerCode,auditReason,correctorId);
+            hidDangerService.auditFalse(type,hidDangerCode,rectificationEvaluate,correctorId);
             return ResponseModel.build("1000","审核成功");
         }catch (Exception e){
             System.out.println("错误："+e);
@@ -215,8 +215,8 @@ public class HidDangerCotroller {
             String hidDangerCode = json.getString("hidDangerCode");
             Integer correctorId = json.getInteger("correctorId");
             String rectificationOpinions = json.getString("rectificationOpinions");
-            String requiredCompletionTime = json.getString("requiredCompletionTime");
-            String result = hidDangerService.rectificationNotice(hidDangerCode,rectificationOpinions,requiredCompletionTime,correctorId);
+            String specifiedRectificationTime = json.getString("specifiedRectificationTime");
+            String result = hidDangerService.rectificationNotice(hidDangerCode,rectificationOpinions,specifiedRectificationTime,correctorId);
             if (result.equals("1000")){
                 return ResponseModel.build("1000","通知整改成功！");
             }else {

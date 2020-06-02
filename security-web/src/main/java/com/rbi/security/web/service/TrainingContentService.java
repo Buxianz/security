@@ -1,5 +1,10 @@
 package com.rbi.security.web.service;
 
+import com.alibaba.fastjson.JSONArray;
+import com.rbi.security.entity.web.safe.content.SafeDataPlan;
+
+import java.util.List;
+
 /**
  * @PACKAGE_NAME: com.rbi.security.web.service
  * @NAME: TrainingContentService   培训内容处理模块
@@ -21,4 +26,5 @@ public interface TrainingContentService {
     /**
      * 关联培训资料库与教育培训需求计划的关联
      */
+    String add(Integer trainingPlanId, JSONArray array);
 }
