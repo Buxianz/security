@@ -1,9 +1,12 @@
 package com.rbi.security.web.service.imp;
 
+import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.safe.testpaper.SafeTestPaper;
 import com.rbi.security.entity.web.safe.testpaper.SafeTestQuestionOptions;
 import com.rbi.security.entity.web.safe.testpaper.SafeTestQuestions;
+import com.rbi.security.web.DAO.safe.SafeTestQaperDAO;
 import com.rbi.security.web.service.TestPaperService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,11 +32,15 @@ import java.util.List;
  **/
 @Service
 public class TestQaperServiceImp implements TestPaperService {
+    @Autowired(required = false)
+    SafeTestQaperDAO safeTestQaperDAO;
     /**
      * 添加试卷
      */
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public SafeTestPaper insertTestQaper(SafeTestPaper safeTestPaper) throws RuntimeException{
+        safeTestQaperDAO.insertSafeTestPaper(safeTestPaper);
+        insertTestQuestions(safeTestPaper.getSafeTestQuestionsList(),safeTestPaper.getId());
        return safeTestPaper;
     }
     /**
@@ -48,8 +55,12 @@ public class TestQaperServiceImp implements TestPaperService {
      * 添加试卷的题目
      */
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
-    public List<SafeTestQuestions> insertTestQuestions(List<SafeTestQuestions> safeTestQuestionsList) throws RuntimeException{
-
+    public List<SafeTestQuestions> insertTestQuestions(List<SafeTestQuestions> safeTestQuestionsList,Integer TestPapreId) throws RuntimeException{
+        for (int i=0;i<safeTestQuestionsList.size();i++){
+            safeTestQuestionsList.get(i).setTestPapreId(TestPapreId);
+            safeTestQaperDAO.insertSafeTestQuestions(safeTestQuestionsList.get(i));
+            insertTestQuestionOptions(safeTestQuestionsList.get(i).getSafeTestQuestionOptionsList(),safeTestQuestionsList.get(i).getId());
+        }
 
        return safeTestQuestionsList;
     }
@@ -57,8 +68,11 @@ public class TestQaperServiceImp implements TestPaperService {
      * 添加试卷题目的选项
      */
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
-    public void insertTestQuestionOptions(List<SafeTestQuestionOptions> safeTestQuestionOptionsList) throws RuntimeException{
-
+    public void insertTestQuestionOptions(List<SafeTestQuestionOptions> safeTestQuestionOptionsList,Integer SubjectId) throws RuntimeException{
+        for (int i=0;i<safeTestQuestionOptionsList.size();i++){
+            safeTestQuestionOptionsList.get(i).setSubjectId(SubjectId);
+            safeTestQaperDAO.insertSafeTestQuestionOptions(safeTestQuestionOptionsList.get(i));
+        }
     }
     /**
      * 分页查看试卷 目前不开发

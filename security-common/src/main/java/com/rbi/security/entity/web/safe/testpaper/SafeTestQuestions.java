@@ -17,7 +17,7 @@ public class SafeTestQuestions implements Serializable {
     /**
     * 试卷的题目id
     */
-    private Object id;
+    private Integer id;
     /**
     * 题目内容
     */
