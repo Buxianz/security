@@ -57,13 +57,13 @@ public class SafeSubjectServiceImpl implements SafeSubjectService {
     }
 
     @Override
-    public PageData getSafeSubjectBySubjectType(JSONObject json) {
+    public PageData getSafeSubjectByPage(JSONObject json) {
         int totalPage=0;
         int count=0;
         int pageNo = json.getInteger("pageNo");
         int pageSize = json.getInteger("pageSize");
         int recNo = pageSize * (pageNo - 1);
-        List<SafeSubject> safeSubjectList=safeSubjectDAO.getSafeSubjectBySubjectType(recNo, pageSize);
+        List<SafeSubject> safeSubjectList=safeSubjectDAO.getSafeSubjectByPage(recNo, pageSize);
         List<PagingSafe> pagingSafeArrayList=new ArrayList<>();
         for(int i=0;i<safeSubjectList.size();i++){
             PagingSafe pagingSafe=new PagingSafe();
@@ -74,11 +74,11 @@ public class SafeSubjectServiceImpl implements SafeSubjectService {
             }
             pagingSafeArrayList.add(pagingSafe);
         }
-        count =safeSubjectList.size();
-        if (0 == count % pageSize) {
-            totalPage = count / pageSize;
-        } else {
-            totalPage = count / pageSize + 1;
+        count =safeSubjectDAO.getCountSafeSubject();
+        if (count%pageSize==0){
+            totalPage = count/pageSize;
+        }else {
+            totalPage = count/pageSize+1;
         }
         return new PageData(pageNo, pageSize, totalPage, count, pagingSafeArrayList);
     }

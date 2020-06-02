@@ -15,7 +15,7 @@ public interface SafeSubjectService {
     /**
      * 根据类型分页查询试题
      */
-    PageData getSafeSubjectBySubjectType(JSONObject json);
+    PageData getSafeSubjectByPage(JSONObject json);
 
 
     /**

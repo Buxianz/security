@@ -20,8 +20,10 @@ public interface SafeSubjectDAO {
      */
     @Select("select safe_subject.*,subject_store_name from safe_subject,safe_subject_store_type WHERE " +
             "safe_subject.subject_store_id=safe_subject_store_type.id limit #{pageNo},#{pageSize}")
-    List<SafeSubject> getSafeSubjectBySubjectType(@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
-
+    List<SafeSubject> getSafeSubjectByPage(@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
+    @Select("select count(safe_subject.id) from safe_subject,safe_subject_store_type WHERE " +
+            "safe_subject.subject_store_id=safe_subject_store_type.id")
+    int getCountSafeSubject();
     /**
      * 根据id获取试题
      */
