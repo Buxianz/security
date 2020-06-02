@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.config.OrganizationTree;
 import com.rbi.security.entity.config.SystemMenuPermisson;
 import com.rbi.security.entity.web.entity.SysRole;
+import com.rbi.security.entity.web.safe.demand.SafaTrainingType;
 import com.rbi.security.entity.web.system.SystemCategory;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.ConfigService;
@@ -84,6 +85,17 @@ public class ConfigController {
     public ResponseModel<List<SystemCategory>> getSystemTypeBox(){
         try{
             return ResponseModel.build("1000", "查询成功",configService.getSystemCategoryBox());
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
+    /**
+     * 获取所有培训类型下拉框
+     */
+    @RequestMapping("/getSafaTrainingType")
+    public ResponseModel<List<SafaTrainingType>> getSafaTrainingType(){
+        try{
+            return ResponseModel.build("1000", "查询成功",configService.getSafaTrainingType());
         }catch (Exception e){
             return ResponseModel.build("1001", e.getMessage());
         }
