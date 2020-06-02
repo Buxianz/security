@@ -5,10 +5,12 @@ import com.rbi.security.entity.config.PermissionTreeInfo;
 import com.rbi.security.entity.config.SystemMenuPermisson;
 import com.rbi.security.entity.web.entity.SysRole;
 import com.rbi.security.entity.web.entity.SysSystem;
+import com.rbi.security.entity.web.safe.demand.SafaTrainingType;
 import com.rbi.security.entity.web.system.SystemCategory;
 import com.rbi.security.entity.web.user.CompanyPersonnelBox;
 import com.rbi.security.tool.TreeDTO;
 import com.rbi.security.web.DAO.*;
+import com.rbi.security.web.DAO.safe.SafaTrainingTypeDAO;
 import com.rbi.security.web.DAO.system.SystemCategoryDAO;
 import com.rbi.security.web.service.ConfigService;
 import org.checkerframework.checker.units.qual.A;
@@ -52,6 +54,8 @@ public class ConfigServiceImp implements ConfigService {
     SysPermissionDAO sysPermissionDAO;
 @Autowired
     SystemCategoryDAO systemCategoryDAO;
+@Autowired
+    SafaTrainingTypeDAO safaTrainingTypeDAO;
     @Override
     public List<OrganizationTree> getOrganizationTree() throws RuntimeException {
         List<OrganizationTree> organizationTreeList=null;
@@ -194,5 +198,19 @@ public class ConfigServiceImp implements ConfigService {
             throw new RuntimeException("获取制度类型下拉框信息");
         }
         return systemCategories;
+    }
+
+    /**
+     * 获取所有培训类型下拉框
+     */
+    public List<SafaTrainingType> getSafaTrainingType() throws RuntimeException {
+        List<SafaTrainingType> safaTrainingTypeList=null;
+        try{
+            safaTrainingTypeList=safaTrainingTypeDAO.getAllSafaTrainingType();
+        }catch (Exception e){
+            logger.error("获取所有培训内容下拉框信息失败，异常为{}",e);
+            throw new RuntimeException("获取所有培训内容下拉框失败");
+        }
+        return safaTrainingTypeList;
     }
 }

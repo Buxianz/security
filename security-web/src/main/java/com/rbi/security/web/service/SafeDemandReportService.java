@@ -1,5 +1,9 @@
 package com.rbi.security.web.service;
 
+import com.rbi.security.entity.web.safe.demand.PagingTraniningNeeds;
+import com.rbi.security.entity.web.safe.demand.SafeTrainingNeeds;
+import com.rbi.security.tool.PageData;
+
 /**
  * @PACKAGE_NAME: com.rbi.security.web.service
  * @NAME: SafeDemandReportService 需求提报处理模块
@@ -18,4 +22,6 @@ package com.rbi.security.web.service;
  * @PROJECT_NAME: security
  **/
 public interface SafeDemandReportService {
+    void insertSafeDemandReport(SafeTrainingNeeds safeTrainingNeeds) throws RuntimeException;
+    PageData<PagingTraniningNeeds> pagingSafeDemandReport(int pageNo, int pageSize, int startIndex,int processingStatus) throws RuntimeException;
 }
