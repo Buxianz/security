@@ -127,6 +127,21 @@ public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsSe
     }
 
     @Override
+    public PageData findByName(int pageNo, int pageSize, String value) {
+        String name = "'%"+value+"%'";
+        int pageNo2 = pageSize * (pageNo - 1);
+        List<SafeTrainingMaterials> safeTrainingMaterials = safeTrainingMaterialsDAO.findByName(pageNo2,pageSize,name);
+        int totalPage = 0;
+        int count = safeTrainingMaterialsDAO.findByNameNum(name);
+        if (0 == count % pageSize) {
+            totalPage = count / pageSize;
+        } else {
+            totalPage = count / pageSize + 1;
+        }
+        return new PageData(pageNo, pageSize, totalPage, count, safeTrainingMaterials);
+    }
+
+    @Override
     public void deleteByIds(JSONArray array) {
         for (int i = 0; i < array.size(); i++) {
             JSONObject obj = (JSONObject) array.get(i);

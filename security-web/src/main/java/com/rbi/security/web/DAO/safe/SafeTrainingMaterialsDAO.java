@@ -3,10 +3,7 @@ package com.rbi.security.web.DAO.safe;
 import com.rbi.security.entity.web.hid.HidDangerDO;
 import com.rbi.security.entity.web.safe.content.SafeContentCategory;
 import com.rbi.security.entity.web.safe.content.SafeTrainingMaterials;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -38,5 +35,9 @@ public interface SafeTrainingMaterialsDAO {
     @Select("select count(*) from safe_training_materials where content_category_id = #{contentCategoryId}")
     int findByConditionNum(Integer contentCategoryId);
 
+    @Select("select * from safe_training_materials where resource_name like ${resourceName} limit #{pageNo},#{pageSize}")
+    List<SafeTrainingMaterials> findByName(@Param("pageNo") int pageNo,@Param("pageSize") int pageSize,@Param("resourceName") String resourceName);
 
+    @Select("select count(*) from safe_training_materials where resource_name like ${resourceName}")
+    int findByNameNum(@Param("resourceName") String resourceName);
 }

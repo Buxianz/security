@@ -36,4 +36,6 @@ public interface SafeTrainingMaterialsService {
     List<SafeContentCategory> findType();
 
     void deleteByIds(JSONArray array);
+
+    PageData findByName(int pageNo, int pageSize, String value);
 }

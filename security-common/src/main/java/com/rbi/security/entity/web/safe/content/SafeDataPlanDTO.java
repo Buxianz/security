@@ -22,7 +22,9 @@ import lombok.Data;
 @Data
 public class SafeDataPlanDTO {
     private Integer id;
-    private Integer trainingMaterialsId;
-    private Integer trainingPlanId;
+    private String resourceName;
+    private String resourcePath;
+
+
 
 }
