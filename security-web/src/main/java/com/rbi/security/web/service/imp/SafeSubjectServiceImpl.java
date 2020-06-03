@@ -9,6 +9,8 @@ import com.rbi.security.tool.PageData;
 import com.rbi.security.web.DAO.SafeSubjectDAO;
 import com.rbi.security.web.DAO.SafeSubjectOptionDAO;
 import com.rbi.security.web.service.SafeSubjectService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,7 @@ import java.util.List;
  **/
 @Service
 public class SafeSubjectServiceImpl implements SafeSubjectService {
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImp.class);
     @Autowired(required = false)
     SafeSubjectDAO safeSubjectDAO;
     @Autowired(required = false)
@@ -57,30 +60,35 @@ public class SafeSubjectServiceImpl implements SafeSubjectService {
     }
 
     @Override
-    public PageData getSafeSubjectByPage(JSONObject json) {
+    public PageData getSafeSubjectByPage(JSONObject json)  throws RuntimeException{
         int totalPage=0;
         int count=0;
-        int pageNo = json.getInteger("pageNo");
-        int pageSize = json.getInteger("pageSize");
-        int recNo = pageSize * (pageNo - 1);
-        List<SafeSubject> safeSubjectList=safeSubjectDAO.getSafeSubjectByPage(recNo, pageSize);
-        List<PagingSafe> pagingSafeArrayList=new ArrayList<>();
-        for(int i=0;i<safeSubjectList.size();i++){
-            PagingSafe pagingSafe=new PagingSafe();
-            pagingSafe.setSafeSubject(safeSubjectList.get(i));
-            List<SafeSubjectOption> safeSubjectOptionList=safeSubjectOptionDAO.getSafeSubjectOptionBySubjectId(safeSubjectList.get(i).getId());
-            for (int m=0;m<safeSubjectOptionList.size();m++) {
-                pagingSafe.setSafeSubjectOptionList(safeSubjectOptionList);
+        try {
+            int pageNo = json.getInteger("pageNo");
+            int pageSize = json.getInteger("pageSize");
+            int recNo = pageSize * (pageNo - 1);
+            List<SafeSubject> safeSubjectList = safeSubjectDAO.getSafeSubjectByPage(recNo, pageSize);
+            List<PagingSafe> pagingSafeArrayList = new ArrayList<>();
+            for (int i = 0; i < safeSubjectList.size(); i++) {
+                PagingSafe pagingSafe = new PagingSafe();
+                pagingSafe.setSafeSubject(safeSubjectList.get(i));
+                List<SafeSubjectOption> safeSubjectOptionList = safeSubjectOptionDAO.getSafeSubjectOptionBySubjectId(safeSubjectList.get(i).getId());
+                for (int m = 0; m < safeSubjectOptionList.size(); m++) {
+                    pagingSafe.setSafeSubjectOptionList(safeSubjectOptionList);
+                }
+                pagingSafeArrayList.add(pagingSafe);
             }
-            pagingSafeArrayList.add(pagingSafe);
-        }
-        count =safeSubjectDAO.getCountSafeSubject();
-        if (count%pageSize==0){
-            totalPage = count/pageSize;
-        }else {
-            totalPage = count/pageSize+1;
-        }
-        return new PageData(pageNo, pageSize, totalPage, count, pagingSafeArrayList);
+            count = safeSubjectDAO.getCountSafeSubject();
+            if (count % pageSize == 0) {
+                totalPage = count / pageSize;
+            } else {
+                totalPage = count / pageSize + 1;
+            }
+            return new PageData(pageNo, pageSize, totalPage, count, pagingSafeArrayList);
+        } catch (Exception e) {
+        logger.error("查询信息异常，异常信息为{}", e);
+        throw new RuntimeException(e.getMessage());
+    }
     }
 
     @Override

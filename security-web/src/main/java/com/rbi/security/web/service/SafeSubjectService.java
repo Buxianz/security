@@ -10,23 +10,23 @@ public interface SafeSubjectService {
     /**
      * 添加自定义试题
      */
-    void insertSafeSubject(JSONObject json);
+    void insertSafeSubject(JSONObject json) throws RuntimeException;
 
     /**
      * 根据类型分页查询试题
      */
-    PageData getSafeSubjectByPage(JSONObject json);
+    PageData getSafeSubjectByPage(JSONObject json) throws RuntimeException;
 
 
     /**
      * 更新试题信息
      */
-    String updateSafeSubjectById(JSONObject json);
+    String updateSafeSubjectById(JSONObject json) throws RuntimeException;
 
     /**
      * 根据id删除试题
      */
-    String  deleteSafeSubjectById(JSONArray result);
+    String  deleteSafeSubjectById(JSONArray result) throws RuntimeException;
 
 
 }

@@ -53,7 +53,7 @@ public class SafeSubjectController {
             return ResponseModel.build("1000", "查询成功", pageData);
         } catch (Exception e) {
             logger.error("分页查询异常，ERROR：{}", e);
-            return ResponseModel.build("1001", "服务器处理异常");
+            return ResponseModel.build("1001", "服务器处理异常",e.getMessage());
         }
     }
     /**
