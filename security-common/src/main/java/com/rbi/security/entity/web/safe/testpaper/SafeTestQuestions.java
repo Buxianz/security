@@ -34,11 +34,12 @@ public class SafeTestQuestions implements Serializable {
     * 试卷id
     */
     private Integer testPapreId;
-
-
+    /**
+     * 分值
+     */
+    private Integer score;
     /**
      * 试题的选项
      */
     private List<SafeTestQuestionOptions> safeTestQuestionOptionsList;
-
 }

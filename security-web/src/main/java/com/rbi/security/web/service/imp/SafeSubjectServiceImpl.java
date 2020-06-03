@@ -51,6 +51,7 @@ public class SafeSubjectServiceImpl implements SafeSubjectService {
         safeSubject.setSubject(json.getString("subject"));
         safeSubject.setSubjectType(json.getInteger("subjectType"));
         safeSubject.setSubjectStoreId(json.getInteger("subjectStoreId"));
+        safeSubject.setScore(json.getInteger("score"));
         safeSubjectDAO.insertSafeSubject(safeSubject);
         List<String> options = new ArrayList<>(Arrays.asList(json.getString("option").split("#")));
         List<String> orders = new ArrayList<>(Arrays.asList(json.getString("order").split("#")));
@@ -100,6 +101,7 @@ public class SafeSubjectServiceImpl implements SafeSubjectService {
             safeSubject.setSubject(json.getString("subject"));
             safeSubject.setSubjectType(json.getInteger("subjectType"));
             safeSubject.setSubjectStoreId(json.getInteger("subjectStoreId"));
+            safeSubject.setScore(json.getInteger("score"));
             safeSubjectDAO.updateSafeSubjectById(safeSubject);
             List<String> options = new ArrayList<>(Arrays.asList(json.getString("option").split("#")));
             List<String> orders = new ArrayList<>(Arrays.asList(json.getString("order").split("#")));
