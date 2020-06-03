@@ -44,7 +44,7 @@ public class TrainingContentServiceImp implements TrainingContentService {
         for (int i = 0;i< safeDataPlanList.size();i++){
             int num = trainingContentServiceDAO.findCount(safeDataPlanList.get(i).getTrainingPlanId(),safeDataPlanList.get(i).getTrainingMaterialsId());
             if ( num == 0){
-                trainingContentServiceDAO.add(safeDataPlanList.get(i).getTrainingPlanId(),safeDataPlanList.get(i).getTrainingMaterialsId());
+                trainingContentServiceDAO.add(safeDataPlanList.get(i));
             }
         }
     }

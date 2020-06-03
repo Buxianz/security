@@ -1,5 +1,6 @@
 package com.rbi.security.web.DAO.safe;
 
+import com.rbi.security.entity.web.safe.content.SafeDataPlan;
 import com.rbi.security.entity.web.safe.content.SafeDataPlanDTO;
 import org.apache.ibatis.annotations.*;
 
@@ -25,7 +26,7 @@ import java.util.List;
 @Mapper
 public interface TrainingContentServiceDAO {
     @Insert("insert into safe_data_plan (training_plan_id,training_materials_id) values (#{trainingPlanId},#{trainingMaterialsId})")
-    void add(@Param("trainingPlanId")Integer trainingPlanId,@Param("trainingMaterialsId")Integer trainingMaterialsId);
+    void add(SafeDataPlan safeDataPlan);
 
     @Select("select count(*) from safe_data_plan where training_plan_id=#{trainingPlanId} and training_materials_id = #{trainingMaterialsId}")
     Integer findCount(@Param("trainingPlanId")Integer trainingPlanId,@Param("trainingMaterialsId")Integer trainingMaterialsId);
