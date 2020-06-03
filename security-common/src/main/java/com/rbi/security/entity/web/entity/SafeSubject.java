@@ -29,5 +29,9 @@ public class SafeSubject {
   /**
    * 题目对应题库的分类
    */
-  private Integer subjectStoreName;
+  private String subjectStoreName;
+  /**
+   * 分值
+   */
+  private Integer score;
 }

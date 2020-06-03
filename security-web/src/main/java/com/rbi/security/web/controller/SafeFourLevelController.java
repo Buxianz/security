@@ -89,6 +89,23 @@ public class SafeFourLevelController {
     }
 
     /**
+     * 分页查询当前登录人的四级HSE教育培训台账
+     *
+     * @param json
+     * @return
+     */
+    @RequestMapping(value = "/findSafeFourLevelByOperatingStaff", method = RequestMethod.POST)
+    public ResponseModel<PageData> findSafeFourLevelByOperatingStaff(@RequestBody JSONObject json) {
+        try {
+            PageData pageData = safeFourLevelService.findSafeFourLevelByOperatingStaff(json);
+            return ResponseModel.build("1000", "查询成功", pageData);
+        } catch (Exception e) {
+            logger.error("分页查询异常，ERROR：{}", e);
+            return ResponseModel.build("1001", "服务器处理异常");
+        }
+    }
+
+    /**
      * 添加四级HSE教育培训台账
      *
      * @param json

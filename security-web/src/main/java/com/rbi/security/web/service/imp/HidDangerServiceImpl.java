@@ -242,6 +242,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             String hidDangerCode = DateUtil.timeStamp();
             hidDangerDO.setIdt(idt);
             hidDangerDO.setHidDangerCode(hidDangerCode);
+            hidDangerDO.setProcessingStatus("2");
 
             //排查前照片添加
             if (beforeImg.length > 6) {
@@ -422,6 +423,14 @@ public class HidDangerServiceImpl implements HidDangerService {
         SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
         if (sysRole.getLevel() == 0){
             List<HidDangerDO> hidDangerDOS = hidDangerDAO.findAllFinishHidByPage(companyId,pageNo2,pageSize);
+            for (int i = 0;i<hidDangerDOS.size();i++){
+                if (hidDangerDOS.get(i).getProcessingStatus().equals("5")){
+                    hidDangerDOS.get(i).setProcessingStatus("审核通过");
+                }
+                if(hidDangerDOS.get(i).getProcessingStatus().equals("6")){
+                    hidDangerDOS.get(i).setProcessingStatus("审核不通过");
+                }
+            }
             int totalPage = 0;
             int count = hidDangerDAO.findAllFinishHidByPageNum(companyId);
             if (0 == count % pageSize) {
@@ -432,6 +441,14 @@ public class HidDangerServiceImpl implements HidDangerService {
             return new PageData(pageNo, pageSize, totalPage, count, hidDangerDOS);
         }else {
             List<HidDangerDO> hidDangerDOS = hidDangerDAO.findPersonnelFinishByPage(personnelId,pageNo2,pageSize);
+            for (int i = 0;i<hidDangerDOS.size();i++){
+                if (hidDangerDOS.get(i).getProcessingStatus().equals("5")){
+                    hidDangerDOS.get(i).setProcessingStatus("审核通过");
+                }
+                if(hidDangerDOS.get(i).getProcessingStatus().equals("6")){
+                    hidDangerDOS.get(i).setProcessingStatus("审核不通过");
+                }
+            }
             int totalPage = 0;
             int count = hidDangerDAO.findPersonnelFinishByPageNum(personnelId);
             if (0 == count % pageSize) {
@@ -703,7 +720,7 @@ public class HidDangerServiceImpl implements HidDangerService {
     }
 
     @Override
-    public void auditFalse(Integer type, String hidDangerCode, String auditReason, Integer correctorId) {
+    public void auditFalse(Integer type, String hidDangerCode, String rectificationEvaluate, Integer correctorId) {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
@@ -714,7 +731,7 @@ public class HidDangerServiceImpl implements HidDangerService {
         hidDangerDO.setHidDangerCode(hidDangerCode);
         hidDangerDO.setAuditorId(sysCompanyPersonnel.getId());
         hidDangerDO.setAuditorName(sysCompanyPersonnel.getName());
-        hidDangerDO.setAuditReason(auditReason);
+        hidDangerDO.setRectificationEvaluate(rectificationEvaluate);
         hidDangerDO.setAuditTime(time);
         //添加进程
         HidDangerProcessDO hidDangerProcessDO = new HidDangerProcessDO();
@@ -746,7 +763,7 @@ public class HidDangerServiceImpl implements HidDangerService {
 
 
     @Override
-    public String rectificationNotice(String hidDangerCode, String rectificationOpinions, String requiredCompletionTime, Integer correctorId) {
+    public String rectificationNotice(String hidDangerCode, String rectificationOpinions, String specifiedRectificationTime, Integer correctorId) {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
@@ -780,7 +797,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerDO.setCorrectorId(correctorId);
             hidDangerDO.setCorrectorName(sysCompanyPersonnel2.getName());
             hidDangerDO.setRectificationOpinions(rectificationOpinions);
-            hidDangerDO.setRequiredCompletionTime(requiredCompletionTime);
+            hidDangerDO.setRequiredCompletionTime(specifiedRectificationTime);
             hidDangerDO.setRectificationNoticeTime(idt);
             hidDangerDO.setProcessingStatus("3");
             hidDangerDAO.updateNotice(hidDangerDO);

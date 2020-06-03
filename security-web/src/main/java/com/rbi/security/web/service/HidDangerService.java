@@ -43,9 +43,9 @@ public interface HidDangerService {
 
     void auditPass(String hidDangerCode, String rectificationEvaluate);
 
-    void auditFalse(Integer type, String hidDangerCode, String auditReason, Integer correctorId);
+    void auditFalse(Integer type, String hidDangerCode, String rectificationEvaluate, Integer correctorId);
 
-    String rectificationNotice(String hidDangerCode, String rectificationOpinions, String requiredCompletionTime, Integer correctorId);
+    String rectificationNotice(String hidDangerCode, String rectificationOpinions, String specifiedRectificationTime, Integer correctorId);
 
     Map<String, Object> findCorrector();
 

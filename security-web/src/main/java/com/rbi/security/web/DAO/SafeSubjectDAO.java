@@ -11,7 +11,7 @@ public interface SafeSubjectDAO {
     /**
      * 添加自定义试题
      */
-    @Insert("insert into safe_subject (subject_type,subject,right_key,subject_store_id) values (#{subjectType},#{subject},#{rightKey},#{subjectStoreId})")
+    @Insert("insert into safe_subject (subject_type,subject,right_key,subject_store_id,score) values (#{subjectType},#{subject},#{rightKey},#{subjectStoreId},#{score})")
     @Options(useGeneratedKeys = true, keyProperty = "id",keyColumn="id")
     int insertSafeSubject(SafeSubject safeSubject);
 
@@ -20,8 +20,11 @@ public interface SafeSubjectDAO {
      */
     @Select("select safe_subject.*,subject_store_name from safe_subject,safe_subject_store_type WHERE " +
             "safe_subject.subject_store_id=safe_subject_store_type.id limit #{pageNo},#{pageSize}")
-    List<SafeSubject> getSafeSubjectBySubjectType(@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
+    List<SafeSubject> getSafeSubjectByPage(@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
 
+    @Select("select count(safe_subject.id) from safe_subject,safe_subject_store_type WHERE " +
+            "safe_subject.subject_store_id=safe_subject_store_type.id")
+    int getCountSafeSubject();
     /**
      * 根据id获取试题
      */
@@ -31,7 +34,7 @@ public interface SafeSubjectDAO {
     /**
      * 更新试题信息
      */
-    @Update("update safe_subject set subject_type=#{subjectType},subject=#{subject},right_key=#{rightKey} where id=#{id}")
+    @Update("update safe_subject set subject_type=#{subjectType},subject=#{subject},right_key=#{rightKey},score=#{score} where id=#{id}")
     int updateSafeSubjectById(SafeSubject safeSubject);
 
     /**

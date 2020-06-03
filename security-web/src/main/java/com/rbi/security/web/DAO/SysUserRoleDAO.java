@@ -16,6 +16,7 @@ public interface SysUserRoleDAO {
             "</foreach>",
             "</script>"
     })
+    @Options(useGeneratedKeys = true, keyProperty = "id",keyColumn="id")
     int inserUserRoleInfo(@Param("sysUserRoleList") List<SysUserRole> sysUserRoleList);
    @Select({"<script> SELECT sur.*,sr.role_name FROM\n" +
            "(select id,role_id,user_id FROM sys_user_role WHERE user_id in <foreach collection='userIds' index='index' item='item' open='(' separator=',' close=')'>#{item}</foreach>) sur INNER JOIN sys_role sr ON sr.id=sur.role_id</script>"})

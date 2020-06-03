@@ -46,14 +46,14 @@ public class SafeSubjectController {
      * @param json
      * @return
      */
-    @RequestMapping(value = "/findSysPermissionByPage", method = RequestMethod.POST)
-    public ResponseModel<PageData> findSysPermissionByPage(@RequestBody JSONObject json) {
+    @RequestMapping(value = "/getSafeSubjectByPage", method = RequestMethod.POST)
+    public ResponseModel<PageData> getSafeSubjectByPage(@RequestBody JSONObject json) {
         try {
-            PageData pageData = safeSubjectService.getSafeSubjectBySubjectType(json);
+            PageData pageData = safeSubjectService.getSafeSubjectByPage(json);
             return ResponseModel.build("1000", "查询成功", pageData);
         } catch (Exception e) {
             logger.error("分页查询异常，ERROR：{}", e);
-            return ResponseModel.build("1001", "服务器处理异常");
+            return ResponseModel.build("1001", "服务器处理异常",e.getMessage());
         }
     }
     /**
@@ -79,8 +79,8 @@ public class SafeSubjectController {
      * @return
      * @RequestParam
      */
-    @RequestMapping(value = "/deleteSysPermissionById", method = RequestMethod.POST)
-    public ResponseModel deleteSysPermissionById(@RequestBody JSONObject request) {
+    @RequestMapping(value = "/deleteSafeSubjectById", method = RequestMethod.POST)
+    public ResponseModel deleteSafeSubjectById(@RequestBody JSONObject request) {
         try {
             JSONArray result=request.getJSONArray("data");
             String i = safeSubjectService.deleteSafeSubjectById(result);
@@ -100,8 +100,8 @@ public class SafeSubjectController {
      * @param json
      * @return
      */
-    @RequestMapping(value = "/updateSysPermission", method = RequestMethod.POST)
-    public ResponseModel updateSysPermission(@RequestBody JSONObject json) {
+    @RequestMapping(value = "/updateSafeSubjectById", method = RequestMethod.POST)
+    public ResponseModel updateSafeSubjectById(@RequestBody JSONObject json) {
         try {
             String i = safeSubjectService.updateSafeSubjectById(json);
             if (i.equals("1000")) {
