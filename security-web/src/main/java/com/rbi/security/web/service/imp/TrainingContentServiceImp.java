@@ -40,12 +40,10 @@ public class TrainingContentServiceImp implements TrainingContentService {
 
 
     @Override
-    public void add(Integer trainingPlanId, JSONArray array) {
-        for (int i = 0;i< array.size();i++){
-            JSONObject json = (JSONObject)array.get(i);
-            int id = json.getInteger("id");
-            if (trainingContentServiceDAO.findCount(trainingPlanId,id) == 0){
-                trainingContentServiceDAO.add(trainingPlanId,id);
+    public void add(List<SafeDataPlan> safeDataPlanList) {
+        for (int i = 0;i< safeDataPlanList.size();i++){
+            if (trainingContentServiceDAO.findCount(safeDataPlanList.get(i).getTrainingPlanId(),safeDataPlanList.get(i).getTrainingMaterialsId()) == 0){
+                trainingContentServiceDAO.add(safeDataPlanList.get(i).getTrainingPlanId(),safeDataPlanList.get(i).getTrainingMaterialsId());
             }
         }
     }

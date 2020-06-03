@@ -28,7 +28,9 @@ public interface TrainingContentService {
     /**
      * 关联培训资料库与教育培训需求计划的关联
      */
-    void add(Integer trainingPlanId, JSONArray array);
+
+    //添加计划内容
+    void add(List<SafeDataPlan> safeDataPlanList);
 
     List<SafeDataPlanDTO> findAllByTrainingPlanId(Integer trainingPlanId);
 

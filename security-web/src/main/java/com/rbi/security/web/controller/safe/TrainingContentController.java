@@ -39,22 +39,6 @@ public class TrainingContentController {
     TrainingContentService trainingContentService;
 
     /**
-     * 多选添加
-     * */
-    @PostMapping("/add")
-    public ResponseModel add(@RequestBody JSONObject json){
-        try {
-            Integer trainingPlanId = json.getInteger("trainingPlanId");
-            JSONArray array = json.getJSONArray("trainingMaterialsId");
-            trainingContentService.add(trainingPlanId,array);
-            return ResponseModel.build("1000","添加成功");
-        }catch (Exception e){
-            System.out.println(e);
-            return ResponseModel.build("1000","处理异常");
-        }
-    }
-
-    /**
      * 添加的列表查询
      * */
     @PostMapping("/findAllByTrainingPlanId")
