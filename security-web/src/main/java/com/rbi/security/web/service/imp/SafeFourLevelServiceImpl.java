@@ -89,18 +89,31 @@ public class SafeFourLevelServiceImpl implements SafeFourLevelService {
     }
 
     @Override
+    public PageData findSafeFourLevelByOperatingStaff(JSONObject json) {
+        int pageNo = json.getInteger("pageNo");
+        int pageSize = json.getInteger("pageSize");
+        int recNo = pageSize * (pageNo - 1);
+        List<SafeFourLevel> safeFourLevelList=new ArrayList<>();
+        int count =0;
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        int personnelId  =  currentUser.getCompanyPersonnelId();
+
+        safeFourLevelList = safeFourLevelDAO.findSafeFourLevelByOperatingStaff(personnelId,recNo, pageSize);
+        count =safeFourLevelDAO.getCountSafeFourLevelByOperatingStaff(personnelId);
+
+        int totalPage=0;
+        if (0 == count % pageSize) {
+            totalPage = count / pageSize;
+        } else {
+            totalPage = count / pageSize + 1;
+        }
+        return new PageData(pageNo, pageSize, totalPage, count, safeFourLevelList);
+    }
+
+    @Override
     public void insertSafeFourLevel(JSONObject json) {
         SafeFourLevel safeFourLevel= JSONObject.parseObject(json.toJSONString(), SafeFourLevel.class);
-//        safeFourLevel.setIdCardNo(json.getString("idCardNo"));
-//        safeFourLevel.setOrganizationName(json.getString("organizationName"));
-//        safeFourLevel.setCompanyEducationTime(json.getString("companyEducationTime"));
-//        safeFourLevel.setCompanyFraction(json.getDouble("companyFraction"));
-//        safeFourLevel.setFactoryEducationTime(json.getString("factoryEducationTime"));
-//        safeFourLevel.setFactoryFraction(json.getDouble("factoryFraction"));
-//        safeFourLevel.setWorkshopEducationTime(json.getString("workshopEducationTime"));
-//        safeFourLevel.setWorkshopFraction(json.getDouble("workshopFraction"));
-//        safeFourLevel.setClassEducationTime(json.getString("classEducationTime"));
-//        safeFourLevel.setClassFraction(json.getDouble("classFraction"));
 
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();

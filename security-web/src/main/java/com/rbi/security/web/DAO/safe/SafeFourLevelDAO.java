@@ -42,7 +42,7 @@ public interface SafeFourLevelDAO {
     int getCountSafeFourLevelByWorkType(@Param("workType") String workType);
 
     /**
-     * 获取全部试题
+     * 获取全部
      */
     @Select("select * from safe_four_level limit #{pageNo},#{pageSize}")
     List<SafeFourLevel> getSafeFourLevelByPage(@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
@@ -50,7 +50,16 @@ public interface SafeFourLevelDAO {
     int getCountSafeFourLevel();
 
     /**
-     * 更新试题选项信息
+     * 根据当前登录人获取全部
+     */
+    @Select("select * from safe_four_level where operating_staff=#{personnelId} limit #{pageNo},#{pageSize}")
+    List<SafeFourLevel> findSafeFourLevelByOperatingStaff(@Param("personnelId") int personnelId,
+                                                          @Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
+    @Select("select count(id) from safe_four_level where operating_staff=#{personnelId}")
+    int getCountSafeFourLevelByOperatingStaff(@Param("personnelId") int personnelId);
+
+    /**
+     * 更新
      */
     @Update("update safe_four_level set name=#{name},id_card_no=#{idCardNo},organization_name=#{organizationName},gender=#{gender},date_of_birth=#{dateOfBirth}," +
             "entry_time=#{entryTime},work_type=#{workType},job_nature=#{jobNature},company_education_time=#{companyEducationTime}," +
@@ -61,7 +70,7 @@ public interface SafeFourLevelDAO {
 
 
     /**
-     * 根据id删除试题选项
+     * 根据id删除
      */
     @Delete("delete from safe_four_level where id=#{id}")
     void  deleteSafeFourLevelById(@Param("id") Integer id);
