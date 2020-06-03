@@ -42,7 +42,8 @@ public class TrainingContentServiceImp implements TrainingContentService {
     @Override
     public void add(List<SafeDataPlan> safeDataPlanList) {
         for (int i = 0;i< safeDataPlanList.size();i++){
-            if (trainingContentServiceDAO.findCount(safeDataPlanList.get(i).getTrainingPlanId(),safeDataPlanList.get(i).getTrainingMaterialsId()) == 0){
+            int num = trainingContentServiceDAO.findCount(safeDataPlanList.get(i).getTrainingPlanId(),safeDataPlanList.get(i).getTrainingMaterialsId());
+            if ( num == 0){
                 trainingContentServiceDAO.add(safeDataPlanList.get(i).getTrainingPlanId(),safeDataPlanList.get(i).getTrainingMaterialsId());
             }
         }
