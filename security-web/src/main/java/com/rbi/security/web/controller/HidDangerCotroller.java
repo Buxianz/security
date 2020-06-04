@@ -46,7 +46,7 @@ public class HidDangerCotroller {
             if(result.equals("1000")){
                 return ResponseModel.build("1000","隐患上报成功！");
             }else {
-                return ResponseModel.build("1000",result);
+                return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
             System.out.println("错误："+e);

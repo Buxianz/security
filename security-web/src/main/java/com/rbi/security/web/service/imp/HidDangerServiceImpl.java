@@ -209,7 +209,7 @@ public class HidDangerServiceImpl implements HidDangerService {
         }catch (NumberFormatException e){
             return "数据格式错误";
         }catch (IndexOutOfBoundsException e){
-            return "数组溢出";
+            return "数组溢出，配置了多个上级负责人";
         }
 
     }
@@ -338,7 +338,7 @@ public class HidDangerServiceImpl implements HidDangerService {
         }catch (NumberFormatException e){
             return "数据格式错误";
         }catch (IndexOutOfBoundsException e){
-            return "数组溢出";
+            return "数组溢出，配置了多个上级负责人";
         }
     }
 
@@ -681,7 +681,7 @@ public class HidDangerServiceImpl implements HidDangerService {
         }catch (NumberFormatException e){
             return "数据格式错误";
         }catch (IndexOutOfBoundsException e){
-            return "数组溢出";
+            return "数组溢出，配置了多个上级负责人";
         }
     }
 
