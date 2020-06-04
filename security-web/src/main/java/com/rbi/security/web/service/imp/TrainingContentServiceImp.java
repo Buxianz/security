@@ -79,9 +79,7 @@ public class TrainingContentServiceImp implements TrainingContentService {
     public Map<String, Object> findPreviewById(Integer id) {
         Map<String, Object> map = new HashMap<>();
         List<SafeDataPlanDTO> safeDataPlanDTOS = trainingContentServiceDAO.findDataById(id);
-        System.out.println("111:"+safeDataPlanDTOS);
         List<SafeDataPlanDTO> safeDataPlanDTOS2 = trainingContentServiceDAO.findVideoById(id);
-        System.out.println("222:"+safeDataPlanDTOS2);
         map.put("培训资料",safeDataPlanDTOS);
         map.put("培训视频",safeDataPlanDTOS2);
         return map;

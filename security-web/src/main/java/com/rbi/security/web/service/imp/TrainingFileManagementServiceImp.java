@@ -133,7 +133,7 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
         }
         return pagingSpecialTraining;
     }
-    /****************安全培训管理**********************/
+    /****************安全培训管理**谢青********************/
     @Override
     public void insertAdministratorTrain(SafeAdministratorTrain safeAdministratorTrain) throws RuntimeException {
          try{

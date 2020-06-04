@@ -330,6 +330,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                 parentId = sysOrganization3.getParentId();
                 level=level - 1;
             }
+            hidDangerDO.setRectificationNoticeTime(idt);
             hidDangerDAO.addHidDanger(hidDangerDO);
             return "1000";
         }catch (NullPointerException e){

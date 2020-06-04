@@ -62,24 +62,16 @@ public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsSe
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(currentUser.getCompanyPersonnelId());
-
         if (file!=null){
             String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
             String filename = file.getOriginalFilename();
-
-
-
-            String resourceType = filename.substring(filename.lastIndexOf(".")+1);
-            String resourceName = filename.replaceAll("."+resourceType,"").trim();
             FileUtils.copyInputStreamToFile(file.getInputStream(), new File(hiddenPath, filename));
-
             String resourcePath = findHiddenPath+filename;
             int count = safeTrainingMaterialsDAO.countByResourcePath(resourcePath);
             if (count != 0 ){
                 return "系统存在有相同的文件，请修改文件名";
             }
-            safeTrainingMaterials.setResourceName(resourceName);
-            safeTrainingMaterials.setResourceType(resourceType);
+            safeTrainingMaterials.setResourceName(filename);
             safeTrainingMaterials.setResourcePath(resourcePath);
             safeTrainingMaterials.setOperatingStaff(sysCompanyPersonnel.getId());
             safeTrainingMaterials.setOperatorName(sysCompanyPersonnel.getName());
