@@ -45,7 +45,6 @@ public class TrainingContentServiceImp implements TrainingContentService {
     @Autowired
     TrainingContentServiceDAO trainingContentServiceDAO;
 
-
     @Override
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void add(List<SafeDataPlan> safeDataPlanList) {
@@ -63,25 +62,4 @@ public class TrainingContentServiceImp implements TrainingContentService {
         }
     }
 
-
-    @Override
-    public List<SafeDataPlanDTO> findAllByTrainingPlanId(Integer trainingPlanId) {
-        List<SafeDataPlanDTO> safeDataPlanDTOS = trainingContentServiceDAO.findAllByTrainingPlanId(trainingPlanId);
-        return safeDataPlanDTOS;
-    }
-
-    @Override
-    public void deleteById(Integer id) {
-        trainingContentServiceDAO.deleteById(id);
-    }
-
-    @Override
-    public Map<String, Object> findPreviewById(Integer id) {
-        Map<String, Object> map = new HashMap<>();
-        List<SafeDataPlanDTO> safeDataPlanDTOS = trainingContentServiceDAO.findDataById(id);
-        List<SafeDataPlanDTO> safeDataPlanDTOS2 = trainingContentServiceDAO.findVideoById(id);
-        map.put("培训资料",safeDataPlanDTOS);
-        map.put("培训视频",safeDataPlanDTOS2);
-        return map;
-    }
 }
