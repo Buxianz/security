@@ -1,8 +1,12 @@
 package com.rbi.security.web.service;
 
+import com.rbi.security.entity.web.safe.content.SafeDataPlan;
 import com.rbi.security.entity.web.safe.demand.PagingTraniningNeeds;
 import com.rbi.security.entity.web.safe.demand.SafeTrainingNeeds;
+import com.rbi.security.entity.web.safe.testpaper.SafeTestPaper;
 import com.rbi.security.tool.PageData;
+
+import java.util.List;
 
 /**
  * @PACKAGE_NAME: com.rbi.security.web.service
@@ -24,4 +28,6 @@ import com.rbi.security.tool.PageData;
 public interface SafeDemandReportService {
     void insertSafeDemandReport(SafeTrainingNeeds safeTrainingNeeds) throws RuntimeException;
     PageData<PagingTraniningNeeds> pagingSafeDemandReport(int pageNo, int pageSize, int startIndex,int processingStatus) throws RuntimeException;
+    void handlingRequirements(SafeTrainingNeeds safeTrainingNeeds, List<SafeDataPlan> safeDataPlanList, SafeTestPaper safeTestPaper) throws RuntimeException;
+
 }

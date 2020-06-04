@@ -2,10 +2,7 @@ package com.rbi.security.web.DAO.safe;
 
 import com.rbi.security.entity.web.safe.demand.PagingTraniningNeeds;
 import com.rbi.security.entity.web.safe.demand.SafeTrainingNeeds;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -57,6 +54,19 @@ public interface SafeTraningNeedsDAO {
     List<PagingTraniningNeeds> pagingUnprocessedSafeTraningNeeds(@Param("startIndex") int startIndex, @Param("pageSize") int pageSize,@Param("processingStatus") int processingStatus);
     @Select("SELECT stn.*,scp.`name` FROM \n" +
             "(select stn.id,sty.training_type_name,stn.training_content,stn.processing_status,stn.report_person,proposed_time from safe_training_needs stn \n" +
-            "LEFT JOIN safa_training_type  sty ON stn.training_type_id=sty.id WHERE  processing_status=1 ORDER BY proposed_time LIMIT 0,10) stn LEFT JOIN sys_company_personnel scp ON scp.id=stn.report_person")
+            "LEFT JOIN safa_training_type  sty ON stn.training_type_id=sty.id WHERE  processing_status!=1 ORDER BY proposed_time LIMIT 0,10) stn LEFT JOIN sys_company_personnel scp ON scp.id=stn.report_person")
     List<PagingTraniningNeeds> pagingProcessedSafeTraningNeeds(@Param("startIndex") int startIndex, @Param("pageSize") int pageSize);
+
+    /**
+     * 更新需求提报
+     */
+    @Update("update safe_training_needs set target_set=#{targetSet},operation_reason=#{operationReason},processing_time=#{processingTime},processing_status=#{processingStatus},operating_staff=#{operatingStaff} where id=#{id}")
+    int updateTrainingNeeds(SafeTrainingNeeds safeTrainingNeeds);
+
+    /**
+     * 判断数据是否已经处理
+     */
+    @Select("select * from safe_training_needs where id=#{id} and processing_status=1")
+    SafeTrainingNeeds getTrainingNeedsByIdAndStatus(SafeTrainingNeeds safeTrainingNeeds);
+
 }
