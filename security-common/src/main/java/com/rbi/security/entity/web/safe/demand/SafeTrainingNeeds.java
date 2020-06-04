@@ -17,7 +17,7 @@ public class SafeTrainingNeeds implements Serializable {
     /**
     * 培训需求id
     */
-    private Object id;
+    private Integer id;
     /**
     * 培训目标集合（用户账号集合 ，格式（a,b,c,d））
     */

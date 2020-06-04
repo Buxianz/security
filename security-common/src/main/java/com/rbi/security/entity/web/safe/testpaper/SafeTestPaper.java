@@ -36,6 +36,10 @@ public class SafeTestPaper implements Serializable {
      */
     private Integer trainingPlanId;
     /**
+     * 试卷名称
+     */
+    private String testPaperName;
+    /**
      * 试卷的题目
      */
     private List<SafeTestQuestions> safeTestQuestionsList;

@@ -108,4 +108,12 @@ public interface CompanyPersonnelDAO {
      */
     @Select("SELECT * FROM sys_company_personnel WHERE id_card_no = #{idCardNo}")
     SysCompanyPersonnel getSysCompanyPersonnelByIdCardNo(@Param("idCardNo") String idCardNo);
+
+    /*****吴松达****/
+    /**
+     * 获取集合内id在表中的数量
+     */
+
+    @Select({"<script> Select count(id) FROM sys_company_personnel WHERE id in <foreach collection='targets' index='index' item='item' open='(' separator=',' close=')'>#{item}</foreach> </script>"})
+    int getCompanyPersonneCountByIds(@Param("targets")List<Integer> targets);
 }
