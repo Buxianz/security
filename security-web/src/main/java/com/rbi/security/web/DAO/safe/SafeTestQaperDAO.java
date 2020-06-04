@@ -13,8 +13,8 @@ public interface SafeTestQaperDAO {
     /**
      * 添加试卷
      */
-    @Insert("insert into safe_test_paper (start_time,end_time,duration,training_plan_id) values (#{startTime},#{endTime},#{duration}," +
-            "#{trainingPlanId})")
+    @Insert("insert into safe_test_paper (start_time,end_time,duration,training_plan_id,test_paper_name) values (#{startTime},#{endTime},#{duration}," +
+            "#{trainingPlanId},#{testPaperName})")
     @Options(useGeneratedKeys = true, keyProperty = "id",keyColumn="id")
     int insertSafeTestPaper(SafeTestPaper safeTestPaper);
 
