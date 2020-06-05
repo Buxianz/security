@@ -93,6 +93,38 @@ public class SafeSubjectServiceImpl implements SafeSubjectService {
     }
 
     @Override
+    public PageData getSafeSubjectByPageAndSubjectStoreId(JSONObject json)  throws RuntimeException{
+        int totalPage=0;
+        int count=0;
+        try {
+            int pageNo = json.getInteger("pageNo");
+            int pageSize = json.getInteger("pageSize");
+            int recNo = pageSize * (pageNo - 1);
+            List<SafeSubject> safeSubjectList = safeSubjectDAO.getSafeSubjectByPageAndSubjectStoreId(json.getInteger("subjectStoreId"),recNo, pageSize);
+            List<PagingSafe> pagingSafeArrayList = new ArrayList<>();
+            for (int i = 0; i < safeSubjectList.size(); i++) {
+                PagingSafe pagingSafe = new PagingSafe();
+                pagingSafe.setSafeSubject(safeSubjectList.get(i));
+                List<SafeSubjectOption> safeSubjectOptionList = safeSubjectOptionDAO.getSafeSubjectOptionBySubjectId(safeSubjectList.get(i).getId());
+                for (int m = 0; m < safeSubjectOptionList.size(); m++) {
+                    pagingSafe.setSafeSubjectOptionList(safeSubjectOptionList);
+                }
+                pagingSafeArrayList.add(pagingSafe);
+            }
+            count = safeSubjectDAO.getCountSafeSubjectBySubjectStoreId(json.getInteger("subjectStoreId"));
+            if (count % pageSize == 0) {
+                totalPage = count / pageSize;
+            } else {
+                totalPage = count / pageSize + 1;
+            }
+            return new PageData(pageNo, pageSize, totalPage, count, pagingSafeArrayList);
+        } catch (Exception e) {
+            logger.error("查询信息异常，异常信息为{}", e);
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
     public String updateSafeSubjectById(JSONObject json) {
         SafeSubject safeSubject= JSONObject.parseObject(json.toJSONString(), SafeSubject.class);
         if (safeSubjectDAO.getSafeSubjectById(json.getInteger("id"))!=null) {
