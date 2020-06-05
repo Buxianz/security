@@ -34,7 +34,7 @@ import java.util.List;
  **/
 @Service
 public class TestQaperServiceImp implements TestPaperService {
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceImp.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestQaperServiceImp.class);
     @Autowired(required = false)
     SafeTestQaperDAO safeTestQaperDAO;
     /**

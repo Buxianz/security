@@ -37,7 +37,7 @@ import java.util.List;
  **/
 @Service
 public class SafeSubjectServiceImpl implements SafeSubjectService {
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceImp.class);
+    private static final Logger logger = LoggerFactory.getLogger(SafeSubjectServiceImpl.class);
     @Autowired(required = false)
     SafeSubjectDAO safeSubjectDAO;
     @Autowired(required = false)

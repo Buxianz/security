@@ -101,14 +101,6 @@ public interface CompanyPersonnelDAO {
     @Select("select id,`name`,organization_id from sys_company_personnel")
     List<CompanyPersonnelBox> getAllCompanyPersonnel();
 
-
-    /**林新元******/
-    /**
-     * 根据身份证号查询公司人员
-     */
-    @Select("SELECT * FROM sys_company_personnel WHERE id_card_no = #{idCardNo}")
-    SysCompanyPersonnel getSysCompanyPersonnelByIdCardNo(@Param("idCardNo") String idCardNo);
-
     /*****吴松达****/
     /**
      * 获取集合内id在表中的数量
