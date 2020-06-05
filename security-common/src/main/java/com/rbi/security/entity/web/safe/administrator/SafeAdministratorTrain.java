@@ -66,5 +66,7 @@ public class SafeAdministratorTrain implements Serializable {
     */
     private String idt;
 
+    private String udt;
+
 
 }
