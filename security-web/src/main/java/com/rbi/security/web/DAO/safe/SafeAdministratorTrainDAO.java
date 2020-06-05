@@ -52,4 +52,30 @@ public interface SafeAdministratorTrainDAO {
 
     @Select("select count(*) from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id")
     int findByPageNum();
+
+    @Select("select * from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id " +
+            "and name like ${value2} limit #{pageNo},#{pageSize}")
+    List<SafeAdministratorTrainDTO> findByName(@Param("value2") String value2,@Param("pageNo") int pageNo,@Param("pageSize") int pageSize);
+
+    @Select("select count(*) from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id " +
+            "and name like ${value2}")
+    int findByNameNum(@Param("value2") String value2);
+
+
+    @Select("select * from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id " +
+            "and safe_administrator_train.id_card_no like ${value2} limit #{pageNo},#{pageSize}")
+    List<SafeAdministratorTrainDTO> findByidCardNo(@Param("value2") String value2,@Param("pageNo") int pageNo,@Param("pageSize") int pageSize);
+
+    @Select("select count(*) from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id " +
+            "and safe_administrator_train.id_card_no like ${value2}")
+    int findByidCardNoNum(@Param("value2") String value2);
+
+
+    @Select("select * from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id " +
+            "and safe_administrator_train.unit like ${value2} limit #{pageNo},#{pageSize}")
+    List<SafeAdministratorTrainDTO> findByUnit(@Param("value2") String value2,@Param("pageNo") int pageNo,@Param("pageSize") int pageSize);
+
+    @Select("select count(*) from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id " +
+            "and safe_administrator_train.unit like ${value2}")
+    int findByUnitNum(@Param("value2") String value2);
 }

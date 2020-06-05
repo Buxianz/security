@@ -177,6 +177,24 @@ public class TrainingFileManagementController {
         }
     }
 
+    /**
+     * 条件查询负责人、安全生产管理人员培训记录
+     */
+    @PostMapping("/findAdministratorTrainByCondition")
+    public ResponseModel<PageData> findByCondition(@RequestBody JSONObject json){
+        try {
+            String condition = json.getString("condition");
+            String value = json.getString("value");
+            int pageNo = json.getInteger("pageNo");
+            int pageSize = json.getInteger("pageSize");
+            PageData pageData = trainingFileManagementService.findByCondition(condition,value,pageNo,pageSize);
+            return ResponseModel.build("1000","分页查询成功！",pageData);
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
 
     /*************************四级HSE教育培训台账****************************/
     /**

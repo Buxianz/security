@@ -19,4 +19,6 @@ public interface TrainingFileManagementService {
     void updateAdministratorTrain(SafeAdministratorTrain safeAdministratorTrain);
 
     PageData findAdministratorTrainByPage(int pageNo, int pageSize);
+
+    PageData findByCondition(String condition, String value, int pageNo, int pageSize);
 }

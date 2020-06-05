@@ -191,4 +191,43 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
         }
         return new PageData(pageNo, pageSize, totalPage, count, safeAdministratorTrains);
     }
+
+    @Override
+    public PageData findByCondition(String condition, String value, int pageNo, int pageSize) {
+        String value2 = "'%"+value+"%'";
+        if (condition.equals("姓名")){
+            int pageNo2 = pageSize * (pageNo - 1);
+            List<SafeAdministratorTrainDTO> safeAdministratorTrains = safeAdministratorTrainDAO.findByName(value2,pageNo2,pageSize);
+            int totalPage = 0;
+            int count = safeAdministratorTrainDAO.findByNameNum(value2);
+            if (0 == count % pageSize) {
+                totalPage = count / pageSize;
+            } else {
+                totalPage = count / pageSize + 1;
+            }
+            return new PageData(pageNo, pageSize, totalPage, count, safeAdministratorTrains);
+        }else if (condition.equals("身份证号")){
+            int pageNo2 = pageSize * (pageNo - 1);
+            List<SafeAdministratorTrainDTO> safeAdministratorTrains = safeAdministratorTrainDAO.findByidCardNo(value2,pageNo2,pageSize);
+            int totalPage = 0;
+            int count = safeAdministratorTrainDAO.findByidCardNoNum(value2);
+            if (0 == count % pageSize) {
+                totalPage = count / pageSize;
+            } else {
+                totalPage = count / pageSize + 1;
+            }
+            return new PageData(pageNo, pageSize, totalPage, count, safeAdministratorTrains);
+        }else {
+            int pageNo2 = pageSize * (pageNo - 1);
+            List<SafeAdministratorTrainDTO> safeAdministratorTrains = safeAdministratorTrainDAO.findByUnit(value2,pageNo2,pageSize);
+            int totalPage = 0;
+            int count = safeAdministratorTrainDAO.findByUnitNum(value2);
+            if (0 == count % pageSize) {
+                totalPage = count / pageSize;
+            } else {
+                totalPage = count / pageSize + 1;
+            }
+            return new PageData(pageNo, pageSize, totalPage, count, safeAdministratorTrains);
+        }
+    }
 }
