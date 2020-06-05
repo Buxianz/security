@@ -798,7 +798,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerDO.setCorrectorId(correctorId);
             hidDangerDO.setCorrectorName(sysCompanyPersonnel2.getName());
             hidDangerDO.setRectificationOpinions(rectificationOpinions);
-            hidDangerDO.setRequiredCompletionTime(specifiedRectificationTime);
+            hidDangerDO.setSpecifiedRectificationTime(specifiedRectificationTime);
             hidDangerDO.setRectificationNoticeTime(idt);
             hidDangerDO.setProcessingStatus("3");
             hidDangerDAO.updateNotice(hidDangerDO);

@@ -187,7 +187,7 @@ public interface HidDangerDAO {
     @Update("update hid_danger set " +
             "processing_status = #{processingStatus},rectification_opinions = #{rectificationOpinions}," +
             "corrector_id = #{correctorId},corrector_name = #{correctorName}," +
-            "rectification_notice_time = #{rectificationNoticeTime} where hid_danger_code = #{hidDangerCode}")
+            "rectification_notice_time = #{rectificationNoticeTime},specified_rectification_time = #{specifiedRectificationTime} where hid_danger_code = #{hidDangerCode}")
     void updateNotice(HidDangerDO hidDangerDO);
 
     @Select("select sys_company_personnel.id as settingCode,sys_company_personnel.name as settingName from sys_company_personnel,sys_user where sys_company_personnel.id = sys_user.company_personnel_id and organization_id = #{organizationId} and " +
