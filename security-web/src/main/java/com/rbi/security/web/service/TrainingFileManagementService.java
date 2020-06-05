@@ -14,7 +14,7 @@ public interface TrainingFileManagementService {
     //*******安全管理台账******/
     String insertAdministratorTrain( SafeAdministratorTrain safeAdministratorTrain) throws RuntimeException;
 
-    void deleteAdministratorTrain(JSONArray jsonArray);
+    void deleteAdministratorTrain(Integer id);
 
     void updateAdministratorTrain(SafeAdministratorTrain safeAdministratorTrain);
 

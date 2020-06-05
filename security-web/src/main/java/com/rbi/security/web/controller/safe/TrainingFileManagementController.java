@@ -137,8 +137,8 @@ public class TrainingFileManagementController {
     @RequestMapping("/deleteAdministratorTrain")
     public ResponseModel deleteAdministratorTrain(@RequestBody JSONObject json) {
         try{
-            JSONArray jsonArray = json.getJSONArray("data");
-            trainingFileManagementService.deleteAdministratorTrain(jsonArray);
+            Integer id = json.getInteger("id");
+            trainingFileManagementService.deleteAdministratorTrain(id);
             return ResponseModel.build("1000", "删除成功");
         }catch (Exception e){
             return ResponseModel.build("1001", e.getMessage());

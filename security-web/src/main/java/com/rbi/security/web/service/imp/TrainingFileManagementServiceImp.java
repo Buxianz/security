@@ -167,12 +167,8 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
     }
 
     @Override
-    public void deleteAdministratorTrain(JSONArray jsonArray) {
-        for (int i = 0; i< jsonArray.size(); i++){
-            JSONObject json = (JSONObject)jsonArray.get(i);
-            Integer id = 0;
+    public void deleteAdministratorTrain(Integer id) {
             safeAdministratorTrainDAO.deleteById(id);
-        }
     }
 
     @Override
