@@ -19,9 +19,10 @@ public class SafeAdministratorReviewDTO {
     private String dateOfIssue;
     private String termOfValidity;
     private String typeOfCertificate;
-    private String oneTrainingTime;
-    private String twoTrainingTime;
-    private String threeTrainingTime;
+//    private String oneTrainingTime;
+//    private String twoTrainingTime;
+//    private String threeTrainingTime;
+
     private Integer safeAdministratorId;
     private Integer completionStatus;
     private String reasonForHandling;

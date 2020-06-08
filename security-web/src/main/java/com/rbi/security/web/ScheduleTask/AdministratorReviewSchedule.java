@@ -22,7 +22,7 @@ import java.util.List;
  **/
 
 @Configuration
-@EnableScheduling
+//@EnableScheduling
 //@Service
 public class AdministratorReviewSchedule {
     private static final Logger logger = LoggerFactory.getLogger(AdministratorReviewSchedule.class);

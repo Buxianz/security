@@ -33,13 +33,17 @@ public interface SafeAdministratorReviewDAO {
             "safe_administrator_review.safe_administrator_id = safe_administrator_train.id and " +
             "safe_administrator_train.company_personnel_id = sys_company_personnel.id " +
             "limit #{pageNo},#{pageSize}")
-    List<SafeAdministratorReviewDTO> findByPage(int pageNo2, int pageSize);
+    List<SafeAdministratorReviewDTO> findByPage(int pageNo, int pageSize);
 
 
     @Select("select count(*) from safe_administrator_review,safe_administrator_train,sys_company_personnel where " +
             "safe_administrator_review.safe_administrator_id = safe_administrator_train.id and " +
             "safe_administrator_train.company_personnel_id = sys_company_personnel.id")
     int findByPageNum();
+
+
+
+
 
 
     @Select("select * from safe_administrator_train")
