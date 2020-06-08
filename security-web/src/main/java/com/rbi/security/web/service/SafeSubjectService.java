@@ -13,10 +13,14 @@ public interface SafeSubjectService {
     void insertSafeSubject(JSONObject json) throws RuntimeException;
 
     /**
-     * 根据类型分页查询试题
+     * 根据类型分页查询
      */
     PageData getSafeSubjectByPage(JSONObject json) throws RuntimeException;
 
+    /**
+     * 根据题库id获取
+     */
+    PageData getSafeSubjectByPageAndSubjectStoreId(JSONObject json)  throws RuntimeException;
 
     /**
      * 更新试题信息

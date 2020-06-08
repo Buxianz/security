@@ -46,7 +46,7 @@ public class HidDangerCotroller {
             if(result.equals("1000")){
                 return ResponseModel.build("1000","隐患上报成功！");
             }else {
-                return ResponseModel.build("1000",result);
+                return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
             System.out.println("错误："+e);
@@ -127,7 +127,7 @@ public class HidDangerCotroller {
         try {
             String hidDangerCode = json.getString("hidDangerCode");
             Map<String,Object> map = hidDangerService.findDealDetailByCode(hidDangerCode);
-            return ResponseModel.build("1000","分页查询成功！",map);
+            return ResponseModel.build("1000","查询成功！",map);
         }catch (Exception e){
             System.out.println("错误："+e);
             return ResponseModel.build("1001","处理异常");

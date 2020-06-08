@@ -12,37 +12,13 @@ public class SafeFourLevel {
    */
   private Integer id;
   /**
-   * 姓名
-   */
-  private String name;
-  /**
    * 身份证号
    */
   private String idCardNo;
   /**
-   * 组织名
+   * 单位
    */
   private String organizationName;
-  /**
-   * 性别 男女
-   */
-  private String gender;
-  /**
-   * 出生日期
-   */
-  private Date dateOfBirth;
-  /**
-   * 入厂时间
-   */
-  private Date entryTime;
-  /**
-   * 工种
-   */
-  private String workType;
-  /**
-   * 岗位
-   */
-  private String jobNature;
   /**
    * 公司培训时间
    */

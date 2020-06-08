@@ -41,10 +41,10 @@ public interface TrainingContentServiceDAO {
     void deleteById(Integer id);
 
     @Select("select p.id,m.resource_name,m.resource_path from safe_data_plan as p,safe_training_materials as m " +
-            "where p.training_materials_id= m.id and p.training_plan_id = #{trainingPlanId} and m.resource_type != 'mp4'")
+            "where p.training_materials_id= m.id and p.training_plan_id = #{trainingPlanId} and m.resource_type != '视频'")
     List<SafeDataPlanDTO> findDataById(Integer trainingPlanId);
 
     @Select("select p.id,m.resource_name,m.resource_path from safe_data_plan as p,safe_training_materials as m " +
-            "where p.training_materials_id= m.id and p.training_plan_id = #{trainingPlanId} and m.resource_type = 'mp4'")
+            "where p.training_materials_id= m.id and p.training_plan_id = #{trainingPlanId} and m.resource_type = '视频'")
     List<SafeDataPlanDTO> findVideoById(Integer trainingPlanId);
 }

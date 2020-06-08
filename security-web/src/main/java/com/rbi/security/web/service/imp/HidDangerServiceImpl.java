@@ -209,7 +209,7 @@ public class HidDangerServiceImpl implements HidDangerService {
         }catch (NumberFormatException e){
             return "数据格式错误";
         }catch (IndexOutOfBoundsException e){
-            return "数组溢出";
+            return "数组溢出，配置了多个上级负责人";
         }
 
     }
@@ -330,6 +330,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                 parentId = sysOrganization3.getParentId();
                 level=level - 1;
             }
+            hidDangerDO.setRectificationNoticeTime(idt);
             hidDangerDAO.addHidDanger(hidDangerDO);
             return "1000";
         }catch (NullPointerException e){
@@ -337,7 +338,7 @@ public class HidDangerServiceImpl implements HidDangerService {
         }catch (NumberFormatException e){
             return "数据格式错误";
         }catch (IndexOutOfBoundsException e){
-            return "数组溢出";
+            return "数组溢出，配置了多个上级负责人";
         }
     }
 
@@ -680,7 +681,7 @@ public class HidDangerServiceImpl implements HidDangerService {
         }catch (NumberFormatException e){
             return "数据格式错误";
         }catch (IndexOutOfBoundsException e){
-            return "数组溢出";
+            return "数组溢出，配置了多个上级负责人";
         }
     }
 
@@ -797,7 +798,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerDO.setCorrectorId(correctorId);
             hidDangerDO.setCorrectorName(sysCompanyPersonnel2.getName());
             hidDangerDO.setRectificationOpinions(rectificationOpinions);
-            hidDangerDO.setRequiredCompletionTime(specifiedRectificationTime);
+            hidDangerDO.setSpecifiedRectificationTime(specifiedRectificationTime);
             hidDangerDO.setRectificationNoticeTime(idt);
             hidDangerDO.setProcessingStatus("3");
             hidDangerDAO.updateNotice(hidDangerDO);

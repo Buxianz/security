@@ -1,5 +1,6 @@
 package com.rbi.security.web.controller.safe;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.entity.SysUser;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrain;
@@ -10,10 +11,7 @@ import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.TrainingFileManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @PACKAGE_NAME: com.rbi.security.web.controller.safe
@@ -112,7 +110,7 @@ public class TrainingFileManagementController {
             return ResponseModel.build("1001", e.getMessage());
         }
     }
-    /**************************主要负责人、安全生产管理人员培训台账****************************/
+    /**************************主要负责人、安全生产管理人员培训台账*****谢青***********************/
     /**
      * 文件导入特种培训记录
      */
@@ -123,8 +121,12 @@ public class TrainingFileManagementController {
     public ResponseModel insertAdministratorTrain(@RequestBody JSONObject date) {
         try{
             SafeAdministratorTrain safeAdministratorTrain = JSONObject.parseObject(date.toJSONString(), SafeAdministratorTrain.class);
-            trainingFileManagementService.insertAdministratorTrain(safeAdministratorTrain);
-            return ResponseModel.build("1000", "添加成功");
+            String result = trainingFileManagementService.insertAdministratorTrain(safeAdministratorTrain);
+            if (result.equals("1000")){
+                return ResponseModel.build("1000", "添加成功");
+            }else {
+                return ResponseModel.build("1001", result);
+            }
         }catch (Exception e){
             return ResponseModel.build("1001", e.getMessage());
         }
@@ -132,14 +134,68 @@ public class TrainingFileManagementController {
     /**
      * 删除负责人、安全生产管理人员培训记录
      */
+    @RequestMapping("/deleteAdministratorTrain")
+    public ResponseModel deleteAdministratorTrain(@RequestBody JSONObject json) {
+        try{
+            Integer id = json.getInteger("id");
+            trainingFileManagementService.deleteAdministratorTrain(id);
+            return ResponseModel.build("1000", "删除成功");
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
 
     /**
      * 更新负责人、安全生产管理人员培训记录
      */
+    @RequestMapping("/updateAdministratorTrain")
+    public ResponseModel updateAdministratorTrain(@RequestBody JSONObject date) {
+        try{
+            SafeAdministratorTrain safeAdministratorTrain = JSONObject.parseObject(date.toJSONString(), SafeAdministratorTrain.class);
+            trainingFileManagementService.updateAdministratorTrain(safeAdministratorTrain);
+            return ResponseModel.build("1000", "修改成功");
+        }catch (Exception e){
+            System.out.println();
+            return ResponseModel.build("1001", "处理异常");
+        }
+    }
+
 
     /**
      * 分页查看负责人、安全生产管理人员培训记录
      */
+    @PostMapping("/findAdministratorTrainByPage")
+    public ResponseModel<PageData> findAdministratorTrainByPage(@RequestBody JSONObject json){
+        try {
+            int pageNo = json.getInteger("pageNo");
+            int pageSize = json.getInteger("pageSize");
+            PageData pageData = trainingFileManagementService.findAdministratorTrainByPage(pageNo,pageSize);
+            return ResponseModel.build("1000","分页查询成功！",pageData);
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+    /**
+     * 条件查询负责人、安全生产管理人员培训记录
+     */
+    @PostMapping("/findAdministratorTrainByCondition")
+    public ResponseModel<PageData> findByCondition(@RequestBody JSONObject json){
+        try {
+            String condition = json.getString("condition");
+            String value = json.getString("value");
+            int pageNo = json.getInteger("pageNo");
+            int pageSize = json.getInteger("pageSize");
+            PageData pageData = trainingFileManagementService.findByCondition(condition,value,pageNo,pageSize);
+            return ResponseModel.build("1000","分页查询成功！",pageData);
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+
     /*************************四级HSE教育培训台账****************************/
     /**
      * 文件导入特种培训记录

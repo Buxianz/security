@@ -57,6 +57,22 @@ public class SafeSubjectController {
         }
     }
     /**
+     * 根据题库id分页查询试题
+     *
+     * @param json
+     * @return
+     */
+    @RequestMapping(value = "/getSafeSubjectByPageAndSubjectStoreId", method = RequestMethod.POST)
+    public ResponseModel<PageData> getSafeSubjectByPageAndSubjectStoreId(@RequestBody JSONObject json) {
+        try {
+            PageData pageData = safeSubjectService.getSafeSubjectByPageAndSubjectStoreId(json);
+            return ResponseModel.build("1000", "查询成功", pageData);
+        } catch (Exception e) {
+            logger.error("分页查询异常，ERROR：{}", e);
+            return ResponseModel.build("1001", "服务器处理异常",e.getMessage());
+        }
+    }
+    /**
      * 添加
      *
      * @param json

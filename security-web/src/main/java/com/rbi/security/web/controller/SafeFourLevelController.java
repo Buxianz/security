@@ -3,6 +3,7 @@ package com.rbi.security.web.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.entity.SafeFourLevel;
+import com.rbi.security.entity.web.safe.PagingSafeFourLevel;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.SafeFourLevelService;
@@ -61,10 +62,10 @@ public class SafeFourLevelController {
      * @return
      */
     @RequestMapping(value = "/findSafeFourLevelById", method = RequestMethod.POST)
-    public ResponseModel<SafeFourLevel> findSafeFourLevelById(@RequestBody JSONObject json) {
+    public ResponseModel<PagingSafeFourLevel> findSafeFourLevelById(@RequestBody JSONObject json) {
         try {
-            SafeFourLevel safeFourLevel = safeFourLevelService.getSafeFourLevelById(json);
-            return ResponseModel.build("1000", "查询成功", safeFourLevel);
+            PagingSafeFourLevel pagingSafeFourLevel = safeFourLevelService.getSafeFourLevelById(json);
+            return ResponseModel.build("1000", "查询成功", pagingSafeFourLevel);
         } catch (Exception e) {
             logger.error("分页查询异常，ERROR：{}", e);
             return ResponseModel.build("1001", "服务器处理异常");
@@ -114,8 +115,12 @@ public class SafeFourLevelController {
     @RequestMapping(value = "/insertSafeFourLevel", method = RequestMethod.POST)
     public ResponseModel insertSafeFourLevel(@RequestBody JSONObject json) {
         try {
-            safeFourLevelService.insertSafeFourLevel(json);
-            return ResponseModel.build("1000", "添加成功");
+            String i=safeFourLevelService.insertSafeFourLevel(json);
+            if (i.equals("1000")) {
+                return ResponseModel.build("1000", "添加成功");
+            }else {
+                return ResponseModel.build("1002", "添加失败，身份证号不存在！");
+            }
         } catch (Exception e) {
             logger.error("添加异常，ERROR：{}", e);
             return ResponseModel.build("1001", "服务器处理异常");

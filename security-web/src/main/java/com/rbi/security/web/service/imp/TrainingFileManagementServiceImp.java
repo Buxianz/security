@@ -1,12 +1,19 @@
 package com.rbi.security.web.service.imp;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.AuthenticationUserDTO;
+import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
+import com.rbi.security.entity.web.hid.HidDangerDO;
+import com.rbi.security.entity.web.hid.HidDangerProcessDO;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrain;
+import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrainDTO;
 import com.rbi.security.entity.web.safe.specialtype.PagingSpecialTraining;
 import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFiles;
 import com.rbi.security.entity.web.user.PagingUser;
 import com.rbi.security.exception.NonExistentException;
 import com.rbi.security.exception.RepeatException;
+import com.rbi.security.tool.DateUtil;
 import com.rbi.security.tool.LocalDateUtils;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.web.DAO.CompanyPersonnelDAO;
@@ -20,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.unit.DataUnit;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -133,14 +141,93 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
         }
         return pagingSpecialTraining;
     }
-    /****************安全培训管理**********************/
-    @Override
-    public void insertAdministratorTrain(SafeAdministratorTrain safeAdministratorTrain) throws RuntimeException {
-         try{
 
+
+    /****************安全培训管理**谢青********************/
+    @Override
+    public String insertAdministratorTrain(SafeAdministratorTrain safeAdministratorTrain) throws RuntimeException {
+         try{
+             Subject subject = SecurityUtils.getSubject();
+             AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+             Integer personnelId  =  currentUser.getCompanyPersonnelId();
+             SysCompanyPersonnel sysCompanyPersonnel = safeAdministratorTrainDAO.findPersonnelByIdCardNo(safeAdministratorTrain.getIdCardNo());
+             if (null == sysCompanyPersonnel){
+                 return "身份证不存在,此人不在公司人员信息表中";
+             }
+             safeAdministratorTrain.setCompanyPersonnelId(sysCompanyPersonnel.getId());
+             String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
+             safeAdministratorTrain.setOperatingStaff(personnelId);
+             safeAdministratorTrain.setIdt(idt);
+             safeAdministratorTrainDAO.add(safeAdministratorTrain);
+             return "1000";
          }catch (Exception e){
              logger.error("添加主要负责人/安全生产管理员培训台账失败，异常为{}",e);
              throw new RuntimeException("添加主要负责人/安全生产管理员培训台账失败");
          }
+    }
+
+    @Override
+    public void deleteAdministratorTrain(Integer id) {
+            safeAdministratorTrainDAO.deleteById(id);
+    }
+
+    @Override
+    public void updateAdministratorTrain(SafeAdministratorTrain safeAdministratorTrain) {
+        String udt = DateUtil.date(DateUtil.FORMAT_PATTERN);
+        safeAdministratorTrain.setUdt(udt);
+        safeAdministratorTrainDAO.update(safeAdministratorTrain);
+    }
+
+    @Override
+    public PageData findAdministratorTrainByPage(int pageNo, int pageSize) {
+        int pageNo2 = pageSize * (pageNo - 1);
+        List<SafeAdministratorTrainDTO> safeAdministratorTrains = safeAdministratorTrainDAO.findByPage(pageNo2,pageSize);
+        int totalPage = 0;
+        int count = safeAdministratorTrainDAO.findByPageNum();
+        if (0 == count % pageSize) {
+            totalPage = count / pageSize;
+        } else {
+            totalPage = count / pageSize + 1;
+        }
+        return new PageData(pageNo, pageSize, totalPage, count, safeAdministratorTrains);
+    }
+
+    @Override
+    public PageData findByCondition(String condition, String value, int pageNo, int pageSize) {
+        String value2 = "'%"+value+"%'";
+        if (condition.equals("姓名")){
+            int pageNo2 = pageSize * (pageNo - 1);
+            List<SafeAdministratorTrainDTO> safeAdministratorTrains = safeAdministratorTrainDAO.findByName(value2,pageNo2,pageSize);
+            int totalPage = 0;
+            int count = safeAdministratorTrainDAO.findByNameNum(value2);
+            if (0 == count % pageSize) {
+                totalPage = count / pageSize;
+            } else {
+                totalPage = count / pageSize + 1;
+            }
+            return new PageData(pageNo, pageSize, totalPage, count, safeAdministratorTrains);
+        }else if (condition.equals("身份证号")){
+            int pageNo2 = pageSize * (pageNo - 1);
+            List<SafeAdministratorTrainDTO> safeAdministratorTrains = safeAdministratorTrainDAO.findByidCardNo(value2,pageNo2,pageSize);
+            int totalPage = 0;
+            int count = safeAdministratorTrainDAO.findByidCardNoNum(value2);
+            if (0 == count % pageSize) {
+                totalPage = count / pageSize;
+            } else {
+                totalPage = count / pageSize + 1;
+            }
+            return new PageData(pageNo, pageSize, totalPage, count, safeAdministratorTrains);
+        }else {
+            int pageNo2 = pageSize * (pageNo - 1);
+            List<SafeAdministratorTrainDTO> safeAdministratorTrains = safeAdministratorTrainDAO.findByUnit(value2,pageNo2,pageSize);
+            int totalPage = 0;
+            int count = safeAdministratorTrainDAO.findByUnitNum(value2);
+            if (0 == count % pageSize) {
+                totalPage = count / pageSize;
+            } else {
+                totalPage = count / pageSize + 1;
+            }
+            return new PageData(pageNo, pageSize, totalPage, count, safeAdministratorTrains);
+        }
     }
 }

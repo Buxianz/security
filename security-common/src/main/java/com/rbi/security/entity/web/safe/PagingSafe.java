@@ -26,22 +26,6 @@ import java.util.List;
 @Data
 public class PagingSafe {
 
-//    /**
-//     * 题目id
-//     */
-//    private Integer id;
-//    /**
-//     * 题目类型
-//     */
-//    private Integer subjectType;
-//    /**
-//     * 题目
-//     */
-//    private String subject;
-//    /**
-//     * 正确答案
-//     */
-//    private String rightKey;
     SafeSubject safeSubject;
 
     List<SafeSubjectOption> safeSubjectOptionList;

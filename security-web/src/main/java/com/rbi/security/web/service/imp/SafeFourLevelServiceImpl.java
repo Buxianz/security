@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.entity.web.entity.SafeFourLevel;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
+import com.rbi.security.entity.web.safe.PagingSafeFourLevel;
 import com.rbi.security.tool.DateUtil;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.web.DAO.CompanyPersonnelDAO;
@@ -12,6 +13,8 @@ import com.rbi.security.web.DAO.safe.SafeFourLevelDAO;
 import com.rbi.security.web.service.SafeFourLevelService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +40,7 @@ import java.util.List;
  **/
 @Service
 public class SafeFourLevelServiceImpl implements SafeFourLevelService {
+    private static final Logger logger = LoggerFactory.getLogger(SafeFourLevelServiceImpl.class);
     @Autowired(required = false)
     SafeFourLevelDAO safeFourLevelDAO;
     @Autowired(required = false)
@@ -49,20 +53,20 @@ public class SafeFourLevelServiceImpl implements SafeFourLevelService {
         int pageNo = json.getInteger("pageNo");
         int pageSize = json.getInteger("pageSize");
         int recNo = pageSize * (pageNo - 1);
-        List<SafeFourLevel> safeFourLevelList=safeFourLevelDAO.getSafeFourLevelByPage(recNo, pageSize);
+        List<PagingSafeFourLevel> pagingSafeFourLevelList=safeFourLevelDAO.getSafeFourLevelByPage(recNo, pageSize);
         count =safeFourLevelDAO.getCountSafeFourLevel();
         if (0 == count % pageSize) {
             totalPage = count / pageSize;
         } else {
             totalPage = count / pageSize + 1;
         }
-        return new PageData(pageNo, pageSize, totalPage, count, safeFourLevelList);
+        return new PageData(pageNo, pageSize, totalPage, count, pagingSafeFourLevelList);
     }
 
     @Override
-    public SafeFourLevel getSafeFourLevelById(JSONObject json) {
-        SafeFourLevel safeFourLevel=safeFourLevelDAO.getSafeFourLevelById(json.getInteger("id"));
-        return safeFourLevel;
+    public PagingSafeFourLevel getSafeFourLevelById(JSONObject json) {
+        PagingSafeFourLevel pagingSafeFourLevel=safeFourLevelDAO.getSafeFourLevelById(json.getInteger("id"));
+        return pagingSafeFourLevel;
     }
 
     @Override
@@ -70,13 +74,13 @@ public class SafeFourLevelServiceImpl implements SafeFourLevelService {
         int pageNo = json.getInteger("pageNo");
         int pageSize = json.getInteger("pageSize");
         int recNo = pageSize * (pageNo - 1);
-        List<SafeFourLevel> safeFourLevelList=new ArrayList<>();
+        List<PagingSafeFourLevel> pagingSafeFourLevelList=new ArrayList<>();
         int count =0;
         if (json.getInteger("key")==0) {
-            safeFourLevelList = safeFourLevelDAO.findSafeFourLevelByName(json.getString("name"),recNo, pageSize);
+            pagingSafeFourLevelList = safeFourLevelDAO.findSafeFourLevelByName(json.getString("name"),recNo, pageSize);
             count =safeFourLevelDAO.getCountSafeFourLevelByName(json.getString("name"));
         }else if (json.getInteger("key")==1) {
-            safeFourLevelList = safeFourLevelDAO.findSafeFourLevelByWorkType(json.getString("workType"),recNo, pageSize);
+            pagingSafeFourLevelList = safeFourLevelDAO.findSafeFourLevelByWorkType(json.getString("workType"),recNo, pageSize);
             count =safeFourLevelDAO.getCountSafeFourLevelByWorkType(json.getString("workType"));
         }
         int totalPage=0;
@@ -85,7 +89,7 @@ public class SafeFourLevelServiceImpl implements SafeFourLevelService {
         } else {
             totalPage = count / pageSize + 1;
         }
-        return new PageData(pageNo, pageSize, totalPage, count, safeFourLevelList);
+        return new PageData(pageNo, pageSize, totalPage, count, pagingSafeFourLevelList);
     }
 
     @Override
@@ -93,13 +97,13 @@ public class SafeFourLevelServiceImpl implements SafeFourLevelService {
         int pageNo = json.getInteger("pageNo");
         int pageSize = json.getInteger("pageSize");
         int recNo = pageSize * (pageNo - 1);
-        List<SafeFourLevel> safeFourLevelList=new ArrayList<>();
+        List<PagingSafeFourLevel> pagingSafeFourLevelList=new ArrayList<>();
         int count =0;
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         int personnelId  =  currentUser.getCompanyPersonnelId();
 
-        safeFourLevelList = safeFourLevelDAO.findSafeFourLevelByOperatingStaff(personnelId,recNo, pageSize);
+        pagingSafeFourLevelList = safeFourLevelDAO.findSafeFourLevelByOperatingStaff(personnelId,recNo, pageSize);
         count =safeFourLevelDAO.getCountSafeFourLevelByOperatingStaff(personnelId);
 
         int totalPage=0;
@@ -108,29 +112,30 @@ public class SafeFourLevelServiceImpl implements SafeFourLevelService {
         } else {
             totalPage = count / pageSize + 1;
         }
-        return new PageData(pageNo, pageSize, totalPage, count, safeFourLevelList);
+        return new PageData(pageNo, pageSize, totalPage, count, pagingSafeFourLevelList);
     }
 
     @Override
-    public void insertSafeFourLevel(JSONObject json) {
-        SafeFourLevel safeFourLevel= JSONObject.parseObject(json.toJSONString(), SafeFourLevel.class);
+    public String insertSafeFourLevel(JSONObject json) {
+        SafeFourLevel safeFourLevel = JSONObject.parseObject(json.toJSONString(), SafeFourLevel.class);
 
         Subject subject = SecurityUtils.getSubject();
-        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-        int personnelId  =  currentUser.getCompanyPersonnelId();
+        AuthenticationUserDTO currentUser = (AuthenticationUserDTO) subject.getPrincipal();
+        int personnelId = currentUser.getCompanyPersonnelId();
         safeFourLevel.setOperatingStaff(personnelId);
-
-        SysCompanyPersonnel sysCompanyPersonnel=companyPersonnelDAO.getSysCompanyPersonnelByIdCardNo(json.getString("idCardNo"));
-        safeFourLevel.setName(sysCompanyPersonnel.getName());
-        safeFourLevel.setGender(sysCompanyPersonnel.getGender());
-        safeFourLevel.setDateOfBirth(sysCompanyPersonnel.getDateOfBirth());
-        safeFourLevel.setEntryTime(sysCompanyPersonnel.getEntryTime());
-        safeFourLevel.setWorkType(sysCompanyPersonnel.getWorkType());
-        safeFourLevel.setJobNature(sysCompanyPersonnel.getPosition());
-
-        safeFourLevel.setIdt(DateUtil.date(DateUtil.FORMAT_PATTERN));
-        safeFourLevel.setUdt(DateUtil.date(DateUtil.FORMAT_PATTERN));
-        safeFourLevelDAO.insertSafeFourLevel(safeFourLevel);
+        try {
+            if (json.getString("idCardNo").length() == 18) {
+                safeFourLevel.setIdt(DateUtil.date(DateUtil.FORMAT_PATTERN));
+                safeFourLevel.setUdt(DateUtil.date(DateUtil.FORMAT_PATTERN));
+                safeFourLevelDAO.insertSafeFourLevel(safeFourLevel);
+                return "1000";
+            } else {
+                return "1002";
+            }
+        } catch (NullPointerException e) {
+            logger.error("添加异常，异常信息为{}", e);
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
@@ -153,15 +158,9 @@ public class SafeFourLevelServiceImpl implements SafeFourLevelService {
     public String updateSafeFourLevel(JSONObject json) {
         SafeFourLevel safeFourLevel= JSONObject.parseObject(json.toJSONString(), SafeFourLevel.class);
         if (safeFourLevelDAO.getSafeFourLevelById(json.getInteger("id"))!=null) {
-            SafeFourLevel safeFourLevel1=safeFourLevelDAO.getSafeFourLevelById(json.getInteger("id"));
-            safeFourLevel.setIdCardNo(safeFourLevel1.getIdCardNo());
-            safeFourLevel.setOrganizationName(safeFourLevel1.getOrganizationName());
-            safeFourLevel.setName(safeFourLevel1.getName());
-            safeFourLevel.setGender(safeFourLevel1.getGender());
-            safeFourLevel.setDateOfBirth(safeFourLevel1.getDateOfBirth());
-            safeFourLevel.setEntryTime(safeFourLevel1.getEntryTime());
-            safeFourLevel.setWorkType(safeFourLevel1.getWorkType());
-            safeFourLevel.setJobNature(safeFourLevel1.getJobNature());
+            PagingSafeFourLevel pagingSafeFourLevel=safeFourLevelDAO.getSafeFourLevelById(json.getInteger("id"));
+            safeFourLevel.setIdCardNo(pagingSafeFourLevel.getIdCardNo());
+            safeFourLevel.setOrganizationName(pagingSafeFourLevel.getOrganizationName());
 
             Subject subject = SecurityUtils.getSubject();
             AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();

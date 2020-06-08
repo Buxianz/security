@@ -3,6 +3,7 @@ package com.rbi.security.web.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.entity.SafeFourLevel;
+import com.rbi.security.entity.web.safe.PagingSafeFourLevel;
 import com.rbi.security.tool.PageData;
 
 public interface SafeFourLevelService {
@@ -13,7 +14,7 @@ public interface SafeFourLevelService {
     /**
      * 根据id查询四级HSE教育培训台账
      */
-    SafeFourLevel getSafeFourLevelById(JSONObject json);
+    PagingSafeFourLevel getSafeFourLevelById(JSONObject json);
     /**
      * 搜索分页查询四级HSE教育培训台账
      */
@@ -25,7 +26,7 @@ public interface SafeFourLevelService {
     /**
      * 添加
      */
-    void insertSafeFourLevel(JSONObject json);
+    String insertSafeFourLevel(JSONObject json);
     /**
      * 删除
      */

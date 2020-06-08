@@ -1,9 +1,12 @@
 package com.rbi.security.web.controller.safe;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.rbi.security.entity.web.safe.content.SafeDataPlan;
 import com.rbi.security.entity.web.safe.demand.PagingTraniningNeeds;
 import com.rbi.security.entity.web.safe.demand.SafeTrainingNeeds;
 import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFiles;
+import com.rbi.security.entity.web.safe.testpaper.SafeTestPaper;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.SafeDemandReportService;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -65,7 +69,18 @@ public class SafeDemandReportController {
         }
     }
     /**
-     * 处理需求F
+     * 处理需求
      */
-
+    @RequestMapping("/handlingRequirements")
+    public ResponseModel handlingRequirements(@RequestBody JSONObject date) {
+        try{
+            SafeTrainingNeeds safeTrainingNeeds =JSONObject.parseObject(date.getJSONObject("safeTrainingNeeds").toString(), SafeTrainingNeeds.class);
+            List<SafeDataPlan> safeDataPlanList= JSONArray.parseArray(date.getJSONArray("safeDataPlanList").toString(),SafeDataPlan.class);;
+            SafeTestPaper safeTestPaper=JSONObject.parseObject(date.getJSONObject("safeTestPaper").toString(), SafeTestPaper.class);
+            safeDemandReportService.handlingRequirements(safeTrainingNeeds,safeDataPlanList,safeTestPaper);
+            return ResponseModel.build("1000", "发布成功");
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
 }
