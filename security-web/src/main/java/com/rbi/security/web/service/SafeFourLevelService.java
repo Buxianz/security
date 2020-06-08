@@ -22,7 +22,7 @@ public interface SafeFourLevelService {
     /**
      * 分页查询当前登录人的四级HSE教育培训台账
      */
-    PageData findSafeFourLevelByOperatingStaff(JSONObject json);
+    PagingSafeFourLevel findSafeFourLevelByOperatingStaff();
     /**
      * 添加
      */
