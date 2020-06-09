@@ -1,10 +1,14 @@
 package com.rbi.security.web.service.imp;
 
+import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorReviewDTO;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrainDTO;
+import com.rbi.security.tool.DateUtil;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.web.DAO.safe.SafeAdministratorReviewDAO;
 import com.rbi.security.web.service.SafeAdministratorReviewService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,5 +48,35 @@ public class SafeAdministratorReviewServiceImp implements SafeAdministratorRevie
             totalPage = count / pageSize + 1;
         }
         return new PageData(pageNo, pageSize, totalPage, count, safeAdministratorReviewDTOS);
+    }
+
+
+    @Override
+    public void review(SafeAdministratorReviewDTO safeAdministratorReviewDTO) {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        String time = DateUtil.date(DateUtil.FORMAT_PATTERN);
+
+
+        safeAdministratorReviewDTO.setOperatingStaff(personnelId);
+        safeAdministratorReviewDTO.setCompletionStatus(3);
+        safeAdministratorReviewDTO.setProcessingTime(time);
+
+        safeAdministratorReviewDAO.updateReview(safeAdministratorReviewDTO);
+        safeAdministratorReviewDAO.updateFile(safeAdministratorReviewDTO);
+    }
+
+    @Override
+    public void cancel(SafeAdministratorReviewDTO safeAdministratorReviewDTO) {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        String time = DateUtil.date(DateUtil.FORMAT_PATTERN);
+
+        safeAdministratorReviewDTO.setOperatingStaff(personnelId);
+        safeAdministratorReviewDTO.setCompletionStatus(2);
+        safeAdministratorReviewDTO.setProcessingTime(time);
+        safeAdministratorReviewDAO.updateReview(safeAdministratorReviewDTO);
     }
 }

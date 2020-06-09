@@ -1,6 +1,8 @@
 package com.rbi.security.web.controller.safe;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.rbi.security.entity.web.safe.administrator.SafeAdministratorReviewDTO;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.SafeAdministratorReviewService;
@@ -48,6 +50,38 @@ public class SafeAdministratorReviewController {
             return ResponseModel.build("1001","处理异常");
         }
     }
+
+    /**
+     * 完成复审
+     */
+    @PostMapping("/review")
+    public ResponseModel review(@RequestBody JSONObject json){
+        try {
+            SafeAdministratorReviewDTO safeAdministratorReviewDTO = JSON.toJavaObject(json,SafeAdministratorReviewDTO.class);
+            safeAdministratorReviewService.review(safeAdministratorReviewDTO);
+            return ResponseModel.build("1000","完成复审！");
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+    /**
+     * 完成复审
+     */
+    @PostMapping("/cancel")
+    public ResponseModel cancel(@RequestBody JSONObject json){
+        try {
+            SafeAdministratorReviewDTO safeAdministratorReviewDTO = JSON.toJavaObject(json,SafeAdministratorReviewDTO.class);
+            safeAdministratorReviewService.cancel(safeAdministratorReviewDTO);
+            return ResponseModel.build("1000","已取消！");
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+
 
 
 }

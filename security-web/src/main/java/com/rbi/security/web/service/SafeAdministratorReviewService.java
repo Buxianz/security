@@ -1,5 +1,6 @@
 package com.rbi.security.web.service;
 
+import com.rbi.security.entity.web.safe.administrator.SafeAdministratorReviewDTO;
 import com.rbi.security.tool.PageData;
 
 /**
@@ -22,4 +23,8 @@ import com.rbi.security.tool.PageData;
 public interface SafeAdministratorReviewService {
 
     PageData findByPage(int pageNo, int pageSize);
+
+    void review(SafeAdministratorReviewDTO safeAdministratorReviewDTO);
+
+    void cancel(SafeAdministratorReviewDTO safeAdministratorReviewDTO);
 }
