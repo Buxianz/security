@@ -27,6 +27,10 @@ public class SafeTrainingNeeds implements Serializable {
     */
     private Integer trainingTypeId;
     /**
+     * 培训类型名称
+     */
+    private String trainingTypeName;
+    /**
     * 培训内容
     */
     private String trainingContent;
@@ -46,6 +50,10 @@ public class SafeTrainingNeeds implements Serializable {
     * 组织培训部门id（为组织信息表中id的某个值）
     */
     private Integer organizationTrainingDepartmentId;
+    /**
+     * 组织名称
+     */
+    private String organizationName;
     /**
     * 提出时间
     */

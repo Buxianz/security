@@ -68,5 +68,11 @@ public interface SafeTraningNeedsDAO {
      */
     @Select("select * from safe_training_needs where id=#{id} and processing_status=1")
     SafeTrainingNeeds getTrainingNeedsByIdAndStatus(SafeTrainingNeeds safeTrainingNeeds);
-
+    /**
+     * 获取数据
+     */
+    @Select("SELECT stn.*,sty.training_type_name FROM\n" +
+            "(SELECT stn.*,so.organization_name FROM\n" +
+            "(select * from safe_training_needs where id=#{id}) stn LEFT JOIN sys_organization so on stn.organization_training_department_id=so.id) stn left JOIN safa_training_type sty on stn.training_type_id=sty.id")
+    SafeTrainingNeeds getTrainingNeedsById(@Param("id") int id);
 }

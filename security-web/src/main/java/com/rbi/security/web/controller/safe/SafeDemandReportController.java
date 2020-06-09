@@ -83,4 +83,16 @@ public class SafeDemandReportController {
             return ResponseModel.build("1001", e.getMessage());
         }
     }
+    /**
+     * 根据id获取需求计划信息
+     */
+    @RequestMapping("/getTrainingNeedsById")
+    public ResponseModel<SafeTrainingNeeds> getTrainingNeedsById(@RequestBody JSONObject date) {
+        try{
+            Integer id=date.getInteger("id");
+            return ResponseModel.build("1000", "发布成功",safeDemandReportService.getTrainingNeedsById(id));
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
 }
