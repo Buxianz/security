@@ -1,6 +1,7 @@
 package com.rbi.security.web.service;
 
 import com.rbi.security.entity.web.safe.task.TestPaperInfo;
+import com.rbi.security.entity.web.safe.testpaper.TestPaper;
 import com.rbi.security.tool.PageData;
 
 /**
@@ -22,4 +23,5 @@ import com.rbi.security.tool.PageData;
  **/
 public interface TaskManagerService {
     PageData<TestPaperInfo> pagingSpecialReview(int pageNo, int startIndex, int pageSize, int processingStatus) throws RuntimeException;
+    TestPaper getTestPaper(int id) throws RuntimeException;
 }

@@ -36,6 +36,7 @@ public class TaskManagerController {
     /**
      * 分页查看自身学习信息
      */
+
     /**
      * 分页查看自身考试信息
      */
@@ -56,7 +57,15 @@ public class TaskManagerController {
     /**
      * 获取试卷内容
      */
-
+    @RequestMapping("/getTestPaper")
+    public ResponseModel getTestPaper(@RequestBody JSONObject date){
+        try {
+            int id = date.getInteger("id");
+            return  ResponseModel.build("1000", "查询成功",taskManagerService.getTestPaper(id));
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
     /**
      * 完成考试
      */
@@ -72,4 +81,5 @@ public class TaskManagerController {
     /**
      * 分页查看考试记录
      */
+
 }

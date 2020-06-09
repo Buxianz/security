@@ -2,7 +2,11 @@ package com.rbi.security.web.service.imp;
 
 import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.entity.web.safe.task.TestPaperInfo;
+import com.rbi.security.entity.web.safe.testpaper.SafeTestQuestionOptions;
+import com.rbi.security.entity.web.safe.testpaper.SafeTestQuestions;
+import com.rbi.security.entity.web.safe.testpaper.TestPaper;
 import com.rbi.security.tool.PageData;
+import com.rbi.security.web.DAO.safe.SafeTestQaperDAO;
 import com.rbi.security.web.DAO.safe.SafeTrainingTasksDAO;
 import com.rbi.security.web.service.TaskManagerService;
 import org.apache.shiro.SecurityUtils;
@@ -12,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -36,9 +41,12 @@ public class TaskManagerServiceImp implements TaskManagerService {
     private static final Logger logger = LoggerFactory.getLogger(TaskManagerServiceImp.class);
     @Autowired
     SafeTrainingTasksDAO safeTrainingTasksDAO;
+    @Autowired
+    SafeTestQaperDAO safeTestQaperDAO;
     /**
      * 分页查看自身学习信息
      */
+
     /**
      * 分页查看自身考试信息
      */
@@ -66,5 +74,85 @@ public class TaskManagerServiceImp implements TaskManagerService {
                logger.error("分页获取自身考试信息失败，异常为{}",e);
                throw new RuntimeException("分页获取自身考试信息失败");
            }
+    }
+    /**
+     * 获取试卷内容 1:单选；2：多选；3：判断；4：填空
+     */
+    public TestPaper getTestPaper(int id) throws RuntimeException{
+        TestPaper testPaper=null;
+        List<SafeTestQuestions> safeTestQuestionsList=null;
+        List<Integer> testQuestionsIds=new LinkedList<Integer>();
+        List<SafeTestQuestionOptions> safeTestQuestionOptionsList=null;
+        /**
+         * 试卷的单选题目
+         */
+        List<SafeTestQuestions> singleChoiceQuestions=new LinkedList<SafeTestQuestions>();
+        /**
+         * 试卷的多选题目
+         */
+        List<SafeTestQuestions> multipleChoiceQuestions=new LinkedList<SafeTestQuestions>();
+        /**
+         * 试卷的判断题目
+         */
+        List<SafeTestQuestions> judgmentQuestions=new LinkedList<SafeTestQuestions>();
+        /**
+         * 试卷的填空题目
+         */
+        List<SafeTestQuestions> completion=new LinkedList<SafeTestQuestions>();
+        try{
+            testPaper=safeTestQaperDAO.getTestPaper(id);
+            safeTestQuestionsList=safeTestQaperDAO.getTestQuestions(testPaper.getId());
+            for(int i=0;i<safeTestQuestionsList.size();i++){
+                testQuestionsIds.add(safeTestQuestionsList.get(i).getId());
+            }
+            safeTestQuestionOptionsList=safeTestQaperDAO.getTestQuestionOptions(testQuestionsIds);
+            /**
+             * 整合题目与选项
+             */
+            for(int i=0;i<safeTestQuestionsList.size();i++){
+                for(int j=0;j<safeTestQuestionOptionsList.size();j++){
+                    if(safeTestQuestionsList.get(i).getId()==safeTestQuestionOptionsList.get(j).getSubjectId()){
+                        if(safeTestQuestionsList.get(i).getSafeTestQuestionOptionsList()==null){
+                            safeTestQuestionsList.get(i).setSafeTestQuestionOptionsList(new LinkedList<SafeTestQuestionOptions>());
+                        }
+                        safeTestQuestionsList.get(i).getSafeTestQuestionOptionsList().add(safeTestQuestionOptionsList.get(j));
+                    }
+                }
+            }
+            /**
+             * 整合题目
+             */
+            for(int i=0;i<safeTestQuestionsList.size();i++){
+                int subjectType=safeTestQuestionsList.get(i).getSubjectType();
+                switch(subjectType){
+                    case 1 : {
+                        singleChoiceQuestions.add(safeTestQuestionsList.get(i));
+                        break; //可选
+                    }
+                    case 2 : {
+                        multipleChoiceQuestions.add(safeTestQuestionsList.get(i));
+                        break; //可选
+                    }
+                    //你可以有任意数量的case语句
+                    case 3 : {
+                        judgmentQuestions.add(safeTestQuestionsList.get(i));
+                        break; //可选
+                    }
+                    case 4 : {
+                        completion.add(safeTestQuestionsList.get(i));
+                        break; //可选
+                    }
+
+                }
+            }
+            testPaper.setCompletion(completion);
+            testPaper.setJudgmentQuestions(judgmentQuestions);
+            testPaper.setMultipleChoiceQuestions(multipleChoiceQuestions);
+            testPaper.setSingleChoiceQuestions(singleChoiceQuestions);
+        }catch (Exception e){
+            logger.error("获取试卷信息失败，异常为{}",e);
+            throw new RuntimeException("获取试卷信息失败");
+        }
+        return testPaper;
     }
 }
