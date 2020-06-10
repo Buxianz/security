@@ -141,4 +141,32 @@ public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsSe
             safeTrainingMaterialsDAO.deleteById(id);
         }
     }
+
+    @Override
+    public PageData findFileByCategory(int pageNo, int pageSize, int value) {
+        int pageNo2 = pageSize * (pageNo - 1);
+        List<SafeTrainingMaterials> safeTrainingMaterials = safeTrainingMaterialsDAO.findFileByCategory(pageNo2,pageSize,value);
+        int totalPage = 0;
+        int count = safeTrainingMaterialsDAO.findFileByCategoryNum(value);
+        if (0 == count % pageSize) {
+            totalPage = count / pageSize;
+        } else {
+            totalPage = count / pageSize + 1;
+        }
+        return new PageData(pageNo, pageSize, totalPage, count, safeTrainingMaterials);
+    }
+
+    @Override
+    public PageData findVideoByCategory(int pageNo, int pageSize, int value) {
+        int pageNo2 = pageSize * (pageNo - 1);
+        List<SafeTrainingMaterials> safeTrainingMaterials = safeTrainingMaterialsDAO.findVideoByCategory(pageNo2,pageSize,value);
+        int totalPage = 0;
+        int count = safeTrainingMaterialsDAO.findVideoByCategoryNum(value);
+        if (0 == count % pageSize) {
+            totalPage = count / pageSize;
+        } else {
+            totalPage = count / pageSize + 1;
+        }
+        return new PageData(pageNo, pageSize, totalPage, count, safeTrainingMaterials);
+    }
 }

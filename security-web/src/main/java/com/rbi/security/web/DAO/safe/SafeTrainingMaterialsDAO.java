@@ -42,4 +42,21 @@ public interface SafeTrainingMaterialsDAO {
 
     @Select("select count(*) from safe_training_materials,safe_content_category where safe_training_materials.content_category_id = safe_content_category.id and resource_name like ${resourceName}")
     int findByNameNum(@Param("resourceName") String resourceName);
+
+
+    @Select("select * from safe_training_materials,safe_content_category where safe_training_materials.content_category_id = safe_content_category.id " +
+            "and content_category_id = #{contentCategoryId} and resource_type = '文件' limit #{pageNo},#{pageSize}")
+    List<SafeTrainingMaterials> findFileByCategory(int pageNo, int pageSize, int contentCategoryId);
+
+    @Select("select count(*) from safe_training_materials,safe_content_category where safe_training_materials.content_category_id = safe_content_category.id and " +
+            "content_category_id = #{contentCategoryId} and resource_type = '文件'")
+    int findFileByCategoryNum(int contentCategoryId);
+
+    @Select("select * from safe_training_materials,safe_content_category where safe_training_materials.content_category_id = safe_content_category.id " +
+            "and content_category_id = #{contentCategoryId} and resource_type = '视频' limit #{pageNo},#{pageSize}")
+    List<SafeTrainingMaterials> findVideoByCategory(int pageNo, int pageSize, int contentCategoryId);
+
+    @Select("select count(*) from safe_training_materials,safe_content_category where safe_training_materials.content_category_id = safe_content_category.id and " +
+            "content_category_id = #{contentCategoryId} and resource_type = '视频'")
+    int findVideoByCategoryNum(int contentCategoryId);
 }
