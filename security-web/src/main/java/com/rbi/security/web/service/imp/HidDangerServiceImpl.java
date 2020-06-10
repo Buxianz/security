@@ -769,7 +769,6 @@ public class HidDangerServiceImpl implements HidDangerService {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
-        Integer userId = currentUser.getId();
         String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
         try {
             SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
@@ -803,6 +802,8 @@ public class HidDangerServiceImpl implements HidDangerService {
             HidDangerDO hidDangerDO2 = hidDangerDAO.findALLByHidDangerCode(hidDangerCode);
             if (StringUtils.isBlank(hidDangerDO2.getRectificationNoticeTime())){
                 hidDangerDO.setRectificationNoticeTime(idt);
+            }else {
+                hidDangerDO.setRectificationNoticeTime(hidDangerDO2.getRectificationNoticeTime());
             }
             hidDangerDO.setProcessingStatus("3");
             hidDangerDAO.updateNotice(hidDangerDO);
