@@ -11,6 +11,7 @@ import com.rbi.security.entity.web.entity.SysRole;
 import com.rbi.security.entity.web.hid.*;
 import com.rbi.security.tool.DateUtil;
 import com.rbi.security.tool.PageData;
+import com.rbi.security.tool.StringUtils;
 import com.rbi.security.web.DAO.hid.HidDangerDAO;
 import com.rbi.security.web.service.HidDangerService;
 import lombok.Data;
@@ -241,6 +242,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerDO.setHidDangerType(2);
             String hidDangerCode = DateUtil.timeStamp();
             hidDangerDO.setIdt(idt);
+            hidDangerDO.setRectificationNoticeTime(idt);
             hidDangerDO.setHidDangerCode(hidDangerCode);
             hidDangerDO.setProcessingStatus("2");
 
@@ -330,7 +332,6 @@ public class HidDangerServiceImpl implements HidDangerService {
                 parentId = sysOrganization3.getParentId();
                 level=level - 1;
             }
-            hidDangerDO.setRectificationNoticeTime(idt);
             hidDangerDAO.addHidDanger(hidDangerDO);
             return "1000";
         }catch (NullPointerException e){
@@ -769,8 +770,8 @@ public class HidDangerServiceImpl implements HidDangerService {
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         Integer userId = currentUser.getId();
+        String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
         try {
-            String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
             SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
             //进程表添加
             SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
@@ -799,7 +800,10 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerDO.setCorrectorName(sysCompanyPersonnel2.getName());
             hidDangerDO.setRectificationOpinions(rectificationOpinions);
             hidDangerDO.setSpecifiedRectificationTime(specifiedRectificationTime);
-            hidDangerDO.setRectificationNoticeTime(idt);
+            HidDangerDO hidDangerDO2 = hidDangerDAO.findALLByHidDangerCode(hidDangerCode);
+            if (StringUtils.isBlank(hidDangerDO2.getRectificationNoticeTime())){
+                hidDangerDO.setRectificationNoticeTime(idt);
+            }
             hidDangerDO.setProcessingStatus("3");
             hidDangerDAO.updateNotice(hidDangerDO);
             hidDangerDAO.addProcess(hidDangerProcessDO);
@@ -840,7 +844,7 @@ public class HidDangerServiceImpl implements HidDangerService {
     }
 
     @Override
-    public String report(HidDangerDO hidDangerDO) {
+    public String report(String hidDangerCode) {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
@@ -848,8 +852,6 @@ public class HidDangerServiceImpl implements HidDangerService {
         try {
             SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
             String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
-            String hidDangerCode = hidDangerDO.getHidDangerCode();
-
             //进程表添加
             SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
             SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
@@ -884,7 +886,6 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerProcessDO.setDealTime(idt);
             hidDangerProcessDO.setIdt(idt);
             hidDangerDAO.addProcess(hidDangerProcessDO);
-//            hidDangerDAO.reportHidDanger(hidDangerDO);
             return "1000";
         }catch (NullPointerException e){
             System.out.println("错误："+e);

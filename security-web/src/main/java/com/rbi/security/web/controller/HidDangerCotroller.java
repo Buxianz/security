@@ -246,9 +246,10 @@ public class HidDangerCotroller {
      * 上报处理按钮
      **/
     @PostMapping("/report")
-    public ResponseModel report(HidDangerDO hidDangerDO){
+    public ResponseModel report(@RequestBody JSONObject json){
         try {
-            String result  = hidDangerService.report(hidDangerDO);
+            String hidDangerCode  = json.getString("hidDangerCode");
+            String result  = hidDangerService.report(hidDangerCode);
             if (result.equals("1000")){
                 return ResponseModel.build("1000","上报成功！");
             }else {

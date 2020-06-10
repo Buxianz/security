@@ -49,5 +49,5 @@ public interface HidDangerService {
 
     Map<String, Object> findCorrector();
 
-    String report(HidDangerDO hidDangerDO);
+    String report(String hidDangerCode);
 }

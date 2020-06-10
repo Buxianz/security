@@ -76,12 +76,12 @@ public interface HidDangerDAO {
     @Insert("insert into hid_danger (hid_danger_code,hid_danger_type,organization_id,organization_name,troubleshooting_time,hid_danger_content,hid_danger_grade,if_control_measures,if_rectification_plan," +
             "copy_organization_id,copy_organization_name,if_deal,governance_funds,completion_time,completion_situation,rectification_plan,acceptance_report,processing_status,idt," +
             "hid_type_thing,hid_type_person,hid_type_manage,corrector_id,corrector_name," +
-            "rectification_opinions,specified_rectification_time,rectification_notice_annex,rectification_unit_id,rectification_unit_name," +
+            "rectification_notice_time,rectification_opinions,specified_rectification_time,rectification_notice_annex,rectification_unit_id,rectification_unit_name," +
             "company_id,company_name,factory_id,factory_name,workshop_id,workshop_name,class_id,class_name)values" +
             "(#{hidDangerCode},#{hidDangerType},#{organizationId},#{organizationName},#{troubleshootingTime},#{hidDangerContent},#{hidDangerGrade},#{ifControlMeasures},#{ifRectificationPlan}," +
             "#{copyOrganizationId},#{copyOrganizationName},#{ifDeal},#{governanceFunds},#{completionTime},#{completionSituation},#{rectificationPlan},#{acceptanceReport},#{processingStatus}," +
             "#{idt},#{hidTypeThing},#{hidTypePerson},#{hidTypeManage},#{correctorId},#{correctorName}," +
-            "#{rectificationOpinions},#{specifiedRectificationTime},#{rectificationNoticeAnnex},#{rectificationUnitId},#{rectificationUnitName}," +
+            "#{rectificationNoticeTime},#{rectificationOpinions},#{specifiedRectificationTime},#{rectificationNoticeAnnex},#{rectificationUnitId},#{rectificationUnitName}," +
             "#{companyId},#{companyName},#{factoryId},#{factoryName},#{workshopId},#{workshopName},#{classId},#{className})")
     void addHidDanger(HidDangerDO hidDangerDO);
 
@@ -222,4 +222,6 @@ public interface HidDangerDAO {
     void reportHidDanger(HidDangerDO hidDangerDO);
 
 
+    @Select("select * from hid_danger where hid_danger_code = #{hidDangerCode}")
+    HidDangerDO findALLByHidDangerCode(String hidDangerCode);
 }
