@@ -26,6 +26,14 @@ public class SafeAnswerRecord implements Serializable {
     */
     private String answerResults;
     /**
+     * 正确答案
+     */
+    private String rightKey;
+    /**
+     * 题目分数
+     */
+    private Integer score;
+    /**
     * 是否正确（0：不正确 1：正确）
     */
     private Integer correct;

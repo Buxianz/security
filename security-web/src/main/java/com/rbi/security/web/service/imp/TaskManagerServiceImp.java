@@ -1,11 +1,14 @@
 package com.rbi.security.web.service.imp;
 
 import com.rbi.security.entity.AuthenticationUserDTO;
+import com.rbi.security.entity.web.safe.examination.SafeAnswerRecord;
+import com.rbi.security.entity.web.safe.task.SafeTrainingTasks;
 import com.rbi.security.entity.web.safe.task.TestPaperInfo;
 import com.rbi.security.entity.web.safe.testpaper.SafeTestQuestionOptions;
 import com.rbi.security.entity.web.safe.testpaper.SafeTestQuestions;
 import com.rbi.security.entity.web.safe.testpaper.TestPaper;
 import com.rbi.security.tool.PageData;
+import com.rbi.security.web.DAO.safe.SafeAnserRecordDAO;
 import com.rbi.security.web.DAO.safe.SafeTestQaperDAO;
 import com.rbi.security.web.DAO.safe.SafeTrainingTasksDAO;
 import com.rbi.security.web.service.TaskManagerService;
@@ -15,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -154,5 +159,36 @@ public class TaskManagerServiceImp implements TaskManagerService {
             throw new RuntimeException("获取试卷信息失败");
         }
         return testPaper;
+    }
+
+    /**
+     * 处理考试结果
+     */
+    @Autowired
+    SafeAnserRecordDAO safeAnserRecordDAO;
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
+    public void completeTheExam(int personnelTrainingRecordId, List<SafeAnswerRecord> safeAnswerRecordList) throws RuntimeException{
+        SafeTrainingTasks safeTrainingTasks=new SafeTrainingTasks();
+        try{
+            safeTrainingTasks.setId(personnelTrainingRecordId);
+            Integer testResults=0;
+            for(int i=0;i<safeAnswerRecordList.size();i++){
+                safeAnswerRecordList.get(i).setPersonnelTrainingRecordId(personnelTrainingRecordId);
+                if(safeAnswerRecordList.get(i).getAnswerResults().equals(safeAnswerRecordList.get(i).getRightKey())){
+                    safeAnswerRecordList.get(i).setCorrect(1);
+                    testResults=testResults+safeAnswerRecordList.get(i).getScore();
+                }else{
+                    safeAnswerRecordList.get(i).setCorrect(0);
+                }
+            }
+            safeTrainingTasks.setTestResults(testResults.toString());
+            safeTrainingTasks.setProcessingStatus(2);
+            safeTrainingTasksDAO.updateTrainingTasks(safeTrainingTasks);
+            if(safeAnswerRecordList.size()!=0)
+            safeAnserRecordDAO.insertAnserRecords(safeAnswerRecordList);
+        }catch (Exception e){
+            logger.error("处理考试结果失败，异常为{}",e);
+            throw new RuntimeException("处理考试结果失败");
+        }
     }
 }

@@ -2,10 +2,7 @@ package com.rbi.security.web.DAO.safe;
 
 import com.rbi.security.entity.web.safe.task.SafeTrainingTasks;
 import com.rbi.security.entity.web.safe.task.TestPaperInfo;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -65,4 +62,10 @@ public interface SafeTrainingTasksDAO {
      */
     @Select("SELECT count(id) FROM safe_training_tasks WHERE company_personnel_id=#{companyPersonnelId} AND processing_status!=1")
     int getProcessedTestPaperCount(@Param("companyPersonnelId")int companyPersonnelId);
+
+    /**
+     * 完成考试，更新数据
+     */
+    @Update("update safe_training_tasks set processing_status=#{processingStatus},test_results=#{testResults} where id=#{id}")
+    int updateTrainingTasks(SafeTrainingTasks safeTrainingTasks);
 }

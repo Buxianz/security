@@ -69,7 +69,7 @@ public class TestQaperServiceImp implements TestPaperService {
             for (int i = 0; i < safeTestQuestionsList.size(); i++) {
                 safeTestQuestionsList.get(i).setTestPapreId(TestPapreId);
                 safeTestQaperDAO.insertSafeTestQuestions(safeTestQuestionsList.get(i));
-                if(safeTestQuestionsList.get(i).getSubjectType()==1 || safeTestQuestionsList.get(i).getSubjectType()==2)
+                if(safeTestQuestionsList.get(i).getSubjectType()==1 || safeTestQuestionsList.get(i).getSubjectType()==2 || safeTestQuestionsList.get(i).getSubjectType()==3)
                 insertTestQuestionOptions(safeTestQuestionsList.get(i).getSafeTestQuestionOptionsList(), safeTestQuestionsList.get(i).getId());
             }
             return safeTestQuestionsList;

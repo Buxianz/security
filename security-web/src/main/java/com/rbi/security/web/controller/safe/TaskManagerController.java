@@ -1,6 +1,9 @@
 package com.rbi.security.web.controller.safe;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.rbi.security.entity.web.safe.content.SafeDataPlan;
+import com.rbi.security.entity.web.safe.examination.SafeAnswerRecord;
 import com.rbi.security.entity.web.safe.specialtype.PagingSpecialReview;
 import com.rbi.security.entity.web.safe.task.TestPaperInfo;
 import com.rbi.security.tool.PageData;
@@ -11,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @PACKAGE_NAME: com.rbi.security.web.controller.safe
@@ -72,7 +77,9 @@ public class TaskManagerController {
     @RequestMapping("/completeTheExam")
     public ResponseModel completeTheExam(@RequestBody JSONObject date){
         try {
-
+            Integer personnelTrainingRecordId=date.getInteger("personnelTrainingRecordId");
+            List<SafeAnswerRecord> safeAnswerRecordList= JSONArray.parseArray(date.getJSONArray("safeAnswerRecordList").toString(), SafeAnswerRecord.class);
+            taskManagerService.completeTheExam(personnelTrainingRecordId,safeAnswerRecordList);
             return  ResponseModel.build("1000", "完成考试");
         }catch (Exception e){
             return ResponseModel.build("1001", e.getMessage());

@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +47,7 @@ public class SafeSubjectServiceImpl implements SafeSubjectService {
 
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void insertSafeSubject(JSONObject json) {
         SafeSubject safeSubject= JSONObject.parseObject(json.toJSONString(), SafeSubject.class);
         safeSubject.setRightKey(json.getString("rightKey"));
@@ -125,6 +128,7 @@ public class SafeSubjectServiceImpl implements SafeSubjectService {
     }
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public String updateSafeSubjectById(JSONObject json) {
         SafeSubject safeSubject= JSONObject.parseObject(json.toJSONString(), SafeSubject.class);
         if (safeSubjectDAO.getSafeSubjectById(json.getInteger("id"))!=null) {
@@ -148,6 +152,7 @@ public class SafeSubjectServiceImpl implements SafeSubjectService {
     }
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public String deleteSafeSubjectById(JSONArray result) {
         String reT=null;
         for (int i=0;i<result.size();i++) {

@@ -75,7 +75,7 @@ public class SafeDemandReportController {
     public ResponseModel handlingRequirements(@RequestBody JSONObject date) {
         try{
             SafeTrainingNeeds safeTrainingNeeds =JSONObject.parseObject(date.getJSONObject("safeTrainingNeeds").toString(), SafeTrainingNeeds.class);
-            List<SafeDataPlan> safeDataPlanList= JSONArray.parseArray(date.getJSONArray("safeDataPlanList").toString(),SafeDataPlan.class);;
+            List<SafeDataPlan> safeDataPlanList= JSONArray.parseArray(date.getJSONArray("safeDataPlanList").toString(),SafeDataPlan.class);
             SafeTestPaper safeTestPaper=JSONObject.parseObject(date.getJSONObject("safeTestPaper").toString(), SafeTestPaper.class);
             safeDemandReportService.handlingRequirements(safeTrainingNeeds,safeDataPlanList,safeTestPaper);
             return ResponseModel.build("1000", "发布成功");
