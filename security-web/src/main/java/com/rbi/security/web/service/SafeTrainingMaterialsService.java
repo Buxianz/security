@@ -38,4 +38,8 @@ public interface SafeTrainingMaterialsService {
     void deleteByIds(JSONArray array);
 
     PageData findByName(int pageNo, int pageSize, String value);
+
+    PageData findFileByCategory(int pageNo, int pageSize, int value);
+
+    PageData findVideoByCategory(int pageNo, int pageSize, int value);
 }
