@@ -2,13 +2,12 @@ package com.rbi.security.web.controller.safe;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rbi.security.entity.web.safe.content.SafeDataPlan;
+import com.rbi.security.entity.web.LearningContent;
+import com.rbi.security.entity.web.LearningInformations;
 import com.rbi.security.entity.web.safe.examination.SafeAnswerRecord;
-import com.rbi.security.entity.web.safe.specialtype.PagingSpecialReview;
 import com.rbi.security.entity.web.safe.task.TestPaperInfo;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
-import com.rbi.security.web.DAO.safe.SafeTrainingTasksDAO;
 import com.rbi.security.web.service.TaskManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,9 +38,34 @@ public class TaskManagerController {
     @Autowired
     TaskManagerService taskManagerService;
     /**
-     * 分页查看自身学习信息
+     * 分页查看自身培训计划信息
      */
+    @RequestMapping("/getLearningInformation")
+    public ResponseModel getLearningInformation(@RequestBody JSONObject date){
+        try{
+            int pageNo = date.getInteger("pageNo");
+            int pageSize = date.getInteger("pageSize");
+            int startIndex=(pageNo-1)*pageSize;
+            PageData<LearningInformations> data=taskManagerService.pagingLearningInformation(pageNo,startIndex,pageSize);
+            return ResponseModel.build("1000", "查询成功",data);
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
 
+    }
+    /**
+     * 根据培训计划id获取学习内容
+     */
+    @RequestMapping("/getLearningContentById")
+    public ResponseModel<LearningContent> getLearningContentById(@RequestBody JSONObject date){
+        try{
+            int id = date.getInteger("id");
+            return ResponseModel.build("1000", "查询成功",taskManagerService.getLearningContent(id));
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+
+    }
     /**
      * 分页查看自身考试信息
      */

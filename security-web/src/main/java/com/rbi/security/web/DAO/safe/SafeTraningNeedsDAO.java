@@ -43,18 +43,18 @@ public interface SafeTraningNeedsDAO {
     /**
      * 获取已处理记录数量
      */
-    @Select("select count(id) from safe_training_needs  WHERE  processing_status=1")
+    @Select("select count(id) from safe_training_needs  WHERE  processing_status!=1")
     int getProcessedTrainingNeeds();
     /**
      * 分页查看未处理需求记录Processed
      */
     @Select("SELECT stn.*,scp.`name` FROM \n" +
             "(select stn.id,sty.training_type_name,stn.training_content,stn.processing_status,stn.report_person,proposed_time from safe_training_needs stn \n" +
-            "LEFT JOIN safa_training_type  sty ON stn.training_type_id=sty.id WHERE  processing_status=#{processingStatus} ORDER BY proposed_time LIMIT 0,10) stn LEFT JOIN sys_company_personnel scp ON scp.id=stn.report_person")
+            "LEFT JOIN safa_training_type  sty ON stn.training_type_id=sty.id WHERE  processing_status=#{processingStatus} ORDER BY proposed_time LIMIT #{startIndex},#{pageSize}) stn LEFT JOIN sys_company_personnel scp ON scp.id=stn.report_person")
     List<PagingTraniningNeeds> pagingUnprocessedSafeTraningNeeds(@Param("startIndex") int startIndex, @Param("pageSize") int pageSize,@Param("processingStatus") int processingStatus);
     @Select("SELECT stn.*,scp.`name` FROM \n" +
             "(select stn.id,sty.training_type_name,stn.training_content,stn.processing_status,stn.report_person,proposed_time from safe_training_needs stn \n" +
-            "LEFT JOIN safa_training_type  sty ON stn.training_type_id=sty.id WHERE  processing_status!=1 ORDER BY proposed_time LIMIT 0,10) stn LEFT JOIN sys_company_personnel scp ON scp.id=stn.report_person")
+            "LEFT JOIN safa_training_type  sty ON stn.training_type_id=sty.id WHERE  processing_status!=1 ORDER BY proposed_time LIMIT #{startIndex},#{pageSize}) stn LEFT JOIN sys_company_personnel scp ON scp.id=stn.report_person")
     List<PagingTraniningNeeds> pagingProcessedSafeTraningNeeds(@Param("startIndex") int startIndex, @Param("pageSize") int pageSize);
 
     /**
@@ -75,4 +75,6 @@ public interface SafeTraningNeedsDAO {
             "(SELECT stn.*,so.organization_name FROM\n" +
             "(select * from safe_training_needs where id=#{id}) stn LEFT JOIN sys_organization so on stn.organization_training_department_id=so.id) stn left JOIN safa_training_type sty on stn.training_type_id=sty.id")
     SafeTrainingNeeds getTrainingNeedsById(@Param("id") int id);
+
+
 }

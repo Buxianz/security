@@ -1,6 +1,10 @@
 package com.rbi.security.web.service.imp;
 
 import com.rbi.security.entity.AuthenticationUserDTO;
+import com.rbi.security.entity.web.LearningContent;
+import com.rbi.security.entity.web.LearningInformations;
+import com.rbi.security.entity.web.safe.content.SafeDataPlanDTO;
+import com.rbi.security.entity.web.safe.content.SafeTrainingMaterials;
 import com.rbi.security.entity.web.safe.examination.SafeAnswerRecord;
 import com.rbi.security.entity.web.safe.task.SafeTrainingTasks;
 import com.rbi.security.entity.web.safe.task.TestPaperInfo;
@@ -51,7 +55,53 @@ public class TaskManagerServiceImp implements TaskManagerService {
     /**
      * 分页查看自身学习信息
      */
-
+    public PageData<LearningInformations> pagingLearningInformation(int pageNo, int startIndex, int pageSize) throws RuntimeException{
+        try {
+            Subject subject = SecurityUtils.getSubject();
+            int companyPersonnelId= ((AuthenticationUserDTO)subject.getPrincipal()).getCompanyPersonnelId();
+            List<LearningInformations> learningInformationList=safeTrainingTasksDAO.getLearningInformation(companyPersonnelId,startIndex,pageSize);
+            int count =safeTrainingTasksDAO.getLearningInformationCount(companyPersonnelId);
+            int totalPage;
+            if (count%pageSize==0){
+                totalPage = count/pageSize;
+            }else {
+                totalPage = count/pageSize+1;
+            }
+            return new PageData<LearningInformations>(pageNo,pageSize,totalPage,count,learningInformationList);
+        }catch (Exception e){
+            logger.error("分页获取自身学习信息失败，异常为{}",e);
+            throw new RuntimeException("分页获取自身学习信息失败");
+        }
+    }
+    /**
+     * 根据id获取学习内容
+     */
+    public LearningContent getLearningContent(int id) throws RuntimeException{
+        LearningContent learningContent=new LearningContent();
+        try {
+            List<SafeTrainingMaterials> safeTrainingMaterials= safeTrainingTasksDAO.getTrainingMaterials(id);
+            for(int i=0;i<safeTrainingMaterials.size();i++){
+                SafeDataPlanDTO safeDataPlanDTO=new SafeDataPlanDTO();
+                safeDataPlanDTO.setResourceName(safeTrainingMaterials.get(i).getResourceName());
+                safeDataPlanDTO.setResourcePath(safeTrainingMaterials.get(i).getResourcePath());
+                if(safeTrainingMaterials.get(i).getResourceType().equals("文件")){
+                    if(learningContent.getFile()==null){
+                        learningContent.setFile(new LinkedList<SafeDataPlanDTO>());
+                    }
+                    learningContent.getFile().add(safeDataPlanDTO);
+                }else{
+                    if(learningContent.getVideo()==null){
+                        learningContent.setVideo(new LinkedList<SafeDataPlanDTO>());
+                    }
+                    learningContent.getVideo().add(safeDataPlanDTO);
+                }
+            }
+            return learningContent;
+        }catch (Exception e){
+            logger.error("获取某计划学习内容失败，异常为{}",e);
+            throw new RuntimeException("获取某计划学习内容失败");
+        }
+    }
     /**
      * 分页查看自身考试信息
      */
@@ -116,7 +166,7 @@ public class TaskManagerServiceImp implements TaskManagerService {
              */
             for(int i=0;i<safeTestQuestionsList.size();i++){
                 for(int j=0;j<safeTestQuestionOptionsList.size();j++){
-                    if(safeTestQuestionsList.get(i).getId()==safeTestQuestionOptionsList.get(j).getSubjectId()){
+                    if(safeTestQuestionsList.get(i).getId().intValue() == safeTestQuestionOptionsList.get(j).getSubjectId().intValue()){
                         if(safeTestQuestionsList.get(i).getSafeTestQuestionOptionsList()==null){
                             safeTestQuestionsList.get(i).setSafeTestQuestionOptionsList(new LinkedList<SafeTestQuestionOptions>());
                         }

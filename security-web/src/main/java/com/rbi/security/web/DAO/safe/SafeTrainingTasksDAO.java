@@ -1,5 +1,7 @@
 package com.rbi.security.web.DAO.safe;
 
+import com.rbi.security.entity.web.LearningInformations;
+import com.rbi.security.entity.web.safe.content.SafeTrainingMaterials;
 import com.rbi.security.entity.web.safe.task.SafeTrainingTasks;
 import com.rbi.security.entity.web.safe.task.TestPaperInfo;
 import org.apache.ibatis.annotations.*;
@@ -68,4 +70,21 @@ public interface SafeTrainingTasksDAO {
      */
     @Update("update safe_training_tasks set processing_status=#{processingStatus},test_results=#{testResults} where id=#{id}")
     int updateTrainingTasks(SafeTrainingTasks safeTrainingTasks);
+    /**
+     * 获取自身学习计划
+     */
+    @Select("SELECT stp.id,stn.training_content,stn.start_time,stn.end_time,stp.up_to FROM\n" +
+            "(SELECT stp.training_needs_id,stp.id,stt.up_to FROM (SELECT stt.training_plan_id,stt.up_to FROM safe_training_tasks stt WHERE stt.company_personnel_id=#{companyPersonnelId} LIMIT #{startIndex},#{pageSize}) stt LEFT JOIN safe_training_plan stp on\n" +
+            " stp.id=stt.training_plan_id order by stp.idt asc) stp LEFT JOIN safe_training_needs stn on  stp.training_needs_id=stn.id")
+    List<LearningInformations> getLearningInformation(@Param("companyPersonnelId") int companyPersonnelId, @Param("startIndex") int startIndex, @Param("pageSize") int pageSize);
+    /**
+     * 获取自身学习计划数量
+     */
+    @Select("SELECT count(stt.id) FROM safe_training_tasks stt WHERE stt.company_personnel_id=#{companyPersonnelId}")
+    int getLearningInformationCount(@Param("companyPersonnelId") int companyPersonnelId);
+    /**
+     * 根据id获取计划中的学习内容
+     */
+    @Select("SELECT stm.* FROM(SELECT sdp.training_materials_id  FROM safe_data_plan sdp WHERE sdp.training_plan_id=#{id}) sdp LEFT JOIN safe_training_materials stm on  stm.id=sdp.training_materials_id")
+    List<SafeTrainingMaterials> getTrainingMaterials(@Param("id") int id);
 }

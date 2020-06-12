@@ -23,6 +23,10 @@ public class SafeTrainingNeeds implements Serializable {
     */
     private String  targetSet;
     /**
+     * 培训目标名称
+     */
+    private String[] targetNameSet;
+    /**
     * 培训类型id
     */
     private Integer trainingTypeId;

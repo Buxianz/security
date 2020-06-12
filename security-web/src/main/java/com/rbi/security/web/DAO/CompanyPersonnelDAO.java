@@ -108,4 +108,9 @@ public interface CompanyPersonnelDAO {
 
     @Select({"<script> Select count(id) FROM sys_company_personnel WHERE id in <foreach collection='targets' index='index' item='item' open='(' separator=',' close=')'>#{item}</foreach> </script>"})
     int getCompanyPersonneCountByIds(@Param("targets")List<Integer> targets);
+    /**
+     * 获取id集合对应的名称
+     */
+    @Select("SELECT `name` FROM sys_company_personnel where id in ${targetSet}")
+    String[] getCompanyPersonneName(@Param("targetSet") String targetSet);
 }

@@ -172,7 +172,11 @@ public class SafeDemandReportServiceImp implements SafeDemandReportService {
     public SafeTrainingNeeds getTrainingNeedsById(int id) throws RuntimeException {
         SafeTrainingNeeds safeTrainingNeeds=null;
         try{
+            String targetSet;
             safeTrainingNeeds=safeTraningNeedsDAO.getTrainingNeedsById(id);
+            targetSet="("+safeTrainingNeeds.getTargetSet()+")";
+            String[] names=companyPersonnelDAO.getCompanyPersonneName(targetSet);
+            safeTrainingNeeds.setTargetNameSet(names);
         }catch (Exception e){
             logger.error("根据id获取培训需求计划内容失败，异常为{}",e);
             throw new RuntimeException("根据id获取培训需求计划内容失败："+e.getMessage());
