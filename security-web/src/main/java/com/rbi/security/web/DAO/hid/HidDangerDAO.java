@@ -58,7 +58,7 @@ public interface HidDangerDAO {
      * */
     @Insert("insert into hid_danger_process " +
             "(hid_danger_code,operator_id,operator_name,organization_id,organization_name,if_deal,deal_way,deal_time,idt," +
-            "corrector_id,corrector_name,operator_organization_id,organization_principal_name)" +
+            "corrector_id,corrector_name,operator_organization_id,operator_organization_name)" +
             " values" +
             "(#{hidDangerCode},#{operatorId},#{operatorName},#{organizationId},#{organizationName},#{ifDeal},#{dealWay}," +
             "#{dealTime},#{idt},#{correctorId},#{correctorName},#{operatorOrganizationId},#{operatorOrganizationName})")
@@ -85,20 +85,12 @@ public interface HidDangerDAO {
             "#{companyId},#{companyName},#{factoryId},#{factoryName},#{workshopId},#{workshopName},#{classId},#{className})")
     void addHidDanger(HidDangerDO hidDangerDO);
 
-    /**
-     * 添加隐含所属组织
-     * */
-    @Insert("insert into hid_danger_organization (hid_danger_code,organization_id,organization_name,level) values" +
-            "(#{hidDangerCode},#{organizationId},#{organizationName},#{level})")
-    void addOrganization(@Param("hidDangerCode") String hidDangerCode,@Param("organizationId") Integer organizationId,
-                         @Param("organizationName") String organizationName,@Param("level") Integer level);
 
     /**
     * 系统设置查询
     * */
     @Select("select setting_code,setting_name from system_setting where setting_type = #{settingType} and organization_id = 'RBI'")
     List<SystemSettingDTO> findChoose(String settingType);
-
 
     /**
      * 处理中的隐患分页查询

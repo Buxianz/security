@@ -778,11 +778,14 @@ public class HidDangerServiceImpl implements HidDangerService {
         hidDangerProcessDO.setOperatorOrganizationName(sysOrganization.getOrganizationName());
         hidDangerProcessDO.setDealTime(time);
         hidDangerProcessDO.setDealWay("审核不通过");
+
         hidDangerProcessDO.setOrganizationId(hidDangerProcessDO2.getOperatorOrganizationId());
+        System.out.println("组织："+hidDangerProcessDO2.getOperatorOrganizationName());
         hidDangerProcessDO.setOrganizationName(hidDangerProcessDO2.getOperatorOrganizationName());
         hidDangerProcessDO.setCorrectorId(hidDangerProcessDO2.getOperatorId());
         hidDangerProcessDO.setCorrectorName(hidDangerProcessDO2.getOperatorName());
         hidDangerProcessDO.setIdt(time);
+
         hidDangerDAO.auditFalse(hidDangerDO);
         hidDangerDAO.addProcess(hidDangerProcessDO);
     }
