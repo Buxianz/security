@@ -19,6 +19,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,13 +44,13 @@ import java.util.*;
  * @MINUTE: 45
  * @PROJECT_NAME: security
  **/
-@ConfigurationProperties(prefix="path")
-@Data
+
 @Service
 public class HidDangerServiceImpl implements HidDangerService {
+    @Value("${uploadfile.ip}")
+    private String fileIp;//此ip与此应用部署的服务区ip一致
+    @Value("${hiddenPath}")
     private String hiddenPath;
-    private String findHiddenPath;
-
 
     @Autowired
     HidDangerDAO hidDangerDAO;
@@ -60,18 +61,15 @@ public class HidDangerServiceImpl implements HidDangerService {
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         Integer userId = currentUser.getId();
-
         try {
             SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
             String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
             String hidDangerCode = DateUtil.timeStamp();
-
             hidDangerDO.setHidDangerCode(hidDangerCode);
             hidDangerDO.setCopyOrganizationId(123);
             hidDangerDO.setCopyOrganizationName("安防部");
             hidDangerDO.setHidDangerType(1);
             hidDangerDO.setIdt(idt);
-
             //排查前照片添加
             if (beforeImg.length > 6) {
                 return "排查前照片数量不能大于6张";
@@ -83,7 +81,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                         String timestamps = DateUtil.timeStamp();
                         String newFileName = timestamps + new Random().nextInt() + ".jpg";
                         FileUtils.copyInputStreamToFile(beforeImg[i].getInputStream(), new File(hiddenPath, newFileName));
-                        hidDangerDAO.addBeforeImg(hidDangerCode,findHiddenPath+newFileName);
+                        hidDangerDAO.addBeforeImg(hidDangerCode,hiddenPath+newFileName);
                     }
                 }
             }
@@ -98,7 +96,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                         String timestamps = DateUtil.timeStamp();
                         String newFileName = timestamps + new Random().nextInt() + ".jpg";
                         FileUtils.copyInputStreamToFile(afterImg[i].getInputStream(), new File(hiddenPath, newFileName));
-                        hidDangerDAO.addAfterImg(hidDangerCode,findHiddenPath+newFileName);
+                        hidDangerDAO.addAfterImg(hidDangerCode,hiddenPath+newFileName);
                     }
                 }
             }
@@ -110,14 +108,14 @@ public class HidDangerServiceImpl implements HidDangerService {
                 String newFileName = timestamps + filename;
                 System.out.println(newFileName);
                 FileUtils.copyInputStreamToFile(plan.getInputStream(), new File(hiddenPath, newFileName));
-                hidDangerDO.setRectificationPlan(findHiddenPath+newFileName);
+                hidDangerDO.setRectificationPlan(hiddenPath+newFileName);
             }
             if (report != null){
                 String filename = report.getOriginalFilename();
                 String timestamps = DateUtil.timeStamp();
                 String newFileName = timestamps+ filename;
                 FileUtils.copyInputStreamToFile(report.getInputStream(), new File(hiddenPath, newFileName));
-                hidDangerDO.setAcceptanceReport(findHiddenPath+newFileName);
+                hidDangerDO.setAcceptanceReport(hiddenPath+newFileName);
             }
 
 //        进程表添加
@@ -158,13 +156,13 @@ public class HidDangerServiceImpl implements HidDangerService {
             }else {
                 hidDangerProcessDO.setIfDeal("否");
                 hidDangerProcessDO.setDealWay("上报");
+                hidDangerDO.setIfRectificationPlan("无");
+                hidDangerDO.setIfControlMeasures("无");
                 hidDangerDO.setProcessingStatus("1");//上报
             }
             hidDangerProcessDO.setDealTime(idt);
             hidDangerProcessDO.setIdt(idt);
             hidDangerDAO.addProcess(hidDangerProcessDO);
-
-
             //隐患所属组织表
             SysOrganization sysOrganization2 = hidDangerDAO.findAllByOrganizationId(hidDangerDO.getOrganizationId());
             int level = sysOrganization2.getLevel();
@@ -245,7 +243,6 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerDO.setRectificationNoticeTime(idt);
             hidDangerDO.setHidDangerCode(hidDangerCode);
             hidDangerDO.setProcessingStatus("2");
-
             //排查前照片添加
             if (beforeImg.length > 6) {
                 return "排查前照片数量不能大于6张";
@@ -257,7 +254,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                         String timestamps = DateUtil.timeStamp();
                         String newFileName = timestamps + new Random().nextInt() + ".jpg";
                         FileUtils.copyInputStreamToFile(beforeImg[i].getInputStream(), new File(hiddenPath, newFileName));
-                        hidDangerDAO.addBeforeImg(hidDangerCode,findHiddenPath+newFileName);
+                        hidDangerDAO.addBeforeImg(hidDangerCode,hiddenPath+newFileName);
                     }
                 }
             }
@@ -269,7 +266,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                 String newFileName = timestamps + filename;
                 System.out.println(newFileName);
                 FileUtils.copyInputStreamToFile(notice.getInputStream(), new File(hiddenPath, newFileName));
-                hidDangerDO.setRectificationNoticeAnnex(findHiddenPath+newFileName);
+                hidDangerDO.setRectificationNoticeAnnex(hiddenPath+newFileName);
             }
 
 //        进程表添加
@@ -429,9 +426,6 @@ public class HidDangerServiceImpl implements HidDangerService {
                 if (hidDangerDOS.get(i).getProcessingStatus().equals("5")){
                     hidDangerDOS.get(i).setProcessingStatus("审核通过");
                 }
-                if(hidDangerDOS.get(i).getProcessingStatus().equals("6")){
-                    hidDangerDOS.get(i).setProcessingStatus("审核不通过");
-                }
             }
             int totalPage = 0;
             int count = hidDangerDAO.findAllFinishHidByPageNum(companyId);
@@ -447,9 +441,6 @@ public class HidDangerServiceImpl implements HidDangerService {
                 if (hidDangerDOS.get(i).getProcessingStatus().equals("5")){
                     hidDangerDOS.get(i).setProcessingStatus("审核通过");
                 }
-                if(hidDangerDOS.get(i).getProcessingStatus().equals("6")){
-                    hidDangerDOS.get(i).setProcessingStatus("审核不通过");
-                }
             }
             int totalPage = 0;
             int count = hidDangerDAO.findPersonnelFinishByPageNum(personnelId);
@@ -462,12 +453,28 @@ public class HidDangerServiceImpl implements HidDangerService {
         }
     }
 
+
     @Override
     public Map<String, Object> findDealDetailByCode(String hidDangerCode) {
         Map<String, Object> map = new HashMap<>();
         HidDangerDO hidDangerDO = hidDangerDAO.findDetailByCode(hidDangerCode);
+        if (StringUtils.isNotBlank(hidDangerDO.getRectificationNoticeAnnex())){
+            hidDangerDO.setRectificationNoticeAnnex(fileIp+hidDangerDO.getRectificationNoticeAnnex());
+        }
+        if (StringUtils.isNotBlank(hidDangerDO.getRectificationPlan())){
+            hidDangerDO.setRectificationPlan(fileIp+hidDangerDO.getRectificationPlan());
+        }
+        if (StringUtils.isNotBlank(hidDangerDO.getAcceptanceReport())){
+            hidDangerDO.setAcceptanceReport(fileIp+hidDangerDO.getAcceptanceReport());
+        }
         List<HidDangerPictureDO> beforImgs = hidDangerDAO.findBeforPictureByHidDangerCode(hidDangerCode);
+        for (int i=0;i<beforImgs.size();i++){
+            beforImgs.get(i).setBeforePicture(fileIp+beforImgs.get(i).getBeforePicture());
+        }
         List<HidDangerPictureDO> afterImgs = hidDangerDAO.findAfterPictureByHidDangerCode(hidDangerCode);
+        for (int i=0;i<afterImgs.size();i++){
+            afterImgs.get(i).setAfterPicture(fileIp+beforImgs.get(i).getAfterPicture());
+        }
         List<HidDangerProcessDO> hidDangerProcessDOS = hidDangerDAO.findProcessByHidDangerCode(hidDangerCode);
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
@@ -476,7 +483,7 @@ public class HidDangerServiceImpl implements HidDangerService {
         String processingStatus =  hidDangerDO.getProcessingStatus();
         int index = hidDangerProcessDOS.size();
         JSONArray jsonArray = new JSONArray();
-        if (hidDangerDO.getHidDangerType()==1) {
+        if (hidDangerDO.getHidDangerType()==1) {//上报整改
             if (hidDangerProcessDOS.get(index-1).getCorrectorId().intValue() == personnelId.intValue()) {
                 if (processingStatus.equals("1")) {
                     JSONObject jsonObject1 = new JSONObject();
@@ -513,14 +520,17 @@ public class HidDangerServiceImpl implements HidDangerService {
                     jsonArray.add(jsonObject2);
                 }
                 //审核不通过，有后续处理时，放开此注释，并修改隐患处理分页的sql
-//                if (processingStatus.equals("6")) {
-//                    JSONObject jsonObject1 = new JSONObject();
-//                    jsonObject1.put("botton","完成整改");
-//                    jsonArray.add(jsonObject1);
-//                }
+                if (processingStatus.equals("6")) {
+                    JSONObject jsonObject1 = new JSONObject();
+                    jsonObject1.put("botton","完成整改");
+                    JSONObject jsonObject2 = new JSONObject();
+                    jsonObject2.put("botton","通知整改");
+                    jsonArray.add(jsonObject1);
+                    jsonArray.add(jsonObject2);
+                }
             }
         }
-        if (hidDangerDO.getHidDangerType()==2){
+        if (hidDangerDO.getHidDangerType()==2){//责令整改
             if (hidDangerProcessDOS.get(index-1).getCorrectorId().intValue() == personnelId.intValue()){
                 if (processingStatus.equals("2")){
                     JSONObject jsonObject1 = new JSONObject();
@@ -556,11 +566,14 @@ public class HidDangerServiceImpl implements HidDangerService {
                     jsonArray.add(jsonObject3);
                 }
                 //审核不通过，有后续处理时，放开此注释，并修改隐患处理分页的sql
-//                if (processingStatus.equals("6")){
-//                    JSONObject jsonObject1 = new JSONObject();
-//                    jsonObject1.put("botton","完成整改");
-//                    jsonArray.add(jsonObject1);
-//                }
+                if (processingStatus.equals("6")) {
+                    JSONObject jsonObject1 = new JSONObject();
+                    jsonObject1.put("botton","完成整改");
+                    JSONObject jsonObject2 = new JSONObject();
+                    jsonObject2.put("botton","通知整改");
+                    jsonArray.add(jsonObject1);
+                    jsonArray.add(jsonObject2);
+                }
             }
         }
         map.put("hidDangerDO",hidDangerDO);
@@ -574,8 +587,23 @@ public class HidDangerServiceImpl implements HidDangerService {
     public Map<String, Object> findFinishDetailByCode(String hidDangerCode) {
         Map<String, Object> map = new HashMap<>();
         HidDangerDO hidDangerDO = hidDangerDAO.findDetailByCode(hidDangerCode);
+        if (StringUtils.isNotBlank(hidDangerDO.getRectificationNoticeAnnex())){
+            hidDangerDO.setRectificationNoticeAnnex(fileIp+hidDangerDO.getRectificationNoticeAnnex());
+        }
+        if (StringUtils.isNotBlank(hidDangerDO.getRectificationPlan())){
+            hidDangerDO.setRectificationPlan(fileIp+hidDangerDO.getRectificationPlan());
+        }
+        if (StringUtils.isNotBlank(hidDangerDO.getAcceptanceReport())){
+            hidDangerDO.setAcceptanceReport(fileIp+hidDangerDO.getAcceptanceReport());
+        }
         List<HidDangerPictureDO> beforImgs = hidDangerDAO.findBeforPictureByHidDangerCode(hidDangerCode);
+        for (int i=0;i<beforImgs.size();i++){
+            beforImgs.get(i).setBeforePicture(fileIp+beforImgs.get(i).getBeforePicture());
+        }
         List<HidDangerPictureDO> afterImgs = hidDangerDAO.findAfterPictureByHidDangerCode(hidDangerCode);
+        for (int i=0;i<afterImgs.size();i++){
+            afterImgs.get(i).setAfterPicture(fileIp+beforImgs.get(i).getAfterPicture());
+        }
         map.put("hidDangerDO",hidDangerDO);
         map.put("beforImgs",beforImgs);
         map.put("afterImgs",afterImgs);
@@ -609,7 +637,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                         String timestamps = DateUtil.timeStamp();
                         String newFileName = timestamps + new Random().nextInt() + ".jpg";
                         FileUtils.copyInputStreamToFile(afterImg[i].getInputStream(), new File(hiddenPath, newFileName));
-                        hidDangerDAO.addAfterImg(hidDangerCode,findHiddenPath+newFileName);
+                        hidDangerDAO.addAfterImg(hidDangerCode,hiddenPath+newFileName);
                     }
                 }
             }
@@ -621,14 +649,14 @@ public class HidDangerServiceImpl implements HidDangerService {
                 String newFileName = timestamps + filename;
                 System.out.println(newFileName);
                 FileUtils.copyInputStreamToFile(plan.getInputStream(), new File(hiddenPath, newFileName));
-                hidDangerDO.setRectificationPlan(findHiddenPath+newFileName);
+                hidDangerDO.setRectificationPlan(hiddenPath+newFileName);
             }
             if (report != null){
                 String filename = report.getOriginalFilename();
                 String timestamps = DateUtil.timeStamp();
                 String newFileName = timestamps+ filename;
                 FileUtils.copyInputStreamToFile(report.getInputStream(), new File(hiddenPath, newFileName));
-                hidDangerDO.setAcceptanceReport(findHiddenPath+newFileName);
+                hidDangerDO.setAcceptanceReport(hiddenPath+newFileName);
             }
 
 
@@ -735,30 +763,26 @@ public class HidDangerServiceImpl implements HidDangerService {
         hidDangerDO.setAuditorName(sysCompanyPersonnel.getName());
         hidDangerDO.setRectificationEvaluate(rectificationEvaluate);
         hidDangerDO.setAuditTime(time);
+        hidDangerDO.setProcessingStatus("6");
+
+
         //添加进程
+        HidDangerProcessDO hidDangerProcessDO2 = hidDangerDAO.findLastProcess(hidDangerCode);
         HidDangerProcessDO hidDangerProcessDO = new HidDangerProcessDO();
         SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
-//        SysCompanyPersonnel sysCompanyPersonnel1 = hidDangerDAO.findPersonnelById(correctorId);
-//        SysOrganization sysOrganization1 = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel1.getOrganizationId());
+
         hidDangerProcessDO.setHidDangerCode(hidDangerCode);
         hidDangerProcessDO.setOperatorId(sysCompanyPersonnel.getId());
         hidDangerProcessDO.setOperatorName(sysCompanyPersonnel.getName());
         hidDangerProcessDO.setOperatorOrganizationId(sysOrganization.getId());
         hidDangerProcessDO.setOperatorOrganizationName(sysOrganization.getOrganizationName());
         hidDangerProcessDO.setDealTime(time);
+        hidDangerProcessDO.setDealWay("审核不通过");
+        hidDangerProcessDO.setOrganizationId(hidDangerProcessDO2.getOperatorOrganizationId());
+        hidDangerProcessDO.setOrganizationName(hidDangerProcessDO2.getOperatorOrganizationName());
+        hidDangerProcessDO.setCorrectorId(hidDangerProcessDO2.getOperatorId());
+        hidDangerProcessDO.setCorrectorName(hidDangerProcessDO2.getOperatorName());
         hidDangerProcessDO.setIdt(time);
-        if (1 == type){//审核不通过直接放档案，需要改处理分页的sql
-            hidDangerDO.setProcessingStatus("6");
-            hidDangerProcessDO.setDealWay("审核不通过");
-        }
-//        if (2 == type || 3 == type){
-//            hidDangerDO.setProcessingStatus("6");
-//            hidDangerProcessDO.setDealWay("审核不通过");
-//            hidDangerProcessDO.setCorrectorId(sysCompanyPersonnel1.getId());
-//            hidDangerProcessDO.setCorrectorName(sysCompanyPersonnel1.getName());
-//            hidDangerProcessDO.setOrganizationId(sysCompanyPersonnel1.getOrganizationId());
-//            hidDangerProcessDO.setOrganizationName(sysOrganization1.getOrganizationName());
-//        }
         hidDangerDAO.auditFalse(hidDangerDO);
         hidDangerDAO.addProcess(hidDangerProcessDO);
     }
