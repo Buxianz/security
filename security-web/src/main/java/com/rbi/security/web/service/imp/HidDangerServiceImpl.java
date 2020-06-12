@@ -467,13 +467,14 @@ public class HidDangerServiceImpl implements HidDangerService {
         if (StringUtils.isNotBlank(hidDangerDO.getAcceptanceReport())){
             hidDangerDO.setAcceptanceReport(fileIp+hidDangerDO.getAcceptanceReport());
         }
+
         List<HidDangerPictureDO> beforImgs = hidDangerDAO.findBeforPictureByHidDangerCode(hidDangerCode);
         for (int i=0;i<beforImgs.size();i++){
             beforImgs.get(i).setBeforePicture(fileIp+beforImgs.get(i).getBeforePicture());
         }
         List<HidDangerPictureDO> afterImgs = hidDangerDAO.findAfterPictureByHidDangerCode(hidDangerCode);
         for (int i=0;i<afterImgs.size();i++){
-            afterImgs.get(i).setAfterPicture(fileIp+beforImgs.get(i).getAfterPicture());
+            afterImgs.get(i).setAfterPicture(fileIp+afterImgs.get(i).getAfterPicture());
         }
         List<HidDangerProcessDO> hidDangerProcessDOS = hidDangerDAO.findProcessByHidDangerCode(hidDangerCode);
         Subject subject = SecurityUtils.getSubject();
@@ -596,13 +597,14 @@ public class HidDangerServiceImpl implements HidDangerService {
         if (StringUtils.isNotBlank(hidDangerDO.getAcceptanceReport())){
             hidDangerDO.setAcceptanceReport(fileIp+hidDangerDO.getAcceptanceReport());
         }
+
         List<HidDangerPictureDO> beforImgs = hidDangerDAO.findBeforPictureByHidDangerCode(hidDangerCode);
         for (int i=0;i<beforImgs.size();i++){
             beforImgs.get(i).setBeforePicture(fileIp+beforImgs.get(i).getBeforePicture());
         }
         List<HidDangerPictureDO> afterImgs = hidDangerDAO.findAfterPictureByHidDangerCode(hidDangerCode);
         for (int i=0;i<afterImgs.size();i++){
-            afterImgs.get(i).setAfterPicture(fileIp+beforImgs.get(i).getAfterPicture());
+            afterImgs.get(i).setAfterPicture(fileIp+afterImgs.get(i).getAfterPicture());
         }
         map.put("hidDangerDO",hidDangerDO);
         map.put("beforImgs",beforImgs);
