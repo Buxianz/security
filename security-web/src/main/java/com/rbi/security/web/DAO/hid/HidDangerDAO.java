@@ -156,7 +156,8 @@ public interface HidDangerDAO {
     void auditPass(HidDangerDO hidDangerDO);
 
     @Update("update hid_danger set processing_status = #{processingStatus},auditor_id=#{auditorId},auditor_name=#{auditorName}," +
-            "audit_time=#{auditTime},rectification_evaluate=#{rectificationEvaluate} " +
+            "audit_time=#{auditTime},rectification_evaluate=#{rectificationEvaluate},if_deal='否',governance_funds = null," +
+            "completion_time = null,completion_situation=null,rectification_plan =null,acceptance_report=null " +
             "where hid_danger_code = #{hidDangerCode}")
     void auditFalse(HidDangerDO hidDangerDO);
 
