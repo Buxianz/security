@@ -177,7 +177,7 @@ public interface HidDangerDAO {
             "processing_status = #{processingStatus},rectification_opinions = #{rectificationOpinions}," +
             "corrector_id = #{correctorId},corrector_name = #{correctorName}," +
             "rectification_notice_time = #{rectificationNoticeTime},specified_rectification_time = #{specifiedRectificationTime}," +
-            "if_deal='否',governance_funds = '',completion_time = '',completion_situation='',rectification_plan ='',acceptance_report='' where hid_danger_code = #{hidDangerCode}")
+            "if_deal='否',governance_funds = null,completion_time = null,completion_situation=null,rectification_plan =null,acceptance_report=null where hid_danger_code = #{hidDangerCode}")
     void updateNotice(HidDangerDO hidDangerDO);
 
 
