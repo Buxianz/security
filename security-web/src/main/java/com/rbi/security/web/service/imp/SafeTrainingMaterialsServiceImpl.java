@@ -55,8 +55,6 @@ public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsSe
     @Value("${hiddenPath}")
     private String hiddenPath;
 
-//    private String hiddenPath;
-//    private String findHiddenPath;
     @Autowired
     SafeTrainingMaterialsDAO safeTrainingMaterialsDAO;
     @Autowired
