@@ -152,6 +152,8 @@ public class HidDangerServiceImpl implements HidDangerService {
                 hidDangerProcessDO.setDealWay("处理");
                 hidDangerDO.setCorrectorId(sysCompanyPersonnel.getId());
                 hidDangerDO.setCorrectorName(sysCompanyPersonnel.getName());
+                hidDangerDO.setIfRectificationPlan("有");
+                hidDangerDO.setIfControlMeasures("有");
                 hidDangerDO.setProcessingStatus("4");//已处理待审核
             }else {
                 hidDangerProcessDO.setIfDeal("否");
@@ -238,6 +240,8 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerDO.setCopyOrganizationId(123);
             hidDangerDO.setCopyOrganizationName("安防部");
             hidDangerDO.setHidDangerType(2);
+            hidDangerDO.setIfRectificationPlan("无");
+            hidDangerDO.setIfControlMeasures("无");
             String hidDangerCode = DateUtil.timeStamp();
             hidDangerDO.setIdt(idt);
             hidDangerDO.setRectificationNoticeTime(idt);
@@ -793,7 +797,6 @@ public class HidDangerServiceImpl implements HidDangerService {
         hidDangerProcessDO.setCorrectorId(hidDangerProcessDO2.getOperatorId());
         hidDangerProcessDO.setCorrectorName(hidDangerProcessDO2.getOperatorName());
         hidDangerProcessDO.setIdt(time);
-
         hidDangerDAO.auditFalse(hidDangerDO);
         hidDangerDAO.addProcess(hidDangerProcessDO);
     }
@@ -874,8 +877,6 @@ public class HidDangerServiceImpl implements HidDangerService {
             sysCompanyPersonnels.add(sysCompanyPersonnels1.get(i));
         }
         Map<String, Object> map = new HashMap<>();
-//        map.put("同级人员",sysCompanyPersonnels);
-//        map.put("下级单位负责人",sysCompanyPersonnels1);
         map.put("data",sysCompanyPersonnels);
         return map;
     }

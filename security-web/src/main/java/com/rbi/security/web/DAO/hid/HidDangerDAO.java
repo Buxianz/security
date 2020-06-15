@@ -157,19 +157,10 @@ public interface HidDangerDAO {
 
     @Update("update hid_danger set processing_status = #{processingStatus},auditor_id=#{auditorId},auditor_name=#{auditorName}," +
             "audit_time=#{auditTime},rectification_evaluate=#{rectificationEvaluate},if_deal='否',governance_funds = null," +
-            "completion_time = null,completion_situation=null,rectification_plan =null,acceptance_report=null " +
-            "where hid_danger_code = #{hidDangerCode}")
+            "completion_time = null,completion_situation=null,rectification_plan =null,acceptance_report=null," +
+            "if_control_measures = '无',if_rectification_plan = '无' where hid_danger_code = #{hidDangerCode}")
     void auditFalse(HidDangerDO hidDangerDO);
 
-
-//    /**
-//     * 通知整改，修改信息
-//     * */
-//    @Update("update hid_danger set " +
-//            "processing_status = #{processingStatus},rectification_opinions = #{rectificationOpinions}," +
-//            "corrector_id = #{correctorId},corrector_name = #{correctorName}," +
-//            "rectification_notice_time = #{rectificationNoticeTime},specified_rectification_time = #{specifiedRectificationTime} where hid_danger_code = #{hidDangerCode}")
-//    void updateNotice(HidDangerDO hidDangerDO);
 
     /**
      * 通知整改，修改信息
@@ -178,7 +169,8 @@ public interface HidDangerDAO {
             "processing_status = #{processingStatus},rectification_opinions = #{rectificationOpinions}," +
             "corrector_id = #{correctorId},corrector_name = #{correctorName}," +
             "rectification_notice_time = #{rectificationNoticeTime},specified_rectification_time = #{specifiedRectificationTime}," +
-            "if_deal='否',governance_funds = null,completion_time = null,completion_situation=null,rectification_plan =null,acceptance_report=null where hid_danger_code = #{hidDangerCode}")
+            "if_deal='否',governance_funds = null,completion_time = null,completion_situation=null,rectification_plan =null,acceptance_report=null," +
+            "if_control_measures = '无',if_rectification_plan = '无' where hid_danger_code = #{hidDangerCode}")
     void updateNotice(HidDangerDO hidDangerDO);
 
 
@@ -232,4 +224,7 @@ public interface HidDangerDAO {
 
     @Delete("delete from hid_danger_picture where id = #{id}")
     void deletePicture(Integer id);
+
+    @Update("update hid_danger set if_control_measures = '无',if_rectification_plan = '无' where hid_danger_code = #{hidDangerCode}")
+    void updateIf(String hidDangerCode);
 }
