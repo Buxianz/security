@@ -161,14 +161,25 @@ public interface HidDangerDAO {
     void auditFalse(HidDangerDO hidDangerDO);
 
 
+//    /**
+//     * 通知整改，修改信息
+//     * */
+//    @Update("update hid_danger set " +
+//            "processing_status = #{processingStatus},rectification_opinions = #{rectificationOpinions}," +
+//            "corrector_id = #{correctorId},corrector_name = #{correctorName}," +
+//            "rectification_notice_time = #{rectificationNoticeTime},specified_rectification_time = #{specifiedRectificationTime} where hid_danger_code = #{hidDangerCode}")
+//    void updateNotice(HidDangerDO hidDangerDO);
+
     /**
-     * 修改sql 修改时间*******************
+     * 通知整改，修改信息
      * */
     @Update("update hid_danger set " +
             "processing_status = #{processingStatus},rectification_opinions = #{rectificationOpinions}," +
             "corrector_id = #{correctorId},corrector_name = #{correctorName}," +
-            "rectification_notice_time = #{rectificationNoticeTime},specified_rectification_time = #{specifiedRectificationTime} where hid_danger_code = #{hidDangerCode}")
+            "rectification_notice_time = #{rectificationNoticeTime},specified_rectification_time = #{specifiedRectificationTime}," +
+            "if_deal='否',governance_funds = '',completion_time = '',completion_situation='',rectification_plan ='',acceptance_report='' where hid_danger_code = #{hidDangerCode}")
     void updateNotice(HidDangerDO hidDangerDO);
+
 
     @Select("select sys_company_personnel.id as settingCode,sys_company_personnel.name as settingName from sys_company_personnel,sys_user where sys_company_personnel.id = sys_user.company_personnel_id and organization_id = #{organizationId} and " +
             "sys_company_personnel.id !=#{personnelId}")
@@ -203,8 +214,21 @@ public interface HidDangerDAO {
 
 
     @Select("select * from hid_danger where hid_danger_code = #{hidDangerCode}")
-    HidDangerDO findALLByHidDangerCode(String hidDangerCode);
+    HidDangerDO findAllByHidDangerCode(String hidDangerCode);
 
     @Select("SELECT * from hid_danger_process WHERE hid_danger_code = #{hidDangerCode} and id = (select MAX(id) from hid_danger_process where hid_danger_code = #{hidDangerCode})")
     HidDangerProcessDO findLastProcess(String hidDangerCode);
+
+    @Delete("delete from hid_danger_picture where hid_danger_code = #{hidDangerCode} and after_picture != ''")
+    void deleteAfterPictureByHidDangerCode(String hidDangerCode);
+
+    @Update("update hid_danger set rectification_plan = '' where hid_danger_code = #{hidDangerCode}")
+    void deletePlan(String hidDangerCode);
+
+
+    @Update("update hid_danger set acceptance_report = '' where hid_danger_code = #{hidDangerCode}")
+    void deleteReport(String hidDangerCode);
+
+    @Delete("delete from hid_danger_picture where id = #{id}")
+    void deletePicture(Integer id);
 }

@@ -50,4 +50,10 @@ public interface HidDangerService {
     Map<String, Object> findCorrector();
 
     String report(String hidDangerCode);
+
+    void deletePlan(String hidDangerCode);
+
+    void deleteReport(String hidDangerCode);
+
+    void deletePicture(Integer id);
 }
