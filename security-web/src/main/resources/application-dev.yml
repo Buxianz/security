@@ -17,6 +17,4 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
 
-path:
-  hiddenPath: /usr/work/wx/hidden
-  findHiddenPath: http://139.9.153.27/usr/work/wx/hidden/
+
