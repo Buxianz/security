@@ -1,16 +1,11 @@
 package com.rbi.security.web.service.imp;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
-import com.rbi.security.entity.web.hid.HidDangerDO;
-import com.rbi.security.entity.web.hid.HidDangerProcessDO;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrain;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrainDTO;
 import com.rbi.security.entity.web.safe.specialtype.PagingSpecialTraining;
 import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFiles;
-import com.rbi.security.entity.web.user.PagingUser;
 import com.rbi.security.exception.NonExistentException;
 import com.rbi.security.exception.RepeatException;
 import com.rbi.security.tool.DateUtil;
@@ -20,14 +15,16 @@ import com.rbi.security.web.DAO.CompanyPersonnelDAO;
 import com.rbi.security.web.DAO.safe.SafeAdministratorTrainDAO;
 import com.rbi.security.web.DAO.safe.SafeSpecialTrainingFilesDao;
 import com.rbi.security.web.service.TrainingFileManagementService;
+import com.rbi.security.web.service.util.ImportSpecialTrainingsMethed;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.unit.DataUnit;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,15 +49,59 @@ import java.util.List;
 @Service
 public class TrainingFileManagementServiceImp implements TrainingFileManagementService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImp.class);
-    /**
-     * 增加特种培训记录
-     */
     @Autowired
     SafeAdministratorTrainDAO safeAdministratorTrainDAO;
     @Autowired
     CompanyPersonnelDAO companyPersonnelDAO;
     @Autowired
     SafeSpecialTrainingFilesDao safeSpecialTrainingFilesDao;
+    @Autowired
+    ImportSpecialTrainingsMethed importSpecialTrainingsMethed;
+    /**特种人员文件导入**/
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
+    public void importSpecialTrainings(MultipartFile multipartFiles) throws RuntimeException{
+          try{
+              Subject subject = SecurityUtils.getSubject();
+              String idt = LocalDateUtils.localDateTimeFormat(LocalDateTime.now(), LocalDateUtils.FORMAT_PATTERN);
+              /**
+               * 将文件处理为需要的类
+               */
+              List<SafeSpecialTrainingFiles> safes =importSpecialTrainingsMethed.excelImport(multipartFiles);
+              /**
+               * 进行数据筛选，批量添加
+               */
+              for(int i=0;i<safes.size();){
+                  Integer companyPersonnelId = companyPersonnelDAO.getPersonnelByIdCardNo(safes.get(i).getIdCardNo());
+                  if (companyPersonnelId == null) {
+                      //公司人员信息不存在
+                      //删除此节点，放入导入记录
+                      safes.remove(i);
+                      continue;
+                  }
+                  if (safeSpecialTrainingFilesDao.queryByIdCardNo(safes.get(i).getIdCardNo())!=null){
+                      //导入数据重复
+                      //删除此节点，放入导入记录
+                      safes.remove(i);
+                      continue;
+                  }
+                  safes.get(i).setIdt(idt);
+                  safes.get(i).setCompanyPersonnelId(companyPersonnelId);
+                  safes.get(i).setOperatingStaff(((AuthenticationUserDTO)subject.getPrincipal()).getCompanyPersonnelId());
+                  safes.get(i).setValidityPeriod(3);
+                  i++;
+              }
+              if(safes.size()!=0){
+                  safeSpecialTrainingFilesDao.inserts(safes);
+              }
+          }catch (Exception e){
+              logger.error("批量导入数据失败，异常为{}", e.getMessage());
+              throw new RuntimeException(e.getMessage());
+          }
+    }
+    /**
+     * 增加特种培训记录
+     */
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
      public void insertSpecialTraining(SafeSpecialTrainingFiles safeSpecialTrainingFiles) throws RuntimeException{
          try {
              Integer companyPersonnelId = companyPersonnelDAO.getPersonnelByIdCardNo(safeSpecialTrainingFiles.getIdCardNo());
@@ -90,6 +131,7 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
     /**
      * 删除特种培训记录
      */
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
    public void deleteSpecialTraining(int id) throws RuntimeException{
               try{
                   safeSpecialTrainingFilesDao.deleteById(id);
@@ -101,6 +143,7 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
     /**
      * 更新特种培训记录
      */
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
    public void updateSpecialTraining(SafeSpecialTrainingFiles safeSpecialTrainingFiles) throws RuntimeException{
        try{
            safeSpecialTrainingFilesDao.update(safeSpecialTrainingFiles);

@@ -38,8 +38,9 @@ public interface SafeSpecialReviewDAO {
      * 分页获取特种复审信息
      */
     @Select("SELECT ssr.id,ssr.special_personnel_id,scp.`name`,scp.gender,scp.degree_of_education,sstf.operation_items,sstf.working_years,sstf.operation_certificate_no,scp.id_card_no,\n" +
-            "ssr.deadline,ssr.completion_status,ssr.reason_for_handling,ssr.processing_time,ssr.idt FROM (SELECT * FROM safe_special_review ORDER BY completion_status LIMIT #{startIndex},#{pageSize}) ssr LEFT JOIN \n" +
-            "safe_special_training_files sstf ON ssr.special_personnel_id=sstf.id  LEFT JOIN sys_company_personnel scp ON sstf.company_personnel_id=scp.id ")
+            "ssr.deadline,ssr.completion_status,ssr.reason_for_handling,ssr.processing_time,ssr.idt,sstf.date_of_issue,sstf.one_review_time,sstf.tow_review_time,sstf.three_review_time,sstf.four_review_time,sstf.five_review_time,sstf.six_review_time\n" +
+            "FROM (SELECT * FROM safe_special_review ORDER BY completion_status LIMIT #{startIndex},#{pageSize}) ssr LEFT JOIN \n" +
+            "safe_special_training_files sstf ON ssr.special_personnel_id=sstf.id  LEFT JOIN sys_company_personnel scp ON sstf.company_personnel_id=scp.id")
     List<PagingSpecialReview> pagingSpecialReview(@Param("startIndex") int startIndex, @Param("pageSize") int pageSize);
     /**
      * 获取记录数

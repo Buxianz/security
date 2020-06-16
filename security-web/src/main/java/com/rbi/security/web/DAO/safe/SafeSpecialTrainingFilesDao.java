@@ -3,8 +3,6 @@ package com.rbi.security.web.DAO.safe;
 import com.rbi.security.entity.web.safe.specialtype.PagingSpecialTraining;
 import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFiles;
 import org.apache.ibatis.annotations.*;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 /**
@@ -55,14 +53,30 @@ public interface SafeSpecialTrainingFilesDao {
      * @return 影响行数
      */
     @Insert("insert into safe_special_training_files (validity_period,id_card_no,company_personnel_id,type_of_work,operation_items,working_years,theoretical_achievements,actual_results," +
-            "operation_certificate_no,date_of_issue,one_review_results,one_review_time,tow_review_results,tow_review_time,three_review_results," +
+            "operation_certificate_no,date_of_issue,one_review_results,years_of_work,one_review_time,tow_review_results,tow_review_time,three_review_results," +
             "three_review_time,four_review_results,four_review_time,five_review_results,five_review_time,six_review_results,six_review_time," +
             "remarks,operating_staff,idt) values (#{validityPeriod},#{idCardNo},#{companyPersonnelId},#{typeOfWork},#{operationItems},#{workingYears},#{theoreticalAchievements},#{actualResults}," +
-            "#{operationCertificateNo},#{dateOfIssue},#{oneReviewResults},#{oneReviewTime},#{towReviewResults},#{towReviewTime},#{threeReviewResults}," +
+            "#{operationCertificateNo},#{dateOfIssue},#{yearsOfWork},#{oneReviewResults},#{oneReviewTime},#{towReviewResults},#{towReviewTime},#{threeReviewResults}," +
             "#{threeReviewTime},#{fourReviewResults},#{fourReviewTime},#{fiveReviewResults},#{fiveReviewTime},#{sixReviewResults},#{sixReviewTime}," +
             "#{remarks},#{operatingStaff},#{idt})")
     int insert(SafeSpecialTrainingFiles safeSpecialTrainingFiles);
-
+    /**
+     * 批量添加数据
+     */
+    @Insert({
+            "<script>",
+            "insert into safe_special_training_files (validity_period,id_card_no,company_personnel_id,type_of_work,operation_items,working_years,theoretical_achievements,actual_results," +
+                    "operation_certificate_no,date_of_issue,one_review_results,years_of_work,one_review_time,tow_review_results,tow_review_time,three_review_results," +
+                    "three_review_time,four_review_results,four_review_time,five_review_results,five_review_time,six_review_results,six_review_time," +
+                    "remarks,operating_staff,idt) values <foreach collection='safes' item='item' index='index' separator=','>" +
+                    "(#{item.validityPeriod},#{item.idCardNo},#{item.companyPersonnelId},#{item.typeOfWork},#{item.operationItems},#{item.workingYears},#{item.theoreticalAchievements},#{item.actualResults}," +
+                      "#{item.operationCertificateNo},#{item.dateOfIssue},#{item.yearsOfWork},#{item.oneReviewResults},#{item.oneReviewTime},#{item.towReviewResults},#{item.towReviewTime},#{item.threeReviewResults}," +
+                      "#{item.threeReviewTime},#{item.fourReviewResults},#{item.fourReviewTime},#{item.fiveReviewResults},#{item.fiveReviewTime},#{item.sixReviewResults},#{item.sixReviewTime}," +
+                      "#{item.remarks},#{item.operatingStaff},#{item.idt})" ,
+            "</foreach>",
+            "</script>"
+    })
+    int inserts(@Param("safes") List<SafeSpecialTrainingFiles> safes);
     /**
      * 修改数据
      *
@@ -70,7 +84,7 @@ public interface SafeSpecialTrainingFilesDao {
      * @return 影响行数
      */
     @Update("update safe_special_training_files set validity_period=#{validityPeriod},type_of_work=#{typeOfWork},operation_items=#{operationItems},working_years=#{workingYears},theoretical_achievements=#{theoreticalAchievements},actual_results=#{actualResults}," +
-            "operation_certificate_no=#{operationCertificateNo},date_of_issue=#{dateOfIssue},one_review_results=#{oneReviewResults},one_review_time=#{oneReviewTime},tow_review_results=#{towReviewResults},tow_review_time=#{towReviewTime},three_review_results=#{threeReviewResults}," +
+            "operation_certificate_no=#{operationCertificateNo},date_of_issue=#{dateOfIssue},years_of_work=#{yearsOfWork},one_review_results=#{oneReviewResults},one_review_time=#{oneReviewTime},tow_review_results=#{towReviewResults},tow_review_time=#{towReviewTime},three_review_results=#{threeReviewResults}," +
             "three_review_time=#{threeReviewTime},four_review_results=#{fourReviewResults},four_review_time=#{fourReviewTime},five_review_results=#{fiveReviewResults},five_review_time=#{fiveReviewTime},six_review_results=#{sixReviewResults},six_review_time=#{sixReviewTime}," +
             "remarks=#{remarks} where id=#{id}")
     int update(SafeSpecialTrainingFiles safeSpecialTrainingFiles);

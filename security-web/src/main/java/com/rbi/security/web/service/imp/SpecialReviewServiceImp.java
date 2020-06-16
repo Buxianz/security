@@ -6,6 +6,7 @@ import com.rbi.security.entity.web.safe.specialtype.PagingSpecialReview;
 import com.rbi.security.entity.web.safe.specialtype.SafeSpecialReview;
 import com.rbi.security.tool.LocalDateUtils;
 import com.rbi.security.tool.PageData;
+import com.rbi.security.tool.StringUtils;
 import com.rbi.security.web.DAO.safe.SafeSpecialReviewDAO;
 import com.rbi.security.web.service.SpecialReviewService;
 import org.apache.shiro.SecurityUtils;
@@ -46,7 +47,32 @@ public class SpecialReviewServiceImp implements SpecialReviewService {
     public PageData<PagingSpecialReview> pagingSpecialReview(int pageNo, int pageSize, int startIndex) throws RuntimeException{
         List<PagingSpecialReview> pagingSpecialReviewList=null;
         try{
+            /**
+             * 获取特征人员复审分页记录
+             */
             pagingSpecialReviewList=safeSpecialReviewDAO.pagingSpecialReview(startIndex,pageSize);
+            for(int i=0;i<pagingSpecialReviewList.size();i++){
+                if(StringUtils.isNotBlank(pagingSpecialReviewList.get(i).getSixReviewTime())){
+                    pagingSpecialReviewList.get(i).setDateOfIssue(pagingSpecialReviewList.get(i).getSixReviewTime());
+                    break;
+                }
+                if(StringUtils.isNotBlank(pagingSpecialReviewList.get(i).getFiveReviewTime())){
+                    pagingSpecialReviewList.get(i).setDateOfIssue(pagingSpecialReviewList.get(i).getFiveReviewTime());
+                    break;
+                }if(StringUtils.isNotBlank(pagingSpecialReviewList.get(i).getFourReviewTime())){
+                    pagingSpecialReviewList.get(i).setDateOfIssue(pagingSpecialReviewList.get(i).getFourReviewTime());
+                    break;
+                }if(StringUtils.isNotBlank(pagingSpecialReviewList.get(i).getThreeReviewTime())){
+                    pagingSpecialReviewList.get(i).setDateOfIssue(pagingSpecialReviewList.get(i).getThreeReviewTime());
+                    break;
+                }if(StringUtils.isNotBlank(pagingSpecialReviewList.get(i).getTowReviewTime())){
+                    pagingSpecialReviewList.get(i).setDateOfIssue(pagingSpecialReviewList.get(i).getTowReviewTime());
+                    break;
+                }if(StringUtils.isNotBlank(pagingSpecialReviewList.get(i).getOneReviewTime())){
+                    pagingSpecialReviewList.get(i).setDateOfIssue(pagingSpecialReviewList.get(i).getOneReviewTime());
+                    break;
+                }
+            }
             int count =safeSpecialReviewDAO.getSpecialReviewCount();
             int totalPage;
             if (count%pageSize==0){
@@ -96,4 +122,8 @@ public class SpecialReviewServiceImp implements SpecialReviewService {
 
         }
     }
+    /**
+     * 导出特种人员复审人员名单
+     */
+
 }

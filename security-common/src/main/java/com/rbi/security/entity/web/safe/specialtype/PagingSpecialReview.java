@@ -82,4 +82,33 @@ public class PagingSpecialReview {
      * 创建时间
      */
     private String idt;
+    /**
+     * 发证日期
+     */
+    private String dateOfIssue;
+    /**
+     * 第一次复审时间
+     */
+    private String oneReviewTime;
+    /**
+     * 第二次复审时间
+     */
+    private String towReviewTime;
+    /**
+     * 第三次复审时间
+     */
+    private String threeReviewTime;
+    /**
+     * 第四次复审时间
+     */
+    private String fourReviewTime;
+    /**
+     * 第五次复审时间
+     */
+    private String fiveReviewTime;
+    /**
+     * 第六次复审时间
+     */
+    private String sixReviewTime;
+
 }
