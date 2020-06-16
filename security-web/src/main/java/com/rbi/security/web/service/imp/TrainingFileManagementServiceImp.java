@@ -15,7 +15,8 @@ import com.rbi.security.web.DAO.CompanyPersonnelDAO;
 import com.rbi.security.web.DAO.safe.SafeAdministratorTrainDAO;
 import com.rbi.security.web.DAO.safe.SafeSpecialTrainingFilesDao;
 import com.rbi.security.web.service.TrainingFileManagementService;
-import com.rbi.security.web.service.util.ImportSpecialTrainingsMethed;
+import com.rbi.security.web.service.util.ImportExcleFactory;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -48,6 +50,10 @@ import java.util.List;
  **/
 @Service
 public class TrainingFileManagementServiceImp implements TrainingFileManagementService {
+    private static final String columns[] = {"no", "name", "gender", "idCardNo", "degreeOfEducation", "typeOfWork", "operationItems", "yearsOfWork", "workingYears", "theoreticalAchievements", "actualResults",
+            "operationCertificateNo", "dateOfIssue", "oneReviewResults", "oneReviewTime", "towReviewResults", "towReviewTime",
+            "threeReviewResults", "threeReviewTime", "fourReviewResults", "fourReviewTime", "fiveReviewResults", "fiveReviewTime", "sixReviewResults", "sixReviewTime",
+            "remarks"};
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImp.class);
     @Autowired
     SafeAdministratorTrainDAO safeAdministratorTrainDAO;
@@ -55,18 +61,14 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
     CompanyPersonnelDAO companyPersonnelDAO;
     @Autowired
     SafeSpecialTrainingFilesDao safeSpecialTrainingFilesDao;
-    @Autowired
-    ImportSpecialTrainingsMethed importSpecialTrainingsMethed;
     /**特种人员文件导入**/
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void importSpecialTrainings(MultipartFile multipartFiles) throws RuntimeException{
           try{
+              List<SafeSpecialTrainingFiles> safes=new LinkedList<SafeSpecialTrainingFiles>();;
+              safes= ImportExcleFactory.getDate(multipartFiles.getInputStream(),safes,SafeSpecialTrainingFiles.class,columns,5,0);
               Subject subject = SecurityUtils.getSubject();
               String idt = LocalDateUtils.localDateTimeFormat(LocalDateTime.now(), LocalDateUtils.FORMAT_PATTERN);
-              /**
-               * 将文件处理为需要的类
-               */
-              List<SafeSpecialTrainingFiles> safes =importSpecialTrainingsMethed.excelImport(multipartFiles);
               /**
                * 进行数据筛选，批量添加
                */
