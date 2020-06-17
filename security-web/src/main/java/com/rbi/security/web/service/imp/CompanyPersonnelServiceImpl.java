@@ -35,7 +35,7 @@ public class CompanyPersonnelServiceImpl implements CompanyPersonnelService {
     @Override
     public Map<String, Object> excelImport(MultipartFile file) {
         String currentTime = LocalDateUtils.localDateTimeFormat(LocalDateTime.now(),LocalDateUtils.FORMAT_PATTERN);
-        String columns[] = {"serialNumber","employeeNumber","organizationName","factory","workshop","team",
+        String columns[] = {"serialNumber","employeeNumber","organizationName","factoryName","workshopName","teamName",
                 "name","gender","nation","maritalStatus", "idCardNo","dateOfBirth","degreeOfEducation",
                 "position","jobNature","workType","entryTime","remarks"};
         List<Map<String,String>> mapList = ExcelPOI.getData(file,columns);
