@@ -76,6 +76,9 @@ public class ImportExcleFactory {
      */
     public static  <T> List<T> getDate(MultipartFile file, List<T> objs, Class<T> objClass,String columns[],int r,int c){
             try{
+                if(objs==null){
+                    objs=new LinkedList<T>();
+                }
                 T obj = null;
                 List<Map<String, String>> listMap=getMapDate(file,columns,r,c);
                 for (int i = 0; i < listMap.size(); i++) {
