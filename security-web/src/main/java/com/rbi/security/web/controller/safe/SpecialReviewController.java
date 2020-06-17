@@ -38,9 +38,9 @@ public class SpecialReviewController {
      * 导出复审人员名单excel表
      */
     @RequestMapping("/exportSpecialReview")
-    public ResponseModel<PageData<PagingSpecialReview>> exportSpecialReview(){
+    public ResponseModel exportSpecialReview(){
         try {
-            return  ResponseModel.build("1000", "查询成功");
+            return  ResponseModel.build("1000", "查询成功",null,"");
         }catch (Exception e){
             return ResponseModel.build("1001", e.getMessage());
         }

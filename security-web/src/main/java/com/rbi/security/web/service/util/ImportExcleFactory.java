@@ -1,7 +1,10 @@
 package com.rbi.security.web.service.util;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFiles;
 import com.rbi.security.tool.ExcelPOI;
+import com.rbi.security.tool.POIUtil;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -10,6 +13,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.beans.PropertyDescriptor;
 import java.io.File;
@@ -70,16 +74,18 @@ public class ImportExcleFactory {
      * @param <T>
      * @return
      */
-    public static  <T> List<T> getDate(InputStream inputStream, List<T> objs, Class<T> objClass,String columns[],int r,int c){
+    public static  <T> List<T> getDate(MultipartFile file, List<T> objs, Class<T> objClass,String columns[],int r,int c){
             try{
                 T obj = null;
-                List<Map<String, String>> listMap=getMapDate(inputStream,columns,r,c);
+                List<Map<String, String>> listMap=getMapDate(file,columns,r,c);
                 for (int i = 0; i < listMap.size(); i++) {
-                    obj= objClass.newInstance();
+                    obj= JSONObject.parseObject(JSON.toJSONString(listMap.get(i)), objClass);
+
+                    /*obj= objClass.newInstance();
                     for (String key : listMap.get(i).keySet()) {
                         String value = listMap.get(i).get(key);
                         obj = (T) dynamicSet(obj, key, value);
-                    }
+                    }*/
                     objs.add(obj);
                 }
             }catch (Exception e){
@@ -96,14 +102,14 @@ public class ImportExcleFactory {
      * c 从第c+1列开始
      * @return
      */
-    public static  List<Map<String, String>> getMapDate(InputStream inputStream,String columns[],int r,int c)throws RuntimeException, IOException {
+    public static  List<Map<String, String>> getMapDate(MultipartFile file, String columns[], int r, int c)throws RuntimeException, IOException {
         Workbook wb = null;
         Sheet sheet = null;
         String cellData = null;
         HSSFRow row=null;
         List<Map<String, String>> list=null;
         try {
-            wb = new HSSFWorkbook(inputStream);
+            wb = POIUtil.getWorkBook(file);
             FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
             list = new LinkedList<Map<String, String>>();
             sheet=wb.getSheetAt(0);

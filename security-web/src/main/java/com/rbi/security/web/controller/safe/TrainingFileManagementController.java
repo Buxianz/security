@@ -45,7 +45,6 @@ public class TrainingFileManagementController {
         }catch (Exception e){
             return ResponseModel.build("1001", e.getMessage());
         }
-
     }
 
     /**

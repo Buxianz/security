@@ -72,7 +72,7 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
               if(suffix.equals(".xls") || suffix.equals(".xlsx")) {
                   List<SafeSpecialTrainingFiles> safes = new LinkedList<SafeSpecialTrainingFiles>();
                   ;
-                  safes = ImportExcleFactory.getDate(multipartFiles.getInputStream(), safes, SafeSpecialTrainingFiles.class, columns, 5, 0);
+                  safes = ImportExcleFactory.getDate(multipartFiles, safes, SafeSpecialTrainingFiles.class, columns, 5, 0);
                   Subject subject = SecurityUtils.getSubject();
                   String idt = LocalDateUtils.localDateTimeFormat(LocalDateTime.now(), LocalDateUtils.FORMAT_PATTERN);
                   /**
