@@ -18,6 +18,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,13 +45,16 @@ import java.util.List;
  * @PROJECT_NAME: security
  **/
 
-@ConfigurationProperties(prefix="path")
-@Data
+//@ConfigurationProperties(prefix="path")
+//@Data
 @Service
 public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsService {
 
+    @Value("${uploadfile.ip}")
+    private String fileIp;//此ip与此应用部署的服务区ip一致
+    @Value("${hiddenPath}")
     private String hiddenPath;
-    private String findHiddenPath;
+
     @Autowired
     SafeTrainingMaterialsDAO safeTrainingMaterialsDAO;
     @Autowired
@@ -66,7 +70,7 @@ public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsSe
             String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
             String filename = file.getOriginalFilename();
             FileUtils.copyInputStreamToFile(file.getInputStream(), new File(hiddenPath, filename));
-            String resourcePath = findHiddenPath+filename;
+            String resourcePath = hiddenPath+filename;
             int count = safeTrainingMaterialsDAO.countByResourcePath(resourcePath);
             if (count != 0 ){
                 return "系统存在有相同的文件，请修改文件名";
@@ -87,6 +91,9 @@ public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsSe
     public PageData findByPage(int pageNo, int pageSize) {
         int pageNo2 = pageSize * (pageNo - 1);
         List<SafeTrainingMaterials> safeTrainingMaterials = safeTrainingMaterialsDAO.findByPage(pageNo2,pageSize);
+        for (int i=0;i< safeTrainingMaterials.size();i++){
+            safeTrainingMaterials.get(i).setResourcePath(fileIp+safeTrainingMaterials.get(i).getResourcePath());
+        }
         int totalPage = 0;
         int count = safeTrainingMaterialsDAO.findByPageNum();
         if (0 == count % pageSize) {
@@ -108,6 +115,9 @@ public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsSe
     public PageData findByCondition(int pageNo, int pageSize, int value) {
         int pageNo2 = pageSize * (pageNo - 1);
         List<SafeTrainingMaterials> safeTrainingMaterials = safeTrainingMaterialsDAO.findByCondition(pageNo2,pageSize,value);
+        for (int i=0;i< safeTrainingMaterials.size();i++){
+            safeTrainingMaterials.get(i).setResourcePath(fileIp+safeTrainingMaterials.get(i).getResourcePath());
+        }
         int totalPage = 0;
         int count = safeTrainingMaterialsDAO.findByConditionNum(value);
         if (0 == count % pageSize) {
@@ -123,6 +133,9 @@ public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsSe
         String name = "'%"+value+"%'";
         int pageNo2 = pageSize * (pageNo - 1);
         List<SafeTrainingMaterials> safeTrainingMaterials = safeTrainingMaterialsDAO.findByName(pageNo2,pageSize,name);
+        for (int i=0;i< safeTrainingMaterials.size();i++){
+            safeTrainingMaterials.get(i).setResourcePath(fileIp+safeTrainingMaterials.get(i).getResourcePath());
+        }
         int totalPage = 0;
         int count = safeTrainingMaterialsDAO.findByNameNum(name);
         if (0 == count % pageSize) {
@@ -140,5 +153,39 @@ public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsSe
             int id = obj.getInteger("id");
             safeTrainingMaterialsDAO.deleteById(id);
         }
+    }
+
+    @Override
+    public PageData findFileByCategory(int pageNo, int pageSize, int value) {
+        int pageNo2 = pageSize * (pageNo - 1);
+        List<SafeTrainingMaterials> safeTrainingMaterials = safeTrainingMaterialsDAO.findFileByCategory(pageNo2,pageSize,value);
+        for (int i=0;i< safeTrainingMaterials.size();i++){
+            safeTrainingMaterials.get(i).setResourcePath(fileIp+safeTrainingMaterials.get(i).getResourcePath());
+        }
+        int totalPage = 0;
+        int count = safeTrainingMaterialsDAO.findFileByCategoryNum(value);
+        if (0 == count % pageSize) {
+            totalPage = count / pageSize;
+        } else {
+            totalPage = count / pageSize + 1;
+        }
+        return new PageData(pageNo, pageSize, totalPage, count, safeTrainingMaterials);
+    }
+
+    @Override
+    public PageData findVideoByCategory(int pageNo, int pageSize, int value) {
+        int pageNo2 = pageSize * (pageNo - 1);
+        List<SafeTrainingMaterials> safeTrainingMaterials = safeTrainingMaterialsDAO.findVideoByCategory(pageNo2,pageSize,value);
+        for (int i=0;i< safeTrainingMaterials.size();i++){
+            safeTrainingMaterials.get(i).setResourcePath(fileIp+safeTrainingMaterials.get(i).getResourcePath());
+        }
+        int totalPage = 0;
+        int count = safeTrainingMaterialsDAO.findVideoByCategoryNum(value);
+        if (0 == count % pageSize) {
+            totalPage = count / pageSize;
+        } else {
+            totalPage = count / pageSize + 1;
+        }
+        return new PageData(pageNo, pageSize, totalPage, count, safeTrainingMaterials);
     }
 }

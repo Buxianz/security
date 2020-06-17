@@ -1,17 +1,15 @@
 package com.rbi.security.web.controller.safe;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rbi.security.entity.web.entity.SysUser;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrain;
 import com.rbi.security.entity.web.safe.specialtype.PagingSpecialTraining;
 import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFiles;
-import com.rbi.security.entity.web.user.PagingUser;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.TrainingFileManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @PACKAGE_NAME: com.rbi.security.web.controller.safe
@@ -36,10 +34,19 @@ public class TrainingFileManagementController {
     @Autowired
     TrainingFileManagementService trainingFileManagementService;
     /************************特种工作人员台账******************************/
-
     /**
      * 文件导入特种培训记录
      */
+    @RequestMapping("/importSpecialTrainings")
+    public ResponseModel importSpecialTrainings(MultipartFile multipartFiles) throws RuntimeException {
+        try {
+            trainingFileManagementService.importSpecialTrainings(multipartFiles);
+            return ResponseModel.build("1000", "导入成功");
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+
+    }
 
     /**
      * 增加特种培训记录

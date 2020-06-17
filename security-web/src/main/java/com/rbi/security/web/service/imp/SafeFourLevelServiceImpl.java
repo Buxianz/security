@@ -93,26 +93,11 @@ public class SafeFourLevelServiceImpl implements SafeFourLevelService {
     }
 
     @Override
-    public PageData findSafeFourLevelByOperatingStaff(JSONObject json) {
-        int pageNo = json.getInteger("pageNo");
-        int pageSize = json.getInteger("pageSize");
-        int recNo = pageSize * (pageNo - 1);
-        List<PagingSafeFourLevel> pagingSafeFourLevelList=new ArrayList<>();
-        int count =0;
+    public PagingSafeFourLevel findSafeFourLevelByOperatingStaff() {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         int personnelId  =  currentUser.getCompanyPersonnelId();
-
-        pagingSafeFourLevelList = safeFourLevelDAO.findSafeFourLevelByOperatingStaff(personnelId,recNo, pageSize);
-        count =safeFourLevelDAO.getCountSafeFourLevelByOperatingStaff(personnelId);
-
-        int totalPage=0;
-        if (0 == count % pageSize) {
-            totalPage = count / pageSize;
-        } else {
-            totalPage = count / pageSize + 1;
-        }
-        return new PageData(pageNo, pageSize, totalPage, count, pagingSafeFourLevelList);
+        return safeFourLevelDAO.findSafeFourLevelByOperatingStaff(personnelId);
     }
 
     @Override
@@ -124,14 +109,18 @@ public class SafeFourLevelServiceImpl implements SafeFourLevelService {
         int personnelId = currentUser.getCompanyPersonnelId();
         safeFourLevel.setOperatingStaff(personnelId);
         try {
-            if (json.getString("idCardNo").length() == 18) {
-                safeFourLevel.setIdt(DateUtil.date(DateUtil.FORMAT_PATTERN));
-                safeFourLevel.setUdt(DateUtil.date(DateUtil.FORMAT_PATTERN));
-                safeFourLevelDAO.insertSafeFourLevel(safeFourLevel);
-                return "1000";
-            } else {
-                return "1002";
-            }
+                if (companyPersonnelDAO.getPersonnelByIdCardNo(json.getString("idCardNo"))!=null) {
+                    if (safeFourLevelDAO.findSafeFourLevelByOperatingStaff(personnelId)==null) {
+                        safeFourLevel.setIdt(DateUtil.date(DateUtil.FORMAT_PATTERN));
+                        safeFourLevel.setUdt(DateUtil.date(DateUtil.FORMAT_PATTERN));
+                        safeFourLevelDAO.insertSafeFourLevel(safeFourLevel);
+                        return "1000";
+                    }else {
+                        return "1003";
+                    }
+                }else {
+                    return "1002";
+                }
         } catch (NullPointerException e) {
             logger.error("添加异常，异常信息为{}", e);
             throw new RuntimeException(e.getMessage());

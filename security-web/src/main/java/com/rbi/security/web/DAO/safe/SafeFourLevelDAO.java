@@ -59,15 +59,12 @@ public interface SafeFourLevelDAO {
     int getCountSafeFourLevel();
 
     /**
-     * 根据当前登录人获取全部
+     * 根据当前登录人获取
      */
     @Select("select sys_company_personnel.work_type,sys_company_personnel.`name`,sys_company_personnel.job_nature,sys_company_personnel.gender," +
             "sys_company_personnel.entry_time,sys_company_personnel.date_of_birth,safe_four_level.* from safe_four_level,sys_company_personnel " +
-            "where safe_four_level.id_card_no=sys_company_personnel.id_card_no and safe_four_level.operating_staff=#{personnelId} limit #{pageNo},#{pageSize}")
-    List<PagingSafeFourLevel> findSafeFourLevelByOperatingStaff(@Param("personnelId") int personnelId,
-                                                          @Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
-    @Select("select count(id) from safe_four_level where operating_staff=#{personnelId}")
-    int getCountSafeFourLevelByOperatingStaff(@Param("personnelId") int personnelId);
+            "where safe_four_level.id_card_no=sys_company_personnel.id_card_no and safe_four_level.operating_staff=#{personnelId}")
+    PagingSafeFourLevel findSafeFourLevelByOperatingStaff(@Param("personnelId") int personnelId);
 
     /**
      * 更新

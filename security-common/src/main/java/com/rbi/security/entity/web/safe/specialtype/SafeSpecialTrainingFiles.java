@@ -54,6 +54,10 @@ public class SafeSpecialTrainingFiles implements Serializable {
     */
     private String dateOfIssue;
     /**
+     * 工种年限
+     */
+    private String yearsOfWork;
+    /**
     * 第一次复审成绩
     */
     private String oneReviewResults;
@@ -117,5 +121,6 @@ public class SafeSpecialTrainingFiles implements Serializable {
      * 复审年限
      */
     private Integer validityPeriod;
+
 
 }

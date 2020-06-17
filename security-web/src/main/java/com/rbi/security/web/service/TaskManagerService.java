@@ -1,7 +1,13 @@
 package com.rbi.security.web.service;
 
+import com.rbi.security.entity.web.LearningContent;
+import com.rbi.security.entity.web.LearningInformations;
+import com.rbi.security.entity.web.safe.examination.SafeAnswerRecord;
 import com.rbi.security.entity.web.safe.task.TestPaperInfo;
+import com.rbi.security.entity.web.safe.testpaper.TestPaper;
 import com.rbi.security.tool.PageData;
+
+import java.util.List;
 
 /**
  * @PACKAGE_NAME: com.rbi.security.web.service
@@ -22,4 +28,8 @@ import com.rbi.security.tool.PageData;
  **/
 public interface TaskManagerService {
     PageData<TestPaperInfo> pagingSpecialReview(int pageNo, int startIndex, int pageSize, int processingStatus) throws RuntimeException;
+    TestPaper getTestPaper(int id) throws RuntimeException;
+    void completeTheExam(int personnelTrainingRecordId, List<SafeAnswerRecord> safeAnswerRecordList) throws RuntimeException;
+    PageData<LearningInformations> pagingLearningInformation(int pageNo, int startIndex, int pageSize) throws RuntimeException;
+    LearningContent getLearningContent(int id) throws RuntimeException;
 }

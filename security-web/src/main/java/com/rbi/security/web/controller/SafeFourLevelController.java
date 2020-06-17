@@ -92,14 +92,14 @@ public class SafeFourLevelController {
     /**
      * 分页查询当前登录人的四级HSE教育培训台账
      *
-     * @param json
+     * @param
      * @return
      */
     @RequestMapping(value = "/findSafeFourLevelByOperatingStaff", method = RequestMethod.POST)
-    public ResponseModel<PageData> findSafeFourLevelByOperatingStaff(@RequestBody JSONObject json) {
+    public ResponseModel<PagingSafeFourLevel> findSafeFourLevelByOperatingStaff() {
         try {
-            PageData pageData = safeFourLevelService.findSafeFourLevelByOperatingStaff(json);
-            return ResponseModel.build("1000", "查询成功", pageData);
+            PagingSafeFourLevel pagingSafeFourLevel = safeFourLevelService.findSafeFourLevelByOperatingStaff();
+            return ResponseModel.build("1000", "查询成功", pagingSafeFourLevel);
         } catch (Exception e) {
             logger.error("分页查询异常，ERROR：{}", e);
             return ResponseModel.build("1001", "服务器处理异常");
@@ -118,8 +118,10 @@ public class SafeFourLevelController {
             String i=safeFourLevelService.insertSafeFourLevel(json);
             if (i.equals("1000")) {
                 return ResponseModel.build("1000", "添加成功");
-            }else {
+            }else if (i.equals("1002")){
                 return ResponseModel.build("1002", "添加失败，身份证号不存在！");
+            }else {
+                return ResponseModel.build("1003", "添加失败，此人台账已存在！");
             }
         } catch (Exception e) {
             logger.error("添加异常，ERROR：{}", e);

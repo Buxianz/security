@@ -128,8 +128,8 @@ public class SafeDemandReportServiceImp implements SafeDemandReportService {
             Subject subject = SecurityUtils.getSubject();
             safeTrainingNeeds.setOperatingStaff(((AuthenticationUserDTO)subject.getPrincipal()).getCompanyPersonnelId());
             safeTrainingNeeds.setProcessingTime(idt);
-        safeTraningNeedsDAO.updateTrainingNeeds(safeTrainingNeeds);
-        if(safeTrainingNeeds.getProcessingStatus()==2) {
+          safeTraningNeedsDAO.updateTrainingNeeds(safeTrainingNeeds);
+          if(safeTrainingNeeds.getProcessingStatus()==2) {
             //产生（添加）计划
             SafeTrainingPlan safeTrainingPlan = new SafeTrainingPlan();
             safeTrainingPlan.setTargetSet(safeTrainingNeeds.getTargetSet());
@@ -166,5 +166,21 @@ public class SafeDemandReportServiceImp implements SafeDemandReportService {
             logger.error("处理培训需求失败，异常为{}",e);
             throw new RuntimeException("处理培训需求失败："+e.getMessage());
         }
+    }
+
+    @Override
+    public SafeTrainingNeeds getTrainingNeedsById(int id) throws RuntimeException {
+        SafeTrainingNeeds safeTrainingNeeds=null;
+        try{
+            String targetSet;
+            safeTrainingNeeds=safeTraningNeedsDAO.getTrainingNeedsById(id);
+            targetSet="("+safeTrainingNeeds.getTargetSet()+")";
+            String[] names=companyPersonnelDAO.getCompanyPersonneName(targetSet);
+            safeTrainingNeeds.setTargetNameSet(names);
+        }catch (Exception e){
+            logger.error("根据id获取培训需求计划内容失败，异常为{}",e);
+            throw new RuntimeException("根据id获取培训需求计划内容失败："+e.getMessage());
+        }
+        return safeTrainingNeeds;
     }
 }

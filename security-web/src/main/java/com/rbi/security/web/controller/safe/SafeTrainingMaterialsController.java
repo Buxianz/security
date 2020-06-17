@@ -84,21 +84,19 @@ public class SafeTrainingMaterialsController {
 
 
     /**
-     * 培训内容下拉搜索
+     * 内容类型下拉框
      * */
-    @PostMapping("/findByCondition")
-    public ResponseModel<PageData> findByCondition(@RequestBody JSONObject json){
+    @PostMapping("/findType")
+    public ResponseModel findType(){
         try {
-            int pageNo = json.getInteger("pageNo");
-            int pageSize = json.getInteger("pageSize");
-            int value = json.getInteger("value");
-            PageData pageData = safeTrainingMaterialsService.findByCondition(pageNo,pageSize,value);
-            return ResponseModel.build("1000","条件查询成功！",pageData);
+            List<SafeContentCategory> safeContentCategories = safeTrainingMaterialsService.findType();
+            return ResponseModel.build("1000","分页查询成功！",safeContentCategories);
         }catch (Exception e){
             System.out.println("错误："+e);
             return ResponseModel.build("1001","处理异常");
         }
     }
+
 
     /**
      * 名称搜索
@@ -118,19 +116,58 @@ public class SafeTrainingMaterialsController {
     }
 
 
-
     /**
-     * 内容类型下拉查询
+     * 培训内容下拉搜索
      * */
-    @PostMapping("/findType")
-    public ResponseModel findType(){
+    @PostMapping("/findByCondition")
+    public ResponseModel<PageData> findByCondition(@RequestBody JSONObject json){
         try {
-            List<SafeContentCategory> safeContentCategories = safeTrainingMaterialsService.findType();
-            return ResponseModel.build("1000","分页查询成功！",safeContentCategories);
+            int pageNo = json.getInteger("pageNo");
+            int pageSize = json.getInteger("pageSize");
+            int value = json.getInteger("value");
+            PageData pageData = safeTrainingMaterialsService.findByCondition(pageNo,pageSize,value);
+            return ResponseModel.build("1000","条件查询成功！",pageData);
         }catch (Exception e){
             System.out.println("错误："+e);
             return ResponseModel.build("1001","处理异常");
         }
     }
+
+
+    /**
+     * 培训内容下拉搜索
+     * */
+    @PostMapping("/findFileByCategory")
+    public ResponseModel<PageData> findFileByCategory(@RequestBody JSONObject json){
+        try {
+            int pageNo = json.getInteger("pageNo");
+            int pageSize = json.getInteger("pageSize");
+            int value = json.getInteger("value");
+            PageData pageData = safeTrainingMaterialsService.findFileByCategory(pageNo,pageSize,value);
+            return ResponseModel.build("1000","条件查询成功！",pageData);
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+    /**
+     * 培训内容下拉搜索
+     * */
+    @PostMapping("/findVideoByCategory")
+    public ResponseModel<PageData> findVideoByCategory(@RequestBody JSONObject json){
+        try {
+            int pageNo = json.getInteger("pageNo");
+            int pageSize = json.getInteger("pageSize");
+            int value = json.getInteger("value");
+            PageData pageData = safeTrainingMaterialsService.findVideoByCategory(pageNo,pageSize,value);
+            return ResponseModel.build("1000","条件查询成功！",pageData);
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+
 
 }

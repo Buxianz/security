@@ -246,9 +246,10 @@ public class HidDangerCotroller {
      * 上报处理按钮
      **/
     @PostMapping("/report")
-    public ResponseModel report(HidDangerDO hidDangerDO){
+    public ResponseModel report(@RequestBody JSONObject json){
         try {
-            String result  = hidDangerService.report(hidDangerDO);
+            String hidDangerCode  = json.getString("hidDangerCode");
+            String result  = hidDangerService.report(hidDangerCode);
             if (result.equals("1000")){
                 return ResponseModel.build("1000","上报成功！");
             }else {
@@ -259,5 +260,55 @@ public class HidDangerCotroller {
             return ResponseModel.build("1001","处理异常");
         }
     }
+
+    /**
+     * 整改方案删除
+     **/
+    @PostMapping("/deletePlan")
+    public ResponseModel deletePlan(@RequestBody JSONObject json){
+        try {
+            String hidDangerCode  = json.getString("hidDangerCode");
+            hidDangerService.deletePlan(hidDangerCode);
+            return ResponseModel.build("1000","删除成功!");
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+    /**
+     * 验收报告删除
+     **/
+    @PostMapping("/deleteReport")
+    public ResponseModel deleteReport(@RequestBody JSONObject json){
+        try {
+            String hidDangerCode  = json.getString("hidDangerCode");
+            hidDangerService.deleteReport(hidDangerCode);
+            return ResponseModel.build("1000","删除成功!");
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+    /**
+     * 删除整改后的照片
+     **/
+    @PostMapping("/deletePicture")
+    public ResponseModel deletePicture(@RequestBody JSONObject json){
+        try {
+            Integer id  = json.getInteger("id");
+            hidDangerService.deletePicture(id);
+            return ResponseModel.build("1000","删除成功!");
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+
+
+
+
 
 }

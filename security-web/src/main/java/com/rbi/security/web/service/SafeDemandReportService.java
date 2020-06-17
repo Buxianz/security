@@ -29,5 +29,5 @@ public interface SafeDemandReportService {
     void insertSafeDemandReport(SafeTrainingNeeds safeTrainingNeeds) throws RuntimeException;
     PageData<PagingTraniningNeeds> pagingSafeDemandReport(int pageNo, int pageSize, int startIndex,int processingStatus) throws RuntimeException;
     void handlingRequirements(SafeTrainingNeeds safeTrainingNeeds, List<SafeDataPlan> safeDataPlanList, SafeTestPaper safeTestPaper) throws RuntimeException;
-
+    SafeTrainingNeeds getTrainingNeedsById(int id) throws RuntimeException;
 }

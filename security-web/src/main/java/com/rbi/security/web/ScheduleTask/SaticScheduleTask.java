@@ -60,6 +60,7 @@ public class SaticScheduleTask {
             safeSpecialTrainingFilesList=safeSpecialTrainingFilesDao.getAllSpecialTraining();
             //筛选
             safeSpecialReviewList=screen(safeSpecialTrainingFilesList);
+            System.out.println("批量创建任务");
             //批量创建任务
             if(safeSpecialReviewList.size()!=0)
             safeSpecialReviewDAO.insertSpecialReviews(safeSpecialReviewList);
@@ -95,8 +96,8 @@ public class SaticScheduleTask {
                             safeSpecialReview.setCompletionStatus(1);
                             safeSpecialReview.setIdt(idt);
                             safeSpecialReviewList.add(safeSpecialReview);
-                            continue;
                         }
+                        continue;
                     }
                     fiveReviewTime = safeSpecialTrainingFilesList.get(i).getFiveReviewTime();
                     if (StringUtils.isNotBlank(fiveReviewTime)) {
@@ -107,8 +108,8 @@ public class SaticScheduleTask {
                             safeSpecialReview.setCompletionStatus(1);
                             safeSpecialReview.setIdt(idt);
                             safeSpecialReviewList.add(safeSpecialReview);
-                            continue;
                         }
+                        continue;
                     }
                     fourReviewTime = safeSpecialTrainingFilesList.get(i).getFourReviewTime();
                     if (StringUtils.isNotBlank(fourReviewTime)) {
@@ -119,9 +120,8 @@ public class SaticScheduleTask {
                             safeSpecialReview.setCompletionStatus(1);
                             safeSpecialReview.setIdt(idt);
                             safeSpecialReviewList.add(safeSpecialReview);
-
-                            continue;
                         }
+                        continue;
                     }
                     threeReviewTime = safeSpecialTrainingFilesList.get(i).getThreeReviewTime();
                     if (StringUtils.isNotBlank(threeReviewTime)) {
@@ -132,8 +132,8 @@ public class SaticScheduleTask {
                             safeSpecialReview.setCompletionStatus(1);
                             safeSpecialReview.setIdt(idt);
                             safeSpecialReviewList.add(safeSpecialReview);
-                            continue;
                         }
+                        continue;
                     }
                     towReviewTime = safeSpecialTrainingFilesList.get(i).getTowReviewTime();
                     if (StringUtils.isNotBlank(towReviewTime)) {
@@ -144,8 +144,8 @@ public class SaticScheduleTask {
                             safeSpecialReview.setCompletionStatus(1);
                             safeSpecialReview.setIdt(idt);
                             safeSpecialReviewList.add(safeSpecialReview);
-                            continue;
                         }
+                        continue;
                     }
                     oneReviewTime = safeSpecialTrainingFilesList.get(i).getOneReviewTime();
                     if (StringUtils.isNotBlank(oneReviewTime)) {
@@ -156,8 +156,8 @@ public class SaticScheduleTask {
                             safeSpecialReview.setCompletionStatus(1);
                             safeSpecialReview.setIdt(idt);
                             safeSpecialReviewList.add(safeSpecialReview);
-                            continue;
                         }
+                        continue;
                     }
                     if(judge(safeSpecialTrainingFilesList.get(i).getDateOfIssue())){
                         SafeSpecialReview safeSpecialReview= new SafeSpecialReview();
@@ -199,6 +199,7 @@ public class SaticScheduleTask {
            //计算上次审核与当前时间相差的天数
            int difference2=differentDays(date3,date2);
            int difference=difference1-difference2;
+            logger.info(difference1+"   "+difference2+"   "+difference);
            if(difference<=7){
                return true;
            }else {
