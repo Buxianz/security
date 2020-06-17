@@ -10,10 +10,9 @@ import java.io.Serializable;
  * @author makejava
  * @since 2020-05-26 10:04:59
  */
-@Data
+
 public class SafeSpecialTrainingFiles implements Serializable {
     private static final long serialVersionUID = 161851377491293595L;
-    private Integer no;
     /**
     * 特种人员培训档案id
     */
@@ -123,5 +122,224 @@ public class SafeSpecialTrainingFiles implements Serializable {
      */
     private Integer validityPeriod;
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getIdCardNo() {
+        return idCardNo;
+    }
+
+    public void setIdCardNo(String idCardNo) {
+        System.out.println("设置身份证号码，");
+        this.idCardNo = idCardNo;
+    }
+
+    public Integer getCompanyPersonnelId() {
+        return companyPersonnelId;
+    }
+
+    public void setCompanyPersonnelId(Integer companyPersonnelId) {
+        this.companyPersonnelId = companyPersonnelId;
+    }
+
+    public String getTypeOfWork() {
+        return typeOfWork;
+    }
+
+    public void setTypeOfWork(String typeOfWork) {
+        this.typeOfWork = typeOfWork;
+    }
+
+    public String getOperationItems() {
+        return operationItems;
+    }
+
+    public void setOperationItems(String operationItems) {
+        this.operationItems = operationItems;
+    }
+
+    public String getWorkingYears() {
+        return workingYears;
+    }
+
+    public void setWorkingYears(String workingYears) {
+        this.workingYears = workingYears;
+    }
+
+    public String getTheoreticalAchievements() {
+        return theoreticalAchievements;
+    }
+
+    public void setTheoreticalAchievements(String theoreticalAchievements) {
+        this.theoreticalAchievements = theoreticalAchievements;
+    }
+
+    public String getActualResults() {
+        return actualResults;
+    }
+
+    public void setActualResults(String actualResults) {
+        this.actualResults = actualResults;
+    }
+
+    public String getOperationCertificateNo() {
+        return operationCertificateNo;
+    }
+
+    public void setOperationCertificateNo(String operationCertificateNo) {
+        this.operationCertificateNo = operationCertificateNo;
+    }
+
+    public String getDateOfIssue() {
+        return dateOfIssue;
+    }
+
+    public void setDateOfIssue(String dateOfIssue) {
+        this.dateOfIssue = dateOfIssue;
+    }
+
+    public String getYearsOfWork() {
+        return yearsOfWork;
+    }
+
+    public void setYearsOfWork(String yearsOfWork) {
+        this.yearsOfWork = yearsOfWork;
+    }
+
+    public String getOneReviewResults() {
+        return oneReviewResults;
+    }
+
+    public void setOneReviewResults(String oneReviewResults) {
+        this.oneReviewResults = oneReviewResults;
+    }
+
+    public String getOneReviewTime() {
+        return oneReviewTime;
+    }
+
+    public void setOneReviewTime(String oneReviewTime) {
+        this.oneReviewTime = oneReviewTime;
+    }
+
+    public String getTowReviewResults() {
+        return towReviewResults;
+    }
+
+    public void setTowReviewResults(String towReviewResults) {
+        this.towReviewResults = towReviewResults;
+    }
+
+    public String getTowReviewTime() {
+        return towReviewTime;
+    }
+
+    public void setTowReviewTime(String towReviewTime) {
+        this.towReviewTime = towReviewTime;
+    }
+
+    public String getThreeReviewResults() {
+        return threeReviewResults;
+    }
+
+    public void setThreeReviewResults(String threeReviewResults) {
+        this.threeReviewResults = threeReviewResults;
+    }
+
+    public String getThreeReviewTime() {
+        return threeReviewTime;
+    }
+
+    public void setThreeReviewTime(String threeReviewTime) {
+        this.threeReviewTime = threeReviewTime;
+    }
+
+    public String getFourReviewResults() {
+        return fourReviewResults;
+    }
+
+    public void setFourReviewResults(String fourReviewResults) {
+        this.fourReviewResults = fourReviewResults;
+    }
+
+    public String getFourReviewTime() {
+        return fourReviewTime;
+    }
+
+    public void setFourReviewTime(String fourReviewTime) {
+        this.fourReviewTime = fourReviewTime;
+    }
+
+    public String getFiveReviewResults() {
+        return fiveReviewResults;
+    }
+
+    public void setFiveReviewResults(String fiveReviewResults) {
+        this.fiveReviewResults = fiveReviewResults;
+    }
+
+    public String getFiveReviewTime() {
+        return fiveReviewTime;
+    }
+
+    public void setFiveReviewTime(String fiveReviewTime) {
+        this.fiveReviewTime = fiveReviewTime;
+    }
+
+    public String getSixReviewResults() {
+        return sixReviewResults;
+    }
+
+    public void setSixReviewResults(String sixReviewResults) {
+        this.sixReviewResults = sixReviewResults;
+    }
+
+    public String getSixReviewTime() {
+        return sixReviewTime;
+    }
+
+    public void setSixReviewTime(String sixReviewTime) {
+        this.sixReviewTime = sixReviewTime;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public Integer getOperatingStaff() {
+        return operatingStaff;
+    }
+
+    public void setOperatingStaff(Integer operatingStaff) {
+        this.operatingStaff = operatingStaff;
+    }
+
+    public String getIdt() {
+        return idt;
+    }
+
+    public void setIdt(String idt) {
+        this.idt = idt;
+    }
+
+    public Integer getValidityPeriod() {
+        return validityPeriod;
+    }
+
+    public void setValidityPeriod(Integer validityPeriod) {
+        this.validityPeriod = validityPeriod;
+    }
 }

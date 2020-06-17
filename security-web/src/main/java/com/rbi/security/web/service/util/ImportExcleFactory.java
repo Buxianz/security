@@ -63,7 +63,7 @@ public class ImportExcleFactory {
         }
     }*/
     /**
-     *inputStream文件输入流
+     *file 文件
      * objs 需要的List结果集
      * objClass 结果对象对应的class
      * columns 文件对应的列对应的参数名称
