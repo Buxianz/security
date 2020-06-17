@@ -48,7 +48,7 @@ import java.util.*;
 @Service
 public class HidDangerServiceImpl implements HidDangerService {
     @Value("${uploadfile.ip}")
-    private String fileIp;//此ip与此应用部署的服务区ip一致
+    private String fileIp;
     @Value("${hiddenPath}")
     private String hiddenPath;
 

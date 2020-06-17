@@ -45,13 +45,12 @@ import java.util.List;
  * @PROJECT_NAME: security
  **/
 
-//@ConfigurationProperties(prefix="path")
-//@Data
+
 @Service
 public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsService {
 
     @Value("${uploadfile.ip}")
-    private String fileIp;//此ip与此应用部署的服务区ip一致
+    private String fileIp;
     @Value("${hiddenPath}")
     private String hiddenPath;
 

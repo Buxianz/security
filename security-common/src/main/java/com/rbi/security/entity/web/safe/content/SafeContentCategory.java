@@ -23,4 +23,7 @@ import lombok.Data;
 public class SafeContentCategory {
     private Integer id;
     private String contentCategoryName;
+    private Integer operatingStaff;
+    private String idt;
+    private String udt;
 }
