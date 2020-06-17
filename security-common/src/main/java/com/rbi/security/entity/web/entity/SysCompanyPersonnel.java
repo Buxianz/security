@@ -57,7 +57,7 @@ public class SysCompanyPersonnel implements Serializable {
     /**
     * 出生日期
     */
-    private Date dateOfBirth;
+    private String dateOfBirth;
     /**
     * 文化程度
     */
@@ -77,7 +77,7 @@ public class SysCompanyPersonnel implements Serializable {
     /**
     * 入厂时间
     */
-    private Date entryTime;
+    private String entryTime;
     /**
     * 备注
     */
