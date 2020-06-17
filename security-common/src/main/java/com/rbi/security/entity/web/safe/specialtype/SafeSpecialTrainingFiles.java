@@ -13,6 +13,7 @@ import java.io.Serializable;
 @Data
 public class SafeSpecialTrainingFiles implements Serializable {
     private static final long serialVersionUID = 161851377491293595L;
+    private Integer no;
     /**
     * 特种人员培训档案id
     */

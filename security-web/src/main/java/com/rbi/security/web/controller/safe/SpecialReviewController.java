@@ -35,6 +35,17 @@ public class SpecialReviewController {
     @Autowired
     SpecialReviewService specialReviewService;
     /**
+     * 导出复审人员名单excel表
+     */
+    @RequestMapping("/exportSpecialReview")
+    public ResponseModel<PageData<PagingSpecialReview>> exportSpecialReview(){
+        try {
+            return  ResponseModel.build("1000", "查询成功");
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
+    /**
      * 分页查看复审名单
      */
     @RequestMapping("/pagingSpecialReview")

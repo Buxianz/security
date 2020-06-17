@@ -65,35 +65,44 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void importSpecialTrainings(MultipartFile multipartFiles) throws RuntimeException{
           try{
-              List<SafeSpecialTrainingFiles> safes=new LinkedList<SafeSpecialTrainingFiles>();;
-              safes= ImportExcleFactory.getDate(multipartFiles.getInputStream(),safes,SafeSpecialTrainingFiles.class,columns,5,0);
-              Subject subject = SecurityUtils.getSubject();
-              String idt = LocalDateUtils.localDateTimeFormat(LocalDateTime.now(), LocalDateUtils.FORMAT_PATTERN);
-              /**
-               * 进行数据筛选，批量添加
-               */
-              for(int i=0;i<safes.size();){
-                  Integer companyPersonnelId = companyPersonnelDAO.getPersonnelByIdCardNo(safes.get(i).getIdCardNo());
-                  if (companyPersonnelId == null) {
-                      //公司人员信息不存在
-                      //删除此节点，放入导入记录
-                      safes.remove(i);
-                      continue;
+              int lastIndexOf = multipartFiles.getOriginalFilename().lastIndexOf(".");
+              //获取文件的后缀名 .xls
+              System.out.println(multipartFiles.getOriginalFilename());
+              String suffix = multipartFiles.getOriginalFilename().substring(lastIndexOf);
+              if(suffix.equals(".xls") || suffix.equals(".xlsx")) {
+                  List<SafeSpecialTrainingFiles> safes = new LinkedList<SafeSpecialTrainingFiles>();
+                  ;
+                  safes = ImportExcleFactory.getDate(multipartFiles.getInputStream(), safes, SafeSpecialTrainingFiles.class, columns, 5, 0);
+                  Subject subject = SecurityUtils.getSubject();
+                  String idt = LocalDateUtils.localDateTimeFormat(LocalDateTime.now(), LocalDateUtils.FORMAT_PATTERN);
+                  /**
+                   * 进行数据筛选，批量添加
+                   */
+                  for (int i = 0; i < safes.size(); ) {
+                      Integer companyPersonnelId = companyPersonnelDAO.getPersonnelByIdCardNo(safes.get(i).getIdCardNo());
+                      if (companyPersonnelId == null) {
+                          //公司人员信息不存在
+                          //删除此节点，放入导入记录
+                          safes.remove(i);
+                          continue;
+                      }
+                      if (safeSpecialTrainingFilesDao.queryByIdCardNo(safes.get(i).getIdCardNo()) != null) {
+                          //导入数据重复
+                          //删除此节点，放入导入记录
+                          safes.remove(i);
+                          continue;
+                      }
+                      safes.get(i).setIdt(idt);
+                      safes.get(i).setCompanyPersonnelId(companyPersonnelId);
+                      safes.get(i).setOperatingStaff(((AuthenticationUserDTO) subject.getPrincipal()).getCompanyPersonnelId());
+                      safes.get(i).setValidityPeriod(3);
+                      i++;
                   }
-                  if (safeSpecialTrainingFilesDao.queryByIdCardNo(safes.get(i).getIdCardNo())!=null){
-                      //导入数据重复
-                      //删除此节点，放入导入记录
-                      safes.remove(i);
-                      continue;
+                  if (safes.size() != 0) {
+                      safeSpecialTrainingFilesDao.inserts(safes);
                   }
-                  safes.get(i).setIdt(idt);
-                  safes.get(i).setCompanyPersonnelId(companyPersonnelId);
-                  safes.get(i).setOperatingStaff(((AuthenticationUserDTO)subject.getPrincipal()).getCompanyPersonnelId());
-                  safes.get(i).setValidityPeriod(3);
-                  i++;
-              }
-              if(safes.size()!=0){
-                  safeSpecialTrainingFilesDao.inserts(safes);
+              }else {
+                  throw new RuntimeException("文件不是excel文件");
               }
           }catch (Exception e){
               logger.error("批量导入数据失败，异常为{}", e.getMessage());

@@ -11,11 +11,13 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,8 +63,8 @@ public class ImportExcleFactory {
      * objs 需要的List结果集
      * objClass 结果对象对应的class
      * columns 文件对应的列对应的参数名称
-     * r 从第几行开始
-     * c 从第几列开始
+     * r 从第r+1行开始
+     * c 从第c+1列开始
      * @param objs
      * @param columns excel表对应的列
      * @param <T>
@@ -90,8 +92,8 @@ public class ImportExcleFactory {
     /**
      *inputStream文件输入流
      * columns 文件对应的列对应的参数名称
-     * r 从第几行开始
-     * c 从第几列开始
+     * r 从第r+1行开始
+     * c 从第c+1列开始
      * @return
      */
     public static  List<Map<String, String>> getMapDate(InputStream inputStream,String columns[],int r,int c)throws RuntimeException, IOException {
@@ -145,10 +147,12 @@ public class ImportExcleFactory {
         try {
             Field field = obj.getClass().getDeclaredField(propertyName);
             field.setAccessible(true);
+            System.out.println(field.getType());
             field.set(obj, qtySum);
         } catch (Exception e) {
             logger.debug(e.getMessage());
         }
         return obj;
     }
+
 }

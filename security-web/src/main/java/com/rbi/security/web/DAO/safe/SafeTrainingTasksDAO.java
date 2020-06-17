@@ -43,7 +43,7 @@ public interface SafeTrainingTasksDAO {
     /**
      * 获取任务下面的为完成试卷信息Processed
      */
-    @Select("SELECT tp.id,tp.test_paper_name,stp.processing_status,stp.test_results,tp.start_time,tp.end_time,tp.duration,stp.personnel_training_record_id FROM (SELECT stp.id,stt.processing_status,stt.test_results,stt.personnel_training_record_id FROM \n" +
+    @Select("SELECT tp.id,tp.test_paper_name,stp.processing_status,stp.test_results,tp.start_time,tp.end_time,tp.duration,stp.personnel_training_record_id,stp.exam_notes FROM (SELECT stp.id,stt.processing_status,stt.test_results,stt.personnel_training_record_id FROM \n" +
             "(SELECT id AS 'personnel_training_record_id',training_plan_id,processing_status,test_results FROM safe_training_tasks WHERE company_personnel_id=#{companyPersonnelId} AND processing_status=#{processingStatus} LIMIT #{startIndex},#{pageSize}) stt\n" +
             " LEFT JOIN safe_training_plan stp ON stt.training_plan_id=stp.id) stp LEFT JOIN safe_test_paper tp ON stp.id=tp.training_plan_id")
     List<TestPaperInfo> pagingUnprocessedTestPaperInfo(@Param("companyPersonnelId")int companyPersonnelId,@Param("processingStatus")int processingStatus,@Param("startIndex") int startIndex, @Param("pageSize") int pageSize);

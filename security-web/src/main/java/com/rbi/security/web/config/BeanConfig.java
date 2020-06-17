@@ -1,6 +1,5 @@
 package com.rbi.security.web.config;
 
-import com.rbi.security.web.service.util.ImportSpecialTrainingsMethed;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,8 +22,5 @@ import org.springframework.context.annotation.Configuration;
  **/
 @Configuration
 public class BeanConfig {
-    @Bean
-    public ImportSpecialTrainingsMethed createdImportSpecialTrainingsMethed(){
-        return new ImportSpecialTrainingsMethed();
-    }
+
 }
