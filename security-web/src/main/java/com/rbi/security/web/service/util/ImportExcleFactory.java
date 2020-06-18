@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFiles;
 import com.rbi.security.tool.ExcelPOI;
 import com.rbi.security.tool.POIUtil;
+import com.rbi.security.tool.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -22,10 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @PACKAGE_NAME: com.wsd.importExcel
@@ -83,12 +81,6 @@ public class ImportExcleFactory {
                 List<Map<String, String>> listMap=getMapDate(file,columns,r,c);
                 for (int i = 0; i < listMap.size(); i++) {
                     obj= JSONObject.parseObject(JSON.toJSONString(listMap.get(i)), objClass);
-
-                    /*obj= objClass.newInstance();
-                    for (String key : listMap.get(i).keySet()) {
-                        String value = listMap.get(i).get(key);
-                        obj = (T) dynamicSet(obj, key, value);
-                    }*/
                     objs.add(obj);
                 }
             }catch (Exception e){
@@ -163,5 +155,20 @@ public class ImportExcleFactory {
         }
         return obj;
     }
-
+    /* * @description:将对象的值与字段组成map
+     * @param obj 对象
+     * @param titleMap 需要转换的属性名
+     */
+    public static Map<String, Object> objectToMap(Object obj,Map<String,String> titleMap) throws IllegalAccessException {
+        Map<String, Object> map = new HashMap<>();
+        Class<?> clazz = obj.getClass();
+        for (Field field : clazz.getDeclaredFields()) {
+            field.setAccessible(true);
+            String fieldName = field.getName();
+            Object value = field.get(obj);
+            if(StringUtils.isNotBlank(titleMap.get(fieldName)))
+             map.put(titleMap.get(fieldName), value);
+        }
+        return map;
+    }
 }
