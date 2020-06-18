@@ -12,6 +12,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -52,6 +54,7 @@ public class SafeContentCategoryServiceImp implements SafeContentCategoryService
     }
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void add(SafeContentCategory safeContentCategory) {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
@@ -63,6 +66,7 @@ public class SafeContentCategoryServiceImp implements SafeContentCategoryService
     }
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void update(SafeContentCategory safeContentCategory) {
         String udt = DateUtil.date(DateUtil.FORMAT_PATTERN);
         safeContentCategory.setUdt(udt);

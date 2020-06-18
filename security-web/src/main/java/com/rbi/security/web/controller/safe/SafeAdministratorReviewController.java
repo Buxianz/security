@@ -78,7 +78,7 @@ public class SafeAdministratorReviewController {
     }
 
     /**
-     * 完成复审
+     * 取消
      */
     @PostMapping("/cancel")
     public ResponseModel cancel(@RequestBody JSONObject json){
