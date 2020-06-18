@@ -199,33 +199,35 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
 
     /****************安全培训管理**谢青********************/
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public String insertAdministratorTrain(SafeAdministratorTrain safeAdministratorTrain) throws RuntimeException {
-         try{
-             Subject subject = SecurityUtils.getSubject();
-             AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-             Integer personnelId  =  currentUser.getCompanyPersonnelId();
-             SysCompanyPersonnel sysCompanyPersonnel = safeAdministratorTrainDAO.findPersonnelByIdCardNo(safeAdministratorTrain.getIdCardNo());
-             if (null == sysCompanyPersonnel){
-                 return "身份证不存在,此人不在公司人员信息表中";
-             }
-             safeAdministratorTrain.setCompanyPersonnelId(sysCompanyPersonnel.getId());
-             String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
-             safeAdministratorTrain.setOperatingStaff(personnelId);
-             safeAdministratorTrain.setIdt(idt);
-             safeAdministratorTrainDAO.add(safeAdministratorTrain);
-             return "1000";
-         }catch (Exception e){
-             logger.error("添加主要负责人/安全生产管理员培训台账失败，异常为{}",e);
-             throw new RuntimeException("添加主要负责人/安全生产管理员培训台账失败");
-         }
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = safeAdministratorTrainDAO.findPersonnelByIdCardNo(safeAdministratorTrain.getIdCardNo());
+        if (null == sysCompanyPersonnel){
+            return "身份证不存在,此人不在公司人员信息表中";
+        }
+        int num = safeAdministratorTrainDAO.findIdCardNoNum(safeAdministratorTrain.getIdCardNo());
+        if (num >= 1){
+            return "该员工信息以添加";
+        }
+        safeAdministratorTrain.setCompanyPersonnelId(sysCompanyPersonnel.getId());
+        String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
+        safeAdministratorTrain.setOperatingStaff(personnelId);
+        safeAdministratorTrain.setIdt(idt);
+        safeAdministratorTrainDAO.add(safeAdministratorTrain);
+        return "1000";
     }
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void deleteAdministratorTrain(Integer id) {
             safeAdministratorTrainDAO.deleteById(id);
     }
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void updateAdministratorTrain(SafeAdministratorTrain safeAdministratorTrain) {
         String udt = DateUtil.date(DateUtil.FORMAT_PATTERN);
         safeAdministratorTrain.setUdt(udt);

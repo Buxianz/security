@@ -7,7 +7,7 @@ public class HidDangerDO {
 
     private Integer id;
     private String hidDangerCode;
-    private Integer hidDangerType;
+    private String hidDangerType;
     private Integer organizationId;//
     private String organizationName;//
     private String troubleshootingTime;//

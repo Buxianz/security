@@ -1,5 +1,6 @@
 package com.rbi.security.tool;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -80,6 +81,12 @@ public class Tools {
 
 
         System.out.println(getYear(-1));
+    }
+
+    public static Double doubleChangeValue(Double value,int num) {
+        BigDecimal bg = new BigDecimal(value);
+        double result = bg.setScale(num, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return result;
     }
 
 
