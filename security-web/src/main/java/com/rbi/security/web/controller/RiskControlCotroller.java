@@ -36,8 +36,11 @@ public class RiskControlCotroller {
     @Autowired
     RiskControlService riskControlService;
 
+    /**
+     * 区域内添加
+     * */
     @PostMapping("/addInside")
-    public ResponseModel report(RiskControl riskControl, @RequestParam(value="picture",required=false) MultipartFile[] picture){
+    public ResponseModel addInside(RiskControl riskControl, @RequestParam(value="picture",required=false) MultipartFile[] picture){
         try {
             String result = riskControlService.addInside(riskControl,picture);
             if(result.equals("1000")){
@@ -50,6 +53,27 @@ public class RiskControlCotroller {
             return ResponseModel.build("1001","处理异常");
         }
     }
+
+    /**
+     * 区域外添加
+     * */
+    @PostMapping("/addOutside")
+    public ResponseModel addOutside(RiskControl riskControl, @RequestParam(value="picture",required=false) MultipartFile[] picture){
+        try {
+            String result = riskControlService.addOutside(riskControl,picture);
+            if(result.equals("1000")){
+                return ResponseModel.build("1000","添加成功！");
+            }else {
+                return ResponseModel.build("1001",result);
+            }
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+
+
     @PostMapping("/riskValueAndGrade")
     public ResponseModel riskValueAndGrade(@RequestBody JSONObject json){
         try {

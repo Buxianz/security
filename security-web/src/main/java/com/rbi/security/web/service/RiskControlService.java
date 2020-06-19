@@ -31,4 +31,6 @@ public interface RiskControlService {
     Map<String, Object> riskValueAndGrade(RiskControl riskControl);
 
     Map<String, Object> measuresResult(RiskControl riskControl);
+
+    String addOutside(RiskControl riskControl, MultipartFile[] picture) throws IOException;
 }

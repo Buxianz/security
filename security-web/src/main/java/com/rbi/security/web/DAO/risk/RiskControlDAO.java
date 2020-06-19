@@ -43,13 +43,13 @@ public interface RiskControlDAO {
             "control_measures,consequence,expose,possibility,risk_value," +
             "risk_grad,advice_measures,measures_effective,measures_cost,measures_result," +
             "measures_use,company_id,company_name,factory_id,factory_name," +
-            "workshop_id,workshop_name,class_id,class_name,idt,evaluate_time)values" +
+            "workshop_id,workshop_name,class_id,class_name,idt,evaluate_time,area,operating_staff)values" +
             "(#{riskCode},#{riskType},#{taskCode},#{code},#{organizationId}," +
             "#{organizationName},#{workType},#{step},#{harmName},#{harmKind}," +
             "#{harmDescription},#{riskDescription},#{riskKind},#{riskCategory},#{exposeInfo}," +
             "#{controlMeasures},#{consequence},#{expose},#{possibility},#{riskValue}," +
             "#{riskGrad},#{adviceMeasures},#{measuresEffective},#{measuresCost},#{measuresResult}," +
             "#{measuresUse},#{companyId},#{companyName},#{factoryId},#{factoryName}," +
-            "#{workshopId},#{workshopName},#{classId},#{className},#{idt},#{evaluateTime})")
+            "#{workshopId},#{workshopName},#{classId},#{className},#{idt},#{evaluateTime},#{area},#{operatingStaff})")
     void addInside(RiskControl riskControl);
 }

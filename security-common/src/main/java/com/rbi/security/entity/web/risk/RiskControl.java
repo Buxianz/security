@@ -58,6 +58,9 @@ public class RiskControl {
     private Integer classId;
     private String className;
     private String evaluateTime;
+
+    private String area;
+    private Integer operatingStaff;
     private String idt;
     private String udt;
 }

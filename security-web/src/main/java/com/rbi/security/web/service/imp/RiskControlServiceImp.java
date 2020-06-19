@@ -46,8 +46,8 @@ import java.util.Random;
 public class RiskControlServiceImp implements RiskControlService {
     @Value("${uploadfile.ip}")
     private String fileIp;
-    @Value("${hiddenPath}")
-    private String hiddenPath;
+    @Value("${riskPath}")
+    private String riskPath;
     @Autowired
     RiskControlDAO riskControlDAO;
 
@@ -58,6 +58,7 @@ public class RiskControlServiceImp implements RiskControlService {
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         Integer userId = currentUser.getId();
+        riskControl.setOperatingStaff(personnelId);
         String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
         String riskCode = DateUtil.timeStamp();
         try {
@@ -75,8 +76,8 @@ public class RiskControlServiceImp implements RiskControlService {
                     if (contentType.startsWith("image")) {
                         String timestamps = DateUtil.timeStamp();
                         String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(picture[i].getInputStream(), new File(hiddenPath, newFileName));
-                        riskControlDAO.addPicture(riskCode,hiddenPath+newFileName);
+                        FileUtils.copyInputStreamToFile(picture[i].getInputStream(), new File(riskPath, newFileName));
+                        riskControlDAO.addPicture(riskCode,riskPath+newFileName);
                     }
                 }
             }
@@ -121,11 +122,11 @@ public class RiskControlServiceImp implements RiskControlService {
             riskControlDAO.addInside(riskControl);
             return "1000";
         }catch (NullPointerException e){
-            return "没有创建完整的单位和对应的角色用户";
+            return "没有创建完整的单位或其他空指针原因";
         }catch (NumberFormatException e){
             return "数据格式错误";
         }catch (IndexOutOfBoundsException e){
-            return "数组溢出，配置了多个上级负责人";
+            return "数组溢出";
         }
     }
 
@@ -156,5 +157,84 @@ public class RiskControlServiceImp implements RiskControlService {
         double measuresResult = Tools.doubleChangeValue(value,1);
         map.put("measuresResult",measuresResult);
         return map;
+    }
+
+    @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
+    public String addOutside(RiskControl riskControl, MultipartFile[] picture) throws IOException {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        Integer userId = currentUser.getId();
+        riskControl.setOperatingStaff(personnelId);
+        String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
+        String riskCode = DateUtil.timeStamp();
+        try {
+//            SysCompanyPersonnel sysCompanyPersonnel = riskControlDAO.findPersonnelById(personnelId);
+            riskControl.setRiskCode(riskCode);
+            riskControl.setRiskType("2");
+            riskControl.setIdt(idt);
+            //排查前照片添加
+            if (picture.length > 6) {
+                return "排查前照片数量不能大于6张";
+            }
+            if (picture.length > 0) {
+                for (int i = 0; i < picture.length; i++) {
+                    String contentType = picture[i].getContentType();
+                    if (contentType.startsWith("image")) {
+                        String timestamps = DateUtil.timeStamp();
+                        String newFileName = timestamps + new Random().nextInt() + ".jpg";
+                        FileUtils.copyInputStreamToFile(picture[i].getInputStream(), new File(riskPath, newFileName));
+                        riskControlDAO.addPicture(riskCode,riskPath+newFileName);
+                    }
+                }
+            }
+            //所属组织
+            SysOrganization sysOrganization2 = riskControlDAO.findAllByOrganizationId(riskControl.getOrganizationId());
+            int level = sysOrganization2.getLevel();
+            if (level == 4 ){
+                riskControl.setClassId(sysOrganization2.getId());
+                riskControl.setClassName(sysOrganization2.getOrganizationName());
+            }
+            if (level == 3 ){
+                riskControl.setWorkshopId(sysOrganization2.getId());
+                riskControl.setWorkshopName(sysOrganization2.getOrganizationName());
+            }
+            if (level == 2 ){
+                riskControl.setFactoryId(sysOrganization2.getId());
+                riskControl.setFactoryName(sysOrganization2.getOrganizationName());
+            }
+            if (level == 1 ){
+                riskControl.setCompanyId(sysOrganization2.getId());
+                riskControl.setCompanyName(sysOrganization2.getOrganizationName());
+            }
+            Integer parentId = sysOrganization2.getParentId();
+            level = level -1;
+            while (level !=0){
+                SysOrganization sysOrganization3 = riskControlDAO.findAllByOrganizationId(parentId);
+                if (level == 3 ){
+                    riskControl.setWorkshopId(sysOrganization3.getId());
+                    riskControl.setWorkshopName(sysOrganization3.getOrganizationName());
+                }
+                if (level == 2 ){
+                    riskControl.setFactoryId(sysOrganization3.getId());
+                    riskControl.setFactoryName(sysOrganization3.getOrganizationName());
+                }
+                if (level == 1 ){
+                    riskControl.setCompanyId(sysOrganization3.getId());
+                    riskControl.setCompanyName(sysOrganization3.getOrganizationName());
+                }
+                parentId = sysOrganization3.getParentId();
+                level=level - 1;
+            }
+            riskControlDAO.addInside(riskControl);
+            return "1000";
+        }catch (NullPointerException e){
+            return "没有创建完整的单位或其他空指针原因";
+        }catch (NumberFormatException e){
+            return "数据格式错误";
+        }catch (IndexOutOfBoundsException e){
+            return "数组溢出";
+        }
     }
 }
