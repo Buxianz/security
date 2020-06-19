@@ -109,6 +109,8 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
               throw new RuntimeException(e.getMessage());
           }
     }
+
+
     /**
      * 增加特种培训记录
      */
@@ -198,6 +200,21 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
 
 
     /****************安全培训管理**谢青********************/
+    /**
+     * 文件导入安全培训  吴松达
+     * @param multipartFiles
+     * @throws RuntimeException
+     */
+    @Override
+    public void importAdministratorTrains(MultipartFile multipartFiles) throws RuntimeException {
+           try{
+
+           }catch (Exception e){
+
+           }
+    }
+
+
     @Override
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public String insertAdministratorTrain(SafeAdministratorTrain safeAdministratorTrain) throws RuntimeException {

@@ -15,6 +15,7 @@ public interface TrainingFileManagementService {
     PagingSpecialTraining getSpecialTrainingById(int id) throws RuntimeException;
     void importSpecialTrainings(MultipartFile multipartFiles) throws RuntimeException;
     //*******安全管理台账******/
+    void importAdministratorTrains(MultipartFile multipartFiles)throws RuntimeException;
     String insertAdministratorTrain( SafeAdministratorTrain safeAdministratorTrain) throws RuntimeException;
 
     void deleteAdministratorTrain(Integer id);

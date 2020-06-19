@@ -81,4 +81,6 @@ public interface SafeAdministratorTrainDAO {
     @Select("select count(*) from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id " +
             "and safe_administrator_train.unit like ${value2}")
     int findByUnitNum(@Param("value2") String value2);
+
+
 }
