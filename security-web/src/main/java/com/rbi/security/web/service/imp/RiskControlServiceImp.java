@@ -133,6 +133,7 @@ public class RiskControlServiceImp implements RiskControlService {
     }
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public String update(RiskControl riskControl, MultipartFile[] picture) throws IOException {
         String udt = DateUtil.date(DateUtil.FORMAT_PATTERN);
         riskControl.setUdt(udt);
