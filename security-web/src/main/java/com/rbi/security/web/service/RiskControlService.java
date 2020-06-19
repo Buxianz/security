@@ -2,6 +2,7 @@ package com.rbi.security.web.service;
 
 import com.rbi.security.entity.web.hid.HidDangerDO;
 import com.rbi.security.entity.web.risk.RiskControl;
+import com.rbi.security.tool.PageData;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -33,4 +34,18 @@ public interface RiskControlService {
     Map<String, Object> measuresResult(RiskControl riskControl);
 
     String addOutside(RiskControl riskControl, MultipartFile[] picture) throws IOException;
+
+    PageData findByPage(String riskType,int pageNo, int pageSize);
+
+    PageData findSeriousRiskByPage(String riskGrad, int pageNo, int pageSize);
+
+    String update(RiskControl riskControl, MultipartFile[] picture) throws IOException;
+
+    void deleteByPictureId(int id);
+
+    PageData findInsideByCondition(String type, String value, int pageNo, int pageSize);
+
+    PageData findOutsideByCondition(String type, String value, int pageNo, int pageSize);
+
+    PageData findSeriousByCondition(String type, String value, int pageNo, int pageSize);
 }

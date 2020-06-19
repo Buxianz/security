@@ -3,11 +3,12 @@ package com.rbi.security.web.DAO.risk;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.entity.SysOrganization;
 import com.rbi.security.entity.web.risk.RiskControl;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import com.rbi.security.entity.web.risk.RiskControlPicture;
+import com.rbi.security.entity.web.safe.administrator.SafeAdministratorReviewDTO;
+import org.apache.ibatis.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * @PACKAGE_NAME: com.rbi.security.web.DAO.risk
@@ -51,5 +52,68 @@ public interface RiskControlDAO {
             "#{riskGrad},#{adviceMeasures},#{measuresEffective},#{measuresCost},#{measuresResult}," +
             "#{measuresUse},#{companyId},#{companyName},#{factoryId},#{factoryName}," +
             "#{workshopId},#{workshopName},#{classId},#{className},#{idt},#{evaluateTime},#{area},#{operatingStaff})")
-    void addInside(RiskControl riskControl);
+    void add(RiskControl riskControl);
+
+    @Select("select count(*) from risk_control_picture where risk_code = #{riskCode}")
+    int findPictureNum(@Param("riskCode") String riskCode);
+
+
+    @Update("update risk_control set task_code = #{taskCode},code = #{code},organization_id = #{organizationId}," +
+            "organization_name=#{organizationName},work_type=#{workType},area=#{area},step=#{step},harm_name=#{harmName},harm_kind=#{harmKind}," +
+            "harm_description=#{harmDescription},risk_description=#{riskDescription},risk_kind=#{riskKind},risk_category=#{riskCategory},expose_info=#{exposeInfo}," +
+            "control_measures=#{controlMeasures},consequence=#{consequence},expose=#{expose},possibility=#{possibility},risk_value=#{riskValue}," +
+            "risk_grad=#{riskGrad},advice_measures=#{adviceMeasures},measures_effective=#{measuresEffective},measures_cost=#{measuresCost},measures_result=#{measuresResult}," +
+            "measures_use=#{measuresUse},company_id=#{companyId},company_name=#{companyName},factory_id=#{factoryId},factory_name=#{factoryName}," +
+            "workshop_id=#{workshopId},workshop_name=#{workshopName},class_id=#{classId},class_name=#{className},udt=#{udt},evaluate_time=#{evaluateTime} where risk_code = #{riskCode}")
+    void update(RiskControl riskControl);
+
+
+
+    @Select("select * from risk_control_picture where risk_code = #{riskCode}")
+    List<RiskControlPicture> findPictureByRiskCode(@Param("riskCode") String riskCode);
+
+    @Delete("delete from risk_control_picture where id = #{id}")
+    void deleteByPictureId(int id);
+
+    @Select("select * from risk_control where risk_type = #{riskType} limit #{pageNo},#{pageSize}")
+    List<RiskControl> findByPage(@Param("riskType") String riskType,@Param("pageNo") int pageNo,@Param("pageSize") int pageSize);
+
+    @Select("select count(*) from risk_control where risk_type = #{riskType}")
+    int findNum(@Param("riskType") String riskType);
+
+    @Select("select * from risk_control where risk_grad = #{riskGrad} limit #{pageNo},#{pageSize}")
+    List<RiskControl> findSeriousRiskByPage(@Param("riskGrad") String riskGrad,@Param("pageNo") int pageNo,@Param("pageSize") int pageSize);
+
+    @Select("select count(*) from risk_control where risk_grad = #{riskGrad}")
+    int findSeriousRiskByPageNum(@Param("riskGrad") String riskGrad);
+
+
+    @Select("select * from risk_control where risk_type = #{riskType} and organization_name like ${organizationName} limit #{pageNo},#{pageSize}")
+    List<RiskControl> findUnitByPage(@Param("riskType") String riskType,@Param("organizationName") String organizationName,@Param("pageNo") int pageNo,@Param("pageSize") int pageSize);
+
+    @Select("select count(*) from risk_control where risk_type = #{riskType} and organization_name like ${organizationName}")
+    int findUnitByPageNum(@Param("riskType") String riskType,@Param("organizationName") String organizationName);
+
+
+    @Select("select * from risk_control where risk_type = #{riskType} and work_type like ${workType} limit #{pageNo},#{pageSize}")
+    List<RiskControl> findWorkTypeByPage(@Param("riskType") String riskType,@Param("workType") String workType,
+                                         @Param("pageNo") int pageNo,@Param("pageSize") int pageSize);
+
+    @Select("select count(*) from risk_control where risk_type = #{riskType} and work_type like ${workType}")
+    int findWorkTypeByPageNum(@Param("riskType") String riskType,@Param("workType") String workType);
+
+
+
+
+    @Select("select * from risk_control where risk_grad = '一级' and organization_name like ${organizationName} limit #{pageNo},#{pageSize}")
+    List<RiskControl> findSeriousUnitByPage(@Param("organizationName") String organizationName,@Param("pageNo") int pageNo,@Param("pageSize") int pageSize);
+
+    @Select("select count(*) from risk_control where risk_grad = '一级' and organization_name like ${organizationName}")
+    int findSeriousUnitByPageNum(@Param("organizationName") String organizationName);
+
+    @Select("select * from risk_control where risk_grad = '一级' and work_type like ${workType} limit #{pageNo},#{pageSize}")
+    List<RiskControl> findSeriousWorkTypeByPage(@Param("workType") String workType,@Param("pageNo") int pageNo,@Param("pageSize") int pageSize);
+
+    @Select("select count(*) from risk_control where risk_grad = '一级' and work_type like ${workType}")
+    int findSeriousWorkTypeByPageNum(@Param("workType") String workType);
 }

@@ -2,6 +2,8 @@ package com.rbi.security.entity.web.risk;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @PACKAGE_NAME: com.rbi.security.entity.web.risk
  * @NAME: RiskControl
@@ -63,4 +65,5 @@ public class RiskControl {
     private Integer operatingStaff;
     private String idt;
     private String udt;
+    private List<RiskControlPicture> img;
 }
