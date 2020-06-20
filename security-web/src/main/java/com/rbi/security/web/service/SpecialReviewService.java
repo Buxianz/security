@@ -7,4 +7,5 @@ import com.rbi.security.tool.PageData;
 public interface SpecialReviewService {
     void handleSpecialReview(SafeSpecialReview safeSpecialReview) throws RuntimeException;
     PageData<PagingSpecialReview> pagingSpecialReview(int pageNo, int pageSize, int startIndex) throws RuntimeException;
+    String exportSpecialReview(int completionStatus) throws RuntimeException;
 }

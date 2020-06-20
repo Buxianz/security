@@ -34,7 +34,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class SafeAdministratorReviewController {
     @Autowired
     SafeAdministratorReviewService safeAdministratorReviewService;
-
+    /**
+     * 导出安全负责人复审名单
+     */
+    @RequestMapping("/exportAdminstratorReview")
+    public ResponseModel exportAdminstratorReview(@RequestBody JSONObject date){
+        try {
+            int completionStatus = date.getInteger("completionStatus");
+            return  ResponseModel.build("1000", "导出成功",null,safeAdministratorReviewService.exportAdminstratorReview(completionStatus));
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
     /**
      * 分页查看负责人、安全生产管理人员培训记录
      */
@@ -67,7 +78,7 @@ public class SafeAdministratorReviewController {
     }
 
     /**
-     * 完成复审
+     * 取消
      */
     @PostMapping("/cancel")
     public ResponseModel cancel(@RequestBody JSONObject json){

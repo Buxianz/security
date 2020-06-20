@@ -40,6 +40,10 @@ public class SafeTestPaper implements Serializable {
      */
     private String testPaperName;
     /**
+     * 考试须知
+     */
+    private String examNotes;
+    /**
      * 试卷的题目
      */
     private List<SafeTestQuestions> safeTestQuestionsList;

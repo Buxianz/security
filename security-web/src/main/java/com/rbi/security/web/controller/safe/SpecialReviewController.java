@@ -35,6 +35,18 @@ public class SpecialReviewController {
     @Autowired
     SpecialReviewService specialReviewService;
     /**
+     * 导出特种复审人员名单excel表
+     */
+    @RequestMapping("/exportSpecialReview")
+    public ResponseModel exportSpecialReview(@RequestBody JSONObject date){
+        try {
+            int completionStatus = date.getInteger("completionStatus");
+            return  ResponseModel.build("1000", "导出成功",null,specialReviewService.exportSpecialReview(completionStatus));
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
+    /**
      * 分页查看复审名单
      */
     @RequestMapping("/pagingSpecialReview")

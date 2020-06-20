@@ -1,6 +1,5 @@
 package com.rbi.security.web.service.imp;
 
-import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.safe.testpaper.SafeTestPaper;
 import com.rbi.security.entity.web.safe.testpaper.SafeTestQuestionOptions;
 import com.rbi.security.entity.web.safe.testpaper.SafeTestQuestions;
@@ -33,8 +32,8 @@ import java.util.List;
  * @PROJECT_NAME: security
  **/
 @Service
-public class TestQaperServiceImp implements TestPaperService {
-    private static final Logger logger = LoggerFactory.getLogger(TestQaperServiceImp.class);
+public class TestPaperServiceImp implements TestPaperService {
+    private static final Logger logger = LoggerFactory.getLogger(TestPaperServiceImp.class);
     @Autowired(required = false)
     SafeTestQaperDAO safeTestQaperDAO;
     /**

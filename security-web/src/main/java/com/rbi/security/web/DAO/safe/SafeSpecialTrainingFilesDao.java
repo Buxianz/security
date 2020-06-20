@@ -53,7 +53,7 @@ public interface SafeSpecialTrainingFilesDao {
      * @return 影响行数
      */
     @Insert("insert into safe_special_training_files (validity_period,id_card_no,company_personnel_id,type_of_work,operation_items,working_years,theoretical_achievements,actual_results," +
-            "operation_certificate_no,date_of_issue,one_review_results,years_of_work,one_review_time,tow_review_results,tow_review_time,three_review_results," +
+            "operation_certificate_no,date_of_issue,years_of_work,one_review_results,one_review_time,tow_review_results,tow_review_time,three_review_results," +
             "three_review_time,four_review_results,four_review_time,five_review_results,five_review_time,six_review_results,six_review_time," +
             "remarks,operating_staff,idt) values (#{validityPeriod},#{idCardNo},#{companyPersonnelId},#{typeOfWork},#{operationItems},#{workingYears},#{theoreticalAchievements},#{actualResults}," +
             "#{operationCertificateNo},#{dateOfIssue},#{yearsOfWork},#{oneReviewResults},#{oneReviewTime},#{towReviewResults},#{towReviewTime},#{threeReviewResults}," +
@@ -66,7 +66,7 @@ public interface SafeSpecialTrainingFilesDao {
     @Insert({
             "<script>",
             "insert into safe_special_training_files (validity_period,id_card_no,company_personnel_id,type_of_work,operation_items,working_years,theoretical_achievements,actual_results," +
-                    "operation_certificate_no,date_of_issue,one_review_results,years_of_work,one_review_time,tow_review_results,tow_review_time,three_review_results," +
+                    "operation_certificate_no,date_of_issue,years_of_work,one_review_results,one_review_time,tow_review_results,tow_review_time,three_review_results," +
                     "three_review_time,four_review_results,four_review_time,five_review_results,five_review_time,six_review_results,six_review_time," +
                     "remarks,operating_staff,idt) values <foreach collection='safes' item='item' index='index' separator=','>" +
                     "(#{item.validityPeriod},#{item.idCardNo},#{item.companyPersonnelId},#{item.typeOfWork},#{item.operationItems},#{item.workingYears},#{item.theoreticalAchievements},#{item.actualResults}," +

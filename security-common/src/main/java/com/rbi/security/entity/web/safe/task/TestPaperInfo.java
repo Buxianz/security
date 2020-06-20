@@ -30,4 +30,8 @@ public class TestPaperInfo {
     private String endTime;//结束考试时间
     private String duration;//考试时长
     private Integer personnelTrainingRecordId;//人员培训记录id
+    /**
+     * 考试须知
+     */
+    private String examNotes;
 }

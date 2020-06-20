@@ -65,41 +65,52 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void importSpecialTrainings(MultipartFile multipartFiles) throws RuntimeException{
           try{
-              List<SafeSpecialTrainingFiles> safes=new LinkedList<SafeSpecialTrainingFiles>();;
-              safes= ImportExcleFactory.getDate(multipartFiles.getInputStream(),safes,SafeSpecialTrainingFiles.class,columns,5,0);
-              Subject subject = SecurityUtils.getSubject();
-              String idt = LocalDateUtils.localDateTimeFormat(LocalDateTime.now(), LocalDateUtils.FORMAT_PATTERN);
-              /**
-               * 进行数据筛选，批量添加
-               */
-              for(int i=0;i<safes.size();){
-                  Integer companyPersonnelId = companyPersonnelDAO.getPersonnelByIdCardNo(safes.get(i).getIdCardNo());
-                  if (companyPersonnelId == null) {
-                      //公司人员信息不存在
-                      //删除此节点，放入导入记录
-                      safes.remove(i);
-                      continue;
+              int lastIndexOf = multipartFiles.getOriginalFilename().lastIndexOf(".");
+              //获取文件的后缀名 .xls
+              System.out.println(multipartFiles.getOriginalFilename());
+              String suffix = multipartFiles.getOriginalFilename().substring(lastIndexOf);
+              if(suffix.equals(".xls") || suffix.equals(".xlsx")) {
+                  List<SafeSpecialTrainingFiles> safes = new LinkedList<SafeSpecialTrainingFiles>();
+                  ;
+                  safes = ImportExcleFactory.getDate(multipartFiles, safes, SafeSpecialTrainingFiles.class, columns, 5, 0);
+                  Subject subject = SecurityUtils.getSubject();
+                  String idt = LocalDateUtils.localDateTimeFormat(LocalDateTime.now(), LocalDateUtils.FORMAT_PATTERN);
+                  /**
+                   * 进行数据筛选，批量添加
+                   */
+                  for (int i = 0; i < safes.size(); ) {
+                      Integer companyPersonnelId = companyPersonnelDAO.getPersonnelByIdCardNo(safes.get(i).getIdCardNo());
+                      if (companyPersonnelId == null) {
+                          //公司人员信息不存在
+                          //删除此节点，放入导入记录
+                          safes.remove(i);
+                          continue;
+                      }
+                      if (safeSpecialTrainingFilesDao.queryByIdCardNo(safes.get(i).getIdCardNo()) != null) {
+                          //导入数据重复
+                          //删除此节点，放入导入记录
+                          safes.remove(i);
+                          continue;
+                      }
+                      safes.get(i).setIdt(idt);
+                      safes.get(i).setCompanyPersonnelId(companyPersonnelId);
+                      safes.get(i).setOperatingStaff(((AuthenticationUserDTO) subject.getPrincipal()).getCompanyPersonnelId());
+                      safes.get(i).setValidityPeriod(3);
+                      i++;
                   }
-                  if (safeSpecialTrainingFilesDao.queryByIdCardNo(safes.get(i).getIdCardNo())!=null){
-                      //导入数据重复
-                      //删除此节点，放入导入记录
-                      safes.remove(i);
-                      continue;
+                  if (safes.size() != 0) {
+                      safeSpecialTrainingFilesDao.inserts(safes);
                   }
-                  safes.get(i).setIdt(idt);
-                  safes.get(i).setCompanyPersonnelId(companyPersonnelId);
-                  safes.get(i).setOperatingStaff(((AuthenticationUserDTO)subject.getPrincipal()).getCompanyPersonnelId());
-                  safes.get(i).setValidityPeriod(3);
-                  i++;
-              }
-              if(safes.size()!=0){
-                  safeSpecialTrainingFilesDao.inserts(safes);
+              }else {
+                  throw new RuntimeException("文件不是excel文件");
               }
           }catch (Exception e){
               logger.error("批量导入数据失败，异常为{}", e.getMessage());
               throw new RuntimeException(e.getMessage());
           }
     }
+
+
     /**
      * 增加特种培训记录
      */
@@ -189,34 +200,51 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
 
 
     /****************安全培训管理**谢青********************/
+    /**
+     * 文件导入安全培训  吴松达
+     * @param multipartFiles
+     * @throws RuntimeException
+     */
     @Override
+    public void importAdministratorTrains(MultipartFile multipartFiles) throws RuntimeException {
+           try{
+
+           }catch (Exception e){
+
+           }
+    }
+
+
+    @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public String insertAdministratorTrain(SafeAdministratorTrain safeAdministratorTrain) throws RuntimeException {
-         try{
-             Subject subject = SecurityUtils.getSubject();
-             AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-             Integer personnelId  =  currentUser.getCompanyPersonnelId();
-             SysCompanyPersonnel sysCompanyPersonnel = safeAdministratorTrainDAO.findPersonnelByIdCardNo(safeAdministratorTrain.getIdCardNo());
-             if (null == sysCompanyPersonnel){
-                 return "身份证不存在,此人不在公司人员信息表中";
-             }
-             safeAdministratorTrain.setCompanyPersonnelId(sysCompanyPersonnel.getId());
-             String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
-             safeAdministratorTrain.setOperatingStaff(personnelId);
-             safeAdministratorTrain.setIdt(idt);
-             safeAdministratorTrainDAO.add(safeAdministratorTrain);
-             return "1000";
-         }catch (Exception e){
-             logger.error("添加主要负责人/安全生产管理员培训台账失败，异常为{}",e);
-             throw new RuntimeException("添加主要负责人/安全生产管理员培训台账失败");
-         }
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = safeAdministratorTrainDAO.findPersonnelByIdCardNo(safeAdministratorTrain.getIdCardNo());
+        if (null == sysCompanyPersonnel){
+            return "身份证不存在,此人不在公司人员信息表中";
+        }
+        int num = safeAdministratorTrainDAO.findIdCardNoNum(safeAdministratorTrain.getIdCardNo());
+        if (num >= 1){
+            return "该员工信息以添加";
+        }
+        safeAdministratorTrain.setCompanyPersonnelId(sysCompanyPersonnel.getId());
+        String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
+        safeAdministratorTrain.setOperatingStaff(personnelId);
+        safeAdministratorTrain.setIdt(idt);
+        safeAdministratorTrainDAO.add(safeAdministratorTrain);
+        return "1000";
     }
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void deleteAdministratorTrain(Integer id) {
             safeAdministratorTrainDAO.deleteById(id);
     }
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void updateAdministratorTrain(SafeAdministratorTrain safeAdministratorTrain) {
         String udt = DateUtil.date(DateUtil.FORMAT_PATTERN);
         safeAdministratorTrain.setUdt(udt);

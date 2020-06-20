@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -48,7 +50,7 @@ import java.util.*;
 @Service
 public class HidDangerServiceImpl implements HidDangerService {
     @Value("${uploadfile.ip}")
-    private String fileIp;//此ip与此应用部署的服务区ip一致
+    private String fileIp;
     @Value("${hiddenPath}")
     private String hiddenPath;
 
@@ -56,6 +58,7 @@ public class HidDangerServiceImpl implements HidDangerService {
     HidDangerDAO hidDangerDAO;
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public String addReport(HidDangerDO hidDangerDO, MultipartFile[] beforeImg, MultipartFile[] afterImg, MultipartFile plan, MultipartFile report) throws IOException {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
@@ -68,7 +71,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerDO.setHidDangerCode(hidDangerCode);
             hidDangerDO.setCopyOrganizationId(123);
             hidDangerDO.setCopyOrganizationName("安防部");
-            hidDangerDO.setHidDangerType(1);
+            hidDangerDO.setHidDangerType("1");
             hidDangerDO.setIdt(idt);
             //排查前照片添加
             if (beforeImg.length > 6) {
@@ -215,20 +218,9 @@ public class HidDangerServiceImpl implements HidDangerService {
 
     }
 
-    @Override
-    public Map<String, Object> findAdmChoose(JSONArray array) {
-            Map<String,Object> map = new HashMap<>();
-            for (int i=0;i<array.size();i++){
-                System.out.println(array.get(i).toString());
-                JSONObject json = JSON.parseObject(array.get(i).toString());
-                String settingType = json.getString("settingType");
-                List<SystemSettingDTO> systemSettingDTOS = hidDangerDAO.findChoose(settingType);
-                map.put(settingType,systemSettingDTOS);
-            }
-            return map;
-    }
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public String addOrder(HidDangerDO hidDangerDO, MultipartFile[] beforeImg, MultipartFile notice) throws IOException {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
@@ -239,7 +231,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
             hidDangerDO.setCopyOrganizationId(123);
             hidDangerDO.setCopyOrganizationName("安防部");
-            hidDangerDO.setHidDangerType(2);
+            hidDangerDO.setHidDangerType("2");
             hidDangerDO.setIfRectificationPlan("无");
             hidDangerDO.setIfControlMeasures("无");
             String hidDangerCode = DateUtil.timeStamp();
@@ -488,7 +480,7 @@ public class HidDangerServiceImpl implements HidDangerService {
         String processingStatus =  hidDangerDO.getProcessingStatus();
         int index = hidDangerProcessDOS.size();
         JSONArray jsonArray = new JSONArray();
-        if (hidDangerDO.getHidDangerType()==1) {//上报整改
+        if (hidDangerDO.getHidDangerType().equals("1")) {//上报整改
             if (hidDangerProcessDOS.get(index-1).getCorrectorId().intValue() == personnelId.intValue()) {
                 if (processingStatus.equals("1")) {
                     JSONObject jsonObject1 = new JSONObject();
@@ -535,7 +527,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                 }
             }
         }
-        if (hidDangerDO.getHidDangerType()==2){//责令整改
+        if (hidDangerDO.getHidDangerType().equals("2")){//责令整改
             if (hidDangerProcessDOS.get(index-1).getCorrectorId().intValue() == personnelId.intValue()){
                 if (processingStatus.equals("2")){
                     JSONObject jsonObject1 = new JSONObject();
@@ -617,6 +609,7 @@ public class HidDangerServiceImpl implements HidDangerService {
     }
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public String complete(HidDangerDO hidDangerDO, MultipartFile[] beforeImg, MultipartFile[] afterImg, MultipartFile plan, MultipartFile report) throws IOException {
         if (hidDangerDO.getIfDeal().equals("否")){
             return "完成整改，请选择处理，并填写完整处理信息";
@@ -727,6 +720,7 @@ public class HidDangerServiceImpl implements HidDangerService {
     }
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void auditPass(String hidDangerCode, String rectificationEvaluate) {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
@@ -762,6 +756,7 @@ public class HidDangerServiceImpl implements HidDangerService {
     }
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void auditFalse(Integer type, String hidDangerCode, String rectificationEvaluate, Integer correctorId) {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
@@ -803,6 +798,7 @@ public class HidDangerServiceImpl implements HidDangerService {
 
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public String rectificationNotice(String hidDangerCode, String rectificationOpinions, String specifiedRectificationTime, Integer correctorId) {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
@@ -882,6 +878,7 @@ public class HidDangerServiceImpl implements HidDangerService {
     }
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public String report(String hidDangerCode) {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
@@ -950,5 +947,19 @@ public class HidDangerServiceImpl implements HidDangerService {
     @Override
     public void deletePicture(Integer id) {
         hidDangerDAO.deletePicture(id);
+    }
+
+
+    @Override
+    public Map<String, Object> findAdmChoose(JSONArray array) {
+        Map<String,Object> map = new HashMap<>();
+        for (int i=0;i<array.size();i++){
+            System.out.println(array.get(i).toString());
+            JSONObject json = JSON.parseObject(array.get(i).toString());
+            String settingType = json.getString("settingType");
+            List<SystemSettingDTO> systemSettingDTOS = hidDangerDAO.findChoose(settingType);
+            map.put(settingType,systemSettingDTOS);
+        }
+        return map;
     }
 }

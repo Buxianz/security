@@ -74,6 +74,10 @@ public class PagingSpecialTraining {
      */
     private String dateOfIssue;
     /**
+     * 工种年限
+     */
+    private String yearsOfWork;
+    /**
      * 第一次复审成绩
      */
     private String oneReviewResults;

@@ -32,6 +32,9 @@ public interface SafeAdministratorTrainDAO {
     @Select("select * from sys_company_personnel where sys_company_personnel.id_card_no = #{idCardNo}")
     SysCompanyPersonnel findPersonnelByIdCardNo(@Param("idCardNo") String idCardNo);
 
+    @Select("select count(*) from safe_administrator_train where id_card_no = #{idCardNo}")
+    int findIdCardNoNum(@Param("idCardNo") String idCardNo);
+
     @Insert("insert into safe_administrator_train (id_card_no,company_personnel_id,unit,date_of_issue,term_of_validity,type_of_certificate," +
             "one_training_time,two_training_time,three_training_time,remarks,operating_staff,idt) values (" +
             "#{idCardNo},#{companyPersonnelId},#{unit},#{dateOfIssue},#{termOfValidity},#{typeOfCertificate},#{oneTrainingTime}," +
@@ -78,4 +81,6 @@ public interface SafeAdministratorTrainDAO {
     @Select("select count(*) from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id " +
             "and safe_administrator_train.unit like ${value2}")
     int findByUnitNum(@Param("value2") String value2);
+
+
 }

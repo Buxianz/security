@@ -35,7 +35,7 @@ public class CompanyPersonnelServiceImpl implements CompanyPersonnelService {
     @Override
     public Map<String, Object> excelImport(MultipartFile file) {
         String currentTime = LocalDateUtils.localDateTimeFormat(LocalDateTime.now(),LocalDateUtils.FORMAT_PATTERN);
-        String columns[] = {"serialNumber","employeeNumber","organizationName","factory","workshop","team",
+        String columns[] = {"serialNumber","employeeNumber","organizationName","factoryName","workshopName","teamName",
                 "name","gender","nation","maritalStatus", "idCardNo","dateOfBirth","degreeOfEducation",
                 "position","jobNature","workType","entryTime","remarks"};
         List<Map<String,String>> mapList = ExcelPOI.getData(file,columns);
@@ -122,7 +122,7 @@ public class CompanyPersonnelServiceImpl implements CompanyPersonnelService {
                         importCompanyPersonnelLogDTO.setEmployeeNumber(employeeNumber);
                         importCompanyPersonnelLogDTO.setName(name);
                         importCompanyPersonnelLogDTO.setIdt(currentTime);
-                        importCompanyPersonnelLogDTO.setRemarks("第" + (i + 2)+"行，"+",导入失败！原因：匹配车间失败！");
+                        importCompanyPersonnelLogDTO.setRemarks("第" + (i + 2)+"行，"+",导入失败！原因：匹配班组失败！");
                         importCompanyPersonnelLogDTOS.add(importCompanyPersonnelLogDTO);
                         continue;
                     }
@@ -159,16 +159,12 @@ public class CompanyPersonnelServiceImpl implements CompanyPersonnelService {
                 sysCompanyPersonnel.setNation(nation);
                 sysCompanyPersonnel.setMaritalStatus(maritalStatus);
                 sysCompanyPersonnel.setIdCardNo(idCardNo);
-                if (StringUtils.isNotBlank(dateOfBirth)){
-                    sysCompanyPersonnel.setDateOfBirth((java.sql.Date) new Date(dateOfBirth));
-                }
+                sysCompanyPersonnel.setDateOfBirth(dateOfBirth);
                 sysCompanyPersonnel.setDegreeOfEducation(degreeOfEducation);
                 sysCompanyPersonnel.setPosition(position);
                 sysCompanyPersonnel.setJobNature(jobNature);
                 sysCompanyPersonnel.setWorkType(workType);
-                if (StringUtils.isNotBlank(entryTime)){
-                    sysCompanyPersonnel.setEntryTime((java.sql.Date) new Date(entryTime));
-                }
+                sysCompanyPersonnel.setEntryTime(entryTime);
                 sysCompanyPersonnel.setRemarks(remarks);
                 sysCompanyPersonnel.setIdt(currentTime);
                 sysCompanyPersonnel.setUdt(currentTime);

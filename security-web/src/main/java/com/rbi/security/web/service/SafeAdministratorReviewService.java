@@ -27,4 +27,6 @@ public interface SafeAdministratorReviewService {
     void review(SafeAdministratorReviewDTO safeAdministratorReviewDTO);
 
     void cancel(SafeAdministratorReviewDTO safeAdministratorReviewDTO);
+
+    String exportAdminstratorReview(int completionStatus) throws RuntimeException;
 }

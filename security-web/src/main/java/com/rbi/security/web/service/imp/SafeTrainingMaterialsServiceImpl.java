@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -45,13 +47,12 @@ import java.util.List;
  * @PROJECT_NAME: security
  **/
 
-//@ConfigurationProperties(prefix="path")
-//@Data
+
 @Service
 public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsService {
 
     @Value("${uploadfile.ip}")
-    private String fileIp;//此ip与此应用部署的服务区ip一致
+    private String fileIp;
     @Value("${hiddenPath}")
     private String hiddenPath;
 
@@ -62,6 +63,7 @@ public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsSe
 
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public String add(SafeTrainingMaterials safeTrainingMaterials, MultipartFile file) throws IOException {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
