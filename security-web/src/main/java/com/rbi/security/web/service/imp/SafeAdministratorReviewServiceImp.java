@@ -165,10 +165,10 @@ public class SafeAdministratorReviewServiceImp implements SafeAdministratorRevie
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         String time = DateUtil.date(DateUtil.FORMAT_PATTERN);
-
         safeAdministratorReviewDTO.setOperatingStaff(personnelId);
         safeAdministratorReviewDTO.setCompletionStatus(2);
         safeAdministratorReviewDTO.setProcessingTime(time);
         safeAdministratorReviewDAO.updateReview(safeAdministratorReviewDTO);
+//        System.out.println("dddddddddd"+10/0);
     }
 }
