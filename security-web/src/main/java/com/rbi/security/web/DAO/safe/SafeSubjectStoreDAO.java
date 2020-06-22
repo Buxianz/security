@@ -30,4 +30,7 @@ public interface SafeSubjectStoreDAO {
 
     @Delete("DELETE FROM safe_subject_store_type WHERE id = #{id}")
     void deleteSubjectStoreNameById(@Param("id") int id);
+
+    @Select("select safe_subject.subject_store_id from safe_subject WHERE safe_subject.subject_store_id= #{id}")
+    List<Integer> getSafeSubjectStoreIdById(@Param("id") int id);
 }

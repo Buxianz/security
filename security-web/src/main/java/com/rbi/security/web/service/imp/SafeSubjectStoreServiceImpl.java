@@ -54,6 +54,10 @@ public class SafeSubjectStoreServiceImpl implements SafeSubjectStoreService {
     public void updateSafeSubjectStore(SafeSubjectStore safeSubjectStore) {
 
         try {
+            SafeSubjectStore safeSubjectStoreOne = safeSubjectStoreDAO.getSafeSubjectStoreByName(safeSubjectStore.getSubjectStoreName());
+            if (safeSubjectStoreOne != null) {
+                throw new RepeatException("更新题库名称重复");
+            }
             if(safeSubjectStore.getSubjectStoreName().length() <= 0 || safeSubjectStore.getSubjectStoreName().contains(" ")){
                 throw new NonExistentException("题库输入不符合字符");
             }
@@ -73,8 +77,12 @@ public class SafeSubjectStoreServiceImpl implements SafeSubjectStoreService {
     public void deleteSafeSubjectStore(int id) {
 
         try {
-            if(safeSubjectStoreDAO.getSafeSubjectStoreById(id).length()<=0){
+            if(safeSubjectStoreDAO.getSafeSubjectStoreById(id) == null || safeSubjectStoreDAO.getSafeSubjectStoreById(id).length()<=0){
                 throw new NonExistentException("不存在当前删除数据");
+            }
+            List<Integer> a = safeSubjectStoreDAO.getSafeSubjectStoreIdById(id);
+            if ( !a.isEmpty()){
+                throw new RepeatException("题目表存在此字段，级联删除错误");
             }
             safeSubjectStoreDAO.deleteSubjectStoreNameById(id);
         } catch (Exception e) {
@@ -83,8 +91,6 @@ public class SafeSubjectStoreServiceImpl implements SafeSubjectStoreService {
         }
 
     }
-
-
 
 
 }
