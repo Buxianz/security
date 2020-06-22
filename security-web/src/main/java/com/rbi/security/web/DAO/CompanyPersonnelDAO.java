@@ -113,4 +113,9 @@ public interface CompanyPersonnelDAO {
      */
     @Select("SELECT `name` FROM sys_company_personnel where id in ${targetSet}")
     String[] getCompanyPersonneName(@Param("targetSet") String targetSet);
+    /**
+     * 根据身份证集合获取 信息
+     */
+    @Select({"<script> Select * FROM sys_company_personnel WHERE id_card_no in <foreach collection='idCardNos' index='index' item='item' open='(' separator=',' close=')'>#{item}</foreach> </script>"})
+    List<SysCompanyPersonnel> getCompanyPersonnelByIdCardNos(@Param("idCardNos") List<String> idCardNos);
 }
