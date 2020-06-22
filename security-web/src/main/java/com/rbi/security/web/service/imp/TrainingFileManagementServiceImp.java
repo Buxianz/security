@@ -1,6 +1,7 @@
 package com.rbi.security.web.service.imp;
 
 import com.rbi.security.entity.AuthenticationUserDTO;
+import com.rbi.security.entity.web.ImportFeedback;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrain;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrainDTO;
@@ -11,6 +12,7 @@ import com.rbi.security.exception.RepeatException;
 import com.rbi.security.tool.DateUtil;
 import com.rbi.security.tool.LocalDateUtils;
 import com.rbi.security.tool.PageData;
+import com.rbi.security.tool.StringUtils;
 import com.rbi.security.web.DAO.CompanyPersonnelDAO;
 import com.rbi.security.web.DAO.safe.SafeAdministratorTrainDAO;
 import com.rbi.security.web.DAO.safe.SafeSpecialTrainingFilesDao;
@@ -50,7 +52,7 @@ import java.util.List;
  **/
 @Service
 public class TrainingFileManagementServiceImp implements TrainingFileManagementService {
-    private static final String columns[] = {"no", "name", "gender", "idCardNo", "degreeOfEducation", "typeOfWork", "operationItems", "yearsOfWork", "workingYears", "theoreticalAchievements", "actualResults",
+    private static final String specialColumns[] = {"no", "name", "gender", "idCardNo", "degreeOfEducation", "typeOfWork", "operationItems", "yearsOfWork", "workingYears", "theoreticalAchievements", "actualResults",
             "operationCertificateNo", "dateOfIssue", "oneReviewResults", "oneReviewTime", "towReviewResults", "towReviewTime",
             "threeReviewResults", "threeReviewTime", "fourReviewResults", "fourReviewTime", "fiveReviewResults", "fiveReviewTime", "sixReviewResults", "sixReviewTime",
             "remarks"};
@@ -72,7 +74,7 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
               if(suffix.equals(".xls") || suffix.equals(".xlsx")) {
                   List<SafeSpecialTrainingFiles> safes = new LinkedList<SafeSpecialTrainingFiles>();
                   ;
-                  safes = ImportExcleFactory.getDate(multipartFiles, safes, SafeSpecialTrainingFiles.class, columns, 5, 0);
+                  safes = ImportExcleFactory.getDate(multipartFiles, safes, SafeSpecialTrainingFiles.class, specialColumns, 5, 0);
                   Subject subject = SecurityUtils.getSubject();
                   String idt = LocalDateUtils.localDateTimeFormat(LocalDateTime.now(), LocalDateUtils.FORMAT_PATTERN);
                   /**
@@ -202,15 +204,66 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
     /****************安全培训管理**谢青********************/
     /**
      * 文件导入安全培训  吴松达
-     * @param multipartFiles
+     * @param multipartFiles gender
      * @throws RuntimeException
      */
+    private static final String administratorColumns[] = {"no", "name", "idCardNo", "unit", "dateOfIssue", "termOfValidity", "gender", "degreeOfEducation", "typeOfCertificate",
+            "oneTrainingTime", "twoTrainingTime", "threeTrainingTime", "remarks"};
     @Override
     public void importAdministratorTrains(MultipartFile multipartFiles) throws RuntimeException {
            try{
-
+               ImportFeedback importFeedback=new ImportFeedback();
+               List<SafeAdministratorTrain> safeAdministratorTrainDTOList=null;
+               safeAdministratorTrainDTOList =(List<SafeAdministratorTrain>) ImportExcleFactory.getDate(multipartFiles, safeAdministratorTrainDTOList, SafeAdministratorTrain.class, administratorColumns, 1, 0);
+               Subject subject = SecurityUtils.getSubject();
+               AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+               String idt = LocalDateUtils.localDateTimeFormat(LocalDateTime.now(), LocalDateUtils.FORMAT_PATTERN);
+               List<String> idCardNos=new LinkedList<>();
+               for(int i=0;i<safeAdministratorTrainDTOList.size();){
+                   if(!StringUtils.isNotBlank(safeAdministratorTrainDTOList.get(i).getIdCardNo())){
+                       //说明第i+1个人员信息不完整
+                       // 1.存入日志文件
+                       //2.记录失败数
+                       importFeedback.failSizeIncrease(1);
+                       // 3.删除
+                       safeAdministratorTrainDTOList.remove(i);
+                       continue;
+                   }
+                   idCardNos.add(safeAdministratorTrainDTOList.get(i).getIdCardNo());
+                   safeAdministratorTrainDTOList.get(i).setOperatingStaff(currentUser.getCompanyPersonnelId());
+                   safeAdministratorTrainDTOList.get(i).setIdt(idt);
+                   i++;
+               }
+               List<SysCompanyPersonnel> sysCompanyPersonnels=null;
+               if(idCardNos.size()!=0)
+               sysCompanyPersonnels= companyPersonnelDAO.getCompanyPersonnelByIdCardNos(idCardNos);
+               for (int j=0;j<safeAdministratorTrainDTOList.size();){
+                   int i=0;
+                   for (;i<sysCompanyPersonnels.size();i++){
+                       if(sysCompanyPersonnels.get(i).getIdCardNo().equals(safeAdministratorTrainDTOList.get(j).getIdCardNo())){
+                           safeAdministratorTrainDTOList.get(j).setCompanyPersonnelId(sysCompanyPersonnels.get(i).getId());
+                           sysCompanyPersonnels.remove(i);
+                           break;
+                       }
+                   }
+                   if(i==sysCompanyPersonnels.size()){
+                       //说明第j+1个人员信息不在公司人员信息中
+                       // 1.存入日志文件
+                       //2.记录失败数
+                       importFeedback.failSizeIncrease(1);
+                       // 3.删除
+                       safeAdministratorTrainDTOList.remove(j);
+                   }else {
+                       j++;
+                   }
+               }
+               if(safeAdministratorTrainDTOList.size()!=0)
+                   safeAdministratorTrainDAO.adds(safeAdministratorTrainDTOList);
+               importFeedback.successSizeIncrease(safeAdministratorTrainDTOList.size());
+               System.out.println("导入成功");
            }catch (Exception e){
-
+               logger.error("批量导入数据失败，异常为{}", e.getMessage());
+               throw new RuntimeException(e.getMessage());
            }
     }
 

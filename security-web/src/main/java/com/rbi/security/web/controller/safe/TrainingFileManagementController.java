@@ -123,6 +123,7 @@ public class TrainingFileManagementController {
     @RequestMapping("/importAdministratorTrains")
     public ResponseModel importAdministratorTrains(MultipartFile multipartFiles) {
         try{
+            trainingFileManagementService.importAdministratorTrains(multipartFiles);
            return null;
         }catch (Exception e){
             return ResponseModel.build("1001", e.getMessage());

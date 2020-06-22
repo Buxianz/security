@@ -81,6 +81,17 @@ public interface SafeAdministratorTrainDAO {
     @Select("select count(*) from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id " +
             "and safe_administrator_train.unit like ${value2}")
     int findByUnitNum(@Param("value2") String value2);
-
-
+    /**
+     * 批量添加管理人员信息 吴松达
+     */
+    @Insert({
+            "<script>"+
+            "insert into safe_administrator_train (id_card_no,company_personnel_id,unit,date_of_issue,term_of_validity,type_of_certificate,one_training_time,two_training_time,three_training_time,remarks,operating_staff,idt) values " +
+                    "<foreach collection='safeAdministratorTrains' item='item' index='index' separator=','> " +
+                    "(#{item.idCardNo},#{item.companyPersonnelId},#{item.unit},#{item.dateOfIssue},#{item.termOfValidity}," +
+                    "#{item.typeOfCertificate},#{item.oneTrainingTime},#{item.twoTrainingTime},#{item.threeTrainingTime},#{item.remarks},#{item.operatingStaff},#{item.idt})" ,
+            "</foreach>"+
+            "</script>"
+    })
+    int adds(@Param("safeAdministratorTrains") List<SafeAdministratorTrain> safeAdministratorTrains);
 }
