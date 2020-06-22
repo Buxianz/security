@@ -71,6 +71,6 @@ public interface HealthProjectDAO {
             "            WHERE id = #{id}")
     void updateHealthPro(OccHealthProject occHealthProject);
 
-    @Delete("DELETE FROM occ_health_project WHERE id = #{id}")
-    void deleteHealthPro(@Param("id") int id);
+    @Delete("DELETE FROM occ_health_project WHERE id IN(${ids})")
+    void deleteHealthPro(@Param("ids") String ids);
 }

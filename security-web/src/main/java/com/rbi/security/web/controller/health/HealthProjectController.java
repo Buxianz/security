@@ -1,6 +1,7 @@
 package com.rbi.security.web.controller.health;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Joiner;
 import com.rbi.security.entity.web.health.OccHealthProject;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
@@ -8,6 +9,10 @@ import com.rbi.security.web.DAO.health.HealthProjectDAO;
 import com.rbi.security.web.service.HealthProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @ClassName HealthProjectController
@@ -61,8 +66,9 @@ public class HealthProjectController {
     @PostMapping("/delete")
     public ResponseModel deleteHealthPro(@RequestBody JSONObject jsonObject){
         try{
-            OccHealthProject occHealthProject = JSONObject.parseObject(jsonObject.toJSONString(),OccHealthProject.class);
-            healthProjectService.deleteHealthPro(occHealthProject.getId());
+            List<String> ids = new ArrayList<>(Arrays.asList(jsonObject.getString("ids").split(",")));
+            String idList = Joiner.on(",").join(ids).replaceAll("'","");
+            healthProjectService.deleteHealthPro(idList);
             return ResponseModel.build("1000","删除成功");
         }catch (Exception e){
             return ResponseModel.build("1001","删除失败",e.getMessage());

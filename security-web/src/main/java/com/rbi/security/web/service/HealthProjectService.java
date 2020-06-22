@@ -3,6 +3,8 @@ package com.rbi.security.web.service;
 import com.rbi.security.entity.web.health.OccHealthProject;
 import com.rbi.security.tool.PageData;
 
+import java.util.List;
+
 /**
  * @ClassName HealthProjectService
  * @Description TODO
@@ -19,6 +21,6 @@ public interface HealthProjectService {
 
     void updateHealthPro(OccHealthProject occHealthProject) throws RuntimeException;
 
-    void deleteHealthPro(int id) throws RuntimeException;
+    void deleteHealthPro(String ids) throws RuntimeException;
 
 }

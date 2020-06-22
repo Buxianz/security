@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -87,12 +86,13 @@ public class HealthProjectServiceImpl implements HealthProjectService {
     }
 
     @Override
-    public void deleteHealthPro(int id) throws RuntimeException {
+    public void deleteHealthPro(String ids) throws RuntimeException {
         try{
-            if (Objects.isNull(healthProjectDAO.getOneHealthProById(id))){
+            if (Objects.isNull(ids))
+            {
                 throw new NonExistentException("不存在当前删除数据");
             }
-            healthProjectDAO.deleteHealthPro(id);
+            healthProjectDAO.deleteHealthPro(ids);
         }catch (Exception e){
             logger.error("删除职业健康三同时失败",e);
             throw new RuntimeException("删除职业健康三同时失败");
