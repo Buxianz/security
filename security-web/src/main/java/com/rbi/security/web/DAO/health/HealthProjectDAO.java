@@ -44,8 +44,8 @@ public interface HealthProjectDAO {
             "#{healthProjectResultTime},#{healthProjectResultOrganization},#{healthProjectResultConclusion})")
     void insertHealthPro(OccHealthProject occHealthProject);
 
-    @Select("SELECT * FROM occ_health_project WHERE health_project_name = #{healthProjectName}")
-    OccHealthProject getOneHealthProByName(@Param("healthProjectName") String healthProjectName);
+    @Select("SELECT health_project_name FROM occ_health_project WHERE health_project_name = #{healthProjectName}")
+    String getOneHealthProByName(@Param("healthProjectName") String healthProjectName);
 
     @Select("SELECT health_project_name FROM occ_health_project WHERE id = #{id}")
     OccHealthProject getOneHealthProById(@Param("id") int id);

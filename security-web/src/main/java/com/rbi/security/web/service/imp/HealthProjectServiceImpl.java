@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -55,8 +56,8 @@ public class HealthProjectServiceImpl implements HealthProjectService {
             if (Objects.isNull(occHealthProject)||occHealthProject.getHealthProjectName().length()<=0){
                 throw new NonExistentException("传入occHealthProject对象为空");
             }
-            OccHealthProject occHealthProjectOne = healthProjectDAO.getOneHealthProByName(occHealthProject.getHealthProjectName());
-            if (Objects.isNull(occHealthProjectOne) || occHealthProjectOne.getHealthProjectName().length()<=0){
+            String occHealthProjectNameOne = healthProjectDAO.getOneHealthProByName(occHealthProject.getHealthProjectName());
+            if (Objects.isNull(occHealthProjectNameOne)){
                 healthProjectDAO.insertHealthPro(occHealthProject);
             }else {
                 throw new RepeatException("添加重复");
@@ -70,9 +71,8 @@ public class HealthProjectServiceImpl implements HealthProjectService {
     @Override
     public void updateHealthPro(OccHealthProject occHealthProject) throws RuntimeException {
         try{
-            OccHealthProject occHealthProjectOne = healthProjectDAO.getOneHealthProByName(occHealthProject.getHealthProjectName());
-            if (!occHealthProject.getId().equals(occHealthProjectOne.getId()) &&
-                    occHealthProject.getHealthProjectName()==occHealthProjectOne.getHealthProjectName()){
+            String occHealthProjectNameOne = healthProjectDAO.getOneHealthProByName(occHealthProject.getHealthProjectName());
+            if ( !Objects.isNull(occHealthProjectNameOne)){
                 throw new RepeatException("更新职业健康三同时重复");
             }
             if (healthProjectDAO.getOneHealthProById(occHealthProject.getId()) != null){
