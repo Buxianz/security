@@ -1,5 +1,6 @@
 package com.rbi.security.web.DAO;
 
+import com.rbi.security.entity.web.SeriousDanger.PagingSeriousDanger;
 import com.rbi.security.entity.web.entity.SeriousDanger;
 import org.apache.ibatis.annotations.*;
 
@@ -12,7 +13,7 @@ public interface SeriousDangerDAO {
      * 根据serious_danger_name分页获取
      */
     @Select("select * from serious_danger where serious_danger_name=#{seriousDangerName} limit #{pageNo},#{pageSize}")
-    List<SeriousDanger> findSeriousDangerByPageAndName(@Param("seriousDangerName") String seriousDangerName,
+    List<PagingSeriousDanger> findSeriousDangerByPageAndName(@Param("seriousDangerName") String seriousDangerName,
                                                        @Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
     @Select("select count(id) from serious_danger where serious_danger_name=#{seriousDangerName}")
     int findNumSeriousDangerByName(@Param("seriousDangerName") String seriousDangerName);
@@ -21,12 +22,12 @@ public interface SeriousDangerDAO {
      * 根据serious_danger_name分页获取
      */
     @Select("select * from serious_danger where id=#{id}")
-    SeriousDanger findSeriousDangerByID(@Param("id") Integer id);
+    PagingSeriousDanger findSeriousDangerByID(@Param("id") Integer id);
     /**
      * 分页获取
      */
     @Select("select * from serious_danger limit #{pageNo},#{pageSize}")
-    List<SeriousDanger> findSeriousDangerByPage(@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
+    List<PagingSeriousDanger> findSeriousDangerByPage(@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
     @Select("select count(id) from serious_danger")
     int findNumSeriousDanger();
 

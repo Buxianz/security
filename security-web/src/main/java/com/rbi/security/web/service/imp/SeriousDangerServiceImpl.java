@@ -72,7 +72,7 @@ public class SeriousDangerServiceImpl implements SeriousDangerService {
                         String newFileName = timestamps + new Random().nextInt() + ".jpg";
                         FileUtils.copyInputStreamToFile(seriousDangerPicture[i].getInputStream(), new File(seriousDangerPath, newFileName));
                         seriousDangerPicture1.setSeriousDangerId(seriousDanger.getId());
-                        seriousDangerPicture1.setSeriousDangerPicturePath(fileIp + seriousDangerPath + newFileName);
+                        seriousDangerPicture1.setSeriousDangerPicturePath(seriousDangerPath + newFileName);
                         seriousDangerPictureDAO.insertSeriousDangerPicture(seriousDangerPicture1);
                     }
                 }
@@ -91,14 +91,22 @@ public class SeriousDangerServiceImpl implements SeriousDangerService {
             int pageNo = json.getInteger("pageNo");
             int pageSize = json.getInteger("pageSize");
             int recNo = pageSize * (pageNo - 1);
-            List<SeriousDanger> seriousDangerList = seriousDangerDAO.findSeriousDangerByPage(recNo, pageSize);
+            List<PagingSeriousDanger> pagingSeriousDangerList = seriousDangerDAO.findSeriousDangerByPage(recNo, pageSize);
+            for (int j=0;j<pagingSeriousDangerList.size();j++) {
+                Integer Id = pagingSeriousDangerList.get(j).getId();
+                List<SeriousDangerPicture> seriousDangerPictureList = seriousDangerPictureDAO.findSeriousDangerPictureByPageAndSeriousDangerId(Id);
+                for (int i = 0; i < seriousDangerPictureList.size(); i++) {
+                    seriousDangerPictureList.get(i).setSeriousDangerPicturePath(fileIp + seriousDangerPictureList.get(i).getSeriousDangerPicturePath());
+                }
+                pagingSeriousDangerList.get(j).setSeriousDangerPictureList(seriousDangerPictureList);
+            }
             count = seriousDangerDAO.findNumSeriousDanger();
             if (count % pageSize == 0) {
                 totalPage = count / pageSize;
             } else {
                 totalPage = count / pageSize + 1;
             }
-            return new PageData(pageNo, pageSize, totalPage, count, seriousDangerList);
+            return new PageData(pageNo, pageSize, totalPage, count, pagingSeriousDangerList);
         } catch (Exception e) {
             logger.error("查询信息异常，异常信息为{}", e);
             throw new RuntimeException(e.getMessage());
@@ -113,14 +121,22 @@ public class SeriousDangerServiceImpl implements SeriousDangerService {
             int pageNo = json.getInteger("pageNo");
             int pageSize = json.getInteger("pageSize");
             int recNo = pageSize * (pageNo - 1);
-            List<SeriousDanger> seriousDangerList = seriousDangerDAO.findSeriousDangerByPageAndName(json.getString("seriousDangerName"),recNo, pageSize);
+            List<PagingSeriousDanger> pagingSeriousDangerList = seriousDangerDAO.findSeriousDangerByPageAndName(json.getString("seriousDangerName"),recNo, pageSize);
+            for (int j=0;j<pagingSeriousDangerList.size();j++) {
+                Integer Id = pagingSeriousDangerList.get(j).getId();
+                List<SeriousDangerPicture> seriousDangerPictureList = seriousDangerPictureDAO.findSeriousDangerPictureByPageAndSeriousDangerId(Id);
+                for (int i = 0; i < seriousDangerPictureList.size(); i++) {
+                    seriousDangerPictureList.get(i).setSeriousDangerPicturePath(fileIp + seriousDangerPictureList.get(i).getSeriousDangerPicturePath());
+                }
+                pagingSeriousDangerList.get(j).setSeriousDangerPictureList(seriousDangerPictureList);
+            }
             count = seriousDangerDAO.findNumSeriousDangerByName(json.getString("seriousDangerName"));
             if (count % pageSize == 0) {
                 totalPage = count / pageSize;
             } else {
                 totalPage = count / pageSize + 1;
             }
-            return new PageData(pageNo, pageSize, totalPage, count, seriousDangerList);
+            return new PageData(pageNo, pageSize, totalPage, count, pagingSeriousDangerList);
         } catch (Exception e) {
             logger.error("查询信息异常，异常信息为{}", e);
             throw new RuntimeException(e.getMessage());
@@ -129,19 +145,20 @@ public class SeriousDangerServiceImpl implements SeriousDangerService {
 
     @Override
     public PagingSeriousDanger findSeriousDangerByID(JSONObject json) throws IOException {
-        SeriousDanger seriousDanger = seriousDangerDAO.findSeriousDangerByID(json.getInteger("id"));
-        PagingSeriousDanger pagingSeriousDanger = new PagingSeriousDanger();
-        pagingSeriousDanger.setSeriousDanger(seriousDanger);
+        PagingSeriousDanger pagingSeriousDanger = seriousDangerDAO.findSeriousDangerByID(json.getInteger("id"));
         List<SeriousDangerPicture> seriousDangerPictureList = seriousDangerPictureDAO.findSeriousDangerPictureByPageAndSeriousDangerId(json.getInteger("id"));
+        for (int i=0;i<seriousDangerPictureList.size();i++){
+            seriousDangerPictureList.get(i).setSeriousDangerPicturePath(fileIp +seriousDangerPictureList.get(i).getSeriousDangerPicturePath());
+        }
         pagingSeriousDanger.setSeriousDangerPictureList(seriousDangerPictureList);
         return pagingSeriousDanger;
     }
 
     @Override
-    public String updateSeriousDanger(SeriousDanger seriousDanger, MultipartFile[] seriousDangerPicture) throws IOException {
+    public String updateSeriousDanger(SeriousDanger seriousDanger,Integer pictureId, MultipartFile[] seriousDangerPicture) throws IOException {
         try {
-            seriousDangerPictureDAO.deleteSeriousDangerPicture(seriousDanger.getId());
-            if (seriousDangerPictureDAO.findSeriousDangerPictureByPageAndSeriousDangerId(seriousDanger.getId()).isEmpty()) {
+            seriousDangerPictureDAO.deleteSeriousDangerPicture(pictureId);
+            if (seriousDangerPictureDAO.findSeriousDangerPictureByPageAndSeriousDangerId(pictureId).isEmpty()) {
                 seriousDangerDAO.updateSeriousDanger(seriousDanger);
                 if (seriousDangerPicture.length > 6) {
                     return "照片数量不能大于6张";
@@ -154,7 +171,7 @@ public class SeriousDangerServiceImpl implements SeriousDangerService {
                             String newFileName = timestamps + new Random().nextInt() + ".jpg";
                             FileUtils.copyInputStreamToFile(seriousDangerPicture[i].getInputStream(), new File(seriousDangerPath, newFileName));
                             seriousDangerPicture1.setSeriousDangerId(seriousDanger.getId());
-                            seriousDangerPicture1.setSeriousDangerPicturePath(fileIp + seriousDangerPath + newFileName);
+                            seriousDangerPicture1.setSeriousDangerPicturePath(seriousDangerPath + newFileName);
                             seriousDangerPictureDAO.insertSeriousDangerPicture(seriousDangerPicture1);
                         }
                     }

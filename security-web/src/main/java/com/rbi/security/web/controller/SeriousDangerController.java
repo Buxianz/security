@@ -102,9 +102,9 @@ public class SeriousDangerController {
      * 修改重大危险源
      **/
     @PostMapping("/updateSeriousDanger")
-    public ResponseModel updateSeriousDanger(SeriousDanger seriousDanger, @RequestParam(value="seriousDangerPicture",required=false) MultipartFile[] seriousDangerPicture){
+    public ResponseModel updateSeriousDanger(SeriousDanger seriousDanger,Integer pictureId, @RequestParam(value="seriousDangerPicture",required=false) MultipartFile[] seriousDangerPicture){
         try {
-            String result = seriousDangerService.updateSeriousDanger(seriousDanger,seriousDangerPicture);
+            String result = seriousDangerService.updateSeriousDanger(seriousDanger,pictureId,seriousDangerPicture);
             if(result.equals("1000")){
                 return ResponseModel.build("1000","修改成功！");
             }else {

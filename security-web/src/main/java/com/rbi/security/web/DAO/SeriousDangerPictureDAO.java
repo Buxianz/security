@@ -23,6 +23,6 @@ public interface SeriousDangerPictureDAO {
     /**
      * 根据id修改
      */
-    @Update(value = "delete from serious_danger_picture where serious_danger_id=#{seriousDangerId}")
-    void deleteSeriousDangerPicture(@Param("seriousDangerId") Integer seriousDangerId);
+    @Update(value = "delete from serious_danger_picture where id=#{pictureId}")
+    void deleteSeriousDangerPicture(@Param("pictureId") Integer pictureId);
 }
