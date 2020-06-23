@@ -46,4 +46,6 @@ public interface OccStatusEvaluationDAO {
     @Update("update occ_status_evaluation set annex = '' where id =#{id}")
     void updateAnnex(Integer id);
 
+    @Select("select annex from occ_status_evaluation where id = #{id}")
+    String findAnnex(Integer id);
 }

@@ -169,6 +169,5 @@ public class SafeAdministratorReviewServiceImp implements SafeAdministratorRevie
         safeAdministratorReviewDTO.setCompletionStatus(2);
         safeAdministratorReviewDTO.setProcessingTime(time);
         safeAdministratorReviewDAO.updateReview(safeAdministratorReviewDTO);
-//        System.out.println("dddddddddd"+10/0);
     }
 }

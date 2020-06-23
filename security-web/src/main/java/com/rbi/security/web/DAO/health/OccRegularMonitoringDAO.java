@@ -45,4 +45,7 @@ public interface OccRegularMonitoringDAO {
 
     @Update("update occ_regular_monitoring set annex = '' where id =#{id}")
     void updateAnnex(Integer id);
+
+    @Select("select annex from occ_regular_monitoring where id = #{id}")
+    String findAnnex(Integer id);
 }

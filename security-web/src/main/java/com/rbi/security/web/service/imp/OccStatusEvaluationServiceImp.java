@@ -90,7 +90,8 @@ public class OccStatusEvaluationServiceImp implements OccStatusEvaluationService
             String newFileName = timestamps + filename;
             FileUtils.copyInputStreamToFile(file.getInputStream(), new File(hiddenPath, newFileName));
             occStatusEvaluation.setAnnex(hiddenPath+newFileName);
-            System.out.println("dddddddddddddddd"+occStatusEvaluation.getAnnex());
+        }else {
+            occStatusEvaluation.setAnnex(occStatusEvaluationDAO.findAnnex(occStatusEvaluation.getId()));
         }
         occStatusEvaluationDAO.update(occStatusEvaluation);
     }

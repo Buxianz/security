@@ -94,7 +94,8 @@ public class OccRegularMonitoringServiceImp implements OccRegularMonitoringServi
             String newFileName = timestamps + filename;
             FileUtils.copyInputStreamToFile(file.getInputStream(), new File(hiddenPath, newFileName));
             occRegularMonitoring.setAnnex(hiddenPath+newFileName);
-            System.out.println("dddddddddddddddd"+occRegularMonitoring.getAnnex());
+        }else {
+            occRegularMonitoring.setAnnex(occRegularMonitoringDAO.findAnnex(occRegularMonitoring.getId()));
         }
         occRegularMonitoringDAO.update(occRegularMonitoring);
     }

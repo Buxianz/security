@@ -65,6 +65,11 @@ public interface SafeAdministratorReviewDAO {
             "id = #{id}")
     void updateReview(SafeAdministratorReviewDTO safeAdministratorReviewDTO);
 
+    @Update("update safe_administrator_review set operating_staff = #{operatingStaff},processing_time = #{processingTime}," +
+            "reason_for_handling = #{reasonForHandling},completion_status = #{completionStatus} where " +
+            "id = #{id}")
+    void updateReview2(String operatingStaff,String processingTime,String reasonForHandling,String completionStatus,int id);
+
     @Update("update safe_administrator_train set one_training_time = #{oneTrainingTime},two_training_time = #{twoTrainingTime}," +
             "three_training_time = #{threeTrainingTime} where id = #{safeAdministratorId}")
     void updateFile(SafeAdministratorReviewDTO safeAdministratorReviewDTO);
