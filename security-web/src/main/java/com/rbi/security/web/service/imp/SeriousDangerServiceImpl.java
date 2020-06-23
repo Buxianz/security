@@ -160,13 +160,14 @@ public class SeriousDangerServiceImpl implements SeriousDangerService {
     @Override
     public String updateSeriousDanger(SeriousDanger seriousDanger,Integer[] pictureId, MultipartFile[] seriousDangerPicture) throws IOException {
         try {
-            for (int j=0;j<pictureId.length;){
+            for (int j=0;j<pictureId.length;) {
                 seriousDangerPictureDAO.deleteSeriousDangerPicture(pictureId[j]);
-                if (seriousDangerPictureDAO.findSeriousDangerPictureByPageAndSeriousDangerId(pictureId[j]).isEmpty()){
+                if (seriousDangerPictureDAO.findSeriousDangerPictureByPageAndSeriousDangerId(pictureId[j]).isEmpty()) {
                     j++;
-            }else {
-                    return pictureId[j]+"删除失败！";
+                } else {
+                    return pictureId[j] + "删除失败！";
                 }
+            }
                 seriousDangerDAO.updateSeriousDanger(seriousDanger);
                 if (seriousDangerPicture.length > 6) {
                     return "照片数量不能大于6张";
@@ -184,7 +185,6 @@ public class SeriousDangerServiceImpl implements SeriousDangerService {
                         }
                     }
                 }
-            }
             return "1000";
         } catch (NumberFormatException e) {
             return "数据格式错误";

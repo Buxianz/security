@@ -1,5 +1,16 @@
 package com.rbi.security.web.service.imp;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.rbi.security.entity.web.health.OccHealthMaintain;
+import com.rbi.security.tool.PageData;
+import com.rbi.security.web.DAO.health.OccHealthMaintainDAO;
+import com.rbi.security.web.service.OccHealthMaintainService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 /**
  * @PACKAGE_NAME: com.rbi.security.web.service.imp
  * @NAME: OccHealthMaintainServiceImpl
@@ -17,5 +28,64 @@ package com.rbi.security.web.service.imp;
  * @MINUTE: 37
  * @PROJECT_NAME: security
  **/
-public class OccHealthMaintainServiceImpl {
+@Service
+public class OccHealthMaintainServiceImpl implements OccHealthMaintainService {
+    @Autowired(required = false)
+    OccHealthMaintainDAO occHealthMaintainDAO;
+
+
+    @Override
+    public PageData findOccHealthMaintainByPage(JSONObject json) {
+        int pageNo = json.getInteger("pageNo");
+        int pageSize = json.getByteValue("pageSize");
+        int recNo = pageSize * (pageNo - 1);
+        int totalPage = 0;
+        List<OccHealthMaintain> occHealthMaintainList =occHealthMaintainDAO.findOccHealthMaintainByPage(recNo, pageSize);
+        int count =occHealthMaintainDAO.findNumOccHealthMaintain();
+        if (0 == count % pageSize) {
+            totalPage = count / pageSize;
+        } else {
+            totalPage = count / pageSize + 1;
+        }
+        return new PageData(pageNo, pageSize, totalPage, count, occHealthMaintainList);
+    }
+
+    @Override
+    public OccHealthMaintain findOccHealthMaintainById(JSONObject json) {
+        OccHealthMaintain occHealthMaintain=occHealthMaintainDAO.findOccHealthMaintainById(json.getInteger("id"));
+        return occHealthMaintain;
+    }
+
+    @Override
+    public void insertOccHealthMaintain(JSONObject json) {
+        OccHealthMaintain occHealthMaintain= JSONObject.parseObject(json.toJSONString(), OccHealthMaintain.class);
+        occHealthMaintainDAO.insertOccHealthMaintain(occHealthMaintain);
+    }
+
+    @Override
+    public String deleteOccHealthMaintain(JSONArray result) {
+        String reT=null;
+        for (int i=0;i<result.size();i++) {
+            JSONObject jsonObject = (JSONObject) JSONObject.toJSON(result.get(i));
+            Integer Id = jsonObject.getInteger("id");
+            if (occHealthMaintainDAO.findOccHealthMaintainById(Id)!=null){
+                occHealthMaintainDAO.deleteOccHealthMaintain(Id);
+                reT="1000";
+            }else {
+                return String.valueOf(Id);
+            }
+        }
+        return reT;
+    }
+
+    @Override
+    public String updateOccHealthMaintain(JSONObject json) {
+        OccHealthMaintain occHealthMaintain= JSONObject.parseObject(json.toJSONString(), OccHealthMaintain.class);
+        if (occHealthMaintainDAO.findOccHealthMaintainById(occHealthMaintain.getId())!=null) {
+            occHealthMaintainDAO.updateOccHealthMaintain(occHealthMaintain);
+            return "1000";
+        }else {
+            return "1006";
+        }
+    }
 }
