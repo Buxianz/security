@@ -18,5 +18,5 @@ public interface SeriousDangerService {
 
     PagingSeriousDanger findSeriousDangerByID(JSONObject json) throws IOException;
 
-    String updateSeriousDanger(SeriousDanger seriousDanger,Integer pictureId, MultipartFile[] seriousDangerPicture) throws IOException;
+    String updateSeriousDanger(SeriousDanger seriousDanger,Integer[] pictureId, MultipartFile[] seriousDangerPicture) throws IOException;
 }

@@ -1,6 +1,8 @@
 package com.rbi.security.web.service.imp;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Joiner;
 import com.rbi.security.entity.web.SeriousDanger.PagingSeriousDanger;
 import com.rbi.security.entity.web.entity.SafeSubject;
 import com.rbi.security.entity.web.entity.SeriousDanger;
@@ -22,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -155,10 +158,15 @@ public class SeriousDangerServiceImpl implements SeriousDangerService {
     }
 
     @Override
-    public String updateSeriousDanger(SeriousDanger seriousDanger,Integer pictureId, MultipartFile[] seriousDangerPicture) throws IOException {
+    public String updateSeriousDanger(SeriousDanger seriousDanger,Integer[] pictureId, MultipartFile[] seriousDangerPicture) throws IOException {
         try {
-            seriousDangerPictureDAO.deleteSeriousDangerPicture(pictureId);
-            if (seriousDangerPictureDAO.findSeriousDangerPictureByPageAndSeriousDangerId(pictureId).isEmpty()) {
+            for (int j=0;j<pictureId.length;){
+                seriousDangerPictureDAO.deleteSeriousDangerPicture(pictureId[j]);
+                if (seriousDangerPictureDAO.findSeriousDangerPictureByPageAndSeriousDangerId(pictureId[j]).isEmpty()){
+                    j++;
+            }else {
+                    return pictureId[j]+"删除失败！";
+                }
                 seriousDangerDAO.updateSeriousDanger(seriousDanger);
                 if (seriousDangerPicture.length > 6) {
                     return "照片数量不能大于6张";
