@@ -43,4 +43,11 @@ public interface OccHealthEndangerDAO {
 
     @Delete("delete from occ_health_endanger where id=#{id}")
     void deleteOccHealthEndanger(@Param("id") Integer id);
+
+
+    /**
+     * 根据职业病危害名称（代码）获取
+     */
+    @Select("select * from occ_health_endanger where health_endanger_name=#{healthEndangerName}")
+    OccHealthEndanger findOccHealthEndangerByHealthEndangerName(@Param("healthEndangerName") String healthEndangerName);
 }

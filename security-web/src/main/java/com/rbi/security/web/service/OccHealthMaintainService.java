@@ -20,7 +20,7 @@ public interface OccHealthMaintainService {
     /**
      * 添加
      */
-    void insertOccHealthMaintain(JSONObject json);
+    String insertOccHealthMaintain(JSONObject json);
 
     /**
      * 删除

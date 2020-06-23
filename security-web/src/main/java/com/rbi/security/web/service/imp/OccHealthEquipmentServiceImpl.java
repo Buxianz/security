@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @PACKAGE_NAME: com.rbi.security.web.service.imp
@@ -56,9 +57,14 @@ public class OccHealthEquipmentServiceImpl implements OccHealthEquipmentService 
     }
 
     @Override
-    public void insertOccHealthEquipment(JSONObject json) {
-        OccHealthEquipment occHealthEquipment= JSONObject.parseObject(json.toJSONString(), OccHealthEquipment.class);
-        occHealthEquipmentDAO.insertOccHealthEquipment(occHealthEquipment);
+    public String insertOccHealthEquipment(JSONObject json) {
+        if (Objects.isNull(occHealthEquipmentDAO.findOccHealthEquipmentByHealthEquipmentName(json.getString("healthEquipmentName")))) {
+            OccHealthEquipment occHealthEquipment = JSONObject.parseObject(json.toJSONString(), OccHealthEquipment.class);
+            occHealthEquipmentDAO.insertOccHealthEquipment(occHealthEquipment);
+            return "1000";
+        }else {
+            return "1001";
+        }
     }
 
     @Override

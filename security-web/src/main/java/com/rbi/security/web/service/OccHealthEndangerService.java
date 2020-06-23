@@ -19,7 +19,7 @@ public interface OccHealthEndangerService {
     /**
      * 添加
      */
-    void insertOccHealthEndanger(JSONObject json);
+    String insertOccHealthEndanger(JSONObject json);
 
     /**
      * 删除

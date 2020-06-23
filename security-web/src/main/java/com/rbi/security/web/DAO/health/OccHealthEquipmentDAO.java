@@ -40,4 +40,10 @@ public interface OccHealthEquipmentDAO {
 
     @Delete("delete from occ_health_equipment where id=#{id}")
     void deleteOccHealthEquipment(@Param("id") Integer id);
+
+    /**
+     * 根据设施名称获取
+     */
+    @Select("select * from occ_health_equipment where health_equipment_name=#{healthEquipmentName}")
+    OccHealthEquipment findOccHealthEquipmentByHealthEquipmentName(@Param("healthEquipmentName") String healthEquipmentName);
 }

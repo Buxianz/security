@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @PACKAGE_NAME: com.rbi.security.web.service.imp
@@ -58,9 +59,14 @@ public class OccHealthEndangerServiceImpl implements OccHealthEndangerService {
     }
 
     @Override
-    public void insertOccHealthEndanger(JSONObject json) {
-        OccHealthEndanger occHealthEndanger= JSONObject.parseObject(json.toJSONString(), OccHealthEndanger.class);
-        occHealthEndangerDAO.insertOccHealthEndanger(occHealthEndanger);
+    public String insertOccHealthEndanger(JSONObject json) {
+        if (Objects.isNull(occHealthEndangerDAO.findOccHealthEndangerByHealthEndangerName(json.getString("healthEndangerName")))) {
+            OccHealthEndanger occHealthEndanger = JSONObject.parseObject(json.toJSONString(), OccHealthEndanger.class);
+            occHealthEndangerDAO.insertOccHealthEndanger(occHealthEndanger);
+            return "1000";
+        }else {
+            return "1001";
+        }
     }
 
     @Override

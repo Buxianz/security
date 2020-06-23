@@ -84,8 +84,12 @@ public class OccHealthEquipmentController {
     @RequestMapping(value = "/insertOccHealthEquipment", method = RequestMethod.POST)
     public ResponseModel insertOccHealthEquipment(@RequestBody JSONObject json) {
         try {
-            occHealthEquipmentService.insertOccHealthEquipment(json);
-            return ResponseModel.build("1000", "添加成功");
+            String i=occHealthEquipmentService.insertOccHealthEquipment(json);
+            if (i.equals("1000")) {
+                return ResponseModel.build("1000", "添加成功");
+            }else {
+                return ResponseModel.build("1001", "设施名称不可重复！添加失败");
+            }
         } catch (Exception e) {
             logger.error("添加异常，ERROR：{}", e);
             return ResponseModel.build("1001", "服务器处理异常");

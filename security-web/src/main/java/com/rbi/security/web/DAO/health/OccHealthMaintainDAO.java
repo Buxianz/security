@@ -40,4 +40,10 @@ public interface OccHealthMaintainDAO {
 
     @Delete("delete from occ_health_maintain where id=#{id}")
     void deleteOccHealthMaintain(@Param("id") Integer id);
+
+    /**
+     * 根据防护设备名称获取
+     */
+    @Select("select * from occ_health_maintain where health_maintain_name=#{healthMaintainName}")
+    OccHealthMaintain findOccHealthMaintainByHealthMaintainName(@Param("healthMaintainName") String healthMaintainName);
 }
