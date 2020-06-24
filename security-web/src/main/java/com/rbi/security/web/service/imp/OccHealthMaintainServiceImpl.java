@@ -88,6 +88,12 @@ public class OccHealthMaintainServiceImpl implements OccHealthMaintainService {
     public String updateOccHealthMaintain(JSONObject json) {
         OccHealthMaintain occHealthMaintain= JSONObject.parseObject(json.toJSONString(), OccHealthMaintain.class);
         if (occHealthMaintainDAO.findOccHealthMaintainById(occHealthMaintain.getId())!=null) {
+            if (!Objects.isNull(occHealthMaintainDAO.findOccHealthMaintainByHealthMaintainName(occHealthMaintain.getHealthMaintainName()))){
+                if (occHealthMaintain.getId()!=occHealthMaintainDAO.findOccHealthMaintainByHealthMaintainName(occHealthMaintain.getHealthMaintainName()).getId()){
+                    return "1001";
+                }
+            }
+
             occHealthMaintainDAO.updateOccHealthMaintain(occHealthMaintain);
             return "1000";
         }else {

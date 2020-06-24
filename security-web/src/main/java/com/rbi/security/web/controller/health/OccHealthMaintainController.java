@@ -134,8 +134,10 @@ public class OccHealthMaintainController {
             String i = occHealthMaintainService.updateOccHealthMaintain(json);
             if (i.equals("1000")) {
                 return ResponseModel.build("1000", "更新成功");
-            } else {
-                return ResponseModel.build("1001", "不存在");
+            }  if (i.equals("1006")) {
+                return ResponseModel.build("1006", "不存在");
+            }else {
+                return ResponseModel.build("1001", "防护设备名称不可重复！修改失败");
             }
         } catch (Exception e) {
             logger.error("更新异常，ERROR：{}", e);

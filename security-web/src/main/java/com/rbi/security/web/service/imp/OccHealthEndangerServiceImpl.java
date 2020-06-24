@@ -89,8 +89,14 @@ public class OccHealthEndangerServiceImpl implements OccHealthEndangerService {
     public String updateOccHealthEndanger(JSONObject json) {
         OccHealthEndanger occHealthEndanger= JSONObject.parseObject(json.toJSONString(), OccHealthEndanger.class);
         if (occHealthEndangerDAO.findOccHealthEndangerById(occHealthEndanger.getId())!=null) {
-            occHealthEndangerDAO.updateOccHealthEndanger(occHealthEndanger);
-            return "1000";
+            if (!Objects.isNull(occHealthEndangerDAO.findOccHealthEndangerByHealthEndangerName(occHealthEndanger.getHealthEndangerName()))){
+                if (occHealthEndanger.getId()!=occHealthEndangerDAO.findOccHealthEndangerByHealthEndangerName(occHealthEndanger.getHealthEndangerName()).getId()){
+                    return "1001";
+                }
+            }
+                occHealthEndangerDAO.updateOccHealthEndanger(occHealthEndanger);
+                return "1000";
+
         }else {
             return "1006";
         }

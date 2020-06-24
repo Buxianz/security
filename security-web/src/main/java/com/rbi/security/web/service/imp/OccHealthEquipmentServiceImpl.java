@@ -87,6 +87,12 @@ public class OccHealthEquipmentServiceImpl implements OccHealthEquipmentService 
     public String updateOccHealthEquipment(JSONObject json) {
         OccHealthEquipment occHealthEquipment= JSONObject.parseObject(json.toJSONString(), OccHealthEquipment.class);
         if (occHealthEquipmentDAO.findOccHealthEquipmentById(occHealthEquipment.getId())!=null) {
+            if (!Objects.isNull(occHealthEquipmentDAO.findOccHealthEquipmentByHealthEquipmentName(occHealthEquipment.getHealthEquipmentName()))){
+                if (occHealthEquipment.getId()!=occHealthEquipmentDAO.findOccHealthEquipmentByHealthEquipmentName(occHealthEquipment.getHealthEquipmentName()).getId()){
+                    return "1001";
+                }
+            }
+
             occHealthEquipmentDAO.updateOccHealthEquipment(occHealthEquipment);
             return "1000";
         }else {
