@@ -504,7 +504,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("botton","完成整改");
                     JSONObject jsonObject2 = new JSONObject();
-                    jsonObject2.put("botton","通知整改");
+                    jsonObject2.put("botton","上报处理");
                     jsonArray.add(jsonObject1);
                     jsonArray.add(jsonObject2);
                 }
