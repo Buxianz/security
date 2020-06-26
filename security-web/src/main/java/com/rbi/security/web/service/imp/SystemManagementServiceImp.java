@@ -11,7 +11,7 @@ import com.rbi.security.tool.PageData;
 import com.rbi.security.web.DAO.system.SystemCategoryDAO;
 import com.rbi.security.web.DAO.system.SystemFileDAO;
 import com.rbi.security.web.service.SystemManagementService;
-import javafx.scene.control.Tab;
+//import javafx.scene.control.Tab;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;

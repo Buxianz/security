@@ -1,9 +1,11 @@
 package com.rbi.security.entity.web.entity;
 
+import com.rbi.security.entity.web.user.HarmNameDTO;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.List;
 
 /**
  * (SysCompanyPersonnel)实体类
@@ -90,4 +92,6 @@ public class SysCompanyPersonnel implements Serializable {
      * 更新时间
      */
     private String udt;
+
+    private List<HarmNameDTO> harmNameDTOS;
 }

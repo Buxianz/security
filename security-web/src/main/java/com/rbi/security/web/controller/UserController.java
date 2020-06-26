@@ -1,6 +1,7 @@
 package com.rbi.security.web.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.entity.SysUser;
 import com.rbi.security.entity.web.user.PagingUser;
 import com.rbi.security.tool.PageData;
@@ -90,6 +91,20 @@ public class UserController {
             int startIndex=(pageNo-1)*pageSize;
             PageData<PagingUser> data=userService.pagingQueryUserInfo(pageNo,pageSize,startIndex);
             return  ResponseModel.build("1000", "查询成功",data);
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
+     /**
+      * 谢青
+      * date:2020/6/26
+      * * */
+    @RequestMapping("/findById")
+    @ResponseBody
+    public ResponseModel findById(){
+        try {
+            SysCompanyPersonnel sysCompanyPersonnel = userService.findById();
+            return  ResponseModel.build("1000", "查询成功",sysCompanyPersonnel);
         }catch (Exception e){
             return ResponseModel.build("1001", e.getMessage());
         }

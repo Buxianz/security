@@ -1,7 +1,7 @@
 package com.rbi.security.entity.web.safe.testpaper;
 
 import lombok.Data;
-import org.omg.PortableInterceptor.INACTIVE;
+//import org.omg.PortableInterceptor.INACTIVE;
 
 import java.io.Serializable;
 import java.util.List;

@@ -1,20 +1,24 @@
 package com.rbi.security.web.service.imp;
 
 import com.rbi.security.entity.AuthenticationUserDTO;
+import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.entity.SysOrganization;
 import com.rbi.security.entity.web.entity.SysUser;
 import com.rbi.security.entity.web.entity.SysUserRole;
+import com.rbi.security.entity.web.user.HarmNameDTO;
 import com.rbi.security.entity.web.user.PagingUser;
 import com.rbi.security.exception.NonExistentException;
 import com.rbi.security.exception.RepeatException;
 import com.rbi.security.tool.LocalDateUtils;
 import com.rbi.security.tool.PageData;
+import com.rbi.security.tool.StringUtils;
 import com.rbi.security.tool.Tools;
 import com.rbi.security.web.DAO.CompanyPersonnelDAO;
 import com.rbi.security.web.DAO.OrganizationDAO;
 import com.rbi.security.web.DAO.SysUSerDAO;
 import com.rbi.security.web.DAO.SysUserRoleDAO;
 import com.rbi.security.web.service.UserService;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
@@ -25,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -234,5 +239,56 @@ public class UserServiceImp implements UserService {
         return pagingUserList;
     }
 
-
+    @Override
+    public SysCompanyPersonnel findById() {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = sysUSerDAO.findById(personnelId);
+        SysOrganization sysOrganization2 = sysUSerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+        int level = sysOrganization2.getLevel();
+        if (level == 4 ){
+            sysCompanyPersonnel.setTeamId(sysOrganization2.getId());
+            sysCompanyPersonnel.setTeamName(sysOrganization2.getOrganizationName());
+        }
+        if (level == 3 ){
+            sysCompanyPersonnel.setWorkshopId(sysOrganization2.getId());
+            sysCompanyPersonnel.setWorkshopName(sysOrganization2.getOrganizationName());
+        }
+        if (level == 2 ){
+            sysCompanyPersonnel.setFactoryId(sysOrganization2.getId());
+            sysCompanyPersonnel.setFactoryName(sysOrganization2.getOrganizationName());
+        }
+        if (level == 1 ){
+            sysCompanyPersonnel.setCompanyId(sysOrganization2.getId());
+            sysCompanyPersonnel.setCompanyName(sysOrganization2.getOrganizationName());
+        }
+        Integer parentId = sysOrganization2.getParentId();
+        level = level -1;
+        while (level !=0){
+            SysOrganization sysOrganization3 = sysUSerDAO.findAllByOrganizationId(parentId);
+            if (level == 3 ){
+                sysCompanyPersonnel.setWorkshopId(sysOrganization2.getId());
+                sysCompanyPersonnel.setWorkshopName(sysOrganization2.getOrganizationName());
+            }
+            if (level == 2 ){
+                sysCompanyPersonnel.setFactoryId(sysOrganization3.getId());
+                sysCompanyPersonnel.setFactoryName(sysOrganization3.getOrganizationName());
+            }
+            if (level == 1 ){
+                sysCompanyPersonnel.setCompanyId(sysOrganization3.getId());
+                sysCompanyPersonnel.setCompanyName(sysOrganization3.getOrganizationName());
+            }
+            parentId = sysOrganization3.getParentId();
+            level=level - 1;
+        }
+        List<HarmNameDTO> harmNameDTOS = null;
+        if (StringUtils.isBlank(sysCompanyPersonnel.getWorkType())){
+             harmNameDTOS = sysUSerDAO.findHarmNameByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+        }else {
+            harmNameDTOS = sysUSerDAO.findHarmNameByWorkType(sysCompanyPersonnel.getWorkType());
+        }
+        sysCompanyPersonnel.setHarmNameDTOS(harmNameDTOS);
+        return sysCompanyPersonnel;
+    }
 }

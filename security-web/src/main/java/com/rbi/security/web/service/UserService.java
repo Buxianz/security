@@ -11,4 +11,5 @@ public interface UserService {
     void deleteUser(int id)throws  RuntimeException;
     PageData<PagingUser> pagingQueryUserInfo(int pageNo,int pageSize ,int startIndex) throws RuntimeException;
 
+    SysCompanyPersonnel findById();
 }

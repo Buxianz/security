@@ -1,7 +1,9 @@
 package com.rbi.security.web.DAO;
 
+import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.entity.SysOrganization;
 import com.rbi.security.entity.web.entity.SysUser;
+import com.rbi.security.entity.web.user.HarmNameDTO;
 import com.rbi.security.entity.web.user.PagingUser;
 import org.apache.ibatis.annotations.*;
 
@@ -93,4 +95,15 @@ public interface SysUSerDAO {
             "            ORDER BY id")
     List<SysOrganization> getParentOrganization(@Param("id") int id);
 
+    @Select("select * from sys_company_personnel where id = #{id}")
+    SysCompanyPersonnel findById(Integer id);
+
+    @Select("select * from sys_organization where id = #{id}")
+    SysOrganization findAllByOrganizationId(@Param("id") int organizationId);
+
+    @Select("select harm_name from risk_control where organization_id = #{organizationId}")
+    List<HarmNameDTO> findHarmNameByOrganizationId(Integer organizationId);
+
+    @Select("select harm_name from risk_control where work_type = #{workType}")
+    List<HarmNameDTO> findHarmNameByWorkType(String workType);
 }
