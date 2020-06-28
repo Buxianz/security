@@ -463,7 +463,6 @@ public class HidDangerServiceImpl implements HidDangerService {
         if (StringUtils.isNotBlank(hidDangerDO.getAcceptanceReport())){
             hidDangerDO.setAcceptanceReport(fileIp+hidDangerDO.getAcceptanceReport());
         }
-
         List<HidDangerPictureDO> beforImgs = hidDangerDAO.findBeforPictureByHidDangerCode(hidDangerCode);
         for (int i=0;i<beforImgs.size();i++){
             beforImgs.get(i).setBeforePicture(fileIp+beforImgs.get(i).getBeforePicture());
@@ -477,6 +476,9 @@ public class HidDangerServiceImpl implements HidDangerService {
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         Integer userId = currentUser.getId();
+        SysCompanyPersonnel companyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
+        SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(companyPersonnel.getOrganizationId());
+        SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
         String processingStatus =  hidDangerDO.getProcessingStatus();
         int index = hidDangerProcessDOS.size();
         JSONArray jsonArray = new JSONArray();
@@ -486,9 +488,6 @@ public class HidDangerServiceImpl implements HidDangerService {
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("botton","完成整改");
                     //最顶层的不能有上报处理
-                    SysCompanyPersonnel companyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
-                    SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(companyPersonnel.getOrganizationId());
-                    SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
                     if (sysOrganization.getLevel() == 1 && sysRole.getLevel() == 1){
                     }else {
                         JSONObject jsonObject2 = new JSONObject();
@@ -503,10 +502,13 @@ public class HidDangerServiceImpl implements HidDangerService {
                 if (processingStatus.equals("3")) {
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("botton","完成整改");
-                    JSONObject jsonObject2 = new JSONObject();
-                    jsonObject2.put("botton","上报处理");
+                    if (sysOrganization.getLevel() == 4 && sysRole.getLevel() == 3){
+                    }else {
+                        JSONObject jsonObject2 = new JSONObject();
+                        jsonObject2.put("botton","通知整改");
+                        jsonArray.add(jsonObject2);
+                    }
                     jsonArray.add(jsonObject1);
-                    jsonArray.add(jsonObject2);
                 }
                 if (processingStatus.equals("4")) {
                     JSONObject jsonObject1 = new JSONObject();
@@ -521,7 +523,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("botton","完成整改");
                     JSONObject jsonObject2 = new JSONObject();
-                    jsonObject2.put("botton","通知整改");
+                    jsonObject2.put("botton","上报处理");
                     jsonArray.add(jsonObject1);
                     jsonArray.add(jsonObject2);
                 }
@@ -532,23 +534,29 @@ public class HidDangerServiceImpl implements HidDangerService {
                 if (processingStatus.equals("2")){
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("botton","完成整改");
-                    JSONObject jsonObject2 = new JSONObject();
-                    jsonObject2.put("botton","通知整改");
+                    if (sysOrganization.getLevel() == 4 && sysRole.getLevel() == 3){
+                    }else {
+                        JSONObject jsonObject2 = new JSONObject();
+                        jsonObject2.put("botton","通知整改");
+                        jsonArray.add(jsonObject2);
+                    }
                     JSONObject jsonObject3 = new JSONObject();
                     jsonObject3.put("botton","查看责令通知书");
                     jsonArray.add(jsonObject1);
-                    jsonArray.add(jsonObject2);
                     jsonArray.add(jsonObject3);
                 }
                 if (processingStatus.equals("3")){
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("botton","完成整改");
-                    JSONObject jsonObject2 = new JSONObject();
-                    jsonObject2.put("botton","通知整改");
+                    if (sysOrganization.getLevel() == 4 && sysRole.getLevel() == 3){
+                    }else {
+                        JSONObject jsonObject2 = new JSONObject();
+                        jsonObject2.put("botton","通知整改");
+                        jsonArray.add(jsonObject2);
+                    }
                     JSONObject jsonObject3 = new JSONObject();
                     jsonObject3.put("botton","查看责令通知书");
                     jsonArray.add(jsonObject1);
-                    jsonArray.add(jsonObject2);
                     jsonArray.add(jsonObject3);
                 }
                 if (processingStatus.equals("4")){
@@ -566,10 +574,13 @@ public class HidDangerServiceImpl implements HidDangerService {
                 if (processingStatus.equals("6")) {
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("botton","完成整改");
-                    JSONObject jsonObject2 = new JSONObject();
-                    jsonObject2.put("botton","通知整改");
                     jsonArray.add(jsonObject1);
-                    jsonArray.add(jsonObject2);
+                    if (sysOrganization.getLevel() == 4 && sysRole.getLevel() == 3){
+                    }else {
+                        JSONObject jsonObject2 = new JSONObject();
+                        jsonObject2.put("botton","通知整改");
+                        jsonArray.add(jsonObject2);
+                    }
                 }
             }
         }
