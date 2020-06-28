@@ -32,4 +32,6 @@ public interface TaskManagerService {
     void completeTheExam(int personnelTrainingRecordId, List<SafeAnswerRecord> safeAnswerRecordList) throws RuntimeException;
     PageData<LearningInformations> pagingLearningInformation(int pageNo, int startIndex, int pageSize) throws RuntimeException;
     LearningContent getLearningContent(int id) throws RuntimeException;
+
+    void getTheExamDetails(Integer testPapreId,Integer trainingPlanId) throws RuntimeException;
 }

@@ -182,7 +182,7 @@ public class TaskManagerServiceImp implements TaskManagerService {
                 switch(subjectType){
                     case 1 : {
                         singleChoiceQuestions.add(safeTestQuestionsList.get(i));
-                        break; //可选
+                        break; //单选
                     }
                     case 2 : {
                         multipleChoiceQuestions.add(safeTestQuestionsList.get(i));
@@ -239,6 +239,64 @@ public class TaskManagerServiceImp implements TaskManagerService {
         }catch (Exception e){
             logger.error("处理考试结果失败，异常为{}",e);
             throw new RuntimeException("处理考试结果失败");
+        }
+    }
+    /**
+     * 查看考试详情，根据考试结果和正确答案
+     */
+    public void getTheExamDetails(Integer testPapreId,Integer trainingPlanId) throws RuntimeException {
+        try {
+            Subject subject = SecurityUtils.getSubject();
+            int companyPersonnelId = ((AuthenticationUserDTO) subject.getPrincipal()).getCompanyPersonnelId();
+            TestPaper testPaper = null;
+            List<SafeTestQuestions> safeTestQuestionsList = null;
+            List<Integer> testQuestionsIds = new LinkedList<Integer>();
+            List<SafeTestQuestionOptions> safeTestQuestionOptionsList = null;
+            /**
+             * 试卷的单选题目
+             */
+            List<SafeTestQuestions> singleChoiceQuestions = new LinkedList<SafeTestQuestions>();
+            /**
+             * 试卷的多选题目
+             */
+            List<SafeTestQuestions> multipleChoiceQuestions = new LinkedList<SafeTestQuestions>();
+            /**
+             * 试卷的判断题目
+             */
+            List<SafeTestQuestions> judgmentQuestions = new LinkedList<SafeTestQuestions>();
+            /**
+             * 试卷的填空题目
+             */
+            List<SafeTestQuestions> completion = new LinkedList<SafeTestQuestions>();
+                testPaper = safeTestQaperDAO.getTestPaper(testPapreId);
+                safeTestQuestionsList = safeTestQaperDAO.getTestQuestions(testPaper.getId());
+                for (int i = 0; i < safeTestQuestionsList.size(); i++) {
+                    testQuestionsIds.add(safeTestQuestionsList.get(i).getId());
+                }
+                safeTestQuestionOptionsList = safeTestQaperDAO.getTestQuestionOptions(testQuestionsIds);
+                /**
+                 * 整合题目与选项
+                 */
+                for (int i = 0; i < safeTestQuestionsList.size(); i++) {
+                    for (int j = 0; j < safeTestQuestionOptionsList.size(); j++) {
+                        if (safeTestQuestionsList.get(i).getId().intValue() == safeTestQuestionOptionsList.get(j).getSubjectId().intValue()) {
+                            if (safeTestQuestionsList.get(i).getSafeTestQuestionOptionsList() == null) {
+                                safeTestQuestionsList.get(i).setSafeTestQuestionOptionsList(new LinkedList<SafeTestQuestionOptions>());
+                            }
+                            safeTestQuestionsList.get(i).getSafeTestQuestionOptionsList().add(safeTestQuestionOptionsList.get(j));
+                        }
+                    }
+                }
+                //获取自身人员培训记录id
+                Integer id=safeTrainingTasksDAO.getId(companyPersonnelId,trainingPlanId);
+                //根据人员培训记录id与试卷id获取答题记录
+                if(id!=null && id!=0){
+                
+                }
+               //将答题记录放在题目中去
+
+            } catch (Exception e) {
+
         }
     }
 }

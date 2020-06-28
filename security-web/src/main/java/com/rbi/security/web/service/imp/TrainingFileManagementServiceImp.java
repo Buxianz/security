@@ -223,6 +223,7 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
                    if(!StringUtils.isNotBlank(safeAdministratorTrainDTOList.get(i).getIdCardNo())){
                        //说明第i+1个人员信息不完整
                        // 1.存入日志文件
+
                        //2.记录失败数
                        importFeedback.failSizeIncrease(1);
                        // 3.删除
@@ -235,8 +236,12 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
                    i++;
                }
                List<SysCompanyPersonnel> sysCompanyPersonnels=null;
-               if(idCardNos.size()!=0)
-               sysCompanyPersonnels= companyPersonnelDAO.getCompanyPersonnelByIdCardNos(idCardNos);
+               if(idCardNos.size()!=0) {
+                   //根据身份证集合获取公司人员信息
+                   sysCompanyPersonnels = companyPersonnelDAO.getCompanyPersonnelByIdCardNos(idCardNos);
+                   //根据身份证集合获取主要安全负责人信息
+
+               }
                for (int j=0;j<safeAdministratorTrainDTOList.size();){
                    int i=0;
                    for (;i<sysCompanyPersonnels.size();i++){
@@ -249,6 +254,7 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
                    if(i==sysCompanyPersonnels.size()){
                        //说明第j+1个人员信息不在公司人员信息中
                        // 1.存入日志文件
+
                        //2.记录失败数
                        importFeedback.failSizeIncrease(1);
                        // 3.删除

@@ -5,9 +5,11 @@ import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFiles;
 import com.rbi.security.entity.web.system.SystemFile;
 import com.rbi.security.tool.LocalDateUtils;
 import com.rbi.security.tool.StringUtils;
+import com.rbi.security.web.DAO.safe.PlatformSettingsDAO;
 import com.rbi.security.web.DAO.safe.SafeSpecialReviewDAO;
 import com.rbi.security.web.DAO.safe.SafeSpecialTrainingFilesDao;
 import com.rbi.security.web.service.imp.UserServiceImp;
+import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +48,8 @@ public class SaticScheduleTask {
     SafeSpecialTrainingFilesDao safeSpecialTrainingFilesDao;
     @Autowired
     SafeSpecialReviewDAO safeSpecialReviewDAO;
+    @Autowired
+    PlatformSettingsDAO platformSettingsDAO;
     /*1.特种人员复审定时任务
       每3小时执行一次
      */
@@ -83,13 +87,15 @@ public class SaticScheduleTask {
         String fourReviewTime=null;
         String fiveReviewTime=null;
         String sixReviewTime=null;
+        int specialDay=0;
         try {
             Date date2 = format.parse(newyear);
+            specialDay=platformSettingsDAO.getSpecialDay();
             for (int i = 0; i < safeSpecialTrainingFilesList.size(); i++) {
                     sixReviewTime = safeSpecialTrainingFilesList.get(i).getSixReviewTime();
                     Boolean s=StringUtils.isNotBlank(sixReviewTime);
                     if (StringUtils.isNotBlank(sixReviewTime)) {
-                        if (judge(sixReviewTime)) {
+                        if (judge(sixReviewTime,specialDay)) {
                             SafeSpecialReview safeSpecialReview= new SafeSpecialReview();
                             safeSpecialReview.setSpecialPersonnelId(safeSpecialTrainingFilesList.get(i).getId());
                             safeSpecialReview.setDeadline(threeYearsTime(sixReviewTime,"yyyy-MM-dd"));
@@ -101,7 +107,7 @@ public class SaticScheduleTask {
                     }
                     fiveReviewTime = safeSpecialTrainingFilesList.get(i).getFiveReviewTime();
                     if (StringUtils.isNotBlank(fiveReviewTime)) {
-                        if (judge(fiveReviewTime)) {
+                        if (judge(fiveReviewTime,specialDay)) {
                             SafeSpecialReview safeSpecialReview= new SafeSpecialReview();
                             safeSpecialReview.setSpecialPersonnelId(safeSpecialTrainingFilesList.get(i).getId());
                             safeSpecialReview.setDeadline(threeYearsTime(fiveReviewTime,"yyyy-MM-dd"));
@@ -113,7 +119,7 @@ public class SaticScheduleTask {
                     }
                     fourReviewTime = safeSpecialTrainingFilesList.get(i).getFourReviewTime();
                     if (StringUtils.isNotBlank(fourReviewTime)) {
-                        if (judge(fourReviewTime)) {
+                        if (judge(fourReviewTime,specialDay)) {
                             SafeSpecialReview safeSpecialReview= new SafeSpecialReview();
                             safeSpecialReview.setSpecialPersonnelId(safeSpecialTrainingFilesList.get(i).getId());
                             safeSpecialReview.setDeadline(threeYearsTime(fourReviewTime,"yyyy-MM-dd"));
@@ -125,7 +131,7 @@ public class SaticScheduleTask {
                     }
                     threeReviewTime = safeSpecialTrainingFilesList.get(i).getThreeReviewTime();
                     if (StringUtils.isNotBlank(threeReviewTime)) {
-                        if (judge(threeReviewTime)) {
+                        if (judge(threeReviewTime,specialDay)) {
                             SafeSpecialReview safeSpecialReview= new SafeSpecialReview();
                             safeSpecialReview.setSpecialPersonnelId(safeSpecialTrainingFilesList.get(i).getId());
                             safeSpecialReview.setDeadline(threeYearsTime(threeReviewTime,"yyyy-MM-dd"));
@@ -137,7 +143,7 @@ public class SaticScheduleTask {
                     }
                     towReviewTime = safeSpecialTrainingFilesList.get(i).getTowReviewTime();
                     if (StringUtils.isNotBlank(towReviewTime)) {
-                        if (judge(towReviewTime)) {
+                        if (judge(towReviewTime,specialDay)) {
                             SafeSpecialReview safeSpecialReview= new SafeSpecialReview();
                             safeSpecialReview.setSpecialPersonnelId(safeSpecialTrainingFilesList.get(i).getId());
                             safeSpecialReview.setDeadline(threeYearsTime(towReviewTime,"yyyy-MM-dd"));
@@ -149,7 +155,7 @@ public class SaticScheduleTask {
                     }
                     oneReviewTime = safeSpecialTrainingFilesList.get(i).getOneReviewTime();
                     if (StringUtils.isNotBlank(oneReviewTime)) {
-                        if (judge(oneReviewTime)) {
+                        if (judge(oneReviewTime,specialDay)) {
                             SafeSpecialReview safeSpecialReview= new SafeSpecialReview();
                             safeSpecialReview.setSpecialPersonnelId(safeSpecialTrainingFilesList.get(i).getId());
                             safeSpecialReview.setDeadline(threeYearsTime(oneReviewTime,"yyyy-MM-dd"));
@@ -159,7 +165,7 @@ public class SaticScheduleTask {
                         }
                         continue;
                     }
-                    if(judge(safeSpecialTrainingFilesList.get(i).getDateOfIssue())){
+                    if(judge(safeSpecialTrainingFilesList.get(i).getDateOfIssue(),specialDay)){
                         SafeSpecialReview safeSpecialReview= new SafeSpecialReview();
                         safeSpecialReview.setSpecialPersonnelId(safeSpecialTrainingFilesList.get(i).getId());
                         safeSpecialReview.setDeadline(threeYearsTime(safeSpecialTrainingFilesList.get(i).getDateOfIssue(),"yyyy-MM-dd"));
@@ -179,7 +185,7 @@ public class SaticScheduleTask {
     /**
      * 计算两时间只差
      */
-    private Boolean judge(String reviewTime) throws RuntimeException{
+    private Boolean judge(String reviewTime,int specialDay) throws RuntimeException{
         Calendar c = Calendar.getInstance();
         SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
         c.setTime(new Date());
@@ -200,7 +206,7 @@ public class SaticScheduleTask {
            int difference2=differentDays(date3,date2);
            int difference=difference1-difference2;
             logger.info(difference1+"   "+difference2+"   "+difference);
-           if(difference<=7){
+           if(difference<=specialDay){
                return true;
            }else {
                return  false;

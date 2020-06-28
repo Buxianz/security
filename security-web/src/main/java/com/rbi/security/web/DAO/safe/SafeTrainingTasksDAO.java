@@ -87,4 +87,10 @@ public interface SafeTrainingTasksDAO {
      */
     @Select("SELECT stm.* FROM(SELECT sdp.training_materials_id  FROM safe_data_plan sdp WHERE sdp.training_plan_id=#{id}) sdp LEFT JOIN safe_training_materials stm on  stm.id=sdp.training_materials_id")
     List<SafeTrainingMaterials> getTrainingMaterials(@Param("id") int id);
+
+    /**
+     * 根据公司人员id和training_plan_id获取人员培训记录id
+     */
+    @Select("select id from safe_training_tasks where company_personnel_id=#{companyPersonnelId} and training_plan_id=#{trainingPlanId}")
+      int getId(@Param("companyPersonnelId")int companyPersonnelId,@Param("trainingPlanId")int trainingPlanId);
 }

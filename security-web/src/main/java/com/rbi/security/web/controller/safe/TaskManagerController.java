@@ -110,7 +110,18 @@ public class TaskManagerController {
         }
     }
     /**
-     * 分页查看考试记录
+     * 查看考试详情，根据考试结果和正确答案
      */
-
+    @RequestMapping("/getTheExamDetails")
+    public ResponseModel getTheExamDetails(@RequestBody JSONObject date){
+        try {
+            //Integer personnelTrainingRecordId=date.getInteger("personnelTrainingRecordId");
+            Integer testPapreId=date.getInteger("testPapreId");
+            Integer trainingPlanId=date.getInteger("trainingPlanId");
+            taskManagerService.getTheExamDetails(testPapreId,trainingPlanId);
+            return  ResponseModel.build("1000", "获取到考试结果详情");
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
 }

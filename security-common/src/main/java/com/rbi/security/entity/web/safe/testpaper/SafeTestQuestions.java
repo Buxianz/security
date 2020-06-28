@@ -42,4 +42,7 @@ public class SafeTestQuestions implements Serializable {
      * 试题的选项
      */
     private List<SafeTestQuestionOptions> safeTestQuestionOptionsList;
+
+    /****个人答题结果***/
+    /****是否正确***/
 }
