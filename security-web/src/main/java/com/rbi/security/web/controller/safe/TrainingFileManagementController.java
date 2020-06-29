@@ -133,6 +133,9 @@ public class TrainingFileManagementController {
         }
     }
 
+    /**
+     * 导入
+     * */
     @PostMapping("/importAdmin")
     public ResponseModel importAdmin(MultipartFile file) {
         try {

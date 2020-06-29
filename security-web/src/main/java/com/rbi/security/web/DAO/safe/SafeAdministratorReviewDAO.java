@@ -1,9 +1,6 @@
 package com.rbi.security.web.DAO.safe;
 
-import com.rbi.security.entity.web.safe.administrator.ExportAdminstratorReview;
-import com.rbi.security.entity.web.safe.administrator.SafeAdministratorReview;
-import com.rbi.security.entity.web.safe.administrator.SafeAdministratorReviewDTO;
-import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrain;
+import com.rbi.security.entity.web.safe.administrator.*;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -83,4 +80,9 @@ public interface SafeAdministratorReviewDAO {
             "(SELECT safe_administrator_id FROM safe_administrator_review where completion_status=#{completionStatus}) \n" +
             "sar LEFT JOIN safe_administrator_train sat on sat.id=sar.safe_administrator_id) sat LEFT JOIN sys_company_personnel scp on scp.id=sat.company_personnel_id) sat,(select @n:= 0) d")
     List<ExportAdminstratorReview> getAllExportAdminstratorReviewByStatus(@Param("completionStatus") int completionStatus);
+
+    @Select("select * from safe_administrator_review,safe_administrator_train,sys_company_personnel " +
+            "where safe_administrator_review.safe_administrator_id = safe_administrator_train.id and " +
+            "safe_administrator_train.id_card_no = sys_company_personnel.id_card_no and safe_administrator_review.completion_status = 1")
+    List<SafeAdministratorTrainDTO> findAllMessage();
 }

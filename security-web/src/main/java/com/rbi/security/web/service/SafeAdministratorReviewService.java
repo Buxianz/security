@@ -3,6 +3,8 @@ package com.rbi.security.web.service;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorReviewDTO;
 import com.rbi.security.tool.PageData;
 
+import java.util.Map;
+
 /**
  * @PACKAGE_NAME: com.rbi.security.web.service
  * @NAME: SafeAdministratorReviewService
@@ -29,4 +31,6 @@ public interface SafeAdministratorReviewService {
     void cancel(SafeAdministratorReviewDTO safeAdministratorReviewDTO);
 
     String exportAdminstratorReview(int completionStatus) throws RuntimeException;
+
+    Map<String, Object> writeAdmin();
 }

@@ -6,10 +6,7 @@ import com.rbi.security.entity.web.safe.administrator.SafeAdministratorReviewDTO
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrainDTO;
 import com.rbi.security.entity.web.safe.specialtype.ExportReview;
 import com.rbi.security.exception.NonExistentException;
-import com.rbi.security.tool.DateUtil;
-import com.rbi.security.tool.ExcelPOI;
-import com.rbi.security.tool.LocalDateUtils;
-import com.rbi.security.tool.PageData;
+import com.rbi.security.tool.*;
 import com.rbi.security.web.DAO.safe.SafeAdministratorReviewDAO;
 import com.rbi.security.web.service.SafeAdministratorReviewService;
 import com.rbi.security.web.service.util.ImportExcleFactory;
@@ -24,6 +21,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -51,6 +49,9 @@ public class SafeAdministratorReviewServiceImp implements SafeAdministratorRevie
     SafeAdministratorReviewDAO safeAdministratorReviewDAO;
     @Value("${uploadfile.ip}")
     private String fileIp;//此ip与此应用部署的服务区ip一致
+    @Value("${excelWritePath}")
+    private String excelWritePath;
+
     //导出excel文件表头
     private static List<String> titleMaps=new LinkedList<String>() {{
         this.add("序号");
@@ -148,12 +149,9 @@ public class SafeAdministratorReviewServiceImp implements SafeAdministratorRevie
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         String time = DateUtil.date(DateUtil.FORMAT_PATTERN);
-
-
         safeAdministratorReviewDTO.setOperatingStaff(personnelId);
         safeAdministratorReviewDTO.setCompletionStatus(3);
         safeAdministratorReviewDTO.setProcessingTime(time);
-
         safeAdministratorReviewDAO.updateReview(safeAdministratorReviewDTO);
         safeAdministratorReviewDAO.updateFile(safeAdministratorReviewDTO);
     }
@@ -169,5 +167,53 @@ public class SafeAdministratorReviewServiceImp implements SafeAdministratorRevie
         safeAdministratorReviewDTO.setCompletionStatus(2);
         safeAdministratorReviewDTO.setProcessingTime(time);
         safeAdministratorReviewDAO.updateReview(safeAdministratorReviewDTO);
+    }
+
+    @Override
+    public Map<String, Object> writeAdmin() {
+        try {
+            String filepath = excelWritePath + "主要负责人、安全生产管理人员培训台账.xlsx";
+            String sheetName = "sheet1";
+            String findPath = fileIp + filepath;
+            List<String> titles = new ArrayList<>();
+            titles.add("姓名");
+            titles.add("身份证号");
+            titles.add("单位");
+            titles.add("发证时间");
+            titles.add("有效期");
+            titles.add("性别");
+            titles.add("文化程度");
+            titles.add("合格证类型");
+            titles.add("培训时间1");
+            titles.add("培训时间2");
+            titles.add("培训时间3");
+            titles.add("备注");
+            List<Map<String, Object>> values = new ArrayList<>();
+            List<SafeAdministratorTrainDTO> safeAdministratorTrainDTOS = safeAdministratorReviewDAO.findAllMessage();
+            for (int i = 0; i < safeAdministratorTrainDTOS.size(); i++) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("姓名", safeAdministratorTrainDTOS.get(i).getName());
+                map.put("身份证号", safeAdministratorTrainDTOS.get(i).getIdCardNo());
+                map.put("单位", safeAdministratorTrainDTOS.get(i).getUnit());
+                map.put("发证时间", safeAdministratorTrainDTOS.get(i).getDateOfIssue());
+                map.put("有效期", safeAdministratorTrainDTOS.get(i).getTermOfValidity());
+                map.put("性别", safeAdministratorTrainDTOS.get(i).getGender());
+                map.put("文化程度", safeAdministratorTrainDTOS.get(i).getDegreeOfEducation());
+                map.put("合格证类型", safeAdministratorTrainDTOS.get(i).getTypeOfCertificate());
+                map.put("培训时间1", safeAdministratorTrainDTOS.get(i).getOneTrainingTime());
+                map.put("培训时间2", safeAdministratorTrainDTOS.get(i).getTwoTrainingTime());
+                map.put("培训时间3", safeAdministratorTrainDTOS.get(i).getThreeTrainingTime());
+                map.put("备注", safeAdministratorTrainDTOS.get(i).getRemarks());
+                values.add(map);
+            }
+            ExcelWrite.writeExcel(filepath, sheetName, titles, values);
+            Map<String, Object> map = new HashMap<>();
+            map.put("path", findPath);
+            return map;
+        } catch (Exception e) {
+            System.out.println("错误：" + e);
+            return null;
+        }
+
     }
 }

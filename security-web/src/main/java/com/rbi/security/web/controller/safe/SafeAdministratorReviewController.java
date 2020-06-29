@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 /**
  * @PACKAGE_NAME: com.rbi.security.web.controller.safe
  * @NAME: SafeAdministratorReviewController
@@ -89,6 +91,17 @@ public class SafeAdministratorReviewController {
         }catch (Exception e){
             System.out.println("错误："+e);
             return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+    @PostMapping("/writeAdmin")
+    public ResponseModel writeAdmin() {
+        try {
+            Map<String,Object> map = safeAdministratorReviewService.writeAdmin();
+            return ResponseModel.build("1000", "导出完成", map);
+        } catch (Exception e) {
+            System.out.println("错误："+e);
+            return ResponseModel.build("1002", "服务器处理异常", e);
         }
     }
 
