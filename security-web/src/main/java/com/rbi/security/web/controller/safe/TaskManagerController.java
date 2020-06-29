@@ -118,8 +118,7 @@ public class TaskManagerController {
             //Integer personnelTrainingRecordId=date.getInteger("personnelTrainingRecordId");
             Integer testPapreId=date.getInteger("testPapreId");
             Integer trainingPlanId=date.getInteger("trainingPlanId");
-            taskManagerService.getTheExamDetails(testPapreId,trainingPlanId);
-            return  ResponseModel.build("1000", "获取到考试结果详情");
+            return  ResponseModel.build("1000", "获取到考试结果详情", taskManagerService.getTheExamDetails(testPapreId,trainingPlanId));
         }catch (Exception e){
             return ResponseModel.build("1001", e.getMessage());
         }

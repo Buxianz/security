@@ -44,5 +44,7 @@ public class SafeTestQuestions implements Serializable {
     private List<SafeTestQuestionOptions> safeTestQuestionOptionsList;
 
     /****个人答题结果***/
+    private String answerResults;
     /****是否正确***/
+    private int correct;
 }

@@ -92,5 +92,5 @@ public interface SafeTrainingTasksDAO {
      * 根据公司人员id和training_plan_id获取人员培训记录id
      */
     @Select("select id from safe_training_tasks where company_personnel_id=#{companyPersonnelId} and training_plan_id=#{trainingPlanId}")
-      int getId(@Param("companyPersonnelId")int companyPersonnelId,@Param("trainingPlanId")int trainingPlanId);
+      Integer getId(@Param("companyPersonnelId")int companyPersonnelId,@Param("trainingPlanId")int trainingPlanId);
 }

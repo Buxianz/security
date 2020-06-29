@@ -4,6 +4,7 @@ import com.rbi.security.entity.web.safe.examination.SafeAnswerRecord;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -35,4 +36,11 @@ public interface SafeAnserRecordDAO {
             "</script>"
     })
     int insertAnserRecords(@Param("safeAnswerRecordList") List<SafeAnswerRecord> safeAnswerRecordList);
+    /**
+     * 根据人员培训记录id与试卷id获取答题记录
+     */
+     @Select("select * from safe_answer_record" +
+             "where personnel_training_record_id=#{personnelTrainingRecordId} and test_papre_id=#{testPapreId}")
+    List<SafeAnswerRecord> getAnserRecords(@Param("personnelTrainingRecordId")int personnelTrainingRecordId,@Param("testPapreId")int testPapreId);
+
 }
