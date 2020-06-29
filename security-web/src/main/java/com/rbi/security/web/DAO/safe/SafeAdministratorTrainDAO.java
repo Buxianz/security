@@ -108,6 +108,6 @@ public interface SafeAdministratorTrainDAO {
     @Insert("insert into log_administrator_train (code,result,reason,idt)values(#{code},#{result},#{reason},#{idt})")
     void addLogAdministratorTrain(logAdministratorTrain logAdministratorTrain);
 
-    @Select("select * from safe_administrator_train,sys_company_personnel where sys_company_personnel.id_card_no = sys_company_personnel.id_card_no")
+    @Select("select * from safe_administrator_train,sys_company_personnel where safe_administrator_train.id_card_no = sys_company_personnel.id_card_no")
     List<SafeAdministratorTrainDTO> findAll();
 }

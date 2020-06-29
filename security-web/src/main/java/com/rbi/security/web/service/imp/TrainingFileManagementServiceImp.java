@@ -51,7 +51,7 @@ import java.util.*;
  **/
 @Service
 public class TrainingFileManagementServiceImp implements TrainingFileManagementService {
-    @Value("${ip}")
+    @Value("${uploadfile.ip}")
     private String fileIp;
     @Value("${excelWritePath}")
     private String excelWritePath;
