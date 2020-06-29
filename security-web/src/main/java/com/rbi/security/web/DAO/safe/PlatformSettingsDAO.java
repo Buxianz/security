@@ -25,7 +25,7 @@ import org.apache.ibatis.annotations.Update;
  **/
 @Mapper
 public interface PlatformSettingsDAO {
-    @Select("select  values from platform_settings where type=1")
+    @Select("select `values` from platform_settings where type=1")
     int getSpecialDay();
 
     @Update("update platform_settings set values=#{values} where id=#{id}")

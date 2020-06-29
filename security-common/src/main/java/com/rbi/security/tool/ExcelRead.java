@@ -18,15 +18,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * excel读写工具类 */
-public class POIUtil {
-    private static final Logger logger = LoggerFactory.getLogger(POIUtil.class);
+ * excel读取工具类 */
+public class ExcelRead {
+    private static final Logger logger = LoggerFactory.getLogger(ExcelRead.class);
     //private static Logger logger  = Logger.getLogger(POIUtil.class);
     private final static String xls = "xls";
     private final static String xlsx = "xlsx";
     /**
      * 读入excel文件，解析后返回
-     * @param file
+     * @param lastCellNum 有几个字段就设置几
      * @throws IOException
      */
     public static List<String> readExcel(MultipartFile file,int lastCellNum) throws IOException{
@@ -63,7 +63,7 @@ public class POIUtil {
                     for(int cellNum = firstCellNum; cellNum < lastCellNum;cellNum++){
                         Cell cell = row.getCell(cellNum);
                         cells[cellNum] = getCellValue(cell);
-                        cells[lastCellNum-1] = String.valueOf(rowNum+1);
+//                        cells[lastCellNum-1] = String.valueOf(rowNum+1);//所在行数
                     }
                     String gg = StringUtils.join(cells,",");
                     System.out.println("原数据："+gg);

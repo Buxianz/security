@@ -7,6 +7,9 @@ import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFiles;
 import com.rbi.security.tool.PageData;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Map;
+
 public interface TrainingFileManagementService {
     /**特岗人员台账***/
     void updateSpecialTraining(SafeSpecialTrainingFiles safeSpecialTrainingFiles) throws RuntimeException;
@@ -20,9 +23,13 @@ public interface TrainingFileManagementService {
 
     void deleteAdministratorTrain(Integer id);
 
-    void updateAdministratorTrain(SafeAdministratorTrain safeAdministratorTrain);
+    String updateAdministratorTrain(SafeAdministratorTrain safeAdministratorTrain);
 
     PageData findAdministratorTrainByPage(int pageNo, int pageSize);
 
     PageData findByCondition(String condition, String value, int pageNo, int pageSize);
+
+    Map<String, Object> excelImport(MultipartFile file) throws IOException;
+
+    Map<String, Object> writeAdmin() throws IOException;
 }

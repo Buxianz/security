@@ -5,6 +5,7 @@ import com.rbi.security.entity.web.safe.administrator.SafeAdministratorReview;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrain;
 import com.rbi.security.tool.DateUtil;
 import com.rbi.security.tool.StringUtils;
+import com.rbi.security.web.DAO.safe.PlatformSettingsDAO;
 import com.rbi.security.web.DAO.safe.SafeAdministratorReviewDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +30,13 @@ public class AdministratorReviewSchedule {
     @Autowired
     SafeAdministratorReviewDAO safeAdministratorReviewDAO;
 
+    @Autowired
+    PlatformSettingsDAO platformSettingsDAO;
+
     @Scheduled(cron="0/5 * * * * ? ")
     public void test1() {
         try {
+            int specialDay=platformSettingsDAO.getSpecialDay();
 //            System.out.println("开始");
             List<SafeAdministratorTrain>  safeAdministratorTrains = safeAdministratorReviewDAO.findAll();
             String idt  = DateUtil.date(DateUtil.FORMAT_PATTERN);
@@ -39,7 +44,7 @@ public class AdministratorReviewSchedule {
             int nowYear = DateUtil.DategetYear(nowTime);
             for (int i= 0; i< safeAdministratorTrains.size(); i++) {
                 String time = null;
-                if (StringUtils.isBlank(safeAdministratorTrains.get(i).getThreeTrainingTime())) {
+                if (StringUtils.isNotBlank(safeAdministratorTrains.get(i).getThreeTrainingTime())) {
                     time = safeAdministratorTrains.get(i).getThreeTrainingTime();
                 }
                 if (StringUtils.isBlank(safeAdministratorTrains.get(i).getThreeTrainingTime())) {
@@ -52,10 +57,16 @@ public class AdministratorReviewSchedule {
 //                    System.out.println("存在培训时间为空");
                     continue;
                 }
-                String time2 = time.substring(0, time.indexOf("至"));
-                Date date1 = DateUtil.StringToDate(time2);
-                Date date2 = DateUtil.dateAddYears(date1, 1);
-                Date date3 = DateUtil.dateAddDays(date2, 7);
+                Date date3 = null;
+                try {
+                    String time2 = time.substring(0, time.indexOf("至"));
+                    Date date1 = DateUtil.StringToDate(time2);
+                    Date date2 = DateUtil.dateAddYears(date1, 1);
+                    date3 = DateUtil.dateAddDays(date2, specialDay);
+                }catch (Exception e){
+//                    System.out.println("时间格式错误");
+                    continue;
+                }
                 if (date3.toString().equals(nowTime.toString())) {
                     List<SafeAdministratorReview> safeAdministratorReviews = safeAdministratorReviewDAO.findReviewBySafeAdministratorId(safeAdministratorTrains.get(i).getId());
                     int num = 0;

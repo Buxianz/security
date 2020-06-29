@@ -3,16 +3,14 @@ package com.rbi.security.web.service.imp;
 import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.entity.web.ImportFeedback;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
+import com.rbi.security.entity.web.importlog.logAdministratorTrain;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrain;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrainDTO;
 import com.rbi.security.entity.web.safe.specialtype.PagingSpecialTraining;
 import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFiles;
 import com.rbi.security.exception.NonExistentException;
 import com.rbi.security.exception.RepeatException;
-import com.rbi.security.tool.DateUtil;
-import com.rbi.security.tool.LocalDateUtils;
-import com.rbi.security.tool.PageData;
-import com.rbi.security.tool.StringUtils;
+import com.rbi.security.tool.*;
 import com.rbi.security.web.DAO.CompanyPersonnelDAO;
 import com.rbi.security.web.DAO.safe.SafeAdministratorTrainDAO;
 import com.rbi.security.web.DAO.safe.SafeSpecialTrainingFilesDao;
@@ -24,14 +22,15 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @PACKAGE_NAME: com.rbi.security.web.service.imp
@@ -52,6 +51,10 @@ import java.util.List;
  **/
 @Service
 public class TrainingFileManagementServiceImp implements TrainingFileManagementService {
+    @Value("${ip}")
+    private String fileIp;
+    @Value("${excelWritePath}")
+    private String excelWritePath;
     private static final String specialColumns[] = {"no", "name", "gender", "idCardNo", "degreeOfEducation", "typeOfWork", "operationItems", "yearsOfWork", "workingYears", "theoreticalAchievements", "actualResults",
             "operationCertificateNo", "dateOfIssue", "oneReviewResults", "oneReviewTime", "towReviewResults", "towReviewTime",
             "threeReviewResults", "threeReviewTime", "fourReviewResults", "fourReviewTime", "fiveReviewResults", "fiveReviewTime", "sixReviewResults", "sixReviewTime",
@@ -273,7 +276,6 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
            }
     }
 
-
     @Override
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public String insertAdministratorTrain(SafeAdministratorTrain safeAdministratorTrain) throws RuntimeException {
@@ -287,6 +289,30 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
         int num = safeAdministratorTrainDAO.findIdCardNoNum(safeAdministratorTrain.getIdCardNo());
         if (num >= 1){
             return "该员工信息以添加";
+        }
+        if (StringUtils.isNotBlank(safeAdministratorTrain.getOneTrainingTime())) {
+            try {
+                String time2 = safeAdministratorTrain.getOneTrainingTime().substring(0, safeAdministratorTrain.getOneTrainingTime().indexOf("至"));
+                DateUtil.StringToDate(time2);
+            } catch (Exception e) {
+                return "时间格式错误";
+            }
+        }
+        if (StringUtils.isNotBlank(safeAdministratorTrain.getTwoTrainingTime())) {
+            try {
+                String time2 = safeAdministratorTrain.getTwoTrainingTime().substring(0, safeAdministratorTrain.getTwoTrainingTime().indexOf("至"));
+                DateUtil.StringToDate(time2);
+            } catch (Exception e) {
+                return "时间格式错误";
+            }
+        }
+        if (StringUtils.isNotBlank(safeAdministratorTrain.getThreeTrainingTime())) {
+            try {
+                String time2 = safeAdministratorTrain.getThreeTrainingTime().substring(0, safeAdministratorTrain.getThreeTrainingTime().indexOf("至"));
+                DateUtil.StringToDate(time2);
+            } catch (Exception e) {
+                return "时间格式错误";
+            }
         }
         safeAdministratorTrain.setCompanyPersonnelId(sysCompanyPersonnel.getId());
         String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
@@ -304,10 +330,35 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
-    public void updateAdministratorTrain(SafeAdministratorTrain safeAdministratorTrain) {
+    public String updateAdministratorTrain(SafeAdministratorTrain safeAdministratorTrain) {
+        if (StringUtils.isNotBlank(safeAdministratorTrain.getOneTrainingTime())) {
+            try {
+                String time2 = safeAdministratorTrain.getOneTrainingTime().substring(0, safeAdministratorTrain.getOneTrainingTime().indexOf("至"));
+                DateUtil.StringToDate(time2);
+            } catch (Exception e) {
+                return "时间格式错误";
+            }
+        }
+        if (StringUtils.isNotBlank(safeAdministratorTrain.getTwoTrainingTime())) {
+            try {
+                String time2 = safeAdministratorTrain.getTwoTrainingTime().substring(0, safeAdministratorTrain.getTwoTrainingTime().indexOf("至"));
+                DateUtil.StringToDate(time2);
+            } catch (Exception e) {
+                return "时间格式错误";
+            }
+        }
+        if (StringUtils.isNotBlank(safeAdministratorTrain.getThreeTrainingTime())) {
+            try {
+                String time2 = safeAdministratorTrain.getThreeTrainingTime().substring(0, safeAdministratorTrain.getThreeTrainingTime().indexOf("至"));
+                DateUtil.StringToDate(time2);
+            } catch (Exception e) {
+                return "时间格式错误";
+            }
+        }
         String udt = DateUtil.date(DateUtil.FORMAT_PATTERN);
         safeAdministratorTrain.setUdt(udt);
         safeAdministratorTrainDAO.update(safeAdministratorTrain);
+        return "1000";
     }
 
     @Override
@@ -362,4 +413,189 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
             return new PageData(pageNo, pageSize, totalPage, count, safeAdministratorTrains);
         }
     }
+
+    @Override
+    public Map<String, Object> excelImport(MultipartFile file) throws IOException {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
+        List<logAdministratorTrain> log = new ArrayList<>();
+        List<String> list = ExcelRead.readExcel(file, 9);
+        int importCount = 0;
+        String idCardNo2 = null;
+        for (int i=0;i<list.size();i++){
+            try {
+                List<String> list1 = Arrays.asList(StringUtils.split(list.get(i), ","));
+                String idCardNo = list1.get(0);
+                String unit = list1.get(1);
+                String dateOfIssue = list1.get(2);
+                String termOfValidity = list1.get(3);
+                String typeOfCertificate = list1.get(4);
+                String oneTrainingTime = list1.get(5);
+                String twoTrainingTime = list1.get(6);
+                String threeTrainingTime = list1.get(7);
+                String remarks = list1.get(8);
+                logAdministratorTrain logAdministratorTrain = new logAdministratorTrain();
+                if (idCardNo.equals("blank") || unit.equals("") || dateOfIssue.equals("blank") || termOfValidity.equals("blank") ||
+                        typeOfCertificate.equals("blank")) {
+                    logAdministratorTrain.setCode(importCount + 2);
+                    logAdministratorTrain.setIdNum(idCardNo);
+                    logAdministratorTrain.setResult("失败");
+                    logAdministratorTrain.setReason("必填字段不能为空");
+                    logAdministratorTrain.setIdt(idt);
+                    safeAdministratorTrainDAO.addLogAdministratorTrain(logAdministratorTrain);
+                    log.add(logAdministratorTrain);
+                    continue;
+                }
+                idCardNo2 = idCardNo;
+                int num1 = safeAdministratorTrainDAO.findPersonnelByIdCardNum(idCardNo);
+                if (num1 == 0) {
+                    logAdministratorTrain.setCode(importCount + 2);
+                    logAdministratorTrain.setIdNum(idCardNo);
+                    logAdministratorTrain.setResult("失败");
+                    logAdministratorTrain.setReason("系统没有此身份证号对应的人员信息");
+                    logAdministratorTrain.setIdt(idt);
+                    safeAdministratorTrainDAO.addLogAdministratorTrain(logAdministratorTrain);
+                    log.add(logAdministratorTrain);
+                    continue;
+                }
+                if (oneTrainingTime.equals("blank")) {
+                    oneTrainingTime = null;
+                } else {
+                    try {
+                        String time2 = oneTrainingTime.substring(0, oneTrainingTime.indexOf("至"));
+                        DateUtil.StringToDate(time2);
+                    } catch (Exception e) {
+                        System.out.println("时间格式错误");
+                        continue;
+                    }
+                }
+
+                if (twoTrainingTime.equals("blank")) {
+                    twoTrainingTime = null;
+                } else {
+                    try {
+                        String time2 = twoTrainingTime.substring(0, twoTrainingTime.indexOf("至"));
+                        DateUtil.StringToDate(time2);
+                    } catch (Exception e) {
+                        System.out.println("时间格式错误");
+                        continue;
+                    }
+                }
+                if (threeTrainingTime.equals("blank")) {
+                    threeTrainingTime = null;
+                } else {
+                    try {
+                        String time2 = threeTrainingTime.substring(0, threeTrainingTime.indexOf("至"));
+                        DateUtil.StringToDate(time2);
+                    } catch (Exception e) {
+                        System.out.println("时间格式错误");
+                        continue;
+                    }
+                }
+                if (remarks.equals("blank")) {
+                    remarks = null;
+                }
+                SafeAdministratorTrain safeAdministratorTrain = new SafeAdministratorTrain();
+                safeAdministratorTrain.setIdCardNo(idCardNo);
+                safeAdministratorTrain.setUnit(unit);
+                safeAdministratorTrain.setDateOfIssue(dateOfIssue);
+                safeAdministratorTrain.setTermOfValidity(termOfValidity);
+                safeAdministratorTrain.setTypeOfCertificate(typeOfCertificate);
+                safeAdministratorTrain.setOneTrainingTime(oneTrainingTime);
+                safeAdministratorTrain.setTwoTrainingTime(twoTrainingTime);
+                safeAdministratorTrain.setThreeTrainingTime(threeTrainingTime);
+                safeAdministratorTrain.setRemarks(remarks);
+                safeAdministratorTrain.setOperatingStaff(personnelId);
+                safeAdministratorTrain.setIdt(idt);
+                SysCompanyPersonnel sysCompanyPersonnel = safeAdministratorTrainDAO.findPersonnelByIdCardNo(safeAdministratorTrain.getIdCardNo());
+                safeAdministratorTrain.setCompanyPersonnelId(sysCompanyPersonnel.getId());
+
+                int num2 = safeAdministratorTrainDAO.findIdCardNoNum(idCardNo);
+                if (num2 >= 1) {
+                    safeAdministratorTrainDAO.updateByIdNum(safeAdministratorTrain);
+                    logAdministratorTrain.setCode(importCount + 2);
+                    logAdministratorTrain.setIdNum(idCardNo);
+                    logAdministratorTrain.setResult("更新成功");
+                    logAdministratorTrain.setIdt(idt);
+                    safeAdministratorTrainDAO.addLogAdministratorTrain(logAdministratorTrain);
+                    log.add(logAdministratorTrain);
+                } else {
+                    safeAdministratorTrainDAO.add(safeAdministratorTrain);
+                    logAdministratorTrain.setCode(importCount + 2);
+                    logAdministratorTrain.setIdNum(idCardNo);
+                    logAdministratorTrain.setResult("添加成功");
+                    logAdministratorTrain.setIdt(idt);
+                    safeAdministratorTrainDAO.addLogAdministratorTrain(logAdministratorTrain);
+                    log.add(logAdministratorTrain);
+                }
+                importCount = importCount +1;
+            }catch (Exception e){
+                System.out.println("异常"+e);
+                logAdministratorTrain logAdministratorTrain = new logAdministratorTrain();
+                logAdministratorTrain.setCode(importCount + 2);
+                logAdministratorTrain.setIdNum(idCardNo2);
+                logAdministratorTrain.setResult("失败");
+                logAdministratorTrain.setReason("处理异常");
+                logAdministratorTrain.setIdt(idt);
+                safeAdministratorTrainDAO.addLogAdministratorTrain(logAdministratorTrain);
+                log.add(logAdministratorTrain);
+            }
+        }
+        Map<String,Object> map = new HashMap<>();
+        map.put("totalNumber",list.size()); //导入数据条数
+        map.put("realNumber",importCount); //导入成功条数
+        map.put("log",log);//日志列表
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> writeAdmin() throws IOException {
+        try {
+            String filepath = excelWritePath + "主要负责人、安全生产管理人员培训台账.xlsx";
+            String sheetName = "sheet1";
+            String findPath = fileIp + filepath;
+            List<String> titles = new ArrayList<>();
+            titles.add("姓名");
+            titles.add("身份证号");
+            titles.add("单位");
+            titles.add("发证时间");
+            titles.add("有效期");
+            titles.add("性别");
+            titles.add("文化程度");
+            titles.add("合格证类型");
+            titles.add("培训时间1");
+            titles.add("培训时间2");
+            titles.add("培训时间3");
+            titles.add("备注");
+            List<Map<String, Object>> values = new ArrayList<>();
+            List<SafeAdministratorTrainDTO> safeAdministratorTrainDTOS = safeAdministratorTrainDAO.findAll();
+            for (int i = 0; i < safeAdministratorTrainDTOS.size(); i++) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("姓名", safeAdministratorTrainDTOS.get(i).getName());
+                map.put("身份证号", safeAdministratorTrainDTOS.get(i).getIdCardNo());
+                map.put("单位", safeAdministratorTrainDTOS.get(i).getUnit());
+                map.put("发证时间", safeAdministratorTrainDTOS.get(i).getDateOfIssue());
+                map.put("有效期", safeAdministratorTrainDTOS.get(i).getTermOfValidity());
+                map.put("性别", safeAdministratorTrainDTOS.get(i).getGender());
+                map.put("文化程度", safeAdministratorTrainDTOS.get(i).getDegreeOfEducation());
+                map.put("合格证类型", safeAdministratorTrainDTOS.get(i).getTypeOfCertificate());
+                map.put("培训时间1", safeAdministratorTrainDTOS.get(i).getOneTrainingTime());
+                map.put("培训时间2", safeAdministratorTrainDTOS.get(i).getTwoTrainingTime());
+                map.put("培训时间3", safeAdministratorTrainDTOS.get(i).getThreeTrainingTime());
+                map.put("备注", safeAdministratorTrainDTOS.get(i).getRemarks());
+                values.add(map);
+            }
+            ExcelWrite.writeExcel(filepath, sheetName, titles, values);
+            Map<String, Object> map = new HashMap<>();
+            map.put("path", findPath);
+            return map;
+        } catch (Exception e) {
+            System.out.println("错误：" + e);
+            return null;
+        }
+
+    }
+
 }

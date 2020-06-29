@@ -12,7 +12,7 @@ import lombok.Data;
 public class OccDiseaseProtection {
     private Integer id;
     private String unit;
-    private Integer receiveTime;
+    private String receiveTime;
     private Integer generalSuit;
     private Integer flameSuit;
     private Integer acidBaseSuit;

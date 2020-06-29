@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+
 /**
  * @PACKAGE_NAME: com.rbi.security.web.controller.safe
  * @NAME: TrainingFileManagementController（培训档案管理）
@@ -129,6 +132,30 @@ public class TrainingFileManagementController {
             return ResponseModel.build("1001", e.getMessage());
         }
     }
+
+    @PostMapping("/importAdmin")
+    public ResponseModel importAdmin(MultipartFile file) {
+        try {
+            Map<String,Object> map = trainingFileManagementService.excelImport(file);
+            return ResponseModel.build("1000", "导入完成", map);
+        } catch (Exception e) {
+            System.out.println("错误："+e);
+            return ResponseModel.build("1002", "服务器处理异常", e);
+        }
+    }
+
+    @PostMapping("/writeAdmin")
+    public ResponseModel writeAdmin() {
+        try {
+            Map<String,Object> map = trainingFileManagementService.writeAdmin();
+            return ResponseModel.build("1000", "导出完成", map);
+        } catch (Exception e) {
+            System.out.println("错误："+e);
+            return ResponseModel.build("1002", "服务器处理异常", e);
+        }
+    }
+
+
     /**
      * 增加负责人、安全生产管理人员培训记录
      */
@@ -167,8 +194,12 @@ public class TrainingFileManagementController {
     public ResponseModel updateAdministratorTrain(@RequestBody JSONObject date) {
         try{
             SafeAdministratorTrain safeAdministratorTrain = JSONObject.parseObject(date.toJSONString(), SafeAdministratorTrain.class);
-            trainingFileManagementService.updateAdministratorTrain(safeAdministratorTrain);
-            return ResponseModel.build("1000", "修改成功");
+            String result = trainingFileManagementService.updateAdministratorTrain(safeAdministratorTrain);
+            if (result.equals("1000")){
+                return ResponseModel.build("1000", "修改成功");
+            }else {
+                return ResponseModel.build("1001", result);
+            }
         }catch (Exception e){
             System.out.println();
             return ResponseModel.build("1001", "处理异常");

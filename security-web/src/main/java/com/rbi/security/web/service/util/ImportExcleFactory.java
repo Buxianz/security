@@ -2,12 +2,10 @@ package com.rbi.security.web.service.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFiles;
 import com.rbi.security.tool.ExcelPOI;
-import com.rbi.security.tool.POIUtil;
+import com.rbi.security.tool.ExcelRead;
 import com.rbi.security.tool.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -16,13 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.beans.PropertyDescriptor;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -104,7 +97,7 @@ public class ImportExcleFactory {
         HSSFRow row=null;
         List<Map<String, String>> list=null;
         try {
-            wb = POIUtil.getWorkBook(file);
+            wb = ExcelRead.getWorkBook(file);
             FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
             list = new LinkedList<Map<String, String>>();
             sheet=wb.getSheetAt(0);

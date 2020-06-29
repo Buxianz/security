@@ -2,6 +2,7 @@ package com.rbi.security.web.DAO.safe;
 
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.hid.HidDangerDO;
+import com.rbi.security.entity.web.importlog.logAdministratorTrain;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrain;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrainDTO;
 import org.apache.ibatis.annotations.*;
@@ -29,8 +30,11 @@ import java.util.List;
 public interface SafeAdministratorTrainDAO {
 
 
-    @Select("select * from sys_company_personnel where sys_company_personnel.id_card_no = #{idCardNo}")
+    @Select("select * from sys_company_personnel where id_card_no = #{idCardNo}")
     SysCompanyPersonnel findPersonnelByIdCardNo(@Param("idCardNo") String idCardNo);
+
+    @Select("select count(*) from sys_company_personnel where id_card_no = #{idCardNo}")
+    int findPersonnelByIdCardNum(@Param("idCardNo") String idCardNo);
 
     @Select("select count(*) from safe_administrator_train where id_card_no = #{idCardNo}")
     int findIdCardNoNum(@Param("idCardNo") String idCardNo);
@@ -44,11 +48,17 @@ public interface SafeAdministratorTrainDAO {
     @Delete("delete from safe_administrator_train where id = #{id}")
     void deleteById(Integer id);
 
-    @Insert("update safe_administrator_train set unit = #{unit},date_of_issue = #{dateOfIssue},term_of_validity = #{termOfValidity}," +
+    @Update("update safe_administrator_train set unit = #{unit},date_of_issue = #{dateOfIssue},term_of_validity = #{termOfValidity}," +
             "type_of_certificate = #{typeOfCertificate},one_training_time = #{oneTrainingTime},two_training_time = #{twoTrainingTime}," +
             "three_training_time = #{threeTrainingTime},remarks = #{remarks},udt = #{udt} where" +
             " id  = #{id}")
     void update(SafeAdministratorTrain safeAdministratorTrain);
+
+    @Update("update safe_administrator_train set unit = #{unit},date_of_issue = #{dateOfIssue},term_of_validity = #{termOfValidity}," +
+            "type_of_certificate = #{typeOfCertificate},one_training_time = #{oneTrainingTime},two_training_time = #{twoTrainingTime}," +
+            "three_training_time = #{threeTrainingTime},remarks = #{remarks},udt = #{udt} where " +
+            "id_card_no  = #{idCardNo}")
+    void updateByIdNum(SafeAdministratorTrain safeAdministratorTrain);
 
     @Select("select * from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id limit #{pageNo},#{pageSize}")
     List<SafeAdministratorTrainDTO> findByPage(int pageNo, int pageSize);
@@ -94,4 +104,10 @@ public interface SafeAdministratorTrainDAO {
             "</script>"
     })
     int adds(@Param("safeAdministratorTrains") List<SafeAdministratorTrain> safeAdministratorTrains);
+
+    @Insert("insert into log_administrator_train (code,result,reason,idt)values(#{code},#{result},#{reason},#{idt})")
+    void addLogAdministratorTrain(logAdministratorTrain logAdministratorTrain);
+
+    @Select("select * from safe_administrator_train,sys_company_personnel where sys_company_personnel.id_card_no = sys_company_personnel.id_card_no")
+    List<SafeAdministratorTrainDTO> findAll();
 }
