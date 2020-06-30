@@ -3,6 +3,7 @@ package com.rbi.security.web.service.imp;
 import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.entity.web.LearningContent;
 import com.rbi.security.entity.web.LearningInformations;
+import com.rbi.security.entity.web.safe.SafePersonalMistakes;
 import com.rbi.security.entity.web.safe.content.SafeDataPlanDTO;
 import com.rbi.security.entity.web.safe.content.SafeTrainingMaterials;
 import com.rbi.security.entity.web.safe.examination.SafeAnswerRecord;
@@ -11,8 +12,10 @@ import com.rbi.security.entity.web.safe.task.TestPaperInfo;
 import com.rbi.security.entity.web.safe.testpaper.SafeTestQuestionOptions;
 import com.rbi.security.entity.web.safe.testpaper.SafeTestQuestions;
 import com.rbi.security.entity.web.safe.testpaper.TestPaper;
+import com.rbi.security.tool.LocalDateUtils;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.web.DAO.safe.SafeAnserRecordDAO;
+import com.rbi.security.web.DAO.safe.SafePersonalMistakesDAO;
 import com.rbi.security.web.DAO.safe.SafeTestQaperDAO;
 import com.rbi.security.web.DAO.safe.SafeTrainingTasksDAO;
 import com.rbi.security.web.service.TaskManagerService;
@@ -25,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -220,11 +224,16 @@ public class TaskManagerServiceImp implements TaskManagerService {
      */
     @Autowired
     SafeAnserRecordDAO safeAnserRecordDAO;
-
+    @Autowired
+    SafePersonalMistakesDAO safePersonalMistakesDAO;
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void completeTheExam(int personnelTrainingRecordId, List<SafeAnswerRecord> safeAnswerRecordList) throws RuntimeException {
         SafeTrainingTasks safeTrainingTasks = new SafeTrainingTasks();
         try {
+            Subject subject = SecurityUtils.getSubject();
+            int companyPersonnelId = ((AuthenticationUserDTO) subject.getPrincipal()).getCompanyPersonnelId();
+            String idt = LocalDateUtils.localDateTimeFormat(LocalDateTime.now(), LocalDateUtils.FORMAT_PATTERN);
+            List<SafePersonalMistakes> safePersonalMistakesList = new LinkedList<>();
             safeTrainingTasks.setId(personnelTrainingRecordId);
             Integer testResults = 0;
             for (int i = 0; i < safeAnswerRecordList.size(); i++) {
@@ -235,6 +244,9 @@ public class TaskManagerServiceImp implements TaskManagerService {
                 } else {
                     safeAnswerRecordList.get(i).setCorrect(0);
                     //做错了，存入错题表
+                    if(safePersonalMistakesDAO.getSafePersonalMistakes(companyPersonnelId,safeAnswerRecordList.get(i).getTestUestionsId())==null){
+                        safePersonalMistakesDAO.add(new SafePersonalMistakes(companyPersonnelId,safeAnswerRecordList.get(i).getTestUestionsId(),idt));
+                    }
                 }
             }
             safeTrainingTasks.setTestResults(testResults.toString());
@@ -251,7 +263,7 @@ public class TaskManagerServiceImp implements TaskManagerService {
     /**
      * 查看考试详情，根据考试结果和正确答案
      */
-    public TestPaper getTheExamDetails(Integer testPapreId, Integer trainingPlanId) throws RuntimeException {
+    public TestPaper getTheExamDetails(Integer testPapreId, Integer personnelTrainingRecordId) throws RuntimeException {
         TestPaper testPaper = null;
         try {
             Subject subject = SecurityUtils.getSubject();
@@ -294,12 +306,9 @@ public class TaskManagerServiceImp implements TaskManagerService {
                     }
                 }
             }
-            //获取自身人员培训记录id
-            Integer id = safeTrainingTasksDAO.getId(companyPersonnelId, trainingPlanId);
             //根据人员培训记录id与试卷id获取答题记录
             List<SafeAnswerRecord> safeAnswerRecordList = null;
-            if (id != null && id != 0) {
-                safeAnswerRecordList = safeAnserRecordDAO.getAnserRecords(id, testPapreId);
+                safeAnswerRecordList = safeAnserRecordDAO.getAnserRecords(personnelTrainingRecordId, testPapreId);
                 //将答题记录放在题目中去
                 for (int i = 0; i < safeTestQuestionsList.size(); i++) {
                     for (int j = 0; j < safeAnswerRecordList.size(); j++) {
@@ -309,7 +318,6 @@ public class TaskManagerServiceImp implements TaskManagerService {
                         }
                     }
                 }
-            }
             /**
              * 整合题目
              */
