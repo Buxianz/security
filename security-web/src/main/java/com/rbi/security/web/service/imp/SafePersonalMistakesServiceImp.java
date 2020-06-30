@@ -4,11 +4,13 @@ import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.entity.web.entity.SysPermission;
 import com.rbi.security.entity.web.permission.PagingPermission;
 import com.rbi.security.entity.web.role.PagingRole;
+import com.rbi.security.entity.web.safe.HandlePersonalMistakes;
 import com.rbi.security.entity.web.safe.PagePersonalMistakes;
 import com.rbi.security.entity.web.safe.testpaper.SafeTestQuestionOptions;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.web.DAO.safe.SafePersonalMistakesDAO;
 import com.rbi.security.web.DAO.safe.SafeTestQaperDAO;
+import com.rbi.security.web.service.SafePersonalMistakesService;
 import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -39,7 +41,7 @@ import java.util.List;
  * @PROJECT_NAME: security
  **/
 @Service
-public class SafePersonalMistakesServiceImp {
+public class SafePersonalMistakesServiceImp implements SafePersonalMistakesService {
     private static final Logger logger = LoggerFactory.getLogger(SafePersonalMistakesServiceImp.class);
     @Autowired
     SafePersonalMistakesDAO SafePersonalMistakesDAO;
@@ -48,7 +50,7 @@ public class SafePersonalMistakesServiceImp {
     /**
      * 分页获取自身错题
      */
-    public PageData findPersonalMistakesByPage(int pageNo,int pageSize ,int startIndex) {
+    public PageData findPersonalMistakesByPage(int pageNo,int pageSize ,int startIndex) throws RuntimeException{
         List<PagePersonalMistakes> pagePersonalMistakesList=null;
 
         try {
@@ -73,7 +75,7 @@ public class SafePersonalMistakesServiceImp {
                     }
                 }
             }
-            int count =0;
+            int count =SafePersonalMistakesDAO.getPagePersonalMistakesCount(((AuthenticationUserDTO)subject.getPrincipal()).getCompanyPersonnelId());
             int totalPage;
             if (count%pageSize==0){
                 totalPage = count/pageSize;
@@ -85,6 +87,23 @@ public class SafePersonalMistakesServiceImp {
             logger.error("分页获取自身错题信息失败，异常为{}",  e);
             throw new RuntimeException("分页获取自身错题信息失败");
         }
-
+    }
+    /***
+     * 处理错题记录
+     */
+    public void handlePersonalMistakes(List<HandlePersonalMistakes> handlePersonalMistakes) throws RuntimeException{
+          try{
+              List<Integer> ids=new LinkedList<>();
+              for (int i=0;i<handlePersonalMistakes.size();i++){
+                  if(handlePersonalMistakes.get(i).getRightKey().equals(handlePersonalMistakes.get(i).getAnswerResults())){
+                      ids.add(handlePersonalMistakes.get(i).getId());
+                  }
+              }
+              if(ids.size()!=0)
+                SafePersonalMistakesDAO.deletes(ids);
+          }catch (Exception e){
+              logger.error("批量删除自身错题信息失败，异常为{}",  e);
+              throw new RuntimeException("批量删除自身错题信息失败");
+          }
     }
 }

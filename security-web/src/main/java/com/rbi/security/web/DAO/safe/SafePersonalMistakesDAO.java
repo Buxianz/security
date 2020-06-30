@@ -2,10 +2,7 @@ package com.rbi.security.web.DAO.safe;
 
 import com.rbi.security.entity.web.safe.PagePersonalMistakes;
 import com.rbi.security.entity.web.safe.SafePersonalMistakes;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -52,4 +49,13 @@ public interface SafePersonalMistakesDAO {
     @Select("SELECT spm.id,spm.subject_id,stq.`subject`,stq.subject_type,stq.right_key,stq.score FROM (SELECT id,subject_id,idt FROM safe_personal_mistakes WHERE company_personnel_id=#{companyPersonnelId} ORDER BY idt  LIMIT #{startIndex},#{pageSize}) spm \n" +
             "LEFT JOIN safe_test_questions stq on stq.id=spm.subject_id")
     List<PagePersonalMistakes> getPagePersonalMistakes(@Param("companyPersonnelId")int companyPersonnelId, @Param("startIndex") int startIndex, @Param("pageSize") int pageSize);
+   @Select("select count(*) from safe_personal_mistakes WHERE company_personnel_id=#{companyPersonnelId}")
+    int getPagePersonalMistakesCount(@Param("companyPersonnelId")int companyPersonnelId);
+   /**
+     * 批量删除
+     */
+    @Delete({"<script> Delete spm.* from safe_personal_mistakes spm where spm.id in\n"+
+            "<foreach collection='ids' index='index' item='item' open='(' separator=',' close=')'>#{item}</foreach>\n"+
+            "</script>"})
+    int deletes(@Param("ids") List<Integer> ids);
 }

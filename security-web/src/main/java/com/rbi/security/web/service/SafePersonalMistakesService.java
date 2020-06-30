@@ -1,5 +1,10 @@
 package com.rbi.security.web.service;
 
+import com.rbi.security.entity.web.safe.HandlePersonalMistakes;
+import com.rbi.security.tool.PageData;
+
+import java.util.List;
+
 /**
  * @PACKAGE_NAME: com.rbi.security.web.service
  * @NAME: SafePersonalMistakes
@@ -18,5 +23,6 @@ package com.rbi.security.web.service;
  * @PROJECT_NAME: security
  **/
 public interface SafePersonalMistakesService {
-
+    PageData findPersonalMistakesByPage(int pageNo, int pageSize , int startIndex) throws RuntimeException;
+    void handlePersonalMistakes(List<HandlePersonalMistakes> handlePersonalMistakes) throws RuntimeException;
 }
