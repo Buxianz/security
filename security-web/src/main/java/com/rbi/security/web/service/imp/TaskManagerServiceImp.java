@@ -312,7 +312,7 @@ public class TaskManagerServiceImp implements TaskManagerService {
                 //将答题记录放在题目中去
                 for (int i = 0; i < safeTestQuestionsList.size(); i++) {
                     for (int j = 0; j < safeAnswerRecordList.size(); j++) {
-                        if (safeAnswerRecordList.get(j).getTestUestionsId() == safeTestQuestionsList.get(i).getId()) {
+                        if (safeAnswerRecordList.get(j).getTestUestionsId().intValue() == safeTestQuestionsList.get(i).getId().intValue()) {
                             safeTestQuestionsList.get(i).setAnswerResults(safeAnswerRecordList.get(j).getAnswerResults());
                             safeTestQuestionsList.get(i).setCorrect(safeAnswerRecordList.get(j).getCorrect());
                         }

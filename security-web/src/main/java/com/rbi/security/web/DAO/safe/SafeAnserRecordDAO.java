@@ -39,7 +39,7 @@ public interface SafeAnserRecordDAO {
     /**
      * 根据人员培训记录id与试卷id获取答题记录
      */
-     @Select("select * from safe_answer_record" +
+     @Select("select * from safe_answer_record " +
              "where personnel_training_record_id=#{personnelTrainingRecordId} and test_papre_id=#{testPapreId}")
     List<SafeAnswerRecord> getAnserRecords(@Param("personnelTrainingRecordId")int personnelTrainingRecordId,@Param("testPapreId")int testPapreId);
 
