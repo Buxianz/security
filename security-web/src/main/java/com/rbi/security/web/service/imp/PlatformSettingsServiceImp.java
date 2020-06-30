@@ -51,6 +51,7 @@ public class PlatformSettingsServiceImp implements PlatformSettingsService {
              platformSettingsDAO.updateValues(platformSettings);
          }catch (Exception e){
              logger.error("更新特种人员复审提前通知时间设置失败，异常信息为{}", e);
+             throw new RuntimeException(e.getMessage());
          }
     }
 }

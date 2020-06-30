@@ -28,7 +28,7 @@ public interface PlatformSettingsDAO {
     @Select("select `values` from platform_settings where type=1")
     int getSpecialDay();
 
-    @Update("update platform_settings set values=#{values} where id=#{id}")
+    @Update("update platform_settings set `values`=#{values} where id=#{id}")
     int updateValues(PlatformSettings platformSettings);
 
     @Select("Select * from platform_settings where type=1")

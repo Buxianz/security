@@ -10,6 +10,7 @@ import com.rbi.security.web.service.PlatformSettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @PACKAGE_NAME: com.rbi.security.web.controller.safe
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @MINUTE: 22
  * @PROJECT_NAME: security
  **/
+@RestController
 public class PlatformSettingsController {
     @Autowired
     PlatformSettingsService platformSettingsService;
@@ -50,7 +52,7 @@ public class PlatformSettingsController {
         try {
             PlatformSettings platformSettings= JSONObject.parseObject(date.toJSONString(), PlatformSettings.class);
             platformSettingsService.updateSpecialDaySet(platformSettings);
-            return  ResponseModel.build("1000", "查询成功");
+            return  ResponseModel.build("1000", "更新成功");
         }catch (Exception e){
             return ResponseModel.build("1001", e.getMessage());
         }

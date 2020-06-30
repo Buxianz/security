@@ -33,5 +33,5 @@ public interface TaskManagerService {
     PageData<LearningInformations> pagingLearningInformation(int pageNo, int startIndex, int pageSize) throws RuntimeException;
     LearningContent getLearningContent(int id) throws RuntimeException;
 
-    TestPaper getTheExamDetails(Integer testPapreId,Integer trainingPlanId) throws RuntimeException;
+    TestPaper getTheExamDetails(Integer testPapreId,Integer personnelTrainingRecordId) throws RuntimeException;
 }
