@@ -219,7 +219,7 @@ public class RiskControlCotroller {
     }
 
     /**
-     * 区域内条件搜索
+     * 重大风险条件搜索
      * */
     @PostMapping("/findSeriousByCondition")
     public ResponseModel<PageData> findSeriousByCondition(@RequestBody JSONObject json){

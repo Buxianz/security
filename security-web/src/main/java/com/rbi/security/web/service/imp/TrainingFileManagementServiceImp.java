@@ -203,7 +203,15 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
         return pagingSpecialTraining;
     }
 
-
+    @Override
+    public PagingSpecialTraining findCertificate() {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        int personalId = currentUser.getCompanyPersonnelId();
+        String idCardNo = safeSpecialTrainingFilesDao.findIdCardNo(personalId);
+        PagingSpecialTraining pagingSpecialTraining = safeSpecialTrainingFilesDao.findAllByIdCardNo(idCardNo);
+        return pagingSpecialTraining;
+    }
     /****************安全培训管理**谢青********************/
     /**
      * 文件导入安全培训  吴松达

@@ -32,4 +32,6 @@ public interface TrainingFileManagementService {
     Map<String, Object> excelImport(MultipartFile file) throws IOException;
 
     Map<String, Object> writeAdmin() throws IOException;
+
+    PagingSpecialTraining findCertificate();
 }

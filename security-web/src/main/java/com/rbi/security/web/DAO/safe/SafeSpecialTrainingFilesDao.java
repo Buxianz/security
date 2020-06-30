@@ -98,4 +98,10 @@ public interface SafeSpecialTrainingFilesDao {
     @Delete("delete ssptf.* from safe_special_training_files ssptf where ssptf.id=#{id}")
     int deleteById(Integer id);
 
+    @Select("select id_card_no from sys_company_personnel where id = #{id}")
+    String findIdCardNo(int id);
+
+    @Select("select * from safe_special_training_files,sys_company_personnel where safe_special_training_files.id_card_no = sys_company_personnel.id_card_no and " +
+            "safe_special_training_files.id_card_no = #{idCardNo}")
+    PagingSpecialTraining findAllByIdCardNo(String idCardNo);
 }

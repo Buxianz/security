@@ -341,6 +341,12 @@ public class RiskControlServiceImp implements RiskControlService {
                 riskControlPictures.get(i).setPicture(fileIp+riskControlPictures.get(i).getPicture());
             }
             riskControls.get(j).setImg(riskControlPictures);
+            //区域内外
+            if (riskControls.get(j).getRiskType().equals("1")){
+                riskControls.get(j).setRiskType("区域内");
+            }else {
+                riskControls.get(j).setRiskType("区域外");
+            }
         }
         int totalPage = 0;
         int count = riskControlDAO.findSeriousRiskByPageNum(riskGrad);
@@ -456,6 +462,12 @@ public class RiskControlServiceImp implements RiskControlService {
                     riskControlPictures.get(i).setPicture(fileIp + riskControlPictures.get(i).getPicture());
                 }
                 riskControls.get(j).setImg(riskControlPictures);
+                //区域内外
+                if (riskControls.get(j).getRiskType().equals("1")){
+                    riskControls.get(j).setRiskType("区域内");
+                }else {
+                    riskControls.get(j).setRiskType("区域外");
+                }
             }
             int totalPage = 0;
             int count = riskControlDAO.findSeriousUnitByPageNum(value2);

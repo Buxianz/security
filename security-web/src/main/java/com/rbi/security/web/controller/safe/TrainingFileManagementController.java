@@ -119,6 +119,23 @@ public class TrainingFileManagementController {
             return ResponseModel.build("1001", e.getMessage());
         }
     }
+    /**
+     * 查询资格证书
+     */
+    @RequestMapping("/findCertificate")
+    public ResponseModel findCertificate(){
+        try {
+            PagingSpecialTraining pagingSpecialTraining = trainingFileManagementService.findCertificate();
+            return  ResponseModel.build("1000", "查询成功",pagingSpecialTraining);
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
+
+
+
+
+
     /**************************主要负责人、安全生产管理人员培训台账*****谢青***********************/
     /**
      * 文件导入负责人、安全生产管理人员培训记录
