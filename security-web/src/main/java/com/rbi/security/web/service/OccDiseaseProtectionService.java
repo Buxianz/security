@@ -13,9 +13,9 @@ public interface OccDiseaseProtectionService {
 
     PageData findByPage(int pageNo, int pageSize);
 
-    void add(OccDiseaseProtection occDiseaseProtection);
+    String add(OccDiseaseProtection occDiseaseProtection);
 
-    void update(OccDiseaseProtection occDiseaseProtection);
+    String update(OccDiseaseProtection occDiseaseProtection);
 
     void delete(JSONObject json);
 }

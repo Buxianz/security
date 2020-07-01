@@ -49,8 +49,13 @@ public class OccDiseaseProtectionController {
     public ResponseModel add(@RequestBody JSONObject json){
         try {
             OccDiseaseProtection occDiseaseProtection = JSON.toJavaObject(json,OccDiseaseProtection.class);
-            occDiseaseProtectionService.add(occDiseaseProtection);
-            return ResponseModel.build("1000","添加成功！");
+            String result = occDiseaseProtectionService.add(occDiseaseProtection);
+            if (result.equals("1000")){
+                return ResponseModel.build("1000","添加成功！");
+            }else {
+                return ResponseModel.build("1001",result);
+            }
+
         }catch (Exception e){
             System.out.println("错误："+e);
             return ResponseModel.build("1001","处理异常");
@@ -64,8 +69,12 @@ public class OccDiseaseProtectionController {
     public ResponseModel update(@RequestBody JSONObject json){
         try {
             OccDiseaseProtection occDiseaseProtection = JSON.toJavaObject(json,OccDiseaseProtection.class);
-            occDiseaseProtectionService.update(occDiseaseProtection);
-            return ResponseModel.build("1000","修改成功！");
+            String result = occDiseaseProtectionService.update(occDiseaseProtection);
+            if (result.equals("1000")){
+                return ResponseModel.build("1000","修改成功！");
+            }else {
+                return ResponseModel.build("1001",result);
+            }
         }catch (Exception e){
             System.out.println("错误："+e);
             return ResponseModel.build("1001","处理异常");

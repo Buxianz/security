@@ -41,21 +41,33 @@ public class OccDiseaseProtectionServiceImp implements OccDiseaseProtectionServi
     }
 
     @Override
-    public void add(OccDiseaseProtection occDiseaseProtection) {
-        Subject subject = SecurityUtils.getSubject();
-        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-        Integer personnelId  =  currentUser.getCompanyPersonnelId();
-        occDiseaseProtection.setOperatingStaff(personnelId);
-        String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
-        occDiseaseProtection.setIdt(idt);
-        occDiseaseProtectionDAO.add(occDiseaseProtection);
+    public String add(OccDiseaseProtection occDiseaseProtection) {
+        try {
+            Subject subject = SecurityUtils.getSubject();
+            AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+            Integer personnelId  =  currentUser.getCompanyPersonnelId();
+            occDiseaseProtection.setOperatingStaff(personnelId);
+            String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
+            occDiseaseProtection.setIdt(idt);
+            occDiseaseProtectionDAO.add(occDiseaseProtection);
+            return "1000";
+        }catch (NumberFormatException e){
+            return "参数填写错误，请注意填写数字";
+        }
+
     }
 
     @Override
-    public void update(OccDiseaseProtection occDiseaseProtection) {
-        String udt = DateUtil.date(DateUtil.FORMAT_PATTERN);
-        occDiseaseProtection.setUdt(udt);
-        occDiseaseProtectionDAO.update(occDiseaseProtection);
+    public String update(OccDiseaseProtection occDiseaseProtection) {
+        try {
+            String udt = DateUtil.date(DateUtil.FORMAT_PATTERN);
+            occDiseaseProtection.setUdt(udt);
+            occDiseaseProtectionDAO.update(occDiseaseProtection);
+            return "1000";
+        }catch (NumberFormatException e){
+            return "参数填写错误，请注意填写数字";
+        }
+
     }
 
     @Override

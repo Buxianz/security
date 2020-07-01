@@ -55,30 +55,38 @@ public class OccHealthExamineServiceImp implements OccHealthExamineService {
 
     @Override
     public String add(OccHealthExamine occHealthExamine) {
-        int num = occHealthExamineDAO.findNum(occHealthExamine.getIdNum());
-        if (num != 0){
-            return "身份证号重复添加";
+        try {
+            int num = occHealthExamineDAO.findNum(occHealthExamine.getIdNum());
+            if (num != 0){
+                return "身份证号重复添加";
+            }
+            Subject subject = SecurityUtils.getSubject();
+            AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+            Integer personnelId  =  currentUser.getCompanyPersonnelId();
+            occHealthExamine.setOperatingStaff(personnelId);
+            String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
+            occHealthExamine.setIdt(idt);
+            occHealthExamineDAO.add(occHealthExamine);
+            return "1000";
+        }catch (NumberFormatException e){
+            return "参数填写错误，请注意填写数字";
         }
-        Subject subject = SecurityUtils.getSubject();
-        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-        Integer personnelId  =  currentUser.getCompanyPersonnelId();
-        occHealthExamine.setOperatingStaff(personnelId);
-        String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
-        occHealthExamine.setIdt(idt);
-        occHealthExamineDAO.add(occHealthExamine);
-        return "1000";
     }
 
     @Override
     public String update(OccHealthExamine occHealthExamine) {
-        int num = occHealthExamineDAO.findNumExceptId(occHealthExamine.getIdNum(),occHealthExamine.getId());
-        if (num != 0){
-            return "身份证号重复";
+        try {
+            int num = occHealthExamineDAO.findNumExceptId(occHealthExamine.getIdNum(),occHealthExamine.getId());
+            if (num != 0){
+                return "身份证号重复";
+            }
+            String udt = DateUtil.date(DateUtil.FORMAT_PATTERN);
+            occHealthExamine.setUdt(udt);
+            occHealthExamineDAO.update(occHealthExamine);
+            return "1000";
+        }catch (NumberFormatException e){
+            return "参数填写错误，请注意填写数字";
         }
-        String udt = DateUtil.date(DateUtil.FORMAT_PATTERN);
-        occHealthExamine.setUdt(udt);
-        occHealthExamineDAO.update(occHealthExamine);
-        return "1000";
     }
 
     @Override

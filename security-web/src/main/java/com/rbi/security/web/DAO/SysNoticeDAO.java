@@ -19,7 +19,7 @@ public interface SysNoticeDAO {
             "(#{title},#{content},#{annex},#{idt},#{operatingStaff})")
     void add(SysNotice sysNotice);
 
-    @Select("select * from sys_notice limit #{pageNo},#{pageSize}")
+    @Select("select * from sys_notice order by id DESC limit #{pageNo},#{pageSize} ")
     List<SysNotice> findByPage(int pageNo, int pageSize);
 
     @Select("select count(*) from sys_notice")

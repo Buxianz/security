@@ -54,30 +54,38 @@ public class OccDiseaseFactorsServiceImp implements OccDiseaseFactorsService {
 
     @Override
     public String add(OccDiseaseFactors occDiseaseFactors) {
-        int num = occDiseaseFactorsDAO.findNum(occDiseaseFactors.getFactor());
-        if (num != 0){
-            return "此职业病危害因素已添加";
+        try {
+            int num = occDiseaseFactorsDAO.findNum(occDiseaseFactors.getFactor());
+            if (num != 0){
+                return "此职业病危害因素已添加";
+            }
+            Subject subject = SecurityUtils.getSubject();
+            AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+            Integer personnelId  =  currentUser.getCompanyPersonnelId();
+            occDiseaseFactors.setOperatingStaff(personnelId);
+            String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
+            occDiseaseFactors.setIdt(idt);
+            occDiseaseFactorsDAO.add(occDiseaseFactors);
+            return "1000";
+        }catch (NumberFormatException e){
+            return "参数填写错误，请注意填写数字";
         }
-        Subject subject = SecurityUtils.getSubject();
-        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-        Integer personnelId  =  currentUser.getCompanyPersonnelId();
-        occDiseaseFactors.setOperatingStaff(personnelId);
-        String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
-        occDiseaseFactors.setIdt(idt);
-        occDiseaseFactorsDAO.add(occDiseaseFactors);
-        return "1000";
     }
 
     @Override
     public String update(OccDiseaseFactors occDiseaseFactors) {
-        int num = occDiseaseFactorsDAO.findNumExceptId(occDiseaseFactors.getFactor(),occDiseaseFactors.getId());
-        if (num != 0){
-            return "此职业病危害因素已添加";
+        try {
+            int num = occDiseaseFactorsDAO.findNumExceptId(occDiseaseFactors.getFactor(),occDiseaseFactors.getId());
+            if (num != 0){
+                return "此职业病危害因素已添加";
+            }
+            String udt = DateUtil.date(DateUtil.FORMAT_PATTERN);
+            occDiseaseFactors.setUdt(udt);
+            occDiseaseFactorsDAO.update(occDiseaseFactors);
+            return "1000";
+        }catch (NumberFormatException e){
+            return "参数填写错误，请注意填写数字";
         }
-        String udt = DateUtil.date(DateUtil.FORMAT_PATTERN);
-        occDiseaseFactors.setUdt(udt);
-        occDiseaseFactorsDAO.update(occDiseaseFactors);
-        return "1000";
     }
 
     @Override
