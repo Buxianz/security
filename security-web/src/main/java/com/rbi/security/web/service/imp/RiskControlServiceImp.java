@@ -124,7 +124,7 @@ public class RiskControlServiceImp implements RiskControlService {
             riskControlDAO.add(riskControl);
             return "1000";
         }catch (NullPointerException e){
-            return "没有创建完整的单位或其他空指针原因";
+            return "没有创建完整的单位/登录用户没有绑定组织等为空异常";
         }catch (NumberFormatException e){
             return "数据格式错误";
         }catch (IndexOutOfBoundsException e){
@@ -195,7 +195,7 @@ public class RiskControlServiceImp implements RiskControlService {
             riskControlDAO.update(riskControl);
             return "1000";
         }catch (NullPointerException e){
-            return "没有创建完整的单位或其他空指针原因";
+            return "没有创建完整的单位/登录用户没有绑定组织等为空异常";
         }catch (NumberFormatException e){
             return "数据格式错误";
         }catch (IndexOutOfBoundsException e){
@@ -302,7 +302,7 @@ public class RiskControlServiceImp implements RiskControlService {
             riskControlDAO.add(riskControl);
             return "1000";
         }catch (NullPointerException e){
-            return "没有创建完整的单位或其他空指针原因";
+            return "没有创建完整的单位/登录用户没有绑定组织等为空异常";
         }catch (NumberFormatException e){
             return "数据格式错误";
         }catch (IndexOutOfBoundsException e){

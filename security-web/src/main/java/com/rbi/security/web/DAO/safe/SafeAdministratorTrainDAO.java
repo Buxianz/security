@@ -105,7 +105,7 @@ public interface SafeAdministratorTrainDAO {
     })
     int adds(@Param("safeAdministratorTrains") List<SafeAdministratorTrain> safeAdministratorTrains);
 
-    @Insert("insert into log_administrator_train (code,result,reason,idt)values(#{code},#{result},#{reason},#{idt})")
+    @Insert("insert into log_administrator_train (code,result,reason,idt,id_num)values(#{code},#{result},#{reason},#{idt},#{idNum})")
     void addLogAdministratorTrain(logAdministratorTrain logAdministratorTrain);
 
     @Select("select * from safe_administrator_train,sys_company_personnel where safe_administrator_train.id_card_no = sys_company_personnel.id_card_no")
