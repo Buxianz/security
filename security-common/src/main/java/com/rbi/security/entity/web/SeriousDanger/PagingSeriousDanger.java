@@ -62,7 +62,14 @@ public class PagingSeriousDanger {
      * 危险源最近管控时间
      */
     private String seriousDangerTime;
-
+    /**
+     * 危险源管控层级
+     */
+    private String seriousDangerControlLevel;
+    /**
+     * 危险源应急措施
+     */
+    private String seriousDangerEmergencyMeasure;
 
     List<SeriousDangerPicture> seriousDangerPictureList=new ArrayList<>();
 }

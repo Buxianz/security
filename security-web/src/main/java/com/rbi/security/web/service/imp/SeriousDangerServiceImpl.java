@@ -23,10 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @PACKAGE_NAME: com.rbi.security.web.service.imp
@@ -61,8 +58,11 @@ public class SeriousDangerServiceImpl implements SeriousDangerService {
     @Override
     public String insertSeriousDanger(SeriousDanger seriousDanger, MultipartFile[] seriousDangerPicture) throws IOException {
         try {
-
-            seriousDangerDAO.insertSeriousDanger(seriousDanger);
+            if (Objects.isNull(seriousDangerDAO.findSeriousDangerByName(seriousDanger.getSeriousDangerName()))){
+                seriousDangerDAO.insertSeriousDanger(seriousDanger);
+            }else {
+                return "重大危险源名称不可重复";
+            }
 
             if (seriousDangerPicture.length > 6) {
                 return "照片数量不能大于6张";
@@ -124,7 +124,8 @@ public class SeriousDangerServiceImpl implements SeriousDangerService {
             int pageNo = json.getInteger("pageNo");
             int pageSize = json.getInteger("pageSize");
             int recNo = pageSize * (pageNo - 1);
-            List<PagingSeriousDanger> pagingSeriousDangerList = seriousDangerDAO.findSeriousDangerByPageAndName(json.getString("seriousDangerName"),recNo, pageSize);
+            String name = "'%"+json.getString("seriousDangerName")+"%'";
+            List<PagingSeriousDanger> pagingSeriousDangerList = seriousDangerDAO.findSeriousDangerByPageAndName(name,recNo, pageSize);
             for (int j=0;j<pagingSeriousDangerList.size();j++) {
                 Integer Id = pagingSeriousDangerList.get(j).getId();
                 List<SeriousDangerPicture> seriousDangerPictureList = seriousDangerPictureDAO.findSeriousDangerPictureByPageAndSeriousDangerId(Id);
@@ -133,7 +134,7 @@ public class SeriousDangerServiceImpl implements SeriousDangerService {
                 }
                 pagingSeriousDangerList.get(j).setSeriousDangerPictureList(seriousDangerPictureList);
             }
-            count = seriousDangerDAO.findNumSeriousDangerByName(json.getString("seriousDangerName"));
+            count = seriousDangerDAO.findNumSeriousDangerByName(name);
             if (count % pageSize == 0) {
                 totalPage = count / pageSize;
             } else {
@@ -160,6 +161,11 @@ public class SeriousDangerServiceImpl implements SeriousDangerService {
     @Override
     public String updateSeriousDanger(SeriousDanger seriousDanger,Integer[] pictureId, MultipartFile[] seriousDangerPicture) throws IOException {
         try {
+            if (!Objects.isNull(seriousDangerDAO.findSeriousDangerByName(seriousDanger.getSeriousDangerName()))){
+                if (seriousDanger.getId()!=seriousDangerDAO.findSeriousDangerByName(seriousDanger.getSeriousDangerName()).getId()){
+                    return "重大危险源名称不可重复";
+                }
+            }
             for (int j=0;j<pictureId.length;) {
                 seriousDangerPictureDAO.deleteSeriousDangerPicture(pictureId[j]);
                 if (seriousDangerPictureDAO.findSeriousDangerPictureByPageAndSeriousDangerId(pictureId[j]).isEmpty()) {
