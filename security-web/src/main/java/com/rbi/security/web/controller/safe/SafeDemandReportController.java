@@ -53,6 +53,21 @@ public class SafeDemandReportController {
         }
     }
     /**
+     * 新增需求和资料以及试卷
+     */
+    @RequestMapping("/insert")
+    public ResponseModel insert(@RequestBody JSONObject date) {
+        try{
+            SafeTrainingNeeds safeTrainingNeeds =JSONObject.parseObject(date.getJSONObject("safeTrainingNeeds").toString(), SafeTrainingNeeds.class);
+            List<SafeDataPlan> safeDataPlanList= JSONArray.parseArray(date.getJSONArray("safeDataPlanList").toString(),SafeDataPlan.class);
+            SafeTestPaper safeTestPaper=JSONObject.parseObject(date.getJSONObject("safeTestPaper").toString(), SafeTestPaper.class);
+
+            return ResponseModel.build("1000", "发布成功");
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
+    /**
      * 分页查看需求
      */
     @RequestMapping("/pagingSafeDemandReport")
