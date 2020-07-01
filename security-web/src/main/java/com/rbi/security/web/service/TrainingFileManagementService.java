@@ -1,6 +1,7 @@
 package com.rbi.security.web.service;
 
 import com.alibaba.fastjson.JSONArray;
+import com.rbi.security.entity.web.ImportFeedback;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrain;
 import com.rbi.security.entity.web.safe.specialtype.PagingSpecialTraining;
 import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFiles;
@@ -16,7 +17,7 @@ public interface TrainingFileManagementService {
     void insertSpecialTraining(SafeSpecialTrainingFiles safeSpecialTrainingFiles) throws RuntimeException;
     PageData<PagingSpecialTraining> pagingSpecialTraining(int pageNo, int pageSize , int startIndex) throws RuntimeException;
     PagingSpecialTraining getSpecialTrainingById(int id) throws RuntimeException;
-    void importSpecialTrainings(MultipartFile multipartFiles) throws RuntimeException;
+    ImportFeedback importSpecialTrainings(MultipartFile multipartFiles) throws RuntimeException;
     //*******安全管理台账******/
     void importAdministratorTrains(MultipartFile multipartFiles)throws RuntimeException;
     String insertAdministratorTrain( SafeAdministratorTrain safeAdministratorTrain) throws RuntimeException;

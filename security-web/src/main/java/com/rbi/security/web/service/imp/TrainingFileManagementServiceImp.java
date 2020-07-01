@@ -3,6 +3,7 @@ package com.rbi.security.web.service.imp;
 import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.entity.web.ImportFeedback;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
+import com.rbi.security.entity.web.importlog.ImportSpecialTrainingLOg;
 import com.rbi.security.entity.web.importlog.logAdministratorTrain;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrain;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrainDTO;
@@ -12,6 +13,7 @@ import com.rbi.security.exception.NonExistentException;
 import com.rbi.security.exception.RepeatException;
 import com.rbi.security.tool.*;
 import com.rbi.security.web.DAO.CompanyPersonnelDAO;
+import com.rbi.security.web.DAO.LogSpecialTrainingDAO;
 import com.rbi.security.web.DAO.safe.SafeAdministratorTrainDAO;
 import com.rbi.security.web.DAO.safe.SafeSpecialTrainingFilesDao;
 import com.rbi.security.web.service.TrainingFileManagementService;
@@ -66,33 +68,76 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
     CompanyPersonnelDAO companyPersonnelDAO;
     @Autowired
     SafeSpecialTrainingFilesDao safeSpecialTrainingFilesDao;
+    @Autowired
+    LogSpecialTrainingDAO logSpecialTrainingDAO;
+
     /**特种人员文件导入**/
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
-    public void importSpecialTrainings(MultipartFile multipartFiles) throws RuntimeException{
+    public ImportFeedback importSpecialTrainings(MultipartFile multipartFiles) throws RuntimeException{
+           ImportFeedback importFeedback=new ImportFeedback();
           try{
               int lastIndexOf = multipartFiles.getOriginalFilename().lastIndexOf(".");
+
               //获取文件的后缀名 .xls
               System.out.println(multipartFiles.getOriginalFilename());
               String suffix = multipartFiles.getOriginalFilename().substring(lastIndexOf);
               if(suffix.equals(".xls") || suffix.equals(".xlsx")) {
                   List<SafeSpecialTrainingFiles> safes = new LinkedList<SafeSpecialTrainingFiles>();
-                  ;
+
                   safes = ImportExcleFactory.getDate(multipartFiles, safes, SafeSpecialTrainingFiles.class, specialColumns, 5, 0);
                   Subject subject = SecurityUtils.getSubject();
                   String idt = LocalDateUtils.localDateTimeFormat(LocalDateTime.now(), LocalDateUtils.FORMAT_PATTERN);
+                  List<ImportSpecialTrainingLOg> importSpecialTrainingLOgList=new LinkedList<>();
+                  ImportSpecialTrainingLOg importSpecialTrainingLOg=null;
                   /**
                    * 进行数据筛选，批量添加
                    */
-                  for (int i = 0; i < safes.size(); ) {
+                  for (int i = 0,j=0; i < safes.size();j++ ) {
+
+                      if(!StringUtils.isNotBlank(safes.get(i).getIdCardNo())){
+                          importSpecialTrainingLOg=new ImportSpecialTrainingLOg();
+                          //说明第i+1个人员信息不完整
+                          // 1.存入日志集合
+                          importSpecialTrainingLOg.setCode(j+1);
+                          importSpecialTrainingLOg.setResult("添加失败");
+                          importSpecialTrainingLOg.setReason("身份证号不能为空");
+                          importSpecialTrainingLOg.setIdt(idt);
+                          importSpecialTrainingLOgList.add(importSpecialTrainingLOg);
+                          //2.记录失败数
+                          importFeedback.failSizeIncrease(1);
+                          // 3.删除
+                          safes.remove(i);
+                          continue;
+                      }
                       Integer companyPersonnelId = companyPersonnelDAO.getPersonnelByIdCardNo(safes.get(i).getIdCardNo());
                       if (companyPersonnelId == null) {
                           //公司人员信息不存在
-                          //删除此节点，放入导入记录
+                          importSpecialTrainingLOg=new ImportSpecialTrainingLOg();
+                          // 1.存入日志集合
+                          importSpecialTrainingLOg.setIdCardNo(safes.get(i).getIdCardNo());
+                          importSpecialTrainingLOg.setCode(j+1);
+                          importSpecialTrainingLOg.setResult("添加失败");
+                          importSpecialTrainingLOg.setReason("公司人员信息不存在");
+                          importSpecialTrainingLOg.setIdt(idt);
+                          importSpecialTrainingLOgList.add(importSpecialTrainingLOg);
+                          //2.记录失败数
+                          importFeedback.failSizeIncrease(1);
+                          //删除此节点
                           safes.remove(i);
                           continue;
                       }
                       if (safeSpecialTrainingFilesDao.queryByIdCardNo(safes.get(i).getIdCardNo()) != null) {
                           //导入数据重复
+                          importSpecialTrainingLOg=new ImportSpecialTrainingLOg();
+                          // 1.存入日志集合
+                          importSpecialTrainingLOg.setIdCardNo(safes.get(i).getIdCardNo());
+                          importSpecialTrainingLOg.setCode(j+1);
+                          importSpecialTrainingLOg.setResult("添加失败");
+                          importSpecialTrainingLOg.setReason("导入数据重复");
+                          importSpecialTrainingLOg.setIdt(idt);
+                          importSpecialTrainingLOgList.add(importSpecialTrainingLOg);
+                          //2.记录失败数
+                          importFeedback.failSizeIncrease(1);
                           //删除此节点，放入导入记录
                           safes.remove(i);
                           continue;
@@ -106,13 +151,17 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
                   if (safes.size() != 0) {
                       safeSpecialTrainingFilesDao.inserts(safes);
                   }
+                  logSpecialTrainingDAO.adds(importSpecialTrainingLOgList);
+                  importFeedback.setFailTecord(importSpecialTrainingLOgList);
               }else {
                   throw new RuntimeException("文件不是excel文件");
               }
+
           }catch (Exception e){
               logger.error("批量导入数据失败，异常为{}", e.getMessage());
               throw new RuntimeException(e.getMessage());
           }
+          return importFeedback;
     }
 
 
@@ -230,11 +279,18 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
                AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
                String idt = LocalDateUtils.localDateTimeFormat(LocalDateTime.now(), LocalDateUtils.FORMAT_PATTERN);
                List<String> idCardNos=new LinkedList<>();
+               List<ImportSpecialTrainingLOg> importSpecialTrainingLOgList=new LinkedList<>();
+               ImportSpecialTrainingLOg importSpecialTrainingLOg=null;
                for(int i=0;i<safeAdministratorTrainDTOList.size();){
                    if(!StringUtils.isNotBlank(safeAdministratorTrainDTOList.get(i).getIdCardNo())){
+                       importSpecialTrainingLOg=new ImportSpecialTrainingLOg();
                        //说明第i+1个人员信息不完整
-                       // 1.存入日志文件
-
+                       // 1.存入日志集合
+                       importSpecialTrainingLOg.setCode(i+1);
+                       importSpecialTrainingLOg.setResult("添加失败");
+                       importSpecialTrainingLOg.setReason("身份证号不能为空");
+                       importSpecialTrainingLOg.setIdt(idt);
+                       importSpecialTrainingLOgList.add(importSpecialTrainingLOg);
                        //2.记录失败数
                        importFeedback.failSizeIncrease(1);
                        // 3.删除
@@ -265,7 +321,12 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
                    if(i==sysCompanyPersonnels.size()){
                        //说明第j+1个人员信息不在公司人员信息中
                        // 1.存入日志文件
-
+                       importSpecialTrainingLOg=new ImportSpecialTrainingLOg();
+                       importSpecialTrainingLOg.setCode(i+1);
+                       importSpecialTrainingLOg.setResult("添加失败");
+                       importSpecialTrainingLOg.setReason("此人员不在公司人员信息中");
+                       importSpecialTrainingLOg.setIdt(idt);
+                       importSpecialTrainingLOgList.add(importSpecialTrainingLOg);
                        //2.记录失败数
                        importFeedback.failSizeIncrease(1);
                        // 3.删除

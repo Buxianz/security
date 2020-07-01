@@ -43,8 +43,7 @@ public class TrainingFileManagementController {
     @RequestMapping("/importSpecialTrainings")
     public ResponseModel importSpecialTrainings(MultipartFile multipartFiles) throws RuntimeException {
         try {
-            trainingFileManagementService.importSpecialTrainings(multipartFiles);
-            return ResponseModel.build("1000", "导入成功");
+            return ResponseModel.build("1000", "导入成功",trainingFileManagementService.importSpecialTrainings(multipartFiles));
         }catch (Exception e){
             return ResponseModel.build("1001", e.getMessage());
         }
