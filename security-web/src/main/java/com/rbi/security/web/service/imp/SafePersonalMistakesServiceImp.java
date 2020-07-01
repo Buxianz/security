@@ -61,6 +61,7 @@ public class SafePersonalMistakesServiceImp implements SafePersonalMistakesServi
             for (int i = 0; i < pagePersonalMistakesList.size(); i++) {
                 testQuestionsIds.add(pagePersonalMistakesList.get(i).getSubjectId());
             }
+            if(testQuestionsIds.size()!=0)
             safeTestQuestionOptionsList = safeTestQaperDAO.getTestQuestionOptions(testQuestionsIds);
             /**
              * 整合题目与选项

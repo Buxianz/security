@@ -49,4 +49,10 @@ public interface SafeTestQaperDAO {
             "<foreach collection='testQuestionsIds' index='index' item='item' open='(' separator=',' close=')'>#{item}</foreach>\n"+
             "</script>"})
     List<SafeTestQuestionOptions> getTestQuestionOptions(@Param("testQuestionsIds")List<Integer> testQuestionsIds);
+
+    /**
+     * 获取时间开始与结束时间
+     */
+    @Select("SELECT CONCAT(start_time,\"至\",end_time) FROM safe_test_paper WHERE training_plan_id=#{trainingPlanId}")
+    String getStartAndEndTime(@Param("trainingPlanId")int trainingPlanId);
 }

@@ -1,6 +1,7 @@
 package com.rbi.security.web.DAO.safe;
 
 import com.rbi.security.entity.web.LearningInformations;
+import com.rbi.security.entity.web.safe.PersonalTrainingFiles;
 import com.rbi.security.entity.web.safe.content.SafeTrainingMaterials;
 import com.rbi.security.entity.web.safe.task.SafeTrainingTasks;
 import com.rbi.security.entity.web.safe.task.TestPaperInfo;
@@ -93,4 +94,16 @@ public interface SafeTrainingTasksDAO {
      */
     @Select("select id from safe_training_tasks where company_personnel_id=#{companyPersonnelId} and training_plan_id=#{trainingPlanId}")
       Integer getId(@Param("companyPersonnelId")int companyPersonnelId,@Param("trainingPlanId")int trainingPlanId);
+
+    /**
+     * 根据自身id分页获取培训信息
+     */
+    @Select("SELECT stn.id,stt.training_plan_id,stn.organization_training_department_id,stn.training_type_id,stn.training_content,stt.learning_time,stt.test_results FROM\n" +
+            "(SELECT stt.learning_time,stt.test_results,stp.training_needs_id,stp.id as 'training_plan_id' FROM\n" +
+            "(SELECT training_plan_id,learning_time,test_results FROM safe_training_tasks WHERE company_personnel_id=#{companyPersonnelId} LIMIT #{startIndex},#{pageSize}) stt\n" +
+            "LEFT JOIN safe_training_plan stp on stp.id=stt.training_plan_id) stt LEFT JOIN safe_training_needs stn on stn.id=stt.training_needs_id")
+   List<PersonalTrainingFiles> pagePersonalTrainingFiles(@Param("companyPersonnelId") int companyPersonnelId, @Param("startIndex") int startIndex, @Param("pageSize") int pageSize);
+   @Select("SELECT count(*) FROM safe_training_tasks WHERE company_personnel_id=#{companyPersonnelId}")
+    int getPersonalTrainingFilesCount(@Param("companyPersonnelId") int companyPersonnelId);
+
 }

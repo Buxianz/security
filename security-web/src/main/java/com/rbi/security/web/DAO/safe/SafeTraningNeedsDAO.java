@@ -75,6 +75,10 @@ public interface SafeTraningNeedsDAO {
             "(SELECT stn.*,so.organization_name FROM\n" +
             "(select * from safe_training_needs where id=#{id}) stn LEFT JOIN sys_organization so on stn.organization_training_department_id=so.id) stn left JOIN safa_training_type sty on stn.training_type_id=sty.id")
     SafeTrainingNeeds getTrainingNeedsById(@Param("id") int id);
-
+    /**
+     * 获取需求计划开始与结束时间
+     */
+    @Select("SELECT CONCAT(start_time,\"至\",end_time) FROM safe_training_needs WHERE id=#{id}")
+    String getStartAndEndTime(@Param("id")int id);
 
 }
