@@ -343,114 +343,123 @@ public class HidDangerServiceImpl implements HidDangerService {
 
     @Override
     public PageData findDealByPage(int pageNo, int pageSize) {
-        int pageNo2 = pageSize * (pageNo - 1);
-        Subject subject = SecurityUtils.getSubject();
-        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-        Integer personnelId  =  currentUser.getCompanyPersonnelId();
-        Integer userId = currentUser.getId();
-        SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
-        SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+        try {
+            int pageNo2 = pageSize * (pageNo - 1);
+            Subject subject = SecurityUtils.getSubject();
+            AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+            Integer personnelId  =  currentUser.getCompanyPersonnelId();
+            Integer userId = currentUser.getId();
+            SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
+            SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
 
-        int level = sysOrganization.getLevel();
-        Integer parentId = sysOrganization.getParentId();
-        Integer companyId = sysOrganization.getId();
-        while (level !=1){
-            SysOrganization sysOrganization3 = hidDangerDAO.findAllByOrganizationId(parentId);
-            parentId = sysOrganization3.getParentId();
-            level=level - 1;
-            companyId = sysOrganization3.getId();
-        }
-        SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
-        if (sysRole.getLevel() == 0){
-            List<HidDangerDO> hidDangerDOS = hidDangerDAO.findAllDealHidByPage(companyId,pageNo2,pageSize);
-            for (int i = 0; i<hidDangerDOS.size(); i++){
-                List<HidDangerProcessDO> hidDangerProcessDOS = hidDangerDAO.findProcessByHidDangerCode(hidDangerDOS.get(i).getHidDangerCode());
-                if (hidDangerProcessDOS.get(hidDangerProcessDOS.size()-1).getCorrectorId().intValue() == personnelId.intValue()){
-                    hidDangerDOS.get(i).setColor("#D80000");
-                }else {
-                    hidDangerDOS.get(i).setColor("#3B86FF");
+            int level = sysOrganization.getLevel();
+            Integer parentId = sysOrganization.getParentId();
+            Integer companyId = sysOrganization.getId();
+            while (level !=1){
+                SysOrganization sysOrganization3 = hidDangerDAO.findAllByOrganizationId(parentId);
+                parentId = sysOrganization3.getParentId();
+                level=level - 1;
+                companyId = sysOrganization3.getId();
+            }
+            SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
+            if (sysRole.getLevel() == 0){
+                List<HidDangerDO> hidDangerDOS = hidDangerDAO.findAllDealHidByPage(companyId,pageNo2,pageSize);
+                for (int i = 0; i<hidDangerDOS.size(); i++){
+                    List<HidDangerProcessDO> hidDangerProcessDOS = hidDangerDAO.findProcessByHidDangerCode(hidDangerDOS.get(i).getHidDangerCode());
+                    if (hidDangerProcessDOS.get(hidDangerProcessDOS.size()-1).getCorrectorId().intValue() == personnelId.intValue()){
+                        hidDangerDOS.get(i).setColor("#D80000");
+                    }else {
+                        hidDangerDOS.get(i).setColor("#3B86FF");
+                    }
                 }
-            }
-            int totalPage = 0;
-            int count = hidDangerDAO.findAllDealHidByPageNum(companyId);
-            if (0 == count % pageSize) {
-                totalPage = count / pageSize;
-            } else {
-                totalPage = count / pageSize + 1;
-            }
-            return new PageData(pageNo, pageSize, totalPage, count, hidDangerDOS);
-        }else {
-            List<HidDangerDO> hidDangerDOS = hidDangerDAO.findPersonnelDealByPage(personnelId,pageNo2,pageSize);
-            for (int i = 0; i<hidDangerDOS.size(); i++){
-                List<HidDangerProcessDO> hidDangerProcessDOS = hidDangerDAO.findProcessByHidDangerCode(hidDangerDOS.get(i).getHidDangerCode());
-                if (hidDangerProcessDOS.get(hidDangerProcessDOS.size()-1).getCorrectorId().intValue() == personnelId.intValue()){
-                    hidDangerDOS.get(i).setColor("#D80000");
-                }else {
-                    hidDangerDOS.get(i).setColor("#3B86FF");
+                int totalPage = 0;
+                int count = hidDangerDAO.findAllDealHidByPageNum(companyId);
+                if (0 == count % pageSize) {
+                    totalPage = count / pageSize;
+                } else {
+                    totalPage = count / pageSize + 1;
                 }
+                return new PageData(pageNo, pageSize, totalPage, count, hidDangerDOS);
+            }else {
+                List<HidDangerDO> hidDangerDOS = hidDangerDAO.findPersonnelDealByPage(personnelId,pageNo2,pageSize);
+                for (int i = 0; i<hidDangerDOS.size(); i++){
+                    List<HidDangerProcessDO> hidDangerProcessDOS = hidDangerDAO.findProcessByHidDangerCode(hidDangerDOS.get(i).getHidDangerCode());
+                    if (hidDangerProcessDOS.get(hidDangerProcessDOS.size()-1).getCorrectorId().intValue() == personnelId.intValue()){
+                        hidDangerDOS.get(i).setColor("#D80000");
+                    }else {
+                        hidDangerDOS.get(i).setColor("#3B86FF");
+                    }
+                }
+                int totalPage = 0;
+                int count = hidDangerDAO.findPersonnelDealByPageNum(personnelId);
+                if (0 == count % pageSize) {
+                    totalPage = count / pageSize;
+                } else {
+                    totalPage = count / pageSize + 1;
+                }
+                return new PageData(pageNo, pageSize, totalPage, count, hidDangerDOS);
             }
-            int totalPage = 0;
-            int count = hidDangerDAO.findPersonnelDealByPageNum(personnelId);
-            if (0 == count % pageSize) {
-                totalPage = count / pageSize;
-            } else {
-                totalPage = count / pageSize + 1;
-            }
-            return new PageData(pageNo, pageSize, totalPage, count, hidDangerDOS);
+        }catch (NullPointerException e){
+            return null;
         }
+
     }
 
     @Override
     public PageData findFinishByPage(int pageNo, int pageSize) {
-        int pageNo2 = pageSize * (pageNo - 1);
-        Subject subject = SecurityUtils.getSubject();
-        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-        Integer personnelId  =  currentUser.getCompanyPersonnelId();
-        Integer userId = currentUser.getId();
+        try {
+            int pageNo2 = pageSize * (pageNo - 1);
+            Subject subject = SecurityUtils.getSubject();
+            AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+            Integer personnelId  =  currentUser.getCompanyPersonnelId();
+            Integer userId = currentUser.getId();
 
-        SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
-        int organizationId = sysCompanyPersonnel.getOrganizationId();
-        SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(organizationId);
-        int level = sysOrganization.getLevel();
-        Integer parentId = sysOrganization.getParentId();
-        Integer companyId = sysOrganization.getId();
-        while (level !=1){
-            SysOrganization sysOrganization3 = hidDangerDAO.findAllByOrganizationId(parentId);
-            parentId = sysOrganization3.getParentId();
-            level=level - 1;
-            companyId = sysOrganization3.getId();
-        }
-        SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
-        if (sysRole.getLevel() == 0){
-            List<HidDangerDO> hidDangerDOS = hidDangerDAO.findAllFinishHidByPage(companyId,pageNo2,pageSize);
-            for (int i = 0;i<hidDangerDOS.size();i++){
-                if (hidDangerDOS.get(i).getProcessingStatus().equals("5")){
-                    hidDangerDOS.get(i).setProcessingStatus("审核通过");
+            SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
+            int organizationId = sysCompanyPersonnel.getOrganizationId();
+            SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(organizationId);
+            int level = sysOrganization.getLevel();
+            Integer parentId = sysOrganization.getParentId();
+            Integer companyId = sysOrganization.getId();
+            while (level !=1){
+                SysOrganization sysOrganization3 = hidDangerDAO.findAllByOrganizationId(parentId);
+                parentId = sysOrganization3.getParentId();
+                level=level - 1;
+                companyId = sysOrganization3.getId();
+            }
+            SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
+            if (sysRole.getLevel() == 0){
+                List<HidDangerDO> hidDangerDOS = hidDangerDAO.findAllFinishHidByPage(companyId,pageNo2,pageSize);
+                for (int i = 0;i<hidDangerDOS.size();i++){
+                    if (hidDangerDOS.get(i).getProcessingStatus().equals("5")){
+                        hidDangerDOS.get(i).setProcessingStatus("审核通过");
+                    }
                 }
-            }
-            int totalPage = 0;
-            int count = hidDangerDAO.findAllFinishHidByPageNum(companyId);
-            if (0 == count % pageSize) {
-                totalPage = count / pageSize;
-            } else {
-                totalPage = count / pageSize + 1;
-            }
-            return new PageData(pageNo, pageSize, totalPage, count, hidDangerDOS);
-        }else {
-            List<HidDangerDO> hidDangerDOS = hidDangerDAO.findPersonnelFinishByPage(personnelId,pageNo2,pageSize);
-            for (int i = 0;i<hidDangerDOS.size();i++){
-                if (hidDangerDOS.get(i).getProcessingStatus().equals("5")){
-                    hidDangerDOS.get(i).setProcessingStatus("审核通过");
+                int totalPage = 0;
+                int count = hidDangerDAO.findAllFinishHidByPageNum(companyId);
+                if (0 == count % pageSize) {
+                    totalPage = count / pageSize;
+                } else {
+                    totalPage = count / pageSize + 1;
                 }
+                return new PageData(pageNo, pageSize, totalPage, count, hidDangerDOS);
+            }else {
+                List<HidDangerDO> hidDangerDOS = hidDangerDAO.findPersonnelFinishByPage(personnelId,pageNo2,pageSize);
+                for (int i = 0;i<hidDangerDOS.size();i++){
+                    if (hidDangerDOS.get(i).getProcessingStatus().equals("5")){
+                        hidDangerDOS.get(i).setProcessingStatus("审核通过");
+                    }
+                }
+                int totalPage = 0;
+                int count = hidDangerDAO.findPersonnelFinishByPageNum(personnelId);
+                if (0 == count % pageSize) {
+                    totalPage = count / pageSize;
+                } else {
+                    totalPage = count / pageSize + 1;
+                }
+                return new PageData(pageNo, pageSize, totalPage, count, hidDangerDOS);
             }
-            int totalPage = 0;
-            int count = hidDangerDAO.findPersonnelFinishByPageNum(personnelId);
-            if (0 == count % pageSize) {
-                totalPage = count / pageSize;
-            } else {
-                totalPage = count / pageSize + 1;
-            }
-            return new PageData(pageNo, pageSize, totalPage, count, hidDangerDOS);
+        }catch (NullPointerException e){
+            return null;
         }
     }
 
