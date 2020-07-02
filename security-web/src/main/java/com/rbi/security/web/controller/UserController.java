@@ -7,6 +7,7 @@ import com.rbi.security.entity.web.user.PagingUser;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.UserService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -35,7 +36,7 @@ public class UserController {
     @Autowired
     UserService userService;
     /**
-     * 添加用户
+     * 添加用户user:page
      */
     @RequestMapping("/insertUser")
     @ResponseBody
@@ -82,6 +83,7 @@ public class UserController {
      * 分页查看用户
      */
     @RequestMapping("/pageQueryUserInfo")
+    @RequiresPermissions("user:page")
     @ResponseBody
     public ResponseModel<PageData<PagingUser>> getPageQueryUserInfo(@RequestBody JSONObject date){
 
