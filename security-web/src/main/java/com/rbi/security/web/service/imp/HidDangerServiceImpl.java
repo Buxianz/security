@@ -582,7 +582,14 @@ public class HidDangerServiceImpl implements HidDangerService {
                         jsonObject2.put("botton","通知整改");
                         jsonArray.add(jsonObject2);
                     }
+                    JSONObject jsonObject3 = new JSONObject();
+                    jsonArray.add(jsonObject3);
+                    jsonObject3.put("botton","查看责令通知书");
                 }
+            }else {
+                JSONObject jsonObject1 = new JSONObject();
+                jsonObject1.put("botton","查看责令通知书");
+                jsonArray.add(jsonObject1);
             }
         }
         map.put("hidDangerDO",hidDangerDO);
