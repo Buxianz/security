@@ -108,8 +108,12 @@ public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsSe
 
     @Override
     public List<SafeContentCategory> findType() {
-        List<SafeContentCategory> safeContentCategories = safeTrainingMaterialsDAO.findType();
-        return safeContentCategories;
+        try {
+            List<SafeContentCategory> safeContentCategories = safeTrainingMaterialsDAO.findType();
+            return safeContentCategories;
+        }catch (NullPointerException e){
+            return null;
+        }
     }
 
 
@@ -158,36 +162,46 @@ public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsSe
     }
 
     @Override
-    public PageData findFileByCategory(int pageNo, int pageSize, int value) {
-        int pageNo2 = pageSize * (pageNo - 1);
-        List<SafeTrainingMaterials> safeTrainingMaterials = safeTrainingMaterialsDAO.findFileByCategory(pageNo2,pageSize,value);
-        for (int i=0;i< safeTrainingMaterials.size();i++){
-            safeTrainingMaterials.get(i).setResourcePath(fileIp+safeTrainingMaterials.get(i).getResourcePath());
+    public PageData findFileByCategory(int pageNo, int pageSize, Integer value) {
+        try {
+            int pageNo2 = pageSize * (pageNo - 1);
+            List<SafeTrainingMaterials> safeTrainingMaterials = safeTrainingMaterialsDAO.findFileByCategory(pageNo2,pageSize,value);
+            for (int i=0;i< safeTrainingMaterials.size();i++){
+                safeTrainingMaterials.get(i).setResourcePath(fileIp+safeTrainingMaterials.get(i).getResourcePath());
+            }
+            int totalPage = 0;
+            int count = safeTrainingMaterialsDAO.findFileByCategoryNum(value);
+            if (0 == count % pageSize) {
+                totalPage = count / pageSize;
+            } else {
+                totalPage = count / pageSize + 1;
+            }
+            return new PageData(pageNo, pageSize, totalPage, count, safeTrainingMaterials);
+        }catch (NullPointerException e){
+            return null;
         }
-        int totalPage = 0;
-        int count = safeTrainingMaterialsDAO.findFileByCategoryNum(value);
-        if (0 == count % pageSize) {
-            totalPage = count / pageSize;
-        } else {
-            totalPage = count / pageSize + 1;
-        }
-        return new PageData(pageNo, pageSize, totalPage, count, safeTrainingMaterials);
+
     }
 
     @Override
-    public PageData findVideoByCategory(int pageNo, int pageSize, int value) {
-        int pageNo2 = pageSize * (pageNo - 1);
-        List<SafeTrainingMaterials> safeTrainingMaterials = safeTrainingMaterialsDAO.findVideoByCategory(pageNo2,pageSize,value);
-        for (int i=0;i< safeTrainingMaterials.size();i++){
-            safeTrainingMaterials.get(i).setResourcePath(fileIp+safeTrainingMaterials.get(i).getResourcePath());
+    public PageData findVideoByCategory(int pageNo, int pageSize, Integer value) {
+        try {
+            int pageNo2 = pageSize * (pageNo - 1);
+            List<SafeTrainingMaterials> safeTrainingMaterials = safeTrainingMaterialsDAO.findVideoByCategory(pageNo2, pageSize, value);
+            for (int i = 0; i < safeTrainingMaterials.size(); i++) {
+                safeTrainingMaterials.get(i).setResourcePath(fileIp + safeTrainingMaterials.get(i).getResourcePath());
+            }
+            int totalPage = 0;
+            int count = safeTrainingMaterialsDAO.findVideoByCategoryNum(value);
+            if (0 == count % pageSize) {
+                totalPage = count / pageSize;
+            } else {
+                totalPage = count / pageSize + 1;
+            }
+            return new PageData(pageNo, pageSize, totalPage, count, safeTrainingMaterials);
+        } catch (NullPointerException e) {
+            return null;
         }
-        int totalPage = 0;
-        int count = safeTrainingMaterialsDAO.findVideoByCategoryNum(value);
-        if (0 == count % pageSize) {
-            totalPage = count / pageSize;
-        } else {
-            totalPage = count / pageSize + 1;
-        }
-        return new PageData(pageNo, pageSize, totalPage, count, safeTrainingMaterials);
+
     }
 }
