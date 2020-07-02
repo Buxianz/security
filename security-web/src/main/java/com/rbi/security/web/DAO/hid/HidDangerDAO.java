@@ -227,4 +227,7 @@ public interface HidDangerDAO {
 
     @Update("update hid_danger set if_control_measures = '无',if_rectification_plan = '无' where hid_danger_code = #{hidDangerCode}")
     void updateIf(String hidDangerCode);
+
+    @Update("update hid_danger set processing_status = #{processingStatus} where hid_danger_code = #{hidDangerCode}")
+    void updateProcessingStatus(@Param("processingStatus") String processingStatus,@Param("hidDangerCode")String hidDangerCode);
 }

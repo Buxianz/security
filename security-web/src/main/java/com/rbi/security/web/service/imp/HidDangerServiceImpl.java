@@ -489,6 +489,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                     jsonObject1.put("botton","完成整改");
                     //最顶层的不能有上报处理
                     if (sysOrganization.getLevel() == 1 && sysRole.getLevel() == 1){
+                        System.out.println(sysOrganization.getLevel()+"     "+sysRole.getLevel());
                     }else {
                         JSONObject jsonObject2 = new JSONObject();
                         jsonObject2.put("botton","上报处理");
@@ -931,6 +932,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerProcessDO.setDealWay("上报");
             hidDangerProcessDO.setDealTime(idt);
             hidDangerProcessDO.setIdt(idt);
+            hidDangerDAO.updateProcessingStatus("1",hidDangerCode);
             hidDangerDAO.addProcess(hidDangerProcessDO);
             return "1000";
         }catch (NullPointerException e){
