@@ -228,6 +228,8 @@ public class HidDangerServiceImpl implements HidDangerService {
 //        Integer userId = currentUser.getId();
         try {
             SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
+            SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+            SysOrganization RetOrganization = hidDangerDAO.findAllByOrganizationId(hidDangerDO.getRectificationUnitId());
             String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
             hidDangerDO.setCopyOrganizationId(123);
             hidDangerDO.setCopyOrganizationName("安防部");
@@ -239,6 +241,9 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerDO.setRectificationNoticeTime(idt);
             hidDangerDO.setHidDangerCode(hidDangerCode);
             hidDangerDO.setProcessingStatus("2");
+            if (RetOrganization.getLevel() <= sysOrganization.getLevel()){
+                return "只能选择下级单位进行整改";
+            }
             //排查前照片添加
             if (beforeImg.length > 6) {
                 return "排查前照片数量不能大于6张";
@@ -266,7 +271,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             }
 
 //        进程表添加
-            SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+            ////组织查询
             HidDangerProcessDO hidDangerProcessDO = new HidDangerProcessDO();
             hidDangerProcessDO.setHidDangerCode(hidDangerCode);
             //操作人信息
