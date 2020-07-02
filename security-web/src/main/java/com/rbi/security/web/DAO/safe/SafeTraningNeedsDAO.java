@@ -34,6 +34,7 @@ public interface SafeTraningNeedsDAO {
     @Insert("insert into safe_training_needs (target_set,training_type_id,training_content,training_duration,start_time,end_time,organization_training_department_id," +
             "proposed_time,report_person,processing_status,idt) " +
             "values (#{targetSet},#{trainingTypeId},#{trainingContent},#{trainingDuration},#{startTime},#{endTime},#{organizationTrainingDepartmentId},#{proposedTime},#{reportPerson},#{processingStatus},#{idt})")
+    @Options(useGeneratedKeys = true, keyProperty = "id",keyColumn="id")
     int insertSafeTraningNeeds(SafeTrainingNeeds safeTrainingNeeds);
     /**
      * 获取未处理记录数量

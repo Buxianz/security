@@ -76,6 +76,56 @@ public class SafeDemandReportServiceImp implements SafeDemandReportService {
                throw new RuntimeException("添加需求提报失败");
           }
      }
+    /*
+   新增需求和资料以及试卷
+    */
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
+    public void insert(SafeTrainingNeeds safeTrainingNeeds, List<SafeDataPlan> safeDataPlanList, SafeTestPaper safeTestPaper) throws RuntimeException{
+        String idt = LocalDateUtils.localDateTimeFormat(LocalDateTime.now(), LocalDateUtils.FORMAT_PATTERN);
+        try{
+            Subject subject = SecurityUtils.getSubject();
+            safeTrainingNeeds.setIdt(idt);
+            safeTrainingNeeds.setProposedTime(idt);
+            safeTrainingNeeds.setReportPerson(((AuthenticationUserDTO)subject.getPrincipal()).getCompanyPersonnelId());
+            safeTraningNeedsDAO.insertSafeTraningNeeds(safeTrainingNeeds);
+            if(safeTrainingNeeds.getProcessingStatus()==2) {
+                //产生（添加）计划
+                SafeTrainingPlan safeTrainingPlan = new SafeTrainingPlan();
+                safeTrainingPlan.setTargetSet(safeTrainingNeeds.getTargetSet());
+                safeTrainingPlan.setTrainingNeedsId(safeTrainingNeeds.getId());
+                safeTrainingPlan.setIdt(idt);
+                safeTrainingPlanDAO.addTrainingPlan(safeTrainingPlan);
+                //添加培训内容与计划关联
+                for (int i = 0; i < safeDataPlanList.size(); i++) {
+                    safeDataPlanList.get(i).setTrainingPlanId(safeTrainingPlan.getId());
+                }
+                trainingContentService.add(safeDataPlanList);
+                //添加试卷
+                safeTestPaper.setTrainingPlanId(safeTrainingPlan.getId());
+                testPaperService.insertTestQaper(safeTestPaper);
+                //发布任务给目标人员
+                String[] t=safeTrainingNeeds.getTargetSet().split(",");
+                //培训人员目标id(公司人员信息id)
+                List<Integer> targets=Arrays.stream(Arrays.stream(t).mapToInt(Integer::parseInt).toArray()).boxed().collect(Collectors.toList());
+                if(companyPersonnelDAO.getCompanyPersonneCountByIds(targets)!=targets.size()){
+                    throw new RuntimeException("有公司人员信息被删除，不在被培训目标集合中，请刷新页面");
+                }
+                List<SafeTrainingTasks> safeTrainingTasksList=new LinkedList<SafeTrainingTasks>();
+                for(int i=0;i<targets.size();i++){
+                    SafeTrainingTasks safeTrainingTasks=new SafeTrainingTasks();
+                    safeTrainingTasks.setCompanyPersonnelId(targets.get(i));
+                    safeTrainingTasks.setTrainingPlanId(safeTrainingPlan.getId());
+                    safeTrainingTasks.setProcessingStatus(1);
+                    safeTrainingTasks.setIdt(idt);
+                    safeTrainingTasksList.add(safeTrainingTasks);
+                }
+                safeTrainingTasksDAO.insertTrainingTasks(safeTrainingTasksList);
+            }
+        } catch (Exception e) {
+            logger.error("添加需求计划失败，需求信息为{}，异常为{}", safeTrainingNeeds.toString(), e);
+            throw new RuntimeException("添加需求计划失败");
+        }
+    }
     /**
      * 分页查看未处理/处理了的需求
      */

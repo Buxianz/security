@@ -55,14 +55,14 @@ public class SafeDemandReportController {
     /**
      * 新增需求和资料以及试卷
      */
-    @RequestMapping("/insert")
+    @RequestMapping("/insertTrainingPlanTest")
     public ResponseModel insert(@RequestBody JSONObject date) {
         try{
             SafeTrainingNeeds safeTrainingNeeds =JSONObject.parseObject(date.getJSONObject("safeTrainingNeeds").toString(), SafeTrainingNeeds.class);
             List<SafeDataPlan> safeDataPlanList= JSONArray.parseArray(date.getJSONArray("safeDataPlanList").toString(),SafeDataPlan.class);
             SafeTestPaper safeTestPaper=JSONObject.parseObject(date.getJSONObject("safeTestPaper").toString(), SafeTestPaper.class);
-
-            return ResponseModel.build("1000", "发布成功");
+            safeDemandReportService.insert(safeTrainingNeeds,safeDataPlanList,safeTestPaper);
+            return ResponseModel.build("1000", "新增需求和资料以及试卷成功");
         }catch (Exception e){
             return ResponseModel.build("1001", e.getMessage());
         }
