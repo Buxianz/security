@@ -7,5 +7,5 @@ import java.util.Set;
 public interface LoginVerificationService {
     AuthenticationUserDTO getUserPrincipalInfo(String userName) throws RuntimeException;
     Set<String> getUserRoleName(int userCode) throws RuntimeException;
-    Set<String> getUserPermissionName(int userCode, String systemKey) throws RuntimeException;
+    Set<String> getUserPermissionOperateCode(String username, int systemId) throws RuntimeException;
 }

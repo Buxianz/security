@@ -7,9 +7,12 @@ spring:
   jmx:
     enabled: false
   datasource:
-    url: jdbc:mysql://139.9.225.140:3306/security?useUnicode=true&useSSL=true&allowMultiQueries=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    #url: jdbc:mysql://139.9.225.140:3306/security?useUnicode=true&useSSL=true&allowMultiQueries=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    #username: root
+    #password: Rbi@20191006@Rbi
+    url: jdbc:mysql://120.77.171.73:3306/security?useUnicode=true&useSSL=true&allowMultiQueries=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
     username: root
-    password: Rbi@20191006@Rbi
+    password: Rbi@2018
     sql-script-encoding: utf-8
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource

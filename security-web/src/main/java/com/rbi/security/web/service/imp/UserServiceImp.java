@@ -291,4 +291,10 @@ public class UserServiceImp implements UserService {
         sysCompanyPersonnel.setHarmNameDTOS(harmNameDTOS);
         return sysCompanyPersonnel;
     }
+    public static   void main(String [] args){
+        String salt = Tools.uuid();
+        System.out.println(salt);
+        Md5Hash md5Hash=new Md5Hash("11111111",salt,2);
+        System.out.println(md5Hash);
+    }
 }

@@ -52,7 +52,7 @@ public interface SysPermissionDAO{
     /**
      * 根据id删除权限
      */
-    @Delete("delete from sys_permission where id=#{id}")
+    @Delete("delete sp.* from sys_permission sp where sp.id=#{id}")
     void  deleteSysPermissionById(@Param("id") Integer id);
 
     /****************吴松达******************/

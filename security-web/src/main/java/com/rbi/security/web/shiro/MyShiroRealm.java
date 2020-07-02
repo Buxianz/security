@@ -2,7 +2,9 @@ package com.rbi.security.web.shiro;
 
 
 import com.rbi.security.entity.AuthenticationUserDTO;
+import com.rbi.security.entity.web.entity.SysUser;
 import com.rbi.security.web.service.LoginVerificationService;
+import com.rbi.security.web.service.UserService;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -12,6 +14,8 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ByteSource;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Set;
 
 
 public class MyShiroRealm extends AuthorizingRealm {
@@ -27,6 +31,8 @@ public class MyShiroRealm extends AuthorizingRealm {
     RedisOperator redisOperator;*/
     @Autowired
     LoginVerificationService loginVerificationService;
+    @Autowired
+    UserService userService;
     /**
      * 认证信息.(身份验证) : Authentication 是用来验证用户身份
      *
@@ -64,18 +70,13 @@ public class MyShiroRealm extends AuthorizingRealm {
         Object principal = principals.getPrimaryPrincipal();
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         //String systemKey =(String) redisOperator.get(UserAccessSystemCacheKey.getUserAccessSystemCacheKey(((AuthenticationUserDTO)principal).getUserName()));
-        //Set<String>  permissions=loginVerificationService.getUserPermissionName(((AuthenticationUserDTO)principal).getUserCode(),systemKey);
-       /* if (permissions!=null) {
+        Set<String> permissions=loginVerificationService.getUserPermissionOperateCode(((AuthenticationUserDTO)principal).getUsername(),1);
+        if (permissions!=null) {
             authorizationInfo.addStringPermissions(permissions);
-        }*/
-        //Set<String> roles=loginVerificationService.getUserRoleName(((AuthenticationUserDTO)principal).getUserCode());
-        //authorizationInfo.addRoles(roles);
+        }
        /* logger.info("---------------- Shiro 权限获取成功 ----------------------");
         if (principal instanceof SysUser) {
             SysUser userLogin = (SysUser) principal;
-            Set<String> roles = roleService.findRoleNameByUserId(userLogin.getId());
-            authorizationInfo.addRoles(roles);
-
             Set<String> permissions = userService.findPermissionsByUserId(userLogin.getId());
             authorizationInfo.addStringPermissions(permissions);
         }*/

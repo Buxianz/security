@@ -32,8 +32,13 @@ public class LoginVerificationServiceImp implements LoginVerificationService {
         return null;
     }
 
-    @Override
-    public Set<String> getUserPermissionName(int userCode, String systemKey) throws RuntimeException {
-        return null;
+
+    public Set<String> getUserPermissionOperateCode(String username, int systemId) throws RuntimeException {
+        try{
+           return loginVerificationDAO.getUserPermissionOperateCode(username,systemId);
+        }catch (Exception e){
+            logger.error("获取用户权限操作码失败，异常信息为{}",e);
+            throw new RuntimeException("获取用户权限操作码失败");
+        }
     }
 }
