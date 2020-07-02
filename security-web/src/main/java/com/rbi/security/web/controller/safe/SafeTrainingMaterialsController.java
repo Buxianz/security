@@ -159,7 +159,7 @@ public class SafeTrainingMaterialsController {
         try {
             int pageNo = json.getInteger("pageNo");
             int pageSize = json.getInteger("pageSize");
-            int value = json.getInteger("value");
+            Integer value = json.getInteger("value");
             PageData pageData = safeTrainingMaterialsService.findVideoByCategory(pageNo,pageSize,value);
             return ResponseModel.build("1000","条件查询成功！",pageData);
         }catch (Exception e){

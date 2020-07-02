@@ -184,7 +184,7 @@ public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsSe
     }
 
     @Override
-    public PageData findVideoByCategory(int pageNo, int pageSize, int value) {
+    public PageData findVideoByCategory(int pageNo, int pageSize, Integer value) {
         try {
             int pageNo2 = pageSize * (pageNo - 1);
             List<SafeTrainingMaterials> safeTrainingMaterials = safeTrainingMaterialsDAO.findVideoByCategory(pageNo2, pageSize, value);

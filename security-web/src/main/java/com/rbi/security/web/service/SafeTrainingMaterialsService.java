@@ -41,5 +41,5 @@ public interface SafeTrainingMaterialsService {
 
     PageData findFileByCategory(int pageNo, int pageSize, Integer value);
 
-    PageData findVideoByCategory(int pageNo, int pageSize, int value);
+    PageData findVideoByCategory(int pageNo, int pageSize, Integer value);
 }
