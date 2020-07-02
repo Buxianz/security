@@ -886,13 +886,8 @@ public class HidDangerServiceImpl implements HidDangerService {
         SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
         SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
         List<SysPersonnelDTO> sysCompanyPersonnels = new ArrayList<>();
-        if (sysRole.getLevel() == 1){
-            sysCompanyPersonnels = hidDangerDAO.findPersonnelByOrganizationId(sysCompanyPersonnel.getOrganizationId(),personnelId);
-        }else {
-            sysCompanyPersonnels = hidDangerDAO.findPersonnelByOrganizationId2(sysCompanyPersonnel.getOrganizationId(),personnelId);
-        }
+        sysCompanyPersonnels = hidDangerDAO.findPersonnelByOrganizationId(sysCompanyPersonnel.getOrganizationId(),sysRole.getLevel());
         List<SysPersonnelDTO> sysCompanyPersonnels1 = hidDangerDAO.findAllFirstUserByOrganizationId(sysCompanyPersonnel.getOrganizationId());
-
         for (int i = 0; i< sysCompanyPersonnels1.size(); i++){
             sysCompanyPersonnels.add(sysCompanyPersonnels1.get(i));
         }
