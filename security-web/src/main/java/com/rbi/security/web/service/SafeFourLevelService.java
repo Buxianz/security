@@ -5,6 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.entity.SafeFourLevel;
 import com.rbi.security.entity.web.safe.PagingSafeFourLevel;
 import com.rbi.security.tool.PageData;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Map;
 
 public interface SafeFourLevelService {
     /**
@@ -35,4 +39,8 @@ public interface SafeFourLevelService {
      * 修改
      */
     String updateSafeFourLevel(JSONObject json);
+
+    Map<String, Object> excelImport(MultipartFile file) throws IOException;
+
+    Map<String, Object> excelwrite() throws IOException;
 }

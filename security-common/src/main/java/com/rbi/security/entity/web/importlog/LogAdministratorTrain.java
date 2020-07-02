@@ -20,7 +20,7 @@ import lombok.Data;
  * @PROJECT_NAME: security
  **/
 @Data
-public class logAdministratorTrain {
+public class LogAdministratorTrain {
     private Integer id;
     private Integer code;
     private String idNum;

@@ -1,8 +1,7 @@
 package com.rbi.security.web.DAO.safe;
 
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
-import com.rbi.security.entity.web.hid.HidDangerDO;
-import com.rbi.security.entity.web.importlog.logAdministratorTrain;
+import com.rbi.security.entity.web.importlog.LogAdministratorTrain;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrain;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrainDTO;
 import org.apache.ibatis.annotations.*;
@@ -106,7 +105,7 @@ public interface SafeAdministratorTrainDAO {
     int adds(@Param("safeAdministratorTrains") List<SafeAdministratorTrain> safeAdministratorTrains);
 
     @Insert("insert into log_administrator_train (code,result,reason,idt,id_num)values(#{code},#{result},#{reason},#{idt},#{idNum})")
-    void addLogAdministratorTrain(logAdministratorTrain logAdministratorTrain);
+    void addLogAdministratorTrain(LogAdministratorTrain logAdministratorTrain);
 
     @Select("select * from safe_administrator_train,sys_company_personnel where safe_administrator_train.id_card_no = sys_company_personnel.id_card_no")
     List<SafeAdministratorTrainDTO> findAll();

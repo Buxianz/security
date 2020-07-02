@@ -1,6 +1,9 @@
 package com.rbi.security.web.DAO.safe;
 
 import com.rbi.security.entity.web.entity.SafeFourLevel;
+import com.rbi.security.entity.web.entity.SafeFourLevelDTO;
+import com.rbi.security.entity.web.importlog.LogAdministratorTrain;
+import com.rbi.security.entity.web.importlog.LogForLevel;
 import com.rbi.security.entity.web.safe.PagingSafeFourLevel;
 import org.apache.ibatis.annotations.*;
 
@@ -13,10 +16,10 @@ public interface SafeFourLevelDAO {
      * 添加
      */
     @Insert("insert into safe_four_level (id_card_no,organization_name,company_education_time,company_fraction,factory_education_time,factory_fraction," +
-            "workshop_education_time,workshop_fraction,class_education_time,class_fraction,operating_staff,idt,udt) values (#{idCardNo},#{organizationName}," +
+            "workshop_education_time,workshop_fraction,class_education_time,class_fraction,operating_staff,idt,udt,remarks) values (#{idCardNo},#{organizationName}," +
             "#{companyEducationTime},#{companyFraction},#{factoryEducationTime},#{factoryFraction},#{workshopEducationTime},#{workshopFraction},#{classEducationTime}," +
-            "#{classFraction},#{operatingStaff},#{idt},#{udt})")
-    int insertSafeFourLevel(SafeFourLevel safeFourLevel);
+            "#{classFraction},#{operatingStaff},#{idt},#{udt},#{remarks})")
+    void insertSafeFourLevel(SafeFourLevel safeFourLevel);
 
     /**
      * 根据id获取
@@ -72,8 +75,15 @@ public interface SafeFourLevelDAO {
     @Update("update safe_four_level set id_card_no=#{idCardNo},organization_name=#{organizationName},company_education_time=#{companyEducationTime}," +
             "company_fraction=#{companyFraction},factory_education_time=#{factoryEducationTime},factory_fraction=#{factoryFraction}," +
             "workshop_education_time=#{workshopEducationTime},workshop_fraction=#{workshopFraction},class_education_time=#{classEducationTime}," +
-            "class_fraction=#{classFraction},operating_staff=#{operatingStaff},idt=#{idt},udt=#{udt} where id=#{id}")
+            "class_fraction=#{classFraction},operating_staff=#{operatingStaff},idt=#{idt},udt=#{udt},remarks=#{remarks} where id=#{id}")
     int updateSafeFourLevelById(SafeFourLevel safeFourLevel);
+
+
+    @Update("update safe_four_level set id_card_no=#{idCardNo},organization_name=#{organizationName},company_education_time=#{companyEducationTime}," +
+            "company_fraction=#{companyFraction},factory_education_time=#{factoryEducationTime},factory_fraction=#{factoryFraction}," +
+            "workshop_education_time=#{workshopEducationTime},workshop_fraction=#{workshopFraction},class_education_time=#{classEducationTime}," +
+            "class_fraction=#{classFraction},operating_staff=#{operatingStaff},idt=#{idt},udt=#{udt},remarks=#{remarks} where id=#{id}")
+    void updateSafeFourLevelByIdNum(SafeFourLevel safeFourLevel);
 
 
     /**
@@ -81,4 +91,16 @@ public interface SafeFourLevelDAO {
      */
     @Delete("delete from safe_four_level where id=#{id}")
     void  deleteSafeFourLevelById(@Param("id") Integer id);
+
+    @Insert("insert into log_four_level (code,result,reason,idt,id_num)values(#{code},#{result},#{reason},#{idt},#{idNum})")
+    void addLogForLevel(LogForLevel logForLevel);
+
+    @Select("select count(*) from sys_company_personnel where id_card_no = #{idCardNo}")
+    int findPersonnelByIdCardNum(String idCardNo);
+
+    @Select("select count(*) from safe_four_level where id_card_no = #{idCardNo}")
+    int findIdCardNoNum(@Param("idCardNo") String idCardNo);
+
+    @Select("select * from safe_four_level,sys_company_personnel where safe_four_level.id_card_no = sys_company_personnel.id_card_no")
+    List<SafeFourLevelDTO> findAll();
 }

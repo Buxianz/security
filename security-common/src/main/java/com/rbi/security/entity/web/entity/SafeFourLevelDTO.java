@@ -3,13 +3,18 @@ package com.rbi.security.entity.web.entity;
 
 import lombok.Data;
 
-import java.sql.Date;
-
 @Data
-public class SafeFourLevel {
+public class SafeFourLevelDTO {
   private Integer id;
   private String idCardNo;
   private String organizationName;
+  private String name;
+  private String gender;
+  private String dateOfBirth;
+  private String entryTime;
+  private String workType;
+  private String position;
+
   private String companyEducationTime;
   private Double companyFraction;
   private String factoryEducationTime;

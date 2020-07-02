@@ -10,10 +10,10 @@ import com.rbi.security.web.service.SafeFourLevelService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 /**
  * @PACKAGE_NAME: com.rbi.security.web.controller
@@ -168,6 +168,31 @@ public class SafeFourLevelController {
         } catch (Exception e) {
             logger.error("更新异常，ERROR：{}", e);
             return ResponseModel.build("1001", "服务器处理异常");
+        }
+    }
+
+    /**
+     * 导入
+     * */
+    @PostMapping("/excelImport")
+    public ResponseModel excelImport(MultipartFile file) {
+        try {
+            Map<String,Object> map = safeFourLevelService.excelImport(file);
+            return ResponseModel.build("1000", "导入完成", map);
+        } catch (Exception e) {
+            System.out.println("错误："+e);
+            return ResponseModel.build("1002", "服务器处理异常", e);
+        }
+    }
+
+    @PostMapping("/excelwrite")
+    public ResponseModel excelwrite() {
+        try {
+            Map<String,Object> map = safeFourLevelService.excelwrite();
+            return ResponseModel.build("1000", "导出完成", map);
+        } catch (Exception e) {
+            System.out.println("错误："+e);
+            return ResponseModel.build("1002", "服务器处理异常", e);
         }
     }
 }

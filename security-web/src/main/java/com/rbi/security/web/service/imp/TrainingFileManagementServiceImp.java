@@ -4,7 +4,7 @@ import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.entity.web.ImportFeedback;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.importlog.ImportSpecialTrainingLOg;
-import com.rbi.security.entity.web.importlog.logAdministratorTrain;
+import com.rbi.security.entity.web.importlog.LogAdministratorTrain;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrain;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrainDTO;
 import com.rbi.security.entity.web.safe.specialtype.PagingSpecialTraining;
@@ -489,7 +489,7 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
-        List<logAdministratorTrain> log = new ArrayList<>();
+        List<LogAdministratorTrain> log = new ArrayList<>();
         List<String> list = ExcelRead.readExcel(file, 9);
         int importCount = 0;
         String idCardNo2 = null;
@@ -505,7 +505,7 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
                 String twoTrainingTime = list1.get(6);
                 String threeTrainingTime = list1.get(7);
                 String remarks = list1.get(8);
-                logAdministratorTrain logAdministratorTrain = new logAdministratorTrain();
+                LogAdministratorTrain logAdministratorTrain = new LogAdministratorTrain();
                 if (idCardNo.equals("blank") || unit.equals("") || dateOfIssue.equals("blank") || termOfValidity.equals("blank") ||
                         typeOfCertificate.equals("blank")) {
                     logAdministratorTrain.setCode(importCount + 2);
@@ -602,7 +602,7 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
                 importCount = importCount +1;
             }catch (Exception e){
                 System.out.println("异常"+e);
-                logAdministratorTrain logAdministratorTrain = new logAdministratorTrain();
+                LogAdministratorTrain logAdministratorTrain = new LogAdministratorTrain();
                 logAdministratorTrain.setCode(importCount + 2);
                 logAdministratorTrain.setIdNum(idCardNo2);
                 logAdministratorTrain.setResult("失败");
