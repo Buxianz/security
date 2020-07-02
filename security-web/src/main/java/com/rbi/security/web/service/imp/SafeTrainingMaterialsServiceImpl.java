@@ -162,7 +162,7 @@ public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsSe
     }
 
     @Override
-    public PageData findFileByCategory(int pageNo, int pageSize, int value) {
+    public PageData findFileByCategory(int pageNo, int pageSize, Integer value) {
         try {
             int pageNo2 = pageSize * (pageNo - 1);
             List<SafeTrainingMaterials> safeTrainingMaterials = safeTrainingMaterialsDAO.findFileByCategory(pageNo2,pageSize,value);
