@@ -51,7 +51,7 @@ public interface SafeTraningNeedsDAO {
      */
     @Select("SELECT stn.*,scp.`name` FROM \n" +
             "(select stn.id,sty.training_type_name,stn.training_content,stn.processing_status,stn.report_person,proposed_time from safe_training_needs stn \n" +
-            "LEFT JOIN safa_training_type  sty ON stn.training_type_id=sty.id WHERE  processing_status=#{processingStatus} ORDER BY proposed_time LIMIT #{startIndex},#{pageSize}) stn LEFT JOIN sys_company_personnel scp ON scp.id=stn.report_person")
+            "LEFT JOIN safa_training_type  sty ON stn.training_type_id=sty.id WHERE  processing_status=#{processingStatus} ORDER BY proposed_time DESC LIMIT #{startIndex},#{pageSize}) stn LEFT JOIN sys_company_personnel scp ON scp.id=stn.report_person")
     List<PagingTraniningNeeds> pagingUnprocessedSafeTraningNeeds(@Param("startIndex") int startIndex, @Param("pageSize") int pageSize,@Param("processingStatus") int processingStatus);
     @Select("SELECT stn.*,scp.`name` FROM \n" +
             "(select stn.id,sty.training_type_name,stn.training_content,stn.processing_status,stn.report_person,proposed_time from safe_training_needs stn \n" +
