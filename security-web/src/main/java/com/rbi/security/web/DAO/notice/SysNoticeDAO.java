@@ -1,4 +1,4 @@
-package com.rbi.security.web.DAO;
+package com.rbi.security.web.DAO.notice;
 
 import com.rbi.security.entity.web.health.OccRegularMonitoring;
 import com.rbi.security.entity.web.notice.SysNotice;

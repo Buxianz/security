@@ -59,14 +59,15 @@ public interface SafeAdministratorTrainDAO {
             "id_card_no  = #{idCardNo}")
     void updateByIdNum(SafeAdministratorTrain safeAdministratorTrain);
 
-    @Select("select * from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id limit #{pageNo},#{pageSize}")
+    @Select("select * from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id " +
+            "order by safe_administrator_train.id DESC limit #{pageNo},#{pageSize}")
     List<SafeAdministratorTrainDTO> findByPage(int pageNo, int pageSize);
 
     @Select("select count(*) from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id")
     int findByPageNum();
 
     @Select("select * from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id " +
-            "and name like ${value2} limit #{pageNo},#{pageSize}")
+            "and name like ${value2} order by safe_administrator_train.id DESC limit #{pageNo},#{pageSize}")
     List<SafeAdministratorTrainDTO> findByName(@Param("value2") String value2,@Param("pageNo") int pageNo,@Param("pageSize") int pageSize);
 
     @Select("select count(*) from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id " +
@@ -75,7 +76,7 @@ public interface SafeAdministratorTrainDAO {
 
 
     @Select("select * from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id " +
-            "and safe_administrator_train.id_card_no like ${value2} limit #{pageNo},#{pageSize}")
+            "and safe_administrator_train.id_card_no like ${value2} order by safe_administrator_train.id DESC limit #{pageNo},#{pageSize}")
     List<SafeAdministratorTrainDTO> findByidCardNo(@Param("value2") String value2,@Param("pageNo") int pageNo,@Param("pageSize") int pageSize);
 
     @Select("select count(*) from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id " +
@@ -84,7 +85,7 @@ public interface SafeAdministratorTrainDAO {
 
 
     @Select("select * from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id " +
-            "and safe_administrator_train.unit like ${value2} limit #{pageNo},#{pageSize}")
+            "and safe_administrator_train.unit like ${value2} order by safe_administrator_train.id DESC limit #{pageNo},#{pageSize}")
     List<SafeAdministratorTrainDTO> findByUnit(@Param("value2") String value2,@Param("pageNo") int pageNo,@Param("pageSize") int pageSize);
 
     @Select("select count(*) from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id " +

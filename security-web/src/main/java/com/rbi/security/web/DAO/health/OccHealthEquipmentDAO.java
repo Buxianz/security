@@ -16,7 +16,7 @@ public interface OccHealthEquipmentDAO {
     /**
      * 分页获取
      */
-    @Select("select * from occ_health_equipment limit #{pageNo},#{pageSize}")
+    @Select("select * from occ_health_equipment order by id DESC limit #{pageNo},#{pageSize}")
     List<OccHealthEquipment> findOccHealthEquipmentByPage(@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
     @Select("select count(id) from occ_health_equipment")
     int findNumOccHealthEquipment();

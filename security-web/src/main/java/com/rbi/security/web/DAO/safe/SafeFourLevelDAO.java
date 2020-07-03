@@ -34,7 +34,7 @@ public interface SafeFourLevelDAO {
      */
     @Select("select sys_company_personnel.work_type,sys_company_personnel.`name`,sys_company_personnel.job_nature,sys_company_personnel.gender," +
             "sys_company_personnel.entry_time,sys_company_personnel.date_of_birth,safe_four_level.* from safe_four_level,sys_company_personnel " +
-            "where safe_four_level.id_card_no=sys_company_personnel.id_card_no and sys_company_personnel.name=#{name} limit #{pageNo},#{pageSize}")
+            "where safe_four_level.id_card_no=sys_company_personnel.id_card_no and sys_company_personnel.name=#{name} order by safe_four_level.id DESC limit #{pageNo},#{pageSize}")
     List<PagingSafeFourLevel> findSafeFourLevelByName(@Param("name") String name,@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
     @Select("select count(safe_four_level.id) from safe_four_level,sys_company_personnel " +
             "where safe_four_level.id_card_no=sys_company_personnel.id_card_no and sys_company_personnel.name=#{name}")
@@ -45,7 +45,7 @@ public interface SafeFourLevelDAO {
      */
     @Select("select sys_company_personnel.work_type,sys_company_personnel.`name`,sys_company_personnel.job_nature,sys_company_personnel.gender," +
             "sys_company_personnel.entry_time,sys_company_personnel.date_of_birth,safe_four_level.* from safe_four_level,sys_company_personnel " +
-            "where safe_four_level.id_card_no=sys_company_personnel.id_card_no and sys_company_personnel.work_type=#{workType} limit #{pageNo},#{pageSize}")
+            "where safe_four_level.id_card_no=sys_company_personnel.id_card_no and sys_company_personnel.work_type=#{workType} order by safe_four_level.id DESC limit #{pageNo},#{pageSize}")
     List<PagingSafeFourLevel> findSafeFourLevelByWorkType(@Param("workType") String workType,@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
     @Select("select count(safe_four_level.id) from safe_four_level,sys_company_personnel " +
             "where safe_four_level.id_card_no=sys_company_personnel.id_card_no and sys_company_personnel.work_type=#{workType}")
@@ -56,7 +56,7 @@ public interface SafeFourLevelDAO {
      */
     @Select("select sys_company_personnel.work_type,sys_company_personnel.`name`,sys_company_personnel.job_nature,sys_company_personnel.gender," +
             "sys_company_personnel.entry_time,sys_company_personnel.date_of_birth,safe_four_level.* from safe_four_level,sys_company_personnel " +
-            "where safe_four_level.id_card_no=sys_company_personnel.id_card_no limit #{pageNo},#{pageSize}")
+            "where safe_four_level.id_card_no=sys_company_personnel.id_card_no order by safe_four_level.id DESC limit #{pageNo},#{pageSize}")
     List<PagingSafeFourLevel> getSafeFourLevelByPage(@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
     @Select("select count(id) from safe_four_level")
     int getCountSafeFourLevel();

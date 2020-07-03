@@ -15,7 +15,7 @@ import java.util.List;
 @Mapper
 public interface HealthProjectDAO {
 
-    @Select("SELECT * FROM occ_health_project limit #{startIndex},#{pageSize}")
+    @Select("SELECT * FROM occ_health_project order by id DESC limit #{startIndex},#{pageSize}")
     List<OccHealthProject> getPageHealthPro(@Param("startIndex") int startIndex,@Param("pageSize") int pageSize);
 
     @Select("SELECT COUNT(id) FROM occ_health_project ")

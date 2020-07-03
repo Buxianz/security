@@ -26,7 +26,7 @@ import java.util.List;
 @Mapper
 public interface OccStatusEvaluationDAO {
 
-    @Select("select * from occ_status_evaluation limit #{pageNo},#{pageSize}")
+    @Select("select * from occ_status_evaluation order by id DESC limit #{pageNo},#{pageSize}")
     List<OccStatusEvaluation> findByPage(int pageNo, int pageSize);
 
     @Select("select count(*) from occ_status_evaluation")

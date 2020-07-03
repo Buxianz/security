@@ -16,7 +16,7 @@ public interface OccHealthMaintainDAO {
     /**
      * 分页获取
      */
-    @Select("select * from occ_health_maintain limit #{pageNo},#{pageSize}")
+    @Select("select * from occ_health_maintain order by id DESC limit #{pageNo},#{pageSize}")
     List<OccHealthMaintain> findOccHealthMaintainByPage(@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
     @Select("select count(id) from occ_health_equipment")
     int findNumOccHealthMaintain();

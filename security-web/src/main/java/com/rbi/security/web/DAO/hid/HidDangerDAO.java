@@ -95,14 +95,14 @@ public interface HidDangerDAO {
     /**
      * 处理中的隐患分页查询
      * */
-    @Select("select * from hid_danger where company_id = #{companyId} and processing_status !='5' limit #{pageNo},#{pageSize}")
+    @Select("select * from hid_danger where company_id = #{companyId} and processing_status !='5' order by id DESC limit #{pageNo},#{pageSize}")
     List<HidDangerDO> findAllDealHidByPage(@Param("companyId")Integer companyId,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
 
     @Select("select count(*) from hid_danger where company_id = #{companyId} and processing_status !='5'")
     Integer findAllDealHidByPageNum(int companyId);
 
     @Select("SELECT * FROM hid_danger WHERE processing_status !='5' and hid_danger_code in " +
-            "(SELECT hid_danger_code from hid_danger_process WHERE (operator_id = #{personnelId} or corrector_id = #{personnelId}) GROUP BY hid_danger_code) LIMIT #{pageNo},#{pageSize}")
+            "(SELECT hid_danger_code from hid_danger_process WHERE (operator_id = #{personnelId} or corrector_id = #{personnelId}) GROUP BY hid_danger_code) order by hid_danger.id DESC LIMIT #{pageNo},#{pageSize}")
     List<HidDangerDO> findPersonnelDealByPage(@Param("personnelId")Integer personnelId,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
 
     @Select("SELECT count(*) FROM hid_danger WHERE processing_status !='5' and hid_danger_code in " +
@@ -113,18 +113,18 @@ public interface HidDangerDAO {
     /**
      * 已完成得隐患分页查询
      * */
-    @Select("select * from hid_danger where company_id = #{companyId} and processing_status ='5' limit #{pageNo},#{pageSize}")
+    @Select("select * from hid_danger where company_id = #{companyId} and processing_status ='5' order by id DESC limit #{pageNo},#{pageSize}")
     List<HidDangerDO> findAllFinishHidByPage(@Param("companyId")Integer companyId,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
 
     @Select("select count(*) from hid_danger where company_id = #{companyId} and processing_status ='5'")
     Integer findAllFinishHidByPageNum(int companyId);
 
     @Select("SELECT * FROM hid_danger WHERE processing_status ='5' and hid_danger_code in " +
-            "(SELECT hid_danger_code from hid_danger_process WHERE (operator_id = #{personnelId} or corrector_id = #{personnelId}) GROUP BY hid_danger_code) LIMIT #{pageNo},#{pageSize}")
+            "(SELECT hid_danger_code from hid_danger_process WHERE (operator_id = #{personnelId} or corrector_id = #{personnelId}) GROUP BY hid_danger_code) order by hid_danger.id DESC LIMIT #{pageNo},#{pageSize}")
     List<HidDangerDO> findPersonnelFinishByPage(@Param("personnelId")Integer personnelId,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
 
     @Select("SELECT count(*) FROM hid_danger WHERE processing_status ='5' and hid_danger_code in " +
-            "(SELECT hid_danger_code from hid_danger_process WHERE (operator_id = #{personnelId} or corrector_id = #{personnelId}) GROUP BY hid_danger_code)")
+            "(SELECT hid_danger_code from hid_danger_process WHERE (operator_id = #{personnelId} or corrector_id = #{personnelId}) GROUP BY hid_danger_code order by hid_danger.id DESC)")
     int findPersonnelFinishByPageNum(@Param("personnelId")Integer personnelId);
 
     @Select("select * from hid_danger where hid_danger_code = #{hidDangerCode}")

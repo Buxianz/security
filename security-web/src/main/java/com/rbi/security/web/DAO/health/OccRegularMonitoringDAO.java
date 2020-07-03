@@ -26,7 +26,7 @@ import java.util.List;
 @Mapper
 public interface OccRegularMonitoringDAO {
 
-    @Select("select * from occ_regular_monitoring limit #{pageNo},#{pageSize}")
+    @Select("select * from occ_regular_monitoring order by id DESC limit #{pageNo},#{pageSize}")
     List<OccRegularMonitoring> findByPage(int pageNo, int pageSize);
 
     @Select("select count(*) from occ_regular_monitoring")

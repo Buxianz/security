@@ -12,7 +12,7 @@ public interface SeriousDangerDAO {
     /**
      * 根据serious_danger_name分页获取
      */
-    @Select("select * from serious_danger where serious_danger_name like ${seriousDangerName} limit #{pageNo},#{pageSize}")
+    @Select("select * from serious_danger where serious_danger_name like ${seriousDangerName} order by id DESC limit #{pageNo},#{pageSize}")
     List<PagingSeriousDanger> findSeriousDangerByPageAndName(@Param("seriousDangerName") String seriousDangerName,
                                                        @Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
     @Select("select count(id) from serious_danger where serious_danger_name like ${seriousDangerName}")
@@ -32,7 +32,7 @@ public interface SeriousDangerDAO {
     /**
      * 分页获取
      */
-    @Select("select * from serious_danger limit #{pageNo},#{pageSize}")
+    @Select("select * from serious_danger order by id DESC limit #{pageNo},#{pageSize}")
     List<PagingSeriousDanger> findSeriousDangerByPage(@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
     @Select("select count(id) from serious_danger")
     int findNumSeriousDanger();

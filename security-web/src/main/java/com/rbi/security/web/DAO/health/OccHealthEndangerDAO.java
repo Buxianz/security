@@ -15,7 +15,7 @@ public interface OccHealthEndangerDAO {
     /**
      * 分页获取
      */
-    @Select("select * from occ_health_endanger limit #{pageNo},#{pageSize}")
+    @Select("select * from occ_health_endanger order by id DESC limit #{pageNo},#{pageSize}")
     List<OccHealthEndanger> findOccHealthEndangerByPage(@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
     @Select("select count(id) from occ_health_equipment")
     int findNumOccHealthEndanger();

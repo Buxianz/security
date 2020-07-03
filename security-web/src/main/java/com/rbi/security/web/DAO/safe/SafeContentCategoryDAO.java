@@ -27,7 +27,7 @@ import java.util.List;
 @Mapper
 public interface SafeContentCategoryDAO {
 
-    @Select("select * from safe_content_category limit #{pageNo},#{pageSize}")
+    @Select("select * from safe_content_category order by id DESC limit #{pageNo},#{pageSize}")
     List<SafeContentCategory> findByPage(int pageNo, int pageSize);
 
     @Select("select count(*) from safe_content_category")
@@ -45,7 +45,7 @@ public interface SafeContentCategoryDAO {
     @Select("select count(*) from safe_training_materials where content_category_id = #{id}")
     int findUseNum(Integer id);
 
-    @Select("select * from safe_content_category where content_category_name like ${name} limit #{pageNo},#{pageSize}")
+    @Select("select * from safe_content_category where content_category_name like ${name} order by id DESC limit #{pageNo},#{pageSize}")
     List<SafeContentCategory> findByContentCategoryName(@Param("pageNo") int pageNo,@Param("pageSize") int pageSize,@Param("name") String name);
 
     @Select("select count(*) from safe_content_category where content_category_name like ${name}")

@@ -26,7 +26,7 @@ import java.util.List;
 @Mapper
 public interface OccHealthExamineDAO {
 
-    @Select("select * from occ_health_examine limit #{pageNo},#{pageSize}")
+    @Select("select * from occ_health_examine order by id DESC limit #{pageNo},#{pageSize}")
     List<OccHealthExamine> findByPage(int pageNo, int pageSize);
 
     @Select("select count(*) from occ_health_examine")
