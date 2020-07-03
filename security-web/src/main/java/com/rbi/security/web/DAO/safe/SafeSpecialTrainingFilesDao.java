@@ -39,7 +39,7 @@ public interface SafeSpecialTrainingFilesDao {
      * @param pageSize 查询条数
      * @return 对象列表
      */
-    @Select("SELECT sptf.*,scp.`name`,scp.gender,scp.degree_of_education FROM (select * from safe_special_training_files LIMIT #{startIndex},#{pageSize}) sptf LEFT JOIN  sys_company_personnel scp ON scp.id=sptf.company_personnel_id")
+    @Select("SELECT sptf.*,scp.`name`,scp.gender,scp.degree_of_education FROM (select * from safe_special_training_files LIMIT ORDER BY idt #{startIndex},#{pageSize}) sptf LEFT JOIN  sys_company_personnel scp ON scp.id=sptf.company_personnel_id")
     List<PagingSpecialTraining> queryAllByLimit(@Param("startIndex") int startIndex, @Param("pageSize") int pageSize);
     /**
      * 根据id获取数据
