@@ -257,43 +257,48 @@ public class UserServiceImp implements UserService {
 
     @Override
     public SysCompanyPersonnel findById() {
-        Subject subject = SecurityUtils.getSubject();
-        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-        Integer personnelId  =  currentUser.getCompanyPersonnelId();
-        SysCompanyPersonnel sysCompanyPersonnel = sysUSerDAO.findById(personnelId);
-        List<SysOrganization> organizationList = organizationDAO.queryAllParentDate(sysCompanyPersonnel.getOrganizationId());
-        if(organizationList.size()!=0)
-            organizationList.forEach(sysOrganization -> {
-                        switch (sysOrganization.getLevel()) {
-                            case 1: {
-                                sysCompanyPersonnel.setCompanyId(sysOrganization.getId());
-                                sysCompanyPersonnel.setCompanyName(sysOrganization.getOrganizationName());
-                            }
-                            break;
-                            case 2: {
-                                sysCompanyPersonnel.setFactoryId(sysOrganization.getId());
-                                sysCompanyPersonnel.setFactoryName(sysOrganization.getOrganizationName());
-                            }
-                            break;
-                            case 3: {
-                                sysCompanyPersonnel.setWorkshopId(sysOrganization.getId());
-                                sysCompanyPersonnel.setWorkshopName(sysOrganization.getOrganizationName());
-                            }
-                            break;
-                            case 4: {
-                                sysCompanyPersonnel.setTeamId(sysOrganization.getId());
-                                sysCompanyPersonnel.setTeamName(sysOrganization.getOrganizationName());
-                            }
-                            break;
+        try {
+            Subject subject = SecurityUtils.getSubject();
+            AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+            Integer personnelId  =  currentUser.getCompanyPersonnelId();
+            SysCompanyPersonnel sysCompanyPersonnel = sysUSerDAO.findById(personnelId);
+            List<SysOrganization> organizationList = organizationDAO.queryAllParentDate(sysCompanyPersonnel.getOrganizationId());
+            if(organizationList.size()!=0)
+                organizationList.forEach(sysOrganization -> {
+                    switch (sysOrganization.getLevel()) {
+                        case 1: {
+                            sysCompanyPersonnel.setCompanyId(sysOrganization.getId());
+                            sysCompanyPersonnel.setCompanyName(sysOrganization.getOrganizationName());
                         }
-        List<HarmNameDTO> harmNameDTOS = null;
-        if (StringUtils.isBlank(sysCompanyPersonnel.getWorkType())){
-             harmNameDTOS = sysUSerDAO.findHarmNameByOrganizationId(sysCompanyPersonnel.getOrganizationId());
-        }else {
-            harmNameDTOS = sysUSerDAO.findHarmNameByWorkType(sysCompanyPersonnel.getWorkType());
+                        break;
+                        case 2: {
+                            sysCompanyPersonnel.setFactoryId(sysOrganization.getId());
+                            sysCompanyPersonnel.setFactoryName(sysOrganization.getOrganizationName());
+                        }
+                        break;
+                        case 3: {
+                            sysCompanyPersonnel.setWorkshopId(sysOrganization.getId());
+                            sysCompanyPersonnel.setWorkshopName(sysOrganization.getOrganizationName());
+                        }
+                        break;
+                        case 4: {
+                            sysCompanyPersonnel.setTeamId(sysOrganization.getId());
+                            sysCompanyPersonnel.setTeamName(sysOrganization.getOrganizationName());
+                        }
+                        break;
+                    }
+                    List<HarmNameDTO> harmNameDTOS = null;
+                    if (StringUtils.isBlank(sysCompanyPersonnel.getWorkType())){
+                        harmNameDTOS = sysUSerDAO.findHarmNameByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+                    }else {
+                        harmNameDTOS = sysUSerDAO.findHarmNameByWorkType(sysCompanyPersonnel.getWorkType());
+                    }
+                    sysCompanyPersonnel.setHarmNameDTOS(harmNameDTOS); });
+            return sysCompanyPersonnel;
+        }catch (NullPointerException e){
+            throw new RuntimeException("组织未配置完善");
         }
-        sysCompanyPersonnel.setHarmNameDTOS(harmNameDTOS); });
-       return sysCompanyPersonnel;
+
     }
 
 
