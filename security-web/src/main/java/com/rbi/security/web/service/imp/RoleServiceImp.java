@@ -2,7 +2,7 @@ package com.rbi.security.web.service.imp;
 
 import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.entity.web.entity.SysRole;
-import com.rbi.security.entity.web.organization.PagingOrganization;
+
 import com.rbi.security.entity.web.role.PagingRole;
 import com.rbi.security.entity.web.role.RolePermissioonInfo;
 import com.rbi.security.exception.NonExistentException;
@@ -11,8 +11,11 @@ import com.rbi.security.tool.PageData;
 import com.rbi.security.web.DAO.SysRoleDAO;
 import com.rbi.security.web.DAO.SysRolePermissionDAO;
 import com.rbi.security.web.service.RoleService;
+import com.rbi.security.web.shiro.MyShiroRealm;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.crazycake.shiro.RedisCache;
+import org.crazycake.shiro.RedisCacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +77,10 @@ public class RoleServiceImp implements RoleService {
             throw new RuntimeException("添加角色信息失败");
         }
     }
-
+    @Autowired
+    RedisCacheManager redisCacheManager;
+    @Autowired
+    MyShiroRealm myShiroRealm;
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void updateRole(SysRole sysRole) throws RuntimeException {
         try{
@@ -90,7 +96,8 @@ public class RoleServiceImp implements RoleService {
                 if(sysRole.getSysRolePermissionList().size()!=0){
                     sysRolePermissionDAO.insertRolePermissions(sysRole.getSysRolePermissionList());
                 }
-
+               System.out.println(myShiroRealm.getKey(SecurityUtils.getSubject()));
+                 ((RedisCache)redisCacheManager.getCache("com.rbi.security.web.shiro.MyShiroRealm.authorizationCache")).clear();
             }else {
                 throw new RepeatException("数据已存在");
             }

@@ -1,5 +1,6 @@
 package com.rbi.security.web.DAO;
 
+import com.rbi.security.entity.web.entity.SysRole;
 import com.rbi.security.entity.web.entity.SysUserRole;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
@@ -32,4 +33,11 @@ public interface SysUserRoleDAO {
             "    where user_id = #{item.userId} and id=#{item.id}" +
             "  </foreach></script>"})
     int updateUserRoleInfo(@Param("sysUserRoleList") List<SysUserRole> sysUserRoleList);
+
+
+    /**
+     * 根据角色id获取所有信息
+     */
+    @Select("select * from sys_user_role where role_id=#{roleId}")
+    List<SysUserRole> getSysUserRoles(@Param("roleId")int roleId);
 }

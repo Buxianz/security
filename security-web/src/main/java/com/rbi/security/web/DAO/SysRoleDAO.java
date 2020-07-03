@@ -48,4 +48,10 @@ public interface SysRoleDAO {
      */
     @Update("update sys_role set role_name=#{roleName},level=#{level},enabled=#{enabled},whether_see=#{whetherSee} where id=#{id}")
     public int updateRoleById(SysRole sysRole);
+
+    /**
+     * 根据id查询角色信息
+     */
+    @Select("select * from sys_role where  id=#{id}")
+    SysRole getRoleId(@Param("id") int id);
 }

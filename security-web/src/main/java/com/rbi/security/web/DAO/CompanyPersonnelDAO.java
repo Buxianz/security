@@ -83,6 +83,8 @@ public interface CompanyPersonnelDAO {
     @Select("SELECT id FROM sys_company_personnel WHERE id_card_no = #{idCardNo}")
     Integer getPersonnelByIdCardNo(@Param("idCardNo") String idCardNo);
 
+    @Select("SELECT * FROM sys_company_personnel WHERE id_card_no = #{idCardNo}")
+    SysCompanyPersonnel getPersonnel(@Param("idCardNo") String idCardNo);
     //根据身份证号和ID查询公司人员数据条数
     @Select("SELECT COUNT(*) FROM sys_company_personnel WHERE id_card_no = #{idCardNo} AND id<>#{id}")
     int queryCountByIdCardNoAndNotId(@Param("idCardNo") String idCardNo,@Param("id") long id);

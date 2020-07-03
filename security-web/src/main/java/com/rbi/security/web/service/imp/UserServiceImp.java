@@ -1,10 +1,7 @@
 package com.rbi.security.web.service.imp;
 
 import com.rbi.security.entity.AuthenticationUserDTO;
-import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
-import com.rbi.security.entity.web.entity.SysOrganization;
-import com.rbi.security.entity.web.entity.SysUser;
-import com.rbi.security.entity.web.entity.SysUserRole;
+import com.rbi.security.entity.web.entity.*;
 import com.rbi.security.entity.web.user.HarmNameDTO;
 import com.rbi.security.entity.web.user.PagingUser;
 import com.rbi.security.exception.NonExistentException;
@@ -13,10 +10,7 @@ import com.rbi.security.tool.LocalDateUtils;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.StringUtils;
 import com.rbi.security.tool.Tools;
-import com.rbi.security.web.DAO.CompanyPersonnelDAO;
-import com.rbi.security.web.DAO.OrganizationDAO;
-import com.rbi.security.web.DAO.SysUSerDAO;
-import com.rbi.security.web.DAO.SysUserRoleDAO;
+import com.rbi.security.web.DAO.*;
 import com.rbi.security.web.service.UserService;
 
 import org.apache.shiro.SecurityUtils;
@@ -26,6 +20,7 @@ import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,6 +60,8 @@ public class UserServiceImp implements UserService {
     OrganizationDAO organizationDAO;
     @Autowired
     CompanyPersonnelDAO companyPersonnelDAO;
+    @Autowired
+    SysRoleDAO sysRoleDAO;
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void insertUser(SysUser sysUser) throws RuntimeException {
         try {
@@ -85,12 +82,21 @@ public class UserServiceImp implements UserService {
             sysUser.setIdt(idt);
             if (sysUSerDAO.increaseDuplicateCheck(sysUser.getUsername()) == null) {
                 sysUSerDAO.insertUser(sysUser);
-
                 if (sysUser.getSysUserRoleList().size() != 0) {
                     for (int i=0;i<sysUser.getSysUserRoleList().size();i++){
                         sysUser.getSysUserRoleList().get(i).setOperatingStaff(sysUser.getOperatingStaff());
                         sysUser.getSysUserRoleList().get(i).setUserId(sysUser.getId());
                         sysUser.getSysUserRoleList().get(i).setIdt(idt);
+                    }
+                    for(int i=0;i<sysUser.getSysUserRoleList().size();i++){
+                        SysRole sysRole=sysRoleDAO.getRoleId(sysUser.getSysUserRoleList().get(i).getRoleId());
+                        if(sysRole.getLevel().intValue()==1){
+                            //是老大角色
+                            List<SysUserRole> sysUserRoleList=sysUserRoleDAO.getSysUserRoles(sysRole.getId());
+                            if(sysUserRoleList.size()!=0){
+                                throw new RepeatException("该角色为1级管理人员（只能被一个人拥有），已被他人拥有");
+                            }
+                        }
                     }
                     sysUserRoleDAO.inserUserRoleInfo(sysUser.getSysUserRoleList());
                 }
@@ -114,6 +120,16 @@ public class UserServiceImp implements UserService {
         try{
             if (sysUSerDAO.updateDuplicateCheck(sysUser)==null) {
                 sysUSerDAO.updateUser(sysUser);
+                for(int i=0;i<sysUser.getSysUserRoleList().size();i++){
+                    SysRole sysRole=sysRoleDAO.getRoleId(sysUser.getSysUserRoleList().get(i).getRoleId());
+                    if(sysRole.getLevel().intValue()==1){
+                        //是老大角色
+                        List<SysUserRole> sysUserRoleList=sysUserRoleDAO.getSysUserRoles(sysRole.getId());
+                        if(sysUserRoleList.size()!=0){
+                            throw new RepeatException("该角色为1级管理人员（只能被一个人拥有），已被他人拥有");
+                        }
+                    }
+                }
                 sysUserRoleDAO.updateUserRoleInfo(sysUser.getSysUserRoleList());
             }
             else throw new RepeatException("更新用户信息重复");

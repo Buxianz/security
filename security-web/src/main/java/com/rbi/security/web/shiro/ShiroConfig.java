@@ -99,7 +99,7 @@ public class ShiroConfig {
         RedisManager redisManager = new RedisManager();
         redisManager.setHost("139.9.225.98");
         redisManager.setPort(6379);
-        redisManager.setExpire(60*60);// 配置缓存过期时间
+        //redisManager.setExpire(60*60);// 配置缓存过期时间
         redisManager.setTimeout(12000);
         redisManager.setPassword("rbi2018@");
         redisManager.setDatabase(13);

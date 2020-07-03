@@ -32,7 +32,7 @@ public interface SafePersonalMistakesDAO {
      */
     @Select("select * from safe_personal_mistakes where company_personnel_id=#{companyPersonnelId} and subject_id=#{subjectId}")
     SafePersonalMistakes getSafePersonalMistakes(@Param("companyPersonnelId")int companyPersonnelId,@Param("subjectId")int subjectId);
-    @Insert("insert into safe_personal_mistakes (company_personnel_id,subject_id,idt) values #{companyPersonnelId},#{subjectId},#{idt}")
+    @Insert("insert into safe_personal_mistakes (company_personnel_id,subject_id,idt) values (#{companyPersonnelId},#{subjectId},#{idt})")
     int add(SafePersonalMistakes safePersonalMistakes);
 
     @Insert({ "<script>",
