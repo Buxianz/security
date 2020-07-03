@@ -3,6 +3,7 @@ package com.rbi.security.web.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.tool.ResponseModel;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -34,35 +35,21 @@ import javax.servlet.http.HttpServletRequest;
  * @MINUTE: 44
  * @PROJECT_NAME: security
  **/
-@Controller
+
+@RestController
 public class LoginController {
     @RequestMapping("/notLanded")
-    @ResponseBody
     public ResponseModel showHello(){
         return ResponseModel.build("1002", "未登录");
     }
-    @RequestMapping("/noAccess")
-    @ResponseBody
-    @ExceptionHandler(UnauthorizedException.class)
-    public ResponseModel noAccess(){
 
-        return ResponseModel.build("1003", "无权访问");
-    }
-    @RequestMapping("/failed")
-    @ResponseBody
-    @ExceptionHandler(AuthorizationException.class)
-    public ResponseModel failed(){
 
-        return ResponseModel.build("1004", "权限认证失败");
-    }
     @RequestMapping("/kickout")
-    @ResponseBody
     public  ResponseModel kickOut(){
         return ResponseModel.build("1005", "他人登陆，被迫下线");
     }
 
     @RequestMapping("/login")
-    @ResponseBody
     public ResponseModel login(@RequestBody JSONObject data, HttpServletRequest request){
         JSONObject jsonObject=new JSONObject();
         String username=data.getString("username");
@@ -99,7 +86,6 @@ public class LoginController {
     }
     @RequiresPermissions("come:1")
     @RequestMapping("/come")
-    @ResponseBody
     public  JSONObject come(){
         JSONObject jsonObject=new JSONObject();
         jsonObject.put("come", "我来了");

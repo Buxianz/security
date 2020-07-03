@@ -29,7 +29,7 @@ public class ShiroConfig {
         // 登录成功后要跳转的链接
         //shiroFilterFactoryBean.setSuccessUrl("/auth/index");
         // 未授权界面; ----这个配置了没卵用，具体原因想深入了解的可以自行百度
-        //shiroFilterFactoryBean.setUnauthorizedUrl("/auth/403");
+        shiroFilterFactoryBean.setUnauthorizedUrl("/noAccess");
         //自定义拦截器
         Map<String, Filter> filtersMap = new LinkedHashMap<String, Filter>();
         //限制同一帐号同时在线的个数。
@@ -114,7 +114,7 @@ public class ShiroConfig {
     public MyShiroSessionManager sessionManager() {
         MyShiroSessionManager sessionManager = new MyShiroSessionManager();
        sessionManager.setSessionDAO(redisSessionDAO());
-       sessionManager.setGlobalSessionTimeout(60*1000*60);
+       sessionManager.setGlobalSessionTimeout(1800000);
         sessionManager.setDeleteInvalidSessions(true);
         sessionManager.setSessionValidationSchedulerEnabled(true);
         sessionManager.setSessionValidationInterval(18000000);

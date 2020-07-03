@@ -26,5 +26,5 @@ public interface LoginVerificationDAO {
             "(SELECT role_id FROM (SELECT id FROM sys_user WHERE username=#{username}) su INNER JOIN " +
             "sys_user_role sur on sur.user_id=su.id) sr INNER JOIN sys_role_permission srp on srp.role_id=sr.role_id) srp " +
             "INNER JOIN sys_permission sp on sp.id=srp.permission_id AND system_id=#{systemId}")
-    Set<String> getUserPermissionOperateCode(@Param("username")String username,@Param("username")int systemId);
+    Set<String> getUserPermissionOperateCode(@Param("username")String username,@Param("systemId")int systemId);
 }
