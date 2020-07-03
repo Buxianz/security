@@ -24,6 +24,7 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,7 +79,8 @@ public class TaskManagerServiceImp implements TaskManagerService {
             throw new RuntimeException("分页获取自身学习信息失败");
         }
     }
-
+    @Value("${uploadfile.ip}")
+    private String fileIp;
     /**
      * 根据id获取学习内容
      */
@@ -89,7 +91,7 @@ public class TaskManagerServiceImp implements TaskManagerService {
             for (int i = 0; i < safeTrainingMaterials.size(); i++) {
                 SafeDataPlanDTO safeDataPlanDTO = new SafeDataPlanDTO();
                 safeDataPlanDTO.setResourceName(safeTrainingMaterials.get(i).getResourceName());
-                safeDataPlanDTO.setResourcePath(safeTrainingMaterials.get(i).getResourcePath());
+                safeDataPlanDTO.setResourcePath(fileIp+safeTrainingMaterials.get(i).getResourcePath());
                 if (safeTrainingMaterials.get(i).getResourceType().equals("文件")) {
                     if (learningContent.getFile() == null) {
                         learningContent.setFile(new LinkedList<SafeDataPlanDTO>());
