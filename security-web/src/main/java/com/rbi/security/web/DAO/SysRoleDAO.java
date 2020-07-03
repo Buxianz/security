@@ -18,7 +18,7 @@ public interface SysRoleDAO {
     /**
      * 添加角色
      */
-    @Insert("insert into sys_role (role_name,whether_see,enabled,operating_staff) values (#{roleName},#{whetherSee},#{enabled},#{operatingStaff})")
+    @Insert("insert into sys_role (role_name,whether_see,level,enabled,operating_staff) values (#{roleName},#{whetherSee},#{level},#{enabled},#{operatingStaff})")
     @Options(useGeneratedKeys = true, keyProperty = "id",keyColumn="id")
     int insertRole(SysRole sysRole);
     /**
@@ -46,6 +46,6 @@ public interface SysRoleDAO {
     /**
      * 更新角色信息
      */
-    @Update("update sys_role set role_name=#{roleName},enabled=#{enabled},whether_see=#{whetherSee} where id=#{id}")
+    @Update("update sys_role set role_name=#{roleName},level=#{level},enabled=#{enabled},whether_see=#{whetherSee} where id=#{id}")
     public int updateRoleById(SysRole sysRole);
 }
