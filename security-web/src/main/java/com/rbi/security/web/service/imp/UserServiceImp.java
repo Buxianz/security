@@ -261,56 +261,47 @@ public class UserServiceImp implements UserService {
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         SysCompanyPersonnel sysCompanyPersonnel = sysUSerDAO.findById(personnelId);
-        SysOrganization sysOrganization2 = sysUSerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
-        int level = sysOrganization2.getLevel();
-        if (level == 4 ){
-            sysCompanyPersonnel.setTeamId(sysOrganization2.getId());
-            sysCompanyPersonnel.setTeamName(sysOrganization2.getOrganizationName());
-        }
-        if (level == 3 ){
-            sysCompanyPersonnel.setWorkshopId(sysOrganization2.getId());
-            sysCompanyPersonnel.setWorkshopName(sysOrganization2.getOrganizationName());
-        }
-        if (level == 2 ){
-            sysCompanyPersonnel.setFactoryId(sysOrganization2.getId());
-            sysCompanyPersonnel.setFactoryName(sysOrganization2.getOrganizationName());
-        }
-        if (level == 1 ){
-            sysCompanyPersonnel.setCompanyId(sysOrganization2.getId());
-            sysCompanyPersonnel.setCompanyName(sysOrganization2.getOrganizationName());
-        }
-        Integer parentId = sysOrganization2.getParentId();
-        level = level -1;
-        while (level !=0){
-            SysOrganization sysOrganization3 = sysUSerDAO.findAllByOrganizationId(parentId);
-            if (level == 3 ){
-                sysCompanyPersonnel.setWorkshopId(sysOrganization2.getId());
-                sysCompanyPersonnel.setWorkshopName(sysOrganization2.getOrganizationName());
-            }
-            if (level == 2 ){
-                sysCompanyPersonnel.setFactoryId(sysOrganization3.getId());
-                sysCompanyPersonnel.setFactoryName(sysOrganization3.getOrganizationName());
-            }
-            if (level == 1 ){
-                sysCompanyPersonnel.setCompanyId(sysOrganization3.getId());
-                sysCompanyPersonnel.setCompanyName(sysOrganization3.getOrganizationName());
-            }
-            parentId = sysOrganization3.getParentId();
-            level=level - 1;
-        }
+        List<SysOrganization> organizationList = organizationDAO.queryAllParentDate(sysCompanyPersonnel.getOrganizationId());
+        if(organizationList.size()!=0)
+            organizationList.forEach(sysOrganization -> {
+                        switch (sysOrganization.getLevel()) {
+                            case 1: {
+                                sysCompanyPersonnel.setCompanyId(sysOrganization.getId());
+                                sysCompanyPersonnel.setCompanyName(sysOrganization.getOrganizationName());
+                            }
+                            break;
+                            case 2: {
+                                sysCompanyPersonnel.setFactoryId(sysOrganization.getId());
+                                sysCompanyPersonnel.setFactoryName(sysOrganization.getOrganizationName());
+                            }
+                            break;
+                            case 3: {
+                                sysCompanyPersonnel.setWorkshopId(sysOrganization.getId());
+                                sysCompanyPersonnel.setWorkshopName(sysOrganization.getOrganizationName());
+                            }
+                            break;
+                            case 4: {
+                                sysCompanyPersonnel.setTeamId(sysOrganization.getId());
+                                sysCompanyPersonnel.setTeamName(sysOrganization.getOrganizationName());
+                            }
+                            break;
+                        }
         List<HarmNameDTO> harmNameDTOS = null;
         if (StringUtils.isBlank(sysCompanyPersonnel.getWorkType())){
              harmNameDTOS = sysUSerDAO.findHarmNameByOrganizationId(sysCompanyPersonnel.getOrganizationId());
         }else {
             harmNameDTOS = sysUSerDAO.findHarmNameByWorkType(sysCompanyPersonnel.getWorkType());
         }
-        sysCompanyPersonnel.setHarmNameDTOS(harmNameDTOS);
-        return sysCompanyPersonnel;
+        sysCompanyPersonnel.setHarmNameDTOS(harmNameDTOS); });
+       return sysCompanyPersonnel;
     }
-    public static   void main(String [] args){
-        String salt = Tools.uuid();
-        System.out.println(salt);
-        Md5Hash md5Hash=new Md5Hash("11111111",salt,2);
-        System.out.println(md5Hash);
-    }
+
+
+
+//    public static   void main(String [] args){
+//        String salt = Tools.uuid();
+//        System.out.println(salt);
+//        Md5Hash md5Hash=new Md5Hash("11111111",salt,2);
+//        System.out.println(md5Hash);
+//    }
 }
