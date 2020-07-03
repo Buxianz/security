@@ -106,4 +106,15 @@ public interface SysUSerDAO {
 
     @Select("select harm_name from risk_control where work_type = #{workType}")
     List<HarmNameDTO> findHarmNameByWorkType(String workType);
+
+
+    /**
+     * 查询level为一的角色
+     * */
+    @Select("select count(*) from sys_company_personnel,sys_user,sys_user_role,sys_role where " +
+            "sys_company_personnel.id = sys_user.company_personnel_id and " +
+            "sys_user.id = sys_user_role.user_id and " +
+            "sys_user_role.role_id  =  sys_role.id and " +
+            "sys_role.level = 1 and organization_id = #{organizationId}")
+    int findFistLevelNum(Integer organizationId);
 }
