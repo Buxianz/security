@@ -111,10 +111,28 @@ public interface SysUSerDAO {
     /**
      * 查询level为一的角色
      * */
-    @Select("select count(*) from sys_company_personnel,sys_user,sys_user_role,sys_role where " +
-            "sys_company_personnel.id = sys_user.company_personnel_id and " +
-            "sys_user.id = sys_user_role.user_id and " +
-            "sys_user_role.role_id  =  sys_role.id and " +
-            "sys_role.level = 1 and organization_id = #{organizationId}")
-    int findFistLevelNum(Integer organizationId);
+    @Select("SELECT\n" +
+            "\tcount(*)\n" +
+            "FROM\n" +
+            "\tsys_company_personnel,\n" +
+            "\tsys_user,\n" +
+            "\tsys_user_role,\n" +
+            "\tsys_role\n" +
+            "WHERE\n" +
+            "\tsys_company_personnel.id = sys_user.company_personnel_id\n" +
+            "AND sys_user.id = sys_user_role.user_id\n" +
+            "AND sys_user_role.role_id = sys_role.id\n" +
+            "AND sys_role. LEVEL = 1\n" +
+            "AND sys_company_personnel.organization_id = (\n" +
+            "\tSELECT\n" +
+            "\t\tsys_organization.id\n" +
+            "\tFROM\n" +
+            "\t\tsys_organization,\n" +
+            "\t\tsys_company_personnel\n" +
+            "\tWHERE\n" +
+            "\t\tsys_organization.id = sys_company_personnel.organization_id\n" +
+            "\tAND sys_company_personnel.id = 2\n" +
+            ")")
+    int findFistLevelNum(Integer id);
+
 }
