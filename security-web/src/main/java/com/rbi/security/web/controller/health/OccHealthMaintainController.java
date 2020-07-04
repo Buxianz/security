@@ -6,6 +6,7 @@ import com.rbi.security.entity.web.health.OccHealthMaintain;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.OccHealthMaintainService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,7 @@ public class OccHealthMaintainController {
      * @param json
      * @return
      */
+    @RequiresPermissions("occHealthMaintain:page")
     @RequestMapping(value = "/findOccHealthMaintainByPage", method = RequestMethod.POST)
     public ResponseModel<PageData> findOccHealthMaintainByPage(@RequestBody JSONObject json) {
         try {
@@ -81,6 +83,7 @@ public class OccHealthMaintainController {
      * @param json
      * @return
      */
+    @RequiresPermissions("occHealthMaintain:update")
     @RequestMapping(value = "/insertOccHealthMaintain", method = RequestMethod.POST)
     public ResponseModel insertOccHealthMaintain(@RequestBody JSONObject json) {
         try {
@@ -104,6 +107,7 @@ public class OccHealthMaintainController {
      * @return
      * @RequestParam
      */
+    @RequiresPermissions("occHealthMaintain:delete")
     @RequestMapping(value = "/deleteOccHealthMaintain", method = RequestMethod.POST)
     public ResponseModel deleteOccHealthMaintain(@RequestBody JSONObject request) {
         try {
@@ -128,6 +132,7 @@ public class OccHealthMaintainController {
      * @param json
      * @return
      */
+    @RequiresPermissions("occHealthMaintain:update")
     @RequestMapping(value = "/updateOccHealthMaintain", method = RequestMethod.POST)
     public ResponseModel updateOccHealthMaintain(@RequestBody JSONObject json) {
         try {

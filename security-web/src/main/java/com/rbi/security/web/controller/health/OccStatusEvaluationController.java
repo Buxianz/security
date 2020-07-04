@@ -8,6 +8,7 @@ import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.OccRegularMonitoringService;
 import com.rbi.security.web.service.OccStatusEvaluationService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,6 +41,7 @@ public class OccStatusEvaluationController {
     /**
      * 分页
      * */
+    @RequiresPermissions("statusEvaluation:page")
     @PostMapping("/findByPage")
     public ResponseModel<PageData> findByPage(@RequestBody JSONObject json){
         try {
@@ -56,6 +58,7 @@ public class OccStatusEvaluationController {
     /**
      * 添加
      **/
+    @RequiresPermissions("statusEvaluation:insert")
     @PostMapping("/add")
     public ResponseModel add(OccStatusEvaluation occStatusEvaluation,@RequestParam(value="file",required=false) MultipartFile file){
         try {
@@ -70,6 +73,7 @@ public class OccStatusEvaluationController {
     /**
      * 修改
      **/
+    @RequiresPermissions("statusEvaluation:update")
     @PostMapping("/update")
     public ResponseModel update(OccStatusEvaluation occStatusEvaluation, @RequestParam(value="file",required=false) MultipartFile file){
         try {
@@ -84,6 +88,7 @@ public class OccStatusEvaluationController {
     /**
      * 删除
      **/
+    @RequiresPermissions("statusEvaluation:delete")
     @PostMapping("/delete")
     public ResponseModel delete(@RequestBody JSONObject json){
         try {
@@ -98,6 +103,7 @@ public class OccStatusEvaluationController {
     /**
      * 删除
      **/
+    //@RequiresPermissions("statusEvaluation:page")
     @PostMapping("/deleteFile")
     public ResponseModel deleteFile(@RequestBody JSONObject json){
         try {

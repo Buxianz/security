@@ -8,6 +8,7 @@ import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.HidDangerService;
 import com.rbi.security.web.service.OccDailyMonitoringService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,6 +41,7 @@ public class OccDailyMonitoringController {
     /**
      * 分页
      * */
+    @RequiresPermissions("dailyMonitoring:page")
     @PostMapping("/findByPage")
     public ResponseModel<PageData> findByPage(@RequestBody JSONObject json){
         try {
@@ -56,6 +58,7 @@ public class OccDailyMonitoringController {
     /**
      * 添加
      **/
+    @RequiresPermissions("dailyMonitoring:insert")
     @PostMapping("/add")
     public ResponseModel add(@RequestBody JSONObject json){
         try {
@@ -71,6 +74,7 @@ public class OccDailyMonitoringController {
     /**
      * 修改
      **/
+    @RequiresPermissions("dailyMonitoring:update")
     @PostMapping("/update")
     public ResponseModel update(@RequestBody JSONObject json){
         try {
@@ -86,6 +90,7 @@ public class OccDailyMonitoringController {
     /**
      * 删除
      **/
+    @RequiresPermissions("dailyMonitoring:delete")
     @PostMapping("/delete")
     public ResponseModel delete(@RequestBody JSONObject json){
         try {

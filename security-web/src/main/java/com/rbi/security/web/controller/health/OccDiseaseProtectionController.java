@@ -6,6 +6,7 @@ import com.rbi.security.entity.web.health.OccDiseaseProtection;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.OccDiseaseProtectionService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +30,7 @@ public class OccDiseaseProtectionController {
     /**
      * 分页
      * */
+    @RequiresPermissions("diseaseProtection:page")
     @PostMapping("/findByPage")
     public ResponseModel<PageData> findByPage(@RequestBody JSONObject json){
         try {
@@ -45,6 +47,7 @@ public class OccDiseaseProtectionController {
     /**
      * 添加
      **/
+    @RequiresPermissions("diseaseProtection:insert")
     @PostMapping("/add")
     public ResponseModel add(@RequestBody JSONObject json){
         try {
@@ -65,6 +68,7 @@ public class OccDiseaseProtectionController {
     /**
      * 修改
      **/
+    @RequiresPermissions("diseaseProtection:update")
     @PostMapping("/update")
     public ResponseModel update(@RequestBody JSONObject json){
         try {
@@ -84,6 +88,7 @@ public class OccDiseaseProtectionController {
     /**
      * 删除
      **/
+    @RequiresPermissions("diseaseProtection:delete")
     @PostMapping("/delete")
     public ResponseModel delete(@RequestBody JSONObject json){
         try {

@@ -6,6 +6,7 @@ import com.rbi.security.entity.web.health.OccHealthEndanger;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.OccHealthEndangerService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,7 @@ public class OccHealthEndangerController {
      * @param json
      * @return
      */
+    @RequiresPermissions("occHealthEndanger:page")
     @RequestMapping(value = "/findOccHealthEndangerByPage", method = RequestMethod.POST)
     public ResponseModel<PageData> findOccHealthEndangerByPage(@RequestBody JSONObject json) {
         try {
@@ -64,6 +66,7 @@ public class OccHealthEndangerController {
      * @param json 编号id
      * @return
      */
+
     @RequestMapping(value = "/findOccHealthEndangerById", method = RequestMethod.POST)
     public ResponseModel<OccHealthEndanger> findOccHealthEndangerById(@RequestBody JSONObject json) {
         try {
@@ -81,6 +84,7 @@ public class OccHealthEndangerController {
      * @param json
      * @return
      */
+    @RequiresPermissions("occHealthEndanger:insert")
     @RequestMapping(value = "/insertOccHealthEndanger", method = RequestMethod.POST)
     public ResponseModel insertOccHealthEndanger(@RequestBody JSONObject json) {
         try {
@@ -104,6 +108,7 @@ public class OccHealthEndangerController {
      * @return
      * @RequestParam
      */
+    @RequiresPermissions("occHealthEndanger:delete")
     @RequestMapping(value = "/deleteOccHealthEndanger", method = RequestMethod.POST)
     public ResponseModel deleteOccHealthEndanger(@RequestBody JSONObject request) {
         try {
@@ -128,6 +133,7 @@ public class OccHealthEndangerController {
      * @param json
      * @return
      */
+    @RequiresPermissions("occHealthEndanger:update")
     @RequestMapping(value = "/updateOccHealthEndanger", method = RequestMethod.POST)
     public ResponseModel updateOccHealthEndanger(@RequestBody JSONObject json) {
         try {

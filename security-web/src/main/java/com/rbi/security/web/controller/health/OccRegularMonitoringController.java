@@ -7,6 +7,7 @@ import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.OccRegularMonitoringService;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,6 +40,7 @@ public class OccRegularMonitoringController {
     /**
      * 分页
      * */
+    @RequiresPermissions("regularMonitoring:page")
     @PostMapping("/findByPage")
     public ResponseModel<PageData> findByPage(@RequestBody JSONObject json){
         try {
@@ -55,6 +57,7 @@ public class OccRegularMonitoringController {
     /**
      * 添加
      **/
+    @RequiresPermissions("regularMonitoring:insert")
     @PostMapping("/add")
     public ResponseModel add(OccRegularMonitoring occRegularMonitoring,@RequestParam(value="file",required=false) MultipartFile file){
         try {
@@ -69,6 +72,7 @@ public class OccRegularMonitoringController {
     /**
      * 修改
      **/
+    @RequiresPermissions("regularMonitoring:update")
     @PostMapping("/update")
     public ResponseModel update(OccRegularMonitoring occRegularMonitoring,@RequestParam(value="file",required=false) MultipartFile file){
         try {
@@ -83,6 +87,7 @@ public class OccRegularMonitoringController {
     /**
      * 删除
      **/
+    @RequiresPermissions("regularMonitoring:delete")
     @PostMapping("/delete")
     public ResponseModel delete(@RequestBody JSONObject json){
         try {
@@ -97,6 +102,7 @@ public class OccRegularMonitoringController {
     /**
      * 删除
      **/
+    //@RequiresPermissions("regularMonitoring:")
     @PostMapping("/deleteFile")
     public ResponseModel deleteFile(@RequestBody JSONObject json){
         try {

@@ -6,6 +6,7 @@ import com.rbi.security.entity.web.health.OccHealthEquipment;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.OccHealthEquipmentService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,7 @@ public class OccHealthEquipmentController {
      * @param json
      * @return
      */
+    @RequiresPermissions("occHealthEquipment:page")
     @RequestMapping(value = "/findOccHealthEquipmentByPage", method = RequestMethod.POST)
     public ResponseModel<PageData> findOccHealthEquipmentByPage(@RequestBody JSONObject json) {
         try {
@@ -64,6 +66,7 @@ public class OccHealthEquipmentController {
      * @param json 编号id
      * @return
      */
+
     @RequestMapping(value = "/findOccHealthEquipmentById", method = RequestMethod.POST)
     public ResponseModel<OccHealthEquipment> findOccHealthEquipmentById(@RequestBody JSONObject json) {
         try {
@@ -81,6 +84,7 @@ public class OccHealthEquipmentController {
      * @param json
      * @return
      */
+    @RequiresPermissions("occHealthEquipment:insert")
     @RequestMapping(value = "/insertOccHealthEquipment", method = RequestMethod.POST)
     public ResponseModel insertOccHealthEquipment(@RequestBody JSONObject json) {
         try {
@@ -104,6 +108,7 @@ public class OccHealthEquipmentController {
      * @return
      * @RequestParam
      */
+    @RequiresPermissions("occHealthEquipment:delete")
     @RequestMapping(value = "/deleteOccHealthEquipment", method = RequestMethod.POST)
     public ResponseModel deleteOccHealthEquipment(@RequestBody JSONObject request) {
         try {
@@ -128,6 +133,7 @@ public class OccHealthEquipmentController {
      * @param json
      * @return
      */
+    @RequiresPermissions("occHealthEquipment:update")
     @RequestMapping(value = "/updateOccHealthEquipment", method = RequestMethod.POST)
     public ResponseModel updateOccHealthEquipment(@RequestBody JSONObject json) {
         try {
