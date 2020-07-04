@@ -7,6 +7,7 @@ import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.DAO.health.HealthProjectDAO;
 import com.rbi.security.web.service.HealthProjectService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,12 +23,14 @@ import java.util.List;
  * @Version 1.0
  **/
 @RestController
+//@RequiresPermissions("healthProject:menu")
 @RequestMapping("/health_project")
 public class HealthProjectController {
 
     @Autowired
     HealthProjectService healthProjectService;
 
+    @RequiresPermissions("healthProject:page")
     @PostMapping("/getPage")
     public ResponseModel<PageData<OccHealthProject>> getPageHealthPro(@RequestBody JSONObject jsonObject){
         try {
@@ -41,6 +44,7 @@ public class HealthProjectController {
         }
     }
 
+    @RequiresPermissions("healthProject:insert")
     @PostMapping("/insert")
     public ResponseModel insertHealthPro(@RequestBody JSONObject jsonObject){
         try {
@@ -51,7 +55,7 @@ public class HealthProjectController {
             return ResponseModel.build("1001","添加失败", e.getMessage());
         }
     }
-
+    @RequiresPermissions("healthProject:update")
     @PostMapping("/update")
     public ResponseModel updateHealthPro(@RequestBody JSONObject jsonObject){
         try{
@@ -62,7 +66,7 @@ public class HealthProjectController {
             return ResponseModel.build("1001","更新失败",e.getMessage());
         }
     }
-
+    @RequiresPermissions("healthProject:delete")
     @PostMapping("/delete")
     public ResponseModel deleteHealthPro(@RequestBody JSONObject jsonObject){
         try{
