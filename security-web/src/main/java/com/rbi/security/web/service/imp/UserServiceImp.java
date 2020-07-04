@@ -296,7 +296,7 @@ public class UserServiceImp implements UserService {
                     sysCompanyPersonnel.setHarmNameDTOS(harmNameDTOS); });
             return sysCompanyPersonnel;
         }catch (NullPointerException e){
-            throw new RuntimeException("组织未配置完善");
+            return null;
         }
 
     }
