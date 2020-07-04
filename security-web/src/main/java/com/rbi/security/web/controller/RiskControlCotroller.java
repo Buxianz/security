@@ -7,6 +7,7 @@ import com.rbi.security.entity.web.risk.RiskControl;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.RiskControlService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +41,7 @@ public class RiskControlCotroller {
     /**
      * 区域内添加
      * */
+    @RequiresPermissions("riskManage:addInside")
     @PostMapping("/addInside")
     public ResponseModel addInside(RiskControl riskControl, @RequestParam(value="picture",required=false) MultipartFile[] picture){
         try {
