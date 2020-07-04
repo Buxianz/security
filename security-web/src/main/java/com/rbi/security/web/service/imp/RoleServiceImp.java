@@ -166,7 +166,7 @@ public class RoleServiceImp implements RoleService {
         //用递归找子。
         List<RolePermissioonInfo> treeList = new ArrayList<RolePermissioonInfo>();
         for (RolePermissioonInfo tree : list) {
-            if (tree.getParentId() == 0) {
+            if (tree.getParentId().intValue() == 0) {
                 treeList.add(findRolePermissionChildren(tree, list));
             }
         }
@@ -176,7 +176,7 @@ public class RoleServiceImp implements RoleService {
     private static RolePermissioonInfo findRolePermissionChildren(RolePermissioonInfo tree, List<RolePermissioonInfo> list)
     {
         for (RolePermissioonInfo node : list) {
-            if (node.getParentId() == tree.getPermissionId() && node.getRoleId()==tree.getRoleId()) {
+            if (node.getParentId().intValue() == tree.getPermissionId().intValue() && node.getRoleId().intValue()==tree.getRoleId().intValue()) {
                 if (tree.getRolePermissionInfos() == null) {
                     tree.setRolePermissionInfos(new ArrayList<RolePermissioonInfo>());
                 }
