@@ -9,6 +9,7 @@ import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.HidDangerService;
 import com.rbi.security.web.service.SysNoticeService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +28,7 @@ public class SysNoticeController {
     /**
      * 分页
      * */
+    @RequiresPermissions("informationNotice:page")
     @PostMapping("/findByPage")
     public ResponseModel<PageData> findByPage(@RequestBody JSONObject json){
         try {
@@ -43,6 +45,7 @@ public class SysNoticeController {
     /**
      * 添加
      **/
+    @RequiresPermissions("publicInformation:add")
     @PostMapping("/add")
     public ResponseModel add(SysNotice sysNotice, @RequestParam(value="file",required=false) MultipartFile file){
         try {

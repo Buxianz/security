@@ -60,6 +60,7 @@ public class RiskControlCotroller {
     /**
      * 区域外添加
      * */
+    @RequiresPermissions("riskManage:addOutiside")
     @PostMapping("/addOutside")
     public ResponseModel addOutside(RiskControl riskControl, @RequestParam(value="picture",required=false) MultipartFile[] picture){
         try {
@@ -104,6 +105,7 @@ public class RiskControlCotroller {
     /**
      * 区域内分页
      * */
+    @RequiresPermissions("riskFile:insidePage")
     @PostMapping("/findInsideByPage")
     public ResponseModel<PageData> findInsideByPage(@RequestBody JSONObject json){
         try {
@@ -120,6 +122,7 @@ public class RiskControlCotroller {
     /**
      * 区域外分页
      * */
+    @RequiresPermissions("riskFile:outsidePage")
     @PostMapping("/findOutsideByPage")
     public ResponseModel<PageData> findOutsideByPage(@RequestBody JSONObject json){
         try {
@@ -136,6 +139,7 @@ public class RiskControlCotroller {
     /**
      * 重大风险分页
      * */
+    @RequiresPermissions("riskFile:seriousRiskPage")
     @PostMapping("/findSeriousRiskByPage")
     public ResponseModel<PageData> findSeriousRiskByPage(@RequestBody JSONObject json){
         try {
@@ -154,6 +158,7 @@ public class RiskControlCotroller {
     /**
      * 修改
      * */
+    @RequiresPermissions("riskFile:update")
     @PostMapping("/update")
     public ResponseModel update(RiskControl riskControl, @RequestParam(value="picture",required=false) MultipartFile[] picture){
         try {

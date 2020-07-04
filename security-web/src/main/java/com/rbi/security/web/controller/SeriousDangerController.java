@@ -6,6 +6,7 @@ import com.rbi.security.entity.web.entity.SeriousDanger;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.SeriousDangerService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +37,7 @@ public class SeriousDangerController {
     /**
      * 添加重大危险源
      **/
+    @RequiresPermissions("seriousDanger:add")
     @PostMapping("/insertSeriousDanger")
     public ResponseModel insertSeriousDanger(SeriousDanger seriousDanger, @RequestParam(value="seriousDangerPicture",required=false) MultipartFile[] seriousDangerPicture){
         try {
@@ -55,6 +57,7 @@ public class SeriousDangerController {
     /**
      * 分页查询重大危险源
      **/
+    @RequiresPermissions("seriousDangerFile:page")
     @PostMapping("/findSeriousDangerByPage")
     public ResponseModel<PageData> findSeriousDangerByPage(@RequestBody JSONObject json){
         try {
@@ -101,6 +104,7 @@ public class SeriousDangerController {
     /**
      * 修改重大危险源
      **/
+    @RequiresPermissions("seriousDangerFile:update")
     @PostMapping("/updateSeriousDanger")
     public ResponseModel updateSeriousDanger(SeriousDanger seriousDanger,@RequestParam(value="pictureId",required=false) Integer[] pictureId,  @RequestParam(value="seriousDangerPicture",required=false) MultipartFile[] seriousDangerPicture){
         try {

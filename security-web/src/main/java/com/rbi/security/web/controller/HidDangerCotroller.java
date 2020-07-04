@@ -6,6 +6,7 @@ import com.rbi.security.entity.web.hid.HidDangerDO;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.HidDangerService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +37,7 @@ public class HidDangerCotroller {
     /**
      * 上报整改
      **/
+    @RequiresPermissions("hidDangerTroubleshoot:repot")
     @PostMapping("/addReport")
     public ResponseModel report(HidDangerDO hidDangerDO, @RequestParam(value="beforeImg",required=false) MultipartFile[] beforeImg,
                                 @RequestParam(value="afterImg",required=false) MultipartFile[] afterImg,
@@ -70,6 +72,7 @@ public class HidDangerCotroller {
     /**
      * 责令整改
      * */
+    @RequiresPermissions("hidDangerTroubleshoot:order")
     @PostMapping("/addOrder")
     public ResponseModel addOrder(HidDangerDO hidDangerDO, @RequestParam(value="beforeImg",required=false) MultipartFile[] beforeImg,
                                   @RequestParam(value="notice",required=false) MultipartFile notice){
@@ -89,6 +92,7 @@ public class HidDangerCotroller {
     /**
      * 隐患处理分页
      * */
+    @RequiresPermissions("hidDangerDeal:page")
     @PostMapping("/findDealByPage")
     public ResponseModel<PageData> findDealByPage(@RequestBody JSONObject json){
         try {
@@ -105,6 +109,7 @@ public class HidDangerCotroller {
     /**
      * 隐患档案分页
      * */
+    @RequiresPermissions("hidDangerFile:page")
     @PostMapping("/findFinishByPage")
     public ResponseModel<PageData> findFinishByPage(@RequestBody JSONObject json){
         try {
