@@ -102,7 +102,7 @@ public class UserServiceImp implements UserService {
                         SysRole sysRole=sysRoleDAO.getRoleId(sysUser.getSysUserRoleList().get(i).getRoleId());
                         if(sysRole.getLevel().intValue()==1){
                             //是老大角色
-                            int num = sysUSerDAO.findFistLevelNum(companyPersonnelId);
+                            int num = sysUSerDAO.findFistLevelNum(sysRole.getId(),companyPersonnelId);
                             if (num != 0){
                                 throw new RepeatException("该角色为1级管理人员（只能被一个人拥有），已被他人拥有");
                             }
@@ -144,7 +144,7 @@ public class UserServiceImp implements UserService {
                     SysRole sysRole=sysRoleDAO.getRoleId(sysUser.getSysUserRoleList().get(i).getRoleId());
                     if(sysRole.getLevel().intValue()==1){
                         //是老大角色
-                        int num = sysUSerDAO.findFistLevelNum2(sysUser.getCompanyPersonnelId());
+                        int num = sysUSerDAO.findFistLevelNum2(sysRole.getId(),sysUser.getCompanyPersonnelId());
                         if (num != 0){
                             throw new RepeatException("该角色为1级管理人员（只能被一个人拥有），已被他人拥有");
                         }
