@@ -7,6 +7,7 @@ import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFiles;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.TrainingFileManagementService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,6 +41,7 @@ public class TrainingFileManagementController {
     /**
      * 文件导入特种培训记录
      */
+    @RequiresPermissions("safeSpecial:import")
     @RequestMapping("/importSpecialTrainings")
     public ResponseModel importSpecialTrainings(MultipartFile multipartFiles) throws RuntimeException {
         try {
@@ -52,6 +54,7 @@ public class TrainingFileManagementController {
     /**
      * 增加特种培训记录
      */
+    @RequiresPermissions("safeSpecial:add")
     @RequestMapping("/insertSpecialTraining")
     public ResponseModel insertSpecialTraining(@RequestBody JSONObject date) {
         try{
@@ -65,6 +68,7 @@ public class TrainingFileManagementController {
     /**
      * 删除特种培训记录
      */
+    @RequiresPermissions("safeSpecial:delete")
     @RequestMapping("/deleteSpecialTraining")
     public ResponseModel deleteSpecialTraining(@RequestBody JSONObject date){
 
@@ -79,6 +83,7 @@ public class TrainingFileManagementController {
     /**
      * 更新特种培训记录
      */
+    @RequiresPermissions("safeSpecial:update")
     @RequestMapping("/updateSpecialTraining")
     public ResponseModel updateSpecialTraining(@RequestBody JSONObject date){
 
@@ -93,6 +98,7 @@ public class TrainingFileManagementController {
     /**
      * 分页查看特种培训记录
      */
+    @RequiresPermissions("safeSpecial:page")
     @RequestMapping("/pagingSpecialTraining")
     public ResponseModel<PageData<PagingSpecialTraining>> getPageQueryUserInfo(@RequestBody JSONObject date){
         try {
@@ -152,6 +158,7 @@ public class TrainingFileManagementController {
     /**
      * 导入
      * */
+    @RequiresPermissions("safeSpecial:import")
     @PostMapping("/importAdmin")
     public ResponseModel importAdmin(MultipartFile file) {
         try {
@@ -163,6 +170,7 @@ public class TrainingFileManagementController {
         }
     }
 
+    @RequiresPermissions("safeSpecial:export")
     @PostMapping("/writeAdmin")
     public ResponseModel writeAdmin() {
         try {
@@ -178,6 +186,7 @@ public class TrainingFileManagementController {
     /**
      * 增加负责人、安全生产管理人员培训记录
      */
+    @RequiresPermissions("safeSpecial:add")
     @RequestMapping("/insertAdministratorTrain")
     public ResponseModel insertAdministratorTrain(@RequestBody JSONObject date) {
         try{
@@ -195,6 +204,7 @@ public class TrainingFileManagementController {
     /**
      * 删除负责人、安全生产管理人员培训记录
      */
+    @RequiresPermissions("safeSpecial:delete")
     @RequestMapping("/deleteAdministratorTrain")
     public ResponseModel deleteAdministratorTrain(@RequestBody JSONObject json) {
         try{
@@ -209,6 +219,7 @@ public class TrainingFileManagementController {
     /**
      * 更新负责人、安全生产管理人员培训记录
      */
+    @RequiresPermissions("safeSpecial:update")
     @RequestMapping("/updateAdministratorTrain")
     public ResponseModel updateAdministratorTrain(@RequestBody JSONObject date) {
         try{
@@ -229,6 +240,7 @@ public class TrainingFileManagementController {
     /**
      * 分页查看负责人、安全生产管理人员培训记录
      */
+    @RequiresPermissions("safeSpecial:page")
     @PostMapping("/findAdministratorTrainByPage")
     public ResponseModel<PageData> findAdministratorTrainByPage(@RequestBody JSONObject json){
         try {

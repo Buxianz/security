@@ -7,6 +7,7 @@ import com.rbi.security.entity.web.safe.PagingSafeFourLevel;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.SafeFourLevelService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,7 @@ public class SafeFourLevelController {
      * @param json
      * @return
      */
+    @RequiresPermissions("safeFour:page")
     @RequestMapping(value = "/findSafeFourLevelByPage", method = RequestMethod.POST)
     public ResponseModel<PageData> findSafeFourLevelByPage(@RequestBody JSONObject json) {
         try {
@@ -112,6 +114,7 @@ public class SafeFourLevelController {
      * @param json
      * @return
      */
+    @RequiresPermissions("safeFour:add")
     @RequestMapping(value = "/insertSafeFourLevel", method = RequestMethod.POST)
     public ResponseModel insertSafeFourLevel(@RequestBody JSONObject json) {
         try {
@@ -135,6 +138,7 @@ public class SafeFourLevelController {
      * @return
      * @RequestParam
      */
+    @RequiresPermissions("safeFour:delete")
     @RequestMapping(value = "/deleteSafeFourLevelById", method = RequestMethod.POST)
     public ResponseModel deleteSafeFourLevelById(@RequestBody JSONObject request) {
         try {
@@ -156,6 +160,7 @@ public class SafeFourLevelController {
      * @param json
      * @return
      */
+    @RequiresPermissions("safeFour:update")
     @RequestMapping(value = "/updateSafeFourLevel", method = RequestMethod.POST)
     public ResponseModel updateSafeFourLevel(@RequestBody JSONObject json) {
         try {
@@ -174,6 +179,7 @@ public class SafeFourLevelController {
     /**
      * 导入
      * */
+    @RequiresPermissions("safeFour:import")
     @PostMapping("/excelImport")
     public ResponseModel excelImport(MultipartFile file) {
         try {
@@ -185,6 +191,7 @@ public class SafeFourLevelController {
         }
     }
 
+    @RequiresPermissions("safeFour:export")
     @PostMapping("/excelwrite")
     public ResponseModel excelwrite() {
         try {
