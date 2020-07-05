@@ -109,7 +109,7 @@ public interface SysUSerDAO {
 
 
     /**
-     * 查询level为一的角色
+     * 查询level为一的角色数量
      * */
     @Select("SELECT count(*) FROM sys_company_personnel,sys_user,sys_user_role,sys_role \n" +
             "WHERE sys_company_personnel.id = sys_user.company_personnel_id AND sys_user.id = sys_user_role.user_id \n" +
@@ -118,5 +118,20 @@ public interface SysUSerDAO {
             "AND sys_company_personnel.organization_id = \n" +
             "(SELECT sys_organization.id FROM sys_organization,sys_company_personnel WHERE sys_organization.id = sys_company_personnel.organization_id AND sys_company_personnel.id = #{id})")
     int findFistLevelNum(@Param("id") Integer id);
+
+    /**
+     * 查询除了本身，level为一的角色数量
+     * */
+    @Select("SELECT count(*) FROM sys_company_personnel,sys_user,sys_user_role,sys_role \n" +
+            "WHERE sys_company_personnel.id = sys_user.company_personnel_id AND sys_user.id = sys_user_role.user_id \n" +
+            "AND sys_user_role.role_id = sys_role.id\n" +
+            "AND sys_role. LEVEL = 1\n" +
+            "AND sys_company_personnel.organization_id = \n" +
+            "(SELECT sys_organization.id FROM sys_organization,sys_company_personnel WHERE sys_organization.id = sys_company_personnel.organization_id AND sys_company_personnel.id = #{id})")
+    int findFistLevelNum2(@Param("id") Integer id);
+
+
+
+
 
 }

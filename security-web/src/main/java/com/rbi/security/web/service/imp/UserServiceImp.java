@@ -129,7 +129,6 @@ public class UserServiceImp implements UserService {
     public void updateUserInfo(SysUser sysUser) throws RuntimeException {
         try{
             if (sysUSerDAO.updateDuplicateCheck(sysUser)==null) {
-                Integer companyPersonnelId= companyPersonnelDAO.getPersonnelByIdCardNo(sysUser.getIdCardNo());
                 sysUSerDAO.updateUser(sysUser);
 //                for(int i=0;i<sysUser.getSysUserRoleList().size();i++){
 //                    SysRole sysRole=sysRoleDAO.getRoleId(sysUser.getSysUserRoleList().get(i).getRoleId());
@@ -145,7 +144,7 @@ public class UserServiceImp implements UserService {
                     SysRole sysRole=sysRoleDAO.getRoleId(sysUser.getSysUserRoleList().get(i).getRoleId());
                     if(sysRole.getLevel().intValue()==1){
                         //是老大角色
-                        int num = sysUSerDAO.findFistLevelNum(companyPersonnelId);
+                        int num = sysUSerDAO.findFistLevelNum2(sysUser.getCompanyPersonnelId());
                         if (num != 0){
                             throw new RepeatException("该角色为1级管理人员（只能被一个人拥有），已被他人拥有");
                         }
