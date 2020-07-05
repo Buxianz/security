@@ -9,6 +9,7 @@ import com.rbi.security.entity.web.user.PagingUser;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.OrganizationService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +38,8 @@ import java.util.List;
 public class OrganizationController {
     @Autowired
     OrganizationService organizationService;
+
+    @RequiresPermissions("organization:add")
     @RequestMapping("/insertOrganization")
     public ResponseModel insertOrganization(@RequestBody JSONObject date){
         try{
@@ -47,6 +50,7 @@ public class OrganizationController {
             return ResponseModel.build("1001", e.getMessage());
         }
     }
+    @RequiresPermissions("organization:update")
     @RequestMapping("/updateOrganization")
     public ResponseModel updateOrganization(@RequestBody JSONObject date){
         try{
@@ -58,7 +62,7 @@ public class OrganizationController {
         }
     }
     @RequestMapping("/deleteOrganization")
-    //@RequiresPermissions("user:del")
+    @RequiresPermissions("organization:delete")
     public ResponseModel deleteOrganization(@RequestBody JSONObject date){
         Integer id =date.getInteger("id");
         try{
@@ -69,6 +73,7 @@ public class OrganizationController {
         }
     }
     @RequestMapping("/pageOrganization")
+    @RequiresPermissions("organization:page")
     public ResponseModel<PageData<PagingOrganization>> getPageOrganization(@RequestBody JSONObject date){
         try {
             int pageNo = date.getInteger("pageNo");

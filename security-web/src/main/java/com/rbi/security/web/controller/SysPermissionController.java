@@ -8,6 +8,7 @@ import com.rbi.security.entity.web.permission.SysPermissionDTO;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.SysPermissionService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,7 @@ public class SysPermissionController {
          * @param json
          * @return
          */
+        @RequiresPermissions("sysPermission:page")
         @RequestMapping(value = "/findSysPermissionByPage", method = RequestMethod.POST)
         public ResponseModel<PageData> findSysPermissionByPage(@RequestBody JSONObject json) {
             try {
@@ -70,6 +72,7 @@ public class SysPermissionController {
          * @param json 编号id
          * @return
          */
+        @RequiresPermissions("sysPermission:id")
         @RequestMapping(value = "/findSysPermissionById", method = RequestMethod.POST)
         public ResponseModel<PagingPermission> findSysPermissionById(@RequestBody JSONObject json) {
             try {
@@ -88,6 +91,7 @@ public class SysPermissionController {
          * @param json
          * @return
          */
+        @RequiresPermissions("sysPermission:insert")
         @RequestMapping(value = "/insertSysPermission", method = RequestMethod.POST)
         public ResponseModel insertSysPermission(@RequestBody JSONObject json) {
             try {
@@ -107,6 +111,7 @@ public class SysPermissionController {
          * @return
          * @RequestParam
          */
+        @RequiresPermissions("sysPermission:delete")
         @RequestMapping(value = "/deleteSysPermissionById", method = RequestMethod.POST)
         public ResponseModel deleteSysPermissionById(@RequestBody JSONObject request) {
             try {
@@ -131,6 +136,7 @@ public class SysPermissionController {
          * @param json
          * @return
          */
+        @RequiresPermissions("sysPermission:update")
         @RequestMapping(value = "/updateSysPermission", method = RequestMethod.POST)
         public ResponseModel updateSysPermission(@RequestBody JSONObject json) {
             try {

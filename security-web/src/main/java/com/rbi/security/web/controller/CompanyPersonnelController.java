@@ -5,6 +5,7 @@ import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.CompanyPersonnelService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class CompanyPersonnelController {
 
     @Autowired
     CompanyPersonnelService companyPersonnelService;
-
+    @RequiresPermissions("companyStaff:import")
     @PostMapping("/excel_import")
     public ResponseModel<Map<String, Object>> excelImport(MultipartFile file){
         try {
@@ -36,7 +37,7 @@ public class CompanyPersonnelController {
         }
     }
 
-
+    @RequiresPermissions("companyStaff:page")
     @PostMapping("/query/page")
     public ResponseModel<PageData<SysCompanyPersonnel>> queryByPage(@RequestBody JSONObject jsonObject){
         try {
@@ -47,7 +48,7 @@ public class CompanyPersonnelController {
             return ResponseModel.build("1001", "服务器处理失败");
         }
     }
-
+    @RequiresPermissions("companyStaff:add")
     @PostMapping("/add")
     public ResponseModel<String> add(@RequestBody JSONObject jsonObject){
         try {
@@ -62,7 +63,7 @@ public class CompanyPersonnelController {
             return ResponseModel.build("1001", "服务器处理失败");
         }
     }
-
+    @RequiresPermissions("companyStaff:update")
     @PostMapping("/update")
     public ResponseModel<String> update(@RequestBody JSONObject jsonObject){
         try {
@@ -77,7 +78,7 @@ public class CompanyPersonnelController {
             return ResponseModel.build("1001", "服务器处理失败");
         }
     }
-
+    @RequiresPermissions("companyStaff:delete")
     @PostMapping("/delete")
     public ResponseModel<String> delete(@RequestBody JSONObject jsonObject){
         try {

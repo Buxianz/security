@@ -8,6 +8,7 @@ import com.rbi.security.entity.web.role.PagingRole;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.RoleService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RoleController {
     @Autowired
     RoleService roleService;
+    @RequiresPermissions("role:add")
     @RequestMapping("/insertRole")
     public ResponseModel insertRole(@RequestBody JSONObject date){
         try{
@@ -43,6 +45,7 @@ public class RoleController {
             return ResponseModel.build("1001", e.getMessage());
         }
     }
+    @RequiresPermissions("role:update")
     @RequestMapping("/updateRole")
     public ResponseModel updateRole(@RequestBody JSONObject date){
         try{
@@ -55,7 +58,7 @@ public class RoleController {
         }
     }
     @RequestMapping("/deleteRole")
-    //@RequiresPermissions("user:del")
+    @RequiresPermissions("role:delete")
     public ResponseModel deleteRole(@RequestBody JSONObject date){
         Integer id =date.getInteger("id");
         try{
@@ -65,6 +68,7 @@ public class RoleController {
             return ResponseModel.build("1001", e.getMessage());
         }
     }
+    @RequiresPermissions("role:page")
     @RequestMapping("/pageRole")
     public ResponseModel<PageData<PagingRole>> getPageRole(@RequestBody JSONObject date){
         try {

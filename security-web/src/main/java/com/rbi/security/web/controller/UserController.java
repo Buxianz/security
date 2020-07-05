@@ -38,6 +38,7 @@ public class UserController {
     /**
      * 添加用户user:page
      */
+    @RequiresPermissions("user:insert")
     @RequestMapping("/insertUser")
     @ResponseBody
     public ResponseModel insertUser(@RequestBody JSONObject date) {
@@ -52,6 +53,7 @@ public class UserController {
     /**
      * 更新用户
      */
+    @RequiresPermissions("user:update")
     @RequestMapping("/updateUser")
     @ResponseBody
     public ResponseModel updateUser(@RequestBody JSONObject date){
@@ -67,7 +69,7 @@ public class UserController {
      * 删除用户
      */
     @RequestMapping("/deleteUser")
-    //@RequiresPermissions("user:del")
+    @RequiresPermissions("user:delete")
     @ResponseBody
     public ResponseModel deleteUser(@RequestBody JSONObject date){
 
