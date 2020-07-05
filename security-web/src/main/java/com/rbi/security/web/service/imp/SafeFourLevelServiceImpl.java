@@ -120,7 +120,7 @@ public class SafeFourLevelServiceImpl implements SafeFourLevelService {
         safeFourLevel.setOperatingStaff(personnelId);
         try {
                 if (companyPersonnelDAO.getPersonnelByIdCardNo(json.getString("idCardNo"))!=null) {
-                    if (safeFourLevelDAO.findSafeFourLevelByOperatingStaff(personnelId)==null) {
+                    if (safeFourLevelDAO.findIdNumNumber(safeFourLevel.getIdCardNo())==0) {
                         safeFourLevel.setIdt(DateUtil.date(DateUtil.FORMAT_PATTERN));
                         safeFourLevel.setUdt(DateUtil.date(DateUtil.FORMAT_PATTERN));
                         safeFourLevelDAO.insertSafeFourLevel(safeFourLevel);
@@ -155,6 +155,7 @@ public class SafeFourLevelServiceImpl implements SafeFourLevelService {
 
     @Override
     public String updateSafeFourLevel(JSONObject json) {
+
         SafeFourLevel safeFourLevel= JSONObject.parseObject(json.toJSONString(), SafeFourLevel.class);
         if (safeFourLevelDAO.getSafeFourLevelById(json.getInteger("id"))!=null) {
             PagingSafeFourLevel pagingSafeFourLevel=safeFourLevelDAO.getSafeFourLevelById(json.getInteger("id"));

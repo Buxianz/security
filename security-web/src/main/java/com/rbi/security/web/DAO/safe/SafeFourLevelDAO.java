@@ -69,6 +69,11 @@ public interface SafeFourLevelDAO {
             "where safe_four_level.id_card_no=sys_company_personnel.id_card_no and safe_four_level.operating_staff=#{personnelId}")
     PagingSafeFourLevel findSafeFourLevelByOperatingStaff(@Param("personnelId") int personnelId);
 
+    @Select("select count(*) from safe_four_level where id_card_no =# {idCardNo}")
+    int findIdNumNumber(@Param("idCardNo") String idCardNo);
+
+
+
     /**
      * 更新
      */
