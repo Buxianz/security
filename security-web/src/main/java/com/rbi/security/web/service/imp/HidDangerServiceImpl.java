@@ -509,15 +509,18 @@ public class HidDangerServiceImpl implements HidDangerService {
                         jsonObject2.put("botton","上报处理");
                         jsonArray.add(jsonObject2);
                     }
-                    JSONObject jsonObject3 = new JSONObject();
-                    jsonObject3.put("botton","通知整改");
+                    if (sysOrganization.getLevel() == 4 && sysRole.getLevel() == 2){
+                    }else {
+                        JSONObject jsonObject3 = new JSONObject();
+                        jsonObject3.put("botton","通知整改");
+                        jsonArray.add(jsonObject3);
+                    }
                     jsonArray.add(jsonObject1);
-                    jsonArray.add(jsonObject3);
                 }
                 if (processingStatus.equals("3")) {
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("botton","完成整改");
-                    if (sysOrganization.getLevel() == 4 && sysRole.getLevel() == 3){
+                    if (sysOrganization.getLevel() == 4 && sysRole.getLevel() == 2){
                     }else {
                         JSONObject jsonObject2 = new JSONObject();
                         jsonObject2.put("botton","通知整改");
@@ -549,7 +552,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                 if (processingStatus.equals("2")){
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("botton","完成整改");
-                    if (sysOrganization.getLevel() == 4 && sysRole.getLevel() == 3){
+                    if (sysOrganization.getLevel() == 4 && sysRole.getLevel() == 2){
                     }else {
                         JSONObject jsonObject2 = new JSONObject();
                         jsonObject2.put("botton","通知整改");
@@ -563,7 +566,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                 if (processingStatus.equals("3")){
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("botton","完成整改");
-                    if (sysOrganization.getLevel() == 4 && sysRole.getLevel() == 3){
+                    if (sysOrganization.getLevel() == 4 && sysRole.getLevel() == 2){
                     }else {
                         JSONObject jsonObject2 = new JSONObject();
                         jsonObject2.put("botton","通知整改");
@@ -590,7 +593,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("botton","完成整改");
                     jsonArray.add(jsonObject1);
-                    if (sysOrganization.getLevel() == 4 && sysRole.getLevel() == 3){
+                    if (sysOrganization.getLevel() == 4 && sysRole.getLevel() == 2){
                     }else {
                         JSONObject jsonObject2 = new JSONObject();
                         jsonObject2.put("botton","通知整改");
