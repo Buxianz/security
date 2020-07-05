@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.safe.SafeSubjectStore;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.SafeSubjectStoreService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +29,7 @@ public class SafeSubjectStoreController {
     /**
      * 查询所有题库名称（下拉菜单）
      */
+    @RequiresPermissions("safeSubjectStore:page")
     @PostMapping("/getAllSubjectStoreName")
     public ResponseModel<List<SafeSubjectStore>> getAllSubjectStoreName(){
 
@@ -42,6 +44,7 @@ public class SafeSubjectStoreController {
     /**
      * 添加题库名称
      */
+    @RequiresPermissions("safeSubjectStore:insert")
     @PostMapping("/insertSubjectStoreName")
     public ResponseModel insertSubjectStoreName(@RequestBody JSONObject data){
         try {
@@ -57,6 +60,7 @@ public class SafeSubjectStoreController {
     /**
      * 修改题库名称
      */
+    @RequiresPermissions("safeSubjectStore:update")
     @PostMapping("/updateSubjectStoreName")
     public ResponseModel updateSubjectStoreName(@RequestBody JSONObject data){
         try {
@@ -71,6 +75,7 @@ public class SafeSubjectStoreController {
     /**
      * 删除题库名称
      */
+    @RequiresPermissions("safeSubjectStore:delete")
     @PostMapping("/deleteSubjectStoreName")
     public ResponseModel deleteSubjectStoreName(@RequestBody JSONObject data){
         try {

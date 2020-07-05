@@ -8,6 +8,7 @@ import com.rbi.security.entity.web.safe.content.SafeContentCategory;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.SafeContentCategoryService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +41,7 @@ public class SafeContentCategoryController {
     /**
      * 分页
      * */
+    @RequiresPermissions("safeContentCategory:page")
     @PostMapping("/findByPage")
     public ResponseModel<PageData> findByPage(@RequestBody JSONObject json){
         try {
@@ -56,6 +58,7 @@ public class SafeContentCategoryController {
     /**
      * 添加
      * */
+    @RequiresPermissions("safeContentCategory:add")
     @PostMapping("/add")
     public ResponseModel<PageData> add(@RequestBody JSONObject json){
         try {
@@ -71,6 +74,7 @@ public class SafeContentCategoryController {
     /**
      * 修改
      * */
+    @RequiresPermissions("safeContentCategory:update")
     @PostMapping("/update")
     public ResponseModel<PageData> update(@RequestBody JSONObject json){
         try {
@@ -83,7 +87,7 @@ public class SafeContentCategoryController {
         }
     }
 
-
+    @RequiresPermissions("safeContentCategory:delete")
     @PostMapping("/deleteById")
     public ResponseModel deleteById(@RequestBody JSONObject json){
         try {
@@ -103,6 +107,7 @@ public class SafeContentCategoryController {
     /**
      * 名称搜索
      * */
+    @RequiresPermissions("safeContentCategory:findByContentCategoryName")
     @PostMapping("/findByContentCategoryName")
     public ResponseModel<PageData> findByContentCategoryName(@RequestBody JSONObject json){
         try {
