@@ -85,6 +85,7 @@ public class SystemManagementController {
     /**
      * 根据文件类型id，获取文件信息
      */
+    //此处不需要设置权限，因为被多个模块调用，且所有人都可以看
     @RequestMapping("/getSystemFileByTypeId")
     @ResponseBody
     public ResponseModel<List<SystemFile>> getSystemFileByTypeId(@RequestBody JSONObject date){

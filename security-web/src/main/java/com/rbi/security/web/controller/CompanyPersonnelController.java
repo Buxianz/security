@@ -36,8 +36,8 @@ public class CompanyPersonnelController {
             return ResponseModel.build("1001","服务器处理失败");
         }
     }
-
-    @RequiresPermissions("companyStaff:page")
+//此接口被多个地方调用，有冲突，需重新设置权限
+//    @RequiresPermissions("companyStaff:page")
     @PostMapping("/query/page")
     public ResponseModel<PageData<SysCompanyPersonnel>> queryByPage(@RequestBody JSONObject jsonObject){
         try {
