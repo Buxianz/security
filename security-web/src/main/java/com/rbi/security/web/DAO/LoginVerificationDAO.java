@@ -21,7 +21,7 @@ public interface LoginVerificationDAO {
     /**
      * 获取用户对应系统的权限操作码
      */
-    @Select("SELECT operate_code FROM \n" +
+    @Select("SELECT distinct operate_code FROM \n" +
             "(SELECT srp.permission_id FROM\n" +
             "(SELECT role_id FROM (SELECT id FROM sys_user WHERE username=#{username}) su INNER JOIN " +
             "sys_user_role sur on sur.user_id=su.id) sr INNER JOIN sys_role_permission srp on srp.role_id=sr.role_id) srp " +
