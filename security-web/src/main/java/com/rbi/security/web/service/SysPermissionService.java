@@ -15,7 +15,10 @@ public interface SysPermissionService {
      * 分页查询
      **/
     PageData findSysPermissionByPage(int pageNo, int pageSize);
-
+    /**
+     * 权限树分页查看
+     */
+    PageData permissionTreeByPage(int pageNo,int pageSize ,int startIndex) throws RuntimeException;
     /**
      * 单个查询
      */

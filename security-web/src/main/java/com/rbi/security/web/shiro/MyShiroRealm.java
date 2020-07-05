@@ -14,6 +14,7 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ByteSource;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 
 import java.util.Set;
 
@@ -29,8 +30,10 @@ public class MyShiroRealm extends AuthorizingRealm {
     }
     /*@Autowired
     RedisOperator redisOperator;*/
+    @Lazy
     @Autowired
     LoginVerificationService loginVerificationService;
+    @Lazy
     @Autowired
     UserService userService;
     /**

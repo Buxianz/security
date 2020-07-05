@@ -7,6 +7,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ServletComponentScan(basePackages = {"com.rbi.security.web.config"})
 @SpringBootApplication
+@EnableTransactionManagement
 public class SecurityWebApplication {
 
     public static void main(String[] args) {

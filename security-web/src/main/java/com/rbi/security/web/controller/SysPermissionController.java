@@ -151,4 +151,27 @@ public class SysPermissionController {
                 return ResponseModel.build("1001", "服务器处理异常");
             }
         }
+
+    /**
+     * 权限树分页查看
+     */
+    /**
+     * 分页查询
+     *
+     * @param json
+     * @return
+     */
+    @RequestMapping(value = "/permissionTreeByPage", method = RequestMethod.POST)
+    public ResponseModel<PageData> permissionTreeByPage(@RequestBody JSONObject json) {
+        try {
+            int pageNo = json.getInteger("pageNo");
+            int pageSize = json.getByteValue("pageSize");
+            int startIndex=(pageNo-1)*pageSize;
+            PageData pageData = sysPermissionService.permissionTreeByPage(pageNo,pageSize,startIndex);
+            return ResponseModel.build("1000", "查询成功", pageData);
+        } catch (Exception e) {
+            logger.error("分页查询异常，ERROR：{}", e);
+            return ResponseModel.build("1001", "服务器处理异常");
+        }
+    }
 }
