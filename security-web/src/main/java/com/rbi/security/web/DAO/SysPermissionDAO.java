@@ -64,8 +64,11 @@ public interface SysPermissionDAO{
     /**
      * 分页获取系统一级菜单
      */
-    @Select("select * from sys_permission wehere parent_id=0 LIMIT #{startIndex},#{pageSize}")
+    @Select("select * from sys_permission WHERE parent_id=0 LIMIT #{startIndex},#{pageSize}")
     List<PermissionTreeInfo> pagePermission(@Param("startIndex") int startIndex, @Param("pageSize") int pageSize);
-    @Select("select count(*) from sys_permission wehere parent_id=0")
+
+    @Select("select * from sys_permission WHERE parent_id!=0")
+    List<PermissionTreeInfo> getAllNo0Permission();
+    @Select("select count(*) from sys_permission WHERE parent_id=0")
     int getPermission0Count();
 }

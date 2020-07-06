@@ -213,7 +213,7 @@ public class UserServiceImp implements UserService {
             if(pagingUserList.size()-startIndex>=pageSize){
                 endIndex=startIndex+pageSize;
             }else{
-                endIndex=pagingUserList.size()-startIndex;
+                endIndex=pagingUserList.size();
             }
              //将符合规格的添加到
             for(int i=startIndex;i<endIndex;i++){
