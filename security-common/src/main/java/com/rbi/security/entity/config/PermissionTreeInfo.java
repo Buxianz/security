@@ -16,5 +16,9 @@ public class PermissionTreeInfo {
     private int systemId;
     private String systemName;
     private int enabled;
+    /**
+     * 权限描述
+     */
+    private String description;
     private List<PermissionTreeInfo> sysPermissionList;
 }
