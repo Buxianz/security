@@ -10,6 +10,7 @@ import com.rbi.security.entity.web.safe.testpaper.SafeTestPaper;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.SafeDemandReportService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +43,7 @@ public class SafeDemandReportController {
     /*
     添加需求（培训需求提报）
      */
+    @RequiresPermissions("safe:submitRequirements")
     @RequestMapping("/insertTrainingNeeds")
     public ResponseModel insertTrainingNeeds(@RequestBody JSONObject date) {
         try{
@@ -53,8 +55,9 @@ public class SafeDemandReportController {
         }
     }
     /**
-     * 新增需求和资料以及试卷
+     * 新增需求和资料以及试卷  发布教育培训计划
      */
+    @RequiresPermissions("safe:releaseEducationPlan")
     @RequestMapping("/insertTrainingPlanTest")
     public ResponseModel insert(@RequestBody JSONObject date) {
         try{
@@ -68,8 +71,9 @@ public class SafeDemandReportController {
         }
     }
     /**
-     * 分页查看需求
+     * 分页查看需求 已处理或者未处理
      */
+    @RequiresPermissions("safe:TrainingPlanProcessedPage")
     @RequestMapping("/pagingSafeDemandReport")
     public ResponseModel<PageData<PagingTraniningNeeds>> pagingSafeDemandReport(@RequestBody JSONObject date) {
         try{
@@ -86,6 +90,7 @@ public class SafeDemandReportController {
     /**
      * 处理需求
      */
+    @RequiresPermissions("safe:handlingTrainingNeeds")
     @RequestMapping("/handlingRequirements")
     public ResponseModel handlingRequirements(@RequestBody JSONObject date) {
         try{
@@ -99,13 +104,14 @@ public class SafeDemandReportController {
         }
     }
     /**
-     * 根据id获取需求计划信息
+     * 根据id获取需求计划信息 safe:TrainingPlanDetailsProcessed 详情
      */
+    @RequiresPermissions("safe:TrainingPlanDetailsProcessed")
     @RequestMapping("/getTrainingNeedsById")
     public ResponseModel<SafeTrainingNeeds> getTrainingNeedsById(@RequestBody JSONObject date) {
         try{
             Integer id=date.getInteger("id");
-            return ResponseModel.build("1000", "发布成功",safeDemandReportService.getTrainingNeedsById(id));
+            return ResponseModel.build("1000", "查询成功",safeDemandReportService.getTrainingNeedsById(id));
         }catch (Exception e){
             return ResponseModel.build("1001", e.getMessage());
         }

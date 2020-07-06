@@ -8,6 +8,7 @@ import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFiles;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.SpecialReviewService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +38,7 @@ public class SpecialReviewController {
     /**
      * 导出特种复审人员名单excel表
      */
+    @RequiresPermissions("safe:exportSpecialReview")
     @RequestMapping("/exportSpecialReview")
     public ResponseModel exportSpecialReview(@RequestBody JSONObject date){
         try {
@@ -47,8 +49,9 @@ public class SpecialReviewController {
         }
     }
     /**
-     * 分页查看复审名单
+     * 分页查看复审名单safe:specialReviewPagination
      */
+    @RequiresPermissions("safe:specialReviewPagination")
     @RequestMapping("/pagingSpecialReview")
     public ResponseModel<PageData<PagingSpecialReview>> pagingSpecialReview(@RequestBody JSONObject date){
         try {
@@ -64,6 +67,7 @@ public class SpecialReviewController {
     /**
      * 处理复审情况
      */
+    @RequiresPermissions("safe:handlingSpecialReviews")
     @RequestMapping("/handleSpecialReview")
     public ResponseModel handleSpecialReview(@RequestBody JSONObject date) {
         try{
