@@ -88,7 +88,7 @@ public class SafeTrainingMaterialsController {
     /**
      * 内容类型下拉框
      * */
-    @RequiresPermissions("safeTrainingMaterials:findType")
+    //@RequiresPermissions("safeTrainingMaterials:findType")
     @PostMapping("/findType")
     public ResponseModel findType(){
         try {
@@ -142,7 +142,7 @@ public class SafeTrainingMaterialsController {
     /**
      * 开始学习 培训内容文件下拉搜索 暂时保留不添加权限
      * */
-    //@RequiresPermissions("user:page")
+    @RequiresPermissions("safeTrainingMaterials:findFileByCategory")
     @PostMapping("/findFileByCategory")
     public ResponseModel<PageData> findFileByCategory(@RequestBody JSONObject json){
         try {
@@ -160,7 +160,7 @@ public class SafeTrainingMaterialsController {
     /**
      * 开始学习 培训内容视频类下拉搜索 暂时保留不添加权限
      * */
-    //@RequiresPermissions("user:page")
+    @RequiresPermissions("safeTrainingMaterials:findVideoByCategory")
     @PostMapping("/findVideoByCategory")
     public ResponseModel<PageData> findVideoByCategory(@RequestBody JSONObject json){
         try {
