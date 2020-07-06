@@ -9,6 +9,7 @@ import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrain;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrainDTO;
 import com.rbi.security.entity.web.safe.specialtype.PagingSpecialTraining;
 import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFiles;
+import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFilesDTO;
 import com.rbi.security.exception.NonExistentException;
 import com.rbi.security.exception.RepeatException;
 import com.rbi.security.tool.*;
@@ -162,6 +163,101 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
               throw new RuntimeException(e.getMessage());
           }
           return importFeedback;
+    }
+
+    @Override
+    public Map<String, Object> export() {
+        try {
+            String filepath = excelWritePath + "特种作业人员等级台账.xlsx";
+            String sheetName = "sheet1";
+            String findPath = fileIp + filepath;
+            List<String> titles = new ArrayList<>();
+            titles.add("姓名");
+            titles.add("性别");
+            titles.add("身份证号");
+            titles.add("文化程度");
+            titles.add("工种名称");
+            titles.add("操作项目");
+            titles.add("本工种工龄");
+            titles.add("理论取证成绩");
+            titles.add("实际取证成绩");
+            titles.add("操作证号");
+            titles.add("发证日期");
+            titles.add("第一次复审成绩");
+            titles.add("第一次复审时间");
+            titles.add("第二次复审成绩");
+            titles.add("第二次复审时间");
+            titles.add("第三次复审成绩");
+            titles.add("第三次复审时间");
+            titles.add("第四次复审成绩");
+            titles.add("第四次复审时间");
+            titles.add("第五次复审成绩");
+            titles.add("第五次复审时间");
+            titles.add("第六次复审成绩");
+            titles.add("第六次复审时间");
+            titles.add("备注");
+            List<Map<String, Object>> values = new ArrayList<>();
+            List<SafeSpecialTrainingFilesDTO> safeSpecialTrainingFiles = safeSpecialTrainingFilesDao.findAll();
+            for (int i = 0; i < safeSpecialTrainingFiles.size(); i++) {
+                Map<String, Object> map = new HashMap<>();
+                titles.add("姓名");
+                titles.add("性别");
+                titles.add("身份证号");
+                titles.add("文化程度");
+                titles.add("工种名称");
+                titles.add("操作项目");
+                titles.add("本工种工龄");
+                titles.add("理论取证成绩");
+                titles.add("实际取证成绩");
+                titles.add("操作证号");
+                titles.add("发证日期");
+                titles.add("第一次复审成绩");
+                titles.add("第一次复审时间");
+                titles.add("第二次复审成绩");
+                titles.add("第二次复审时间");
+                titles.add("第三次复审成绩");
+                titles.add("第三次复审时间");
+                titles.add("第四次复审成绩");
+                titles.add("第四次复审时间");
+                titles.add("第五次复审成绩");
+                titles.add("第五次复审时间");
+                titles.add("第六次复审成绩");
+                titles.add("第六次复审时间");
+                titles.add("备注");
+                map.put("姓名", safeSpecialTrainingFiles.get(i).getName());
+                map.put("性别", safeSpecialTrainingFiles.get(i).getGender());
+                map.put("身份证号", safeSpecialTrainingFiles.get(i).getIdCardNo());
+                map.put("文化程度", safeSpecialTrainingFiles.get(i).getDegreeOfEducation());
+                map.put("工种名称", safeSpecialTrainingFiles.get(i).getTypeOfWork());
+                map.put("操作项目", safeSpecialTrainingFiles.get(i).getOperationItems());
+                map.put("本工种工龄", safeSpecialTrainingFiles.get(i).getWorkingYears());
+                map.put("理论取证成绩", safeSpecialTrainingFiles.get(i).getTheoreticalAchievements());
+                map.put("实际取证成绩", safeSpecialTrainingFiles.get(i).getActualResults());
+                map.put("操作证号", safeSpecialTrainingFiles.get(i).getOperationCertificateNo());
+                map.put("发证日期", safeSpecialTrainingFiles.get(i).getYearsOfWork());
+                map.put("第一次复审成绩", safeSpecialTrainingFiles.get(i).getOneReviewResults());
+                map.put("第一次复审时间", safeSpecialTrainingFiles.get(i).getOneReviewTime());
+                map.put("第二次复审成绩", safeSpecialTrainingFiles.get(i).getTowReviewResults());
+                map.put("第二次复审时间", safeSpecialTrainingFiles.get(i).getTowReviewTime());
+                map.put("第三次复审成绩", safeSpecialTrainingFiles.get(i).getThreeReviewResults());
+                map.put("第三次复审时间", safeSpecialTrainingFiles.get(i).getThreeReviewTime());
+                map.put("第四次复审成绩", safeSpecialTrainingFiles.get(i).getFourReviewResults());
+                map.put("第四次复审时间", safeSpecialTrainingFiles.get(i).getFourReviewTime());
+                map.put("第五次复审成绩", safeSpecialTrainingFiles.get(i).getFiveReviewResults());
+                map.put("第五次复审时间", safeSpecialTrainingFiles.get(i).getFiveReviewTime());
+                map.put("第六次复审成绩", safeSpecialTrainingFiles.get(i).getSixReviewResults());
+                map.put("第六次复审时间", safeSpecialTrainingFiles.get(i).getSixReviewTime());
+                map.put("备注", safeSpecialTrainingFiles.get(i).getRemarks());
+                values.add(map);
+            }
+            ExcelWrite.writeExcel(filepath, sheetName, titles, values);
+            Map<String, Object> map = new HashMap<>();
+            map.put("path", findPath);
+            return map;
+        } catch (Exception e) {
+            System.out.println("错误：" + e);
+            return null;
+        }
     }
 
 
@@ -666,5 +762,6 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
         }
 
     }
+
 
 }

@@ -2,6 +2,7 @@ package com.rbi.security.web.DAO.safe;
 
 import com.rbi.security.entity.web.safe.specialtype.PagingSpecialTraining;
 import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFiles;
+import com.rbi.security.entity.web.safe.specialtype.SafeSpecialTrainingFilesDTO;
 import org.apache.ibatis.annotations.*;
 import java.util.List;
 
@@ -104,4 +105,7 @@ public interface SafeSpecialTrainingFilesDao {
     @Select("select * from safe_special_training_files,sys_company_personnel where safe_special_training_files.id_card_no = sys_company_personnel.id_card_no and " +
             "safe_special_training_files.id_card_no = #{idCardNo}")
     PagingSpecialTraining findAllByIdCardNo(String idCardNo);
+
+    @Select("select * from safe_special_training_files,sys_company_personnel where safe_special_training_files.id_card_no = sys_company_personnel.id_card_no")
+    List<SafeSpecialTrainingFilesDTO> findAll();
 }

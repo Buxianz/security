@@ -35,4 +35,6 @@ public interface TrainingFileManagementService {
     Map<String, Object> writeAdmin() throws IOException;
 
     PagingSpecialTraining findCertificate();
+
+    Map<String, Object> export();
 }

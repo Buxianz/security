@@ -52,6 +52,21 @@ public class TrainingFileManagementController {
     }
 
     /**
+     * 导出
+     * */
+    @RequiresPermissions("safeSpecial:export")
+    @PostMapping("/export")
+    public ResponseModel export() {
+        try {
+            Map<String,Object> map = trainingFileManagementService.export();
+            return ResponseModel.build("1000", "导出完成", map);
+        } catch (Exception e) {
+            System.out.println("错误："+e);
+            return ResponseModel.build("1002", "服务器处理异常", e);
+        }
+    }
+
+    /**
      * 增加特种培训记录
      */
     @RequiresPermissions("safeSpecial:add")
@@ -158,7 +173,7 @@ public class TrainingFileManagementController {
     /**
      * 导入
      * */
-    @RequiresPermissions("safeSpecial:import")
+    @RequiresPermissions("safeAdministrator:import")
     @PostMapping("/importAdmin")
     public ResponseModel importAdmin(MultipartFile file) {
         try {
@@ -170,7 +185,10 @@ public class TrainingFileManagementController {
         }
     }
 
-    @RequiresPermissions("safeSpecial:export")
+    /**
+     * 导出
+     * */
+    @RequiresPermissions("safeAdministrator:export")
     @PostMapping("/writeAdmin")
     public ResponseModel writeAdmin() {
         try {
@@ -273,39 +291,4 @@ public class TrainingFileManagementController {
     }
 
 
-    /*************************四级HSE教育培训台账****************************/
-    /**
-     * 文件导入特种培训记录
-     */
-    /**
-     * 增加特种培训记录
-     */
-
-    /**
-     * 删除特种培训记录
-     */
-
-    /**
-     * 更新特种培训记录
-     */
-
-    /**
-     * 分页查看特种培训记录
-     */
-    /*************************日常培训台账****************************/
-    /**
-     * 增加特种培训记录
-     */
-
-    /**
-     * 删除特种培训记录
-     */
-
-    /**
-     * 更新特种培训记录
-     */
-
-    /**
-     * 分页查看特种培训记录
-     */
 }
