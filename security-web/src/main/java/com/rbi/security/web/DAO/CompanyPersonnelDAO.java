@@ -36,7 +36,8 @@ public interface CompanyPersonnelDAO {
      * END
      *
      * select * from sys_organization where FIND_IN_SET(id,getOrganizationParentList(2));
-     *
+
+     //*
      * 生成查询组织所有子节点的函数
      *drop FUNCTION if exists getOrganizationChildList;
      * CREATE FUNCTION `getOrganizationChildList`(rootId INT)
