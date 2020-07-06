@@ -162,7 +162,7 @@ public class RoleServiceImp implements RoleService {
             throw new RuntimeException("分页获取角色信息失败");
         }
     }
-    public static List<RolePermissioonInfo> listToRolePermissionTree(List<RolePermissioonInfo> list) {
+    private static List<RolePermissioonInfo> listToRolePermissionTree(List<RolePermissioonInfo> list) {
         //用递归找子。
         List<RolePermissioonInfo> treeList = new ArrayList<RolePermissioonInfo>();
         for (RolePermissioonInfo tree : list) {

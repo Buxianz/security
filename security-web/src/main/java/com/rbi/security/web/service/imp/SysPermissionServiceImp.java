@@ -2,13 +2,17 @@ package com.rbi.security.web.service.imp;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.rbi.security.entity.config.PermissionTreeInfo;
 import com.rbi.security.entity.web.entity.SysPermission;
 import com.rbi.security.entity.web.permission.PagingPermission;
+import com.rbi.security.entity.web.role.PagingRole;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.TimeStampTool;
 import com.rbi.security.web.DAO.SysPermissionDAO;
 import com.rbi.security.web.DAO.SystemDAO;
 import com.rbi.security.web.service.SysPermissionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +21,7 @@ import java.util.*;
 
 @Service
 public class SysPermissionServiceImp implements SysPermissionService {
-
+    private static final Logger logger = LoggerFactory.getLogger(SysPermissionServiceImp.class);
     @Autowired(required = false)
     SysPermissionDAO sysPermissionDAO;
     @Autowired
@@ -52,6 +56,7 @@ public class SysPermissionServiceImp implements SysPermissionService {
         }
         return new PageData(pageNo, pageSize, totalPage, count, pagingPermissionList);
     }
+
 
     @Override
     public PagingPermission findSysPermissionById(Integer id) {
@@ -128,5 +133,47 @@ public class SysPermissionServiceImp implements SysPermissionService {
         }else {
             return "1006";
         }
+    }
+    @Override
+    public PageData permissionTreeByPage(int pageNo, int pageSize, int startIndex) throws RuntimeException {
+        List<PermissionTreeInfo> permissioonTreeInfoList=null;
+        try{
+            permissioonTreeInfoList=sysPermissionDAO.pagePermission(startIndex,pageSize);
+            int count =sysPermissionDAO.getPermission0Count();
+            int totalPage;
+            if (count%pageSize==0){
+                totalPage = count/pageSize;
+            }else {
+                totalPage = count/pageSize+1;
+            }
+            return new PageData<PermissionTreeInfo>(pageNo,pageSize,totalPage,count,permissioonTreeInfoList);
+        }catch (Exception e){
+            logger.error("分页获取权限树失败，异常为{}",e);
+            throw new RuntimeException("分页获取权限树失败");
+        }
+
+    }
+    public static List<PermissionTreeInfo> listToRolePermissionTree(List<PermissionTreeInfo> list) {
+        //用递归找子。
+        List<PermissionTreeInfo> treeList = new ArrayList<PermissionTreeInfo>();
+        for (PermissionTreeInfo tree : list) {
+            if (tree.getParentId() == 0) {
+                treeList.add(findRolePermissionChildren(tree, list));
+            }
+        }
+        return treeList;
+    }
+
+    private static PermissionTreeInfo findRolePermissionChildren(PermissionTreeInfo tree, List<PermissionTreeInfo> list)
+    {
+        for (PermissionTreeInfo node : list) {
+            if (node.getParentId() == tree.getId()) {
+                if (tree.getSysPermissionList() == null) {
+                    tree.setSysPermissionList(new ArrayList<PermissionTreeInfo>());
+                }
+                tree.getSysPermissionList().add(findRolePermissionChildren(node, list));
+            }
+        }
+        return tree;
     }
 }

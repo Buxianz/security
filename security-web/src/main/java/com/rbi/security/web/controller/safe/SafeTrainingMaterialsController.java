@@ -8,6 +8,7 @@ import com.rbi.security.entity.web.safe.content.SafeTrainingMaterials;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.SafeTrainingMaterialsService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,6 +42,7 @@ public class SafeTrainingMaterialsController {
     /**
      * 分页
      * */
+    @RequiresPermissions("safeTrainingMaterials:page")
     @PostMapping("/findByPage")
     public ResponseModel<PageData> findByPage(@RequestBody JSONObject json){
         try {
@@ -53,7 +55,7 @@ public class SafeTrainingMaterialsController {
             return ResponseModel.build("1001","处理异常");
         }
     }
-
+    @RequiresPermissions("safeTrainingMaterials:add")
     @PostMapping("/add")
     public ResponseModel add(SafeTrainingMaterials safeTrainingMaterials,@RequestParam(value="file",required=false) MultipartFile file) throws IOException {
         try {
@@ -68,7 +70,7 @@ public class SafeTrainingMaterialsController {
             return ResponseModel.build("1001","处理异常");
         }
     }
-
+    @RequiresPermissions("safeTrainingMaterials:delete")
     @PostMapping("/deleteByIds")
     public ResponseModel deleteById(@RequestBody JSONObject json){
         try {
@@ -86,6 +88,7 @@ public class SafeTrainingMaterialsController {
     /**
      * 内容类型下拉框
      * */
+    @RequiresPermissions("safeTrainingMaterials:findType")
     @PostMapping("/findType")
     public ResponseModel findType(){
         try {
@@ -101,6 +104,7 @@ public class SafeTrainingMaterialsController {
     /**
      * 名称搜索
      * */
+//    @RequiresPermissions("user:page")
     @PostMapping("/findByName")
     public ResponseModel<PageData> findByName(@RequestBody JSONObject json){
         try {
@@ -117,8 +121,9 @@ public class SafeTrainingMaterialsController {
 
 
     /**
-     * 培训内容下拉搜索
+     * 开始学习 培训内容下拉搜索
      * */
+    @RequiresPermissions("safeTrainingMaterials:findByCondition")
     @PostMapping("/findByCondition")
     public ResponseModel<PageData> findByCondition(@RequestBody JSONObject json){
         try {
@@ -135,8 +140,9 @@ public class SafeTrainingMaterialsController {
 
 
     /**
-     * 培训内容下拉搜索
+     * 开始学习 培训内容文件下拉搜索 暂时保留不添加权限
      * */
+    //@RequiresPermissions("user:page")
     @PostMapping("/findFileByCategory")
     public ResponseModel<PageData> findFileByCategory(@RequestBody JSONObject json){
         try {
@@ -152,8 +158,9 @@ public class SafeTrainingMaterialsController {
     }
 
     /**
-     * 培训内容下拉搜索
+     * 开始学习 培训内容视频类下拉搜索 暂时保留不添加权限
      * */
+    //@RequiresPermissions("user:page")
     @PostMapping("/findVideoByCategory")
     public ResponseModel<PageData> findVideoByCategory(@RequestBody JSONObject json){
         try {

@@ -7,6 +7,7 @@ import com.rbi.security.entity.web.safe.PagingSafe;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.SafeSubjectService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,7 @@ public class SafeSubjectController {
      * @param json
      * @return
      */
+    @RequiresPermissions("SafeSubject:page")
     @RequestMapping(value = "/getSafeSubjectByPage", method = RequestMethod.POST)
     public ResponseModel<PageData> getSafeSubjectByPage(@RequestBody JSONObject json) {
         try {
@@ -62,6 +64,7 @@ public class SafeSubjectController {
      * @param json
      * @return
      */
+    @RequiresPermissions("SafeSubject:id")
     @RequestMapping(value = "/getSafeSubjectByPageAndSubjectStoreId", method = RequestMethod.POST)
     public ResponseModel<PageData> getSafeSubjectByPageAndSubjectStoreId(@RequestBody JSONObject json) {
         try {
@@ -78,6 +81,7 @@ public class SafeSubjectController {
      * @param json
      * @return
      */
+    @RequiresPermissions("SafeSubject:add")
     @RequestMapping(value = "/insertSafeSubject", method = RequestMethod.POST)
     public ResponseModel insertSafeSubject(@RequestBody JSONObject json) {
         try {
@@ -95,6 +99,7 @@ public class SafeSubjectController {
      * @return
      * @RequestParam
      */
+    @RequiresPermissions("SafeSubject:delete")
     @RequestMapping(value = "/deleteSafeSubjectById", method = RequestMethod.POST)
     public ResponseModel deleteSafeSubjectById(@RequestBody JSONObject request) {
         try {
@@ -116,6 +121,7 @@ public class SafeSubjectController {
      * @param json
      * @return
      */
+    @RequiresPermissions("SafeSubject:update")
     @RequestMapping(value = "/updateSafeSubjectById", method = RequestMethod.POST)
     public ResponseModel updateSafeSubjectById(@RequestBody JSONObject json) {
         try {
