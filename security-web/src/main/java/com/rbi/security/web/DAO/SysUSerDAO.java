@@ -114,9 +114,8 @@ public interface SysUSerDAO {
     @Select("SELECT count(*) FROM sys_company_personnel,sys_user,sys_user_role,sys_role,sys_organization\n" +
             "WHERE sys_company_personnel.organization_id = sys_organization.id AND sys_company_personnel.id = sys_user.company_personnel_id AND sys_user.id = sys_user_role.user_id \n" +
             "AND sys_user_role.role_id = sys_role.id\n" +
-            "AND sys_role. LEVEL = 1 AND sys_role.id = #{roleId} \n" +
-            "AND sys_company_personnel.organization_id = (SELECT sys_organization.id FROM sys_organization,sys_company_personnel WHERE sys_organization.id = sys_company_personnel.organization_id AND sys_company_personnel.id = #{id})")
-    int findFistLevelNum(@Param("roleId") Integer roleId,@Param("id") Integer id);
+            "AND sys_role. LEVEL = 1 AND sys_company_personnel.organization_id = (SELECT sys_organization.id FROM sys_organization,sys_company_personnel WHERE sys_organization.id = sys_company_personnel.organization_id AND sys_company_personnel.id = #{id})")
+    int findFistLevelNum(@Param("id") Integer id);
 
     /**
      * 查询除了本身，level为一的角色数量
@@ -124,9 +123,8 @@ public interface SysUSerDAO {
     @Select("SELECT count(*) FROM sys_company_personnel,sys_user,sys_user_role,sys_role,sys_organization\n" +
             "WHERE sys_company_personnel.organization_id = sys_organization.id AND sys_company_personnel.id = sys_user.company_personnel_id AND sys_user.id = sys_user_role.user_id \n" +
             "AND sys_user_role.role_id = sys_role.id\n" +
-            "AND sys_role. LEVEL = 1 AND sys_role.id = 25 \n" +
-            "AND sys_company_personnel.organization_id = (SELECT sys_organization.id FROM sys_organization,sys_company_personnel WHERE sys_organization.id = sys_company_personnel.organization_id AND sys_company_personnel.id = #{id}) and sys_company_personnel.id != #{id}")
-    int findFistLevelNum2(@Param("roleId") Integer roleId,@Param("id") Integer id);
+            "AND sys_role. LEVEL = 1 AND sys_company_personnel.organization_id = (SELECT sys_organization.id FROM sys_organization,sys_company_personnel WHERE sys_organization.id = sys_company_personnel.organization_id AND sys_company_personnel.id = #{id}) and sys_company_personnel.id != #{id}")
+    int findFistLevelNum2(@Param("id") Integer id);
 
 
 
