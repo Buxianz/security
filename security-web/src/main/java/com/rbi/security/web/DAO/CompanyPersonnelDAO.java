@@ -9,6 +9,56 @@ import java.util.List;
 @Mapper
 public interface CompanyPersonnelDAO {
 
+    /**
+     * 生成查询机构所有父级的函数
+     * DROP FUNCTION IF EXISTS getOrganizationParentList
+     * CREATE FUNCTION `getOrganizationParentList`(rootId INT)
+     * RETURNS varchar(1000)
+     * BEGIN
+     *     DECLARE sTemp VARCHAR(1000);
+     *     DECLARE sTempPar VARCHAR(1000);
+     *     SET sTemp = '';
+     *     SET sTempPar = rootId;
+     *
+     *     #循环递归
+     *     WHILE sTempPar is not null DO
+     *         #判断是否是第一个，不加的话第一个会为空
+     *         IF sTemp != '' THEN
+     *             SET sTemp = concat(sTemp,',',sTempPar);
+     *         ELSE
+     *             SET sTemp = sTempPar;
+     *         END IF;
+     *         SET sTemp = concat(sTemp,',',sTempPar);
+     *         SELECT group_concat(parent_id) INTO sTempPar FROM sys_organization where parent_id<>id and FIND_IN_SET(id,sTempPar)>0;
+     *     END WHILE;
+     *
+     * RETURN sTemp;
+     * END
+     *
+     * select * from sys_organization where FIND_IN_SET(id,getOrganizationParentList(2));
+     *
+     * 生成查询组织所有子节点的函数
+     *drop FUNCTION if exists getOrganizationChildList;
+     * CREATE FUNCTION `getOrganizationChildList`(rootId INT)
+     * RETURNS varchar(1000)
+     *
+     * BEGIN
+     *     DECLARE sTemp VARCHAR(1000);
+     *     DECLARE sTempChd VARCHAR(1000);
+     *
+     *     SET sTemp = '$';
+     *     SET sTempChd =cast(rootId as CHAR);
+     *
+     *     WHILE sTempChd is not null DO
+     *         SET sTemp = concat(sTemp,',',sTempChd);
+     *         SELECT group_concat(id) INTO sTempChd FROM sys_organization where FIND_IN_SET(parent_id,sTempChd)>0;
+     *     END WHILE;
+     *     RETURN sTemp;
+     * END
+     * select * from sys_organization where FIND_IN_SET(id,getOrganizationChildList(2));
+     * @param sysCompanyPersonnel
+     */
+
     @Insert("INSERT INTO sys_company_personnel (\n" +
             "\temployee_number,\n" +
             "\torganization_id,\n" +
