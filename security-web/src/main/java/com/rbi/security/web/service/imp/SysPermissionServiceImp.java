@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.config.PermissionTreeInfo;
 import com.rbi.security.entity.web.entity.SysPermission;
+import com.rbi.security.entity.web.entity.SysSystem;
 import com.rbi.security.entity.web.permission.PagingPermission;
 import com.rbi.security.entity.web.role.PagingRole;
 import com.rbi.security.tool.PageData;
@@ -137,15 +138,22 @@ public class SysPermissionServiceImp implements SysPermissionService {
     @Override
     public PageData permissionTreeByPage(int pageNo, int pageSize, int startIndex) throws RuntimeException {
         List<PermissionTreeInfo> permissioonTreeInfoList=null;
+        List<PermissionTreeInfo> permissioonTreeInfoList1=null;
+        List<SysSystem> syssystemList=null;
         try{
+            syssystemList = systemDAO.getAllSystem();
             permissioonTreeInfoList=sysPermissionDAO.pagePermission(startIndex,pageSize);
             int count =sysPermissionDAO.getPermission0Count();
+            permissioonTreeInfoList1=sysPermissionDAO.getAllNo0Permission();
+
+            permissioonTreeInfoList.addAll(permissioonTreeInfoList1);
             int totalPage;
             if (count%pageSize==0){
                 totalPage = count/pageSize;
             }else {
                 totalPage = count/pageSize+1;
             }
+            permissioonTreeInfoList=listToRolePermissionTree(permissioonTreeInfoList,syssystemList);
             return new PageData<PermissionTreeInfo>(pageNo,pageSize,totalPage,count,permissioonTreeInfoList);
         }catch (Exception e){
             logger.error("分页获取权限树失败，异常为{}",e);
@@ -153,11 +161,16 @@ public class SysPermissionServiceImp implements SysPermissionService {
         }
 
     }
-    public static List<PermissionTreeInfo> listToRolePermissionTree(List<PermissionTreeInfo> list) {
+    public static List<PermissionTreeInfo> listToRolePermissionTree(List<PermissionTreeInfo> list,List<SysSystem> syssystemList) {
         //用递归找子。
         List<PermissionTreeInfo> treeList = new ArrayList<PermissionTreeInfo>();
         for (PermissionTreeInfo tree : list) {
             if (tree.getParentId() == 0) {
+                for (int i=0;i<syssystemList.size();i++){
+                    if(tree.getSystemId()==syssystemList.get(i).getId().intValue()){
+                        tree.setSystemName(syssystemList.get(i).getSystemName());
+                    }
+                }
                 treeList.add(findRolePermissionChildren(tree, list));
             }
         }
@@ -168,6 +181,8 @@ public class SysPermissionServiceImp implements SysPermissionService {
     {
         for (PermissionTreeInfo node : list) {
             if (node.getParentId() == tree.getId()) {
+                node.setParentName(tree.getPermissionName());
+                node.setSystemName(tree.getSystemName());
                 if (tree.getSysPermissionList() == null) {
                     tree.setSysPermissionList(new ArrayList<PermissionTreeInfo>());
                 }

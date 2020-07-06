@@ -92,6 +92,7 @@ public class ConfigController {
     /**
      * 获取所有培训类型下拉框
      */
+
     @RequestMapping("/getSafaTrainingType")
     public ResponseModel<List<SafaTrainingType>> getSafaTrainingType(){
         try{

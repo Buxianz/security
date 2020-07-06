@@ -6,6 +6,7 @@ import com.rbi.security.entity.web.safe.HandlePersonalMistakes;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.SafePersonalMistakesService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,6 +38,7 @@ public class SafePersonalMistakesController {
     /**
      * 分页获取自身题目
      * */
+    @RequiresPermissions("safe:pageMistakes")
     @PostMapping("/findByPage")
     public ResponseModel<PageData> findByPage(@RequestBody JSONObject json){
         try {
@@ -52,6 +54,7 @@ public class SafePersonalMistakesController {
     /**
      * 处理错题记录
      */
+    @RequiresPermissions("safe:handlePersonalMistakes")
     @PostMapping("/handlePersonalMistakes")
     public ResponseModel<PageData> handlePersonalMistakes(@RequestBody JSONObject json){
         try {

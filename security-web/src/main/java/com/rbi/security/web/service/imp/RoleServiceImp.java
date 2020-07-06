@@ -84,6 +84,14 @@ public class RoleServiceImp implements RoleService {
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public void updateRole(SysRole sysRole) throws RuntimeException {
         try{
+            SysRole sysRole2 = sysRoleDAO.getRoleId(sysRole.getId());
+            if((sysRole.getLevel() ==1 && sysRole2.getLevel()!=1)||(sysRole.getLevel() !=1 && sysRole2.getLevel()==1) ){
+                //是老大角色
+                int num = sysRoleDAO.findSysUserRoleNumByRoleId(sysRole.getId());
+                if (num != 0){
+                    throw new RepeatException("角色已绑定了用户，不能修改角色等级。否则系统权限等级混乱，不能正常运行");
+                }
+            }
             if(sysRoleDAO.updateDuplicateJudgement(sysRole)==null) {
                 //更新角色信息
                 sysRoleDAO.updateRoleById(sysRole);

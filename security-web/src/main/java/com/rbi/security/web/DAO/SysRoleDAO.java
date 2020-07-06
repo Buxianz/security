@@ -54,4 +54,7 @@ public interface SysRoleDAO {
      */
     @Select("select * from sys_role where  id=#{id}")
     SysRole getRoleId(@Param("id") int id);
+
+    @Select("SELECT count(*) FROM sys_user_role where role_id = #{roleId}")
+    int findSysUserRoleNumByRoleId(@Param("roleId") Integer roleId);
 }

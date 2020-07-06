@@ -9,6 +9,7 @@ import com.rbi.security.entity.web.safe.task.TestPaperInfo;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.TaskManagerService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,8 +39,9 @@ public class TaskManagerController {
     @Autowired
     TaskManagerService taskManagerService;
     /**
-     * 分页查看自身培训计划信息
+     * 分页查看自身培训计划信息safe:myTrainingPlanPage
      */
+    @RequiresPermissions("safe:myTrainingPlanPage")
     @RequestMapping("/getLearningInformation")
     public ResponseModel getLearningInformation(@RequestBody JSONObject date){
         try{
@@ -56,6 +58,7 @@ public class TaskManagerController {
     /**
      * 根据培训计划id获取学习内容
      */
+    @RequiresPermissions("safe:myTrainingPlanDetails")
     @RequestMapping("/getLearningContentById")
     public ResponseModel<LearningContent> getLearningContentById(@RequestBody JSONObject date){
         try{
@@ -67,8 +70,9 @@ public class TaskManagerController {
 
     }
     /**
-     * 分页查看自身考试信息
+     * 分页查看自身考试信息 safe:paginationExamination
      */
+    @RequiresPermissions("safe:paginationExamination")
     @RequestMapping("/pagingTestPaperInfo")
     public ResponseModel<PageData<TestPaperInfo>> pagingSpecialReview(@RequestBody JSONObject date){
         try {
@@ -84,8 +88,9 @@ public class TaskManagerController {
     }
 
     /**
-     * 获取试卷内容
+     * 获取试卷内容safe:getTestPaper
      */
+    @RequiresPermissions("safe:getTestPaper")
     @RequestMapping("/getTestPaper")
     public ResponseModel getTestPaper(@RequestBody JSONObject date){
         try {
@@ -95,9 +100,11 @@ public class TaskManagerController {
             return ResponseModel.build("1001", e.getMessage());
         }
     }
+
     /**
-     * 完成考试
+     * 完成考试safe:completeTheExam
      */
+    @RequiresPermissions("safe:completeTheExam")
     @RequestMapping("/completeTheExam")
     public ResponseModel completeTheExam(@RequestBody JSONObject date){
         try {
@@ -112,6 +119,7 @@ public class TaskManagerController {
     /**
      * 查看考试详情，根据考试结果和正确答案
      */
+    @RequiresPermissions("safe:getTheExamDetails")
     @RequestMapping("/getTheExamDetails")
     public ResponseModel getTheExamDetails(@RequestBody JSONObject date){
         try {

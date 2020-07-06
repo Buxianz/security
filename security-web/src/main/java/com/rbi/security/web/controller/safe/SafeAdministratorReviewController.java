@@ -6,6 +6,7 @@ import com.rbi.security.entity.web.safe.administrator.SafeAdministratorReviewDTO
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.SafeAdministratorReviewService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,8 +50,9 @@ public class SafeAdministratorReviewController {
         }
     }
     /**
-     * 分页查看负责人、安全生产管理人员培训记录
+     * 分页查看负责人、安全生产管理人员培训记录 safe:securityPersonnelReviewPagination
      */
+    @RequiresPermissions("safe:securityPersonnelReviewPagination")
     @PostMapping("/findByPage")
     public ResponseModel<PageData> findByPage(@RequestBody JSONObject json){
         try {
@@ -67,6 +69,7 @@ public class SafeAdministratorReviewController {
     /**
      * 完成复审
      */
+    @RequiresPermissions("safe:completeSafetyReview")
     @PostMapping("/review")
     public ResponseModel review(@RequestBody JSONObject json){
         try {
@@ -82,6 +85,7 @@ public class SafeAdministratorReviewController {
     /**
      * 取消
      */
+    @RequiresPermissions("safe:cancelSafetyReview")
     @PostMapping("/cancel")
     public ResponseModel cancel(@RequestBody JSONObject json){
         try {
@@ -93,7 +97,7 @@ public class SafeAdministratorReviewController {
             return ResponseModel.build("1001","处理异常");
         }
     }
-
+    @RequiresPermissions("safe:exportSecurityPersonnelReviewList")
     @PostMapping("/writeAdmin")
     public ResponseModel writeAdmin() {
         try {
