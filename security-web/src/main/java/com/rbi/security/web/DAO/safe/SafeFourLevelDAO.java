@@ -101,7 +101,7 @@ public interface SafeFourLevelDAO {
     void addLogForLevel(LogForLevel logForLevel);
 
     @Select("select count(*) from sys_company_personnel where id_card_no = #{idCardNo}")
-    int findPersonnelByIdCardNum(String idCardNo);
+    int findPersonnelByIdCardNum(@Param("idCardNo") String idCardNo);
 
     @Select("select count(*) from safe_four_level where id_card_no = #{idCardNo}")
     int findIdCardNoNum(@Param("idCardNo") String idCardNo);

@@ -157,18 +157,6 @@ public class TrainingFileManagementController {
 
 
     /**************************主要负责人、安全生产管理人员培训台账*****谢青***********************/
-    /**
-     * 文件导入负责人、安全生产管理人员培训记录
-     */
-    @RequestMapping("/importAdministratorTrains")
-    public ResponseModel importAdministratorTrains(MultipartFile multipartFiles) {
-        try{
-            trainingFileManagementService.importAdministratorTrains(multipartFiles);
-           return null;
-        }catch (Exception e){
-            return ResponseModel.build("1001", e.getMessage());
-        }
-    }
 
     /**
      * 导入
