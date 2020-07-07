@@ -140,7 +140,7 @@ public class OccHealthMaintainController {
             if (i.equals("1000")) {
                 return ResponseModel.build("1000", "更新成功");
             }  if (i.equals("1006")) {
-                return ResponseModel.build("1006", "不存在");
+                return ResponseModel.build("1001", "不存在");
             }else {
                 return ResponseModel.build("1001", "防护设备名称不可重复！修改失败");
             }

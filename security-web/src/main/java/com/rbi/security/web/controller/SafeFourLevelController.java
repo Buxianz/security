@@ -122,9 +122,9 @@ public class SafeFourLevelController {
             if (i.equals("1000")) {
                 return ResponseModel.build("1000", "添加成功");
             }else if (i.equals("1002")){
-                return ResponseModel.build("1002", "添加失败，身份证号不存在！");
+                return ResponseModel.build("1001", "添加失败，身份证号不存在！");
             }else {
-                return ResponseModel.build("1003", "添加失败，此人台账已存在！");
+                return ResponseModel.build("1001", "添加失败，此人台账已存在！");
             }
         } catch (Exception e) {
             logger.error("添加异常，ERROR：{}", e);
@@ -187,7 +187,7 @@ public class SafeFourLevelController {
             return ResponseModel.build("1000", "导入完成", map);
         } catch (Exception e) {
             System.out.println("错误："+e);
-            return ResponseModel.build("1002", "服务器处理异常", e);
+            return ResponseModel.build("1001", "服务器处理异常", e);
         }
     }
 
@@ -199,7 +199,7 @@ public class SafeFourLevelController {
             return ResponseModel.build("1000", "导出完成", map);
         } catch (Exception e) {
             System.out.println("错误："+e);
-            return ResponseModel.build("1002", "服务器处理异常", e);
+            return ResponseModel.build("1001", "服务器处理异常", e);
         }
     }
 }

@@ -362,7 +362,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                 companyId = sysOrganization3.getId();
             }
             SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
-            if (sysRole.getLevel() == 0 ||(sysRole.getLevel() == 1 && sysOrganization.getId() == 25)){
+            if (sysRole.getWhetherSee() == 1){
                 List<HidDangerDO> hidDangerDOS = hidDangerDAO.findAllDealHidByPage(companyId,pageNo2,pageSize);
                 for (int i = 0; i<hidDangerDOS.size(); i++){
                     List<HidDangerProcessDO> hidDangerProcessDOS = hidDangerDAO.findProcessByHidDangerCode(hidDangerDOS.get(i).getHidDangerCode());
@@ -427,7 +427,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                 companyId = sysOrganization3.getId();
             }
             SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
-            if (sysRole.getLevel() == 0 ||(sysRole.getLevel() == 1 && sysOrganization.getId() == 25)){
+            if (sysRole.getWhetherSee() == 1){
                 List<HidDangerDO> hidDangerDOS = hidDangerDAO.findAllFinishHidByPage(companyId,pageNo2,pageSize);
                 for (int i = 0;i<hidDangerDOS.size();i++){
                     if (hidDangerDOS.get(i).getProcessingStatus().equals("5")){
