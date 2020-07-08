@@ -152,7 +152,9 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
                   if (safes.size() != 0) {
                       safeSpecialTrainingFilesDao.inserts(safes);
                   }
-                  logSpecialTrainingDAO.adds(importSpecialTrainingLOgList);
+                  if (importSpecialTrainingLOgList.size() != 0) {
+                      logSpecialTrainingDAO.adds(importSpecialTrainingLOgList);
+                  }
                   importFeedback.setFailTecord(importSpecialTrainingLOgList);
               }else {
                   throw new RuntimeException("文件不是excel文件");
