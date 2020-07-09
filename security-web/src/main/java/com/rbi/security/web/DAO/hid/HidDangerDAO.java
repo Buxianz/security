@@ -147,18 +147,23 @@ public interface HidDangerDAO {
             "completion_time=#{completionTime},completion_situation=#{completionSituation}," +
             "rectification_plan=#{rectificationPlan},acceptance_report=#{acceptanceReport}," +
             "processing_status=#{processingStatus},corrector_id=#{correctorId}," +
-            "corrector_name=#{correctorName} where hid_danger_code = #{hidDangerCode}")
+            "corrector_name=#{correctorName},hid_type_thing=#{hidTypeThing}," +
+            "hid_type_person = #{hidTypePerson},hid_type_manage=#{hidTypeManage}," +
+            "hid_danger_grade=#{hidDangerGrade} where hid_danger_code = #{hidDangerCode}")
     void updateCompleteHidDanger(HidDangerDO hidDangerDO);
 
     @Update("update hid_danger set processing_status = #{processingStatus},auditor_id=#{auditorId},auditor_name=#{auditorName}," +
-            "audit_time=#{auditTime},rectification_evaluate=#{rectificationEvaluate} " +
+            "audit_time=#{auditTime},rectification_evaluate=#{rectificationEvaluate},hid_type_thing=#{hidTypeThing}," +
+            "hid_type_person = #{hidTypePerson},hid_type_manage=#{hidTypeManage},hid_danger_grade=#{hidDangerGrade} " +
             "where hid_danger_code = #{hidDangerCode}")
     void auditPass(HidDangerDO hidDangerDO);
 
     @Update("update hid_danger set processing_status = #{processingStatus},auditor_id=#{auditorId},auditor_name=#{auditorName}," +
             "audit_time=#{auditTime},rectification_evaluate=#{rectificationEvaluate},if_deal='否',governance_funds = null," +
             "completion_time = null,completion_situation=null,rectification_plan =null,acceptance_report=null," +
-            "if_control_measures = '无',if_rectification_plan = '无' where hid_danger_code = #{hidDangerCode}")
+            "if_control_measures = '无',if_rectification_plan = '无',hid_type_thing=#{hidTypeThing},hid_type_person = #{hidTypePerson}," +
+            "hid_type_manage=#{hidTypeManage},hid_danger_grade=#{hidDangerGrade} " +
+            "where hid_danger_code = #{hidDangerCode}")
     void auditFalse(HidDangerDO hidDangerDO);
 
 
@@ -170,7 +175,8 @@ public interface HidDangerDAO {
             "corrector_id = #{correctorId},corrector_name = #{correctorName}," +
             "rectification_notice_time = #{rectificationNoticeTime},specified_rectification_time = #{specifiedRectificationTime}," +
             "if_deal='否',governance_funds = null,completion_time = null,completion_situation=null,rectification_plan =null,acceptance_report=null," +
-            "if_control_measures = '无',if_rectification_plan = '无' where hid_danger_code = #{hidDangerCode}")
+            "if_control_measures = '无',if_rectification_plan = '无',hid_type_thing=#{hidTypeThing},hid_type_person = #{hidTypePerson}," +
+            "hid_type_manage=#{hidTypeManage},hid_danger_grade=#{hidDangerGrade} where hid_danger_code = #{hidDangerCode}")
     void updateNotice(HidDangerDO hidDangerDO);
 
 
@@ -194,17 +200,6 @@ public interface HidDangerDAO {
             "sys_user_role.role_id  =  sys_role.id and sys_role.level = 1 and organization_id in (select id from sys_organization where parent_id = #{organizationId})")
     List<SysPersonnelDTO> findAllFirstUserByOrganizationId(Integer organizationId);
 
-
-    @Update("update hid_danger set " +
-            "troubleshooting_time=#{troubleshootingTime},hid_danger_content=#{hidDangerContent}," +
-            "hid_danger_grade=#{hidDangerGrade},if_control_measures=#{ifControlMeasures}," +
-            "if_rectification_plan=#{ifRectificationPlan}," +
-            "governance_funds=#{governanceFunds},hid_type_thing=#{hidTypeThing}," +
-            "hid_type_person=#{hidTypePerson},hid_type_manage=#{hidTypeManage} " +
-            "where hid_danger_code = #{hidDangerCode}")
-    void reportHidDanger(HidDangerDO hidDangerDO);
-
-
     @Select("select * from hid_danger where hid_danger_code = #{hidDangerCode}")
     HidDangerDO findAllByHidDangerCode(String hidDangerCode);
 
@@ -224,11 +219,10 @@ public interface HidDangerDAO {
     @Delete("delete from hid_danger_picture where id = #{id}")
     void deletePicture(Integer id);
 
-    @Update("update hid_danger set if_control_measures = '无',if_rectification_plan = '无' where hid_danger_code = #{hidDangerCode}")
-    void updateIf(String hidDangerCode);
-
-    @Update("update hid_danger set processing_status = #{processingStatus},corrector_id=null,corrector_name=null where hid_danger_code = #{hidDangerCode}")
-    void updateProcessingStatus(@Param("processingStatus") String processingStatus,@Param("hidDangerCode")String hidDangerCode);
+    @Update("update hid_danger set processing_status = #{processingStatus},corrector_id=null,corrector_name=null," +
+            "hid_type_thing=#{hidTypeThing},hid_type_person=#{hidTypePerson},hid_type_manage=#{hidTypeManage},hid_danger_grade=#{hidDangerGrade} " +
+            "where hid_danger_code = #{hidDangerCode}")
+    void updateProcessingStatus(HidDangerDO hidDangerDO);
 
 
 }

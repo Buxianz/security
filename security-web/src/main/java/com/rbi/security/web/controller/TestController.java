@@ -4,6 +4,7 @@
 //import com.rbi.security.tool.ResponseModel;
 //import com.rbi.security.web.ScheduleTask.AdministratorReviewSchedule;
 //import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.web.bind.annotation.PostMapping;
 //import org.springframework.web.bind.annotation.RequestMapping;
 //import org.springframework.web.bind.annotation.RestController;
@@ -33,18 +34,23 @@
 //    @Autowired
 //    AdministratorReviewSchedule administratorReviewSchedule;
 //
+//    @Value("${hiddenPath}")
+//    private String hiddenPath;
+//
+//
 //    @PostMapping("test1")
 //    public ResponseModel test(){
 //        try {
 //            administratorReviewSchedule.test1();
+//            System.out.println("值："+hiddenPath);
 //            return null;
 //        }catch (Exception e){
 //            System.out.println("错误："+e);
 //            return null;
 //        }
 //    }
-//
-//
+
+
 //    public static void main(String[] args) {
 //        Date date=new Date();
 //        System.out.println("date:"+date);
@@ -53,6 +59,6 @@
 //        System.out.println("year"+year);
 //
 //    }
-//
-//
+
+
 //}

@@ -154,7 +154,7 @@ public class HidDangerCotroller {
         }
     }
 
-    /**1
+    /**
      * 完成整改
      **/
     @PostMapping("/complete")
@@ -182,9 +182,7 @@ public class HidDangerCotroller {
     @PostMapping("/audit_pass")
     public ResponseModel auditPass(@RequestBody JSONObject json){
         try {
-            String hidDangerCode = json.getString("hidDangerCode");
-            String rectificationEvaluate = json.getString("rectificationEvaluate");
-            hidDangerService.auditPass(hidDangerCode,rectificationEvaluate);
+            hidDangerService.auditPass(json);
             return ResponseModel.build("1000","审核成功");
         }catch (Exception e){
             System.out.println("错误："+e);
@@ -198,11 +196,7 @@ public class HidDangerCotroller {
     @PostMapping("/audit_false")
     public ResponseModel auditFalse(@RequestBody JSONObject json){
         try {
-            String hidDangerCode = json.getString("hidDangerCode");
-            String rectificationEvaluate = json.getString("rectificationEvaluate");
-            Integer type = 1;
-            Integer correctorId = json.getInteger("correctorId");
-            hidDangerService.auditFalse(type,hidDangerCode,rectificationEvaluate,correctorId);
+            hidDangerService.auditFalse(json);
             return ResponseModel.build("1000","审核成功");
         }catch (Exception e){
             System.out.println("错误："+e);
@@ -217,11 +211,7 @@ public class HidDangerCotroller {
     @PostMapping("/rectification_notice")
     public ResponseModel rectificationNotice(@RequestBody JSONObject json){
         try {
-            String hidDangerCode = json.getString("hidDangerCode");
-            Integer correctorId = json.getInteger("correctorId");
-            String rectificationOpinions = json.getString("rectificationOpinions");
-            String specifiedRectificationTime = json.getString("specifiedRectificationTime");
-            String result = hidDangerService.rectificationNotice(hidDangerCode,rectificationOpinions,specifiedRectificationTime,correctorId);
+            String result = hidDangerService.rectificationNotice(json);
             if (result.equals("1000")){
                 return ResponseModel.build("1000","通知整改成功！");
             }else {
@@ -253,8 +243,7 @@ public class HidDangerCotroller {
     @PostMapping("/report")
     public ResponseModel report(@RequestBody JSONObject json){
         try {
-            String hidDangerCode  = json.getString("hidDangerCode");
-            String result  = hidDangerService.report(hidDangerCode);
+            String result  = hidDangerService.report(json);
             if (result.equals("1000")){
                 return ResponseModel.build("1000","上报成功！");
             }else {

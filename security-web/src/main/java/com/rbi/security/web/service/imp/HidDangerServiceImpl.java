@@ -757,26 +757,24 @@ public class HidDangerServiceImpl implements HidDangerService {
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
-    public void auditPass(String hidDangerCode, String rectificationEvaluate) {
+    public void auditPass(JSONObject json) {
+        //审核修改
+        HidDangerDO hidDangerDO = JSON.toJavaObject(json,HidDangerDO.class);
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
-
-        //审核修改
         String time = DateUtil.date(DateUtil.FORMAT_PATTERN);
-        HidDangerDO hidDangerDO = new HidDangerDO();
-        hidDangerDO.setHidDangerCode(hidDangerCode);
-        hidDangerDO.setRectificationEvaluate(rectificationEvaluate);
+
         hidDangerDO.setAuditorId(sysCompanyPersonnel.getId());
         hidDangerDO.setAuditorName(sysCompanyPersonnel.getName());
         hidDangerDO.setAuditTime(time);
         hidDangerDO.setProcessingStatus("5");
 
         //添加进程
+        String hidDangerCode = hidDangerDO.getHidDangerCode();
         HidDangerProcessDO hidDangerProcessDO = new HidDangerProcessDO();
         SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
-
         hidDangerProcessDO.setHidDangerCode(hidDangerCode);
         //操作人信息
         hidDangerProcessDO.setOperatorId(sysCompanyPersonnel.getId());
@@ -793,27 +791,24 @@ public class HidDangerServiceImpl implements HidDangerService {
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
-    public void auditFalse(Integer type, String hidDangerCode, String rectificationEvaluate, Integer correctorId) {
+    public void auditFalse(JSONObject json) {
+        //审核不通过
+        HidDangerDO hidDangerDO = JSON.toJavaObject(json,HidDangerDO.class);
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
         String time = DateUtil.date(DateUtil.FORMAT_PATTERN);
-
-        HidDangerDO hidDangerDO = new HidDangerDO();
-        hidDangerDO.setHidDangerCode(hidDangerCode);
         hidDangerDO.setAuditorId(sysCompanyPersonnel.getId());
         hidDangerDO.setAuditorName(sysCompanyPersonnel.getName());
-        hidDangerDO.setRectificationEvaluate(rectificationEvaluate);
         hidDangerDO.setAuditTime(time);
         hidDangerDO.setProcessingStatus("6");
 
-
         //添加进程
+        String hidDangerCode = hidDangerDO.getHidDangerCode();
         HidDangerProcessDO hidDangerProcessDO2 = hidDangerDAO.findLastProcess(hidDangerCode);
         HidDangerProcessDO hidDangerProcessDO = new HidDangerProcessDO();
         SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
-
         hidDangerProcessDO.setHidDangerCode(hidDangerCode);
         hidDangerProcessDO.setOperatorId(sysCompanyPersonnel.getId());
         hidDangerProcessDO.setOperatorName(sysCompanyPersonnel.getName());
@@ -821,13 +816,12 @@ public class HidDangerServiceImpl implements HidDangerService {
         hidDangerProcessDO.setOperatorOrganizationName(sysOrganization.getOrganizationName());
         hidDangerProcessDO.setDealTime(time);
         hidDangerProcessDO.setDealWay("审核不通过");
-
         hidDangerProcessDO.setOrganizationId(hidDangerProcessDO2.getOperatorOrganizationId());
-        System.out.println("组织："+hidDangerProcessDO2.getOperatorOrganizationName());
         hidDangerProcessDO.setOrganizationName(hidDangerProcessDO2.getOperatorOrganizationName());
         hidDangerProcessDO.setCorrectorId(hidDangerProcessDO2.getOperatorId());
         hidDangerProcessDO.setCorrectorName(hidDangerProcessDO2.getOperatorName());
         hidDangerProcessDO.setIdt(time);
+
         hidDangerDAO.auditFalse(hidDangerDO);
         hidDangerDAO.addProcess(hidDangerProcessDO);
     }
@@ -835,11 +829,14 @@ public class HidDangerServiceImpl implements HidDangerService {
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
-    public String rectificationNotice(String hidDangerCode, String rectificationOpinions, String specifiedRectificationTime, Integer correctorId) {
+    public String rectificationNotice(JSONObject json) {
+        HidDangerDO hidDangerDO = JSON.toJavaObject(json,HidDangerDO.class);
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
+        String hidDangerCode = hidDangerDO.getHidDangerCode();
+        Integer correctorId = hidDangerDO.getCorrectorId();
         try {
             SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
             //进程表添加
@@ -862,13 +859,9 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerProcessDO.setDealWay("通知整改");
             hidDangerProcessDO.setDealTime(idt);//提交时间
             hidDangerProcessDO.setIdt(idt);
+
             //修改hid_danger
-            HidDangerDO hidDangerDO = new HidDangerDO();
-            hidDangerDO.setHidDangerCode(hidDangerCode);
-            hidDangerDO.setCorrectorId(correctorId);
             hidDangerDO.setCorrectorName(sysCompanyPersonnel2.getName());
-            hidDangerDO.setRectificationOpinions(rectificationOpinions);
-            hidDangerDO.setSpecifiedRectificationTime(specifiedRectificationTime);
             HidDangerDO hidDangerDO2 = hidDangerDAO.findAllByHidDangerCode(hidDangerCode);
             if (StringUtils.isBlank(hidDangerDO2.getRectificationNoticeTime())){
                 hidDangerDO.setRectificationNoticeTime(idt);
@@ -910,11 +903,13 @@ public class HidDangerServiceImpl implements HidDangerService {
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
-    public String report(String hidDangerCode) {
+    public String report(JSONObject json) {
+        HidDangerDO hidDangerDO = JSON.toJavaObject(json,HidDangerDO.class);
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         Integer userId = currentUser.getId();
+        String hidDangerCode  = hidDangerDO.getHidDangerCode();
         try {
             SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
             String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
@@ -951,7 +946,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerProcessDO.setDealWay("上报");
             hidDangerProcessDO.setDealTime(idt);
             hidDangerProcessDO.setIdt(idt);
-            hidDangerDAO.updateProcessingStatus("1",hidDangerCode);
+            hidDangerDAO.updateProcessingStatus(hidDangerDO);
             hidDangerDAO.addProcess(hidDangerProcessDO);
             return "1000";
         }catch (NullPointerException e){
