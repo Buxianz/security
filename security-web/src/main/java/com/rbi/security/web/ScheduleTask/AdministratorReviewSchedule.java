@@ -40,7 +40,9 @@ public class AdministratorReviewSchedule {
 //            System.out.println("开始");
             List<SafeAdministratorTrain>  safeAdministratorTrains = safeAdministratorReviewDAO.findAll();
             String idt  = DateUtil.date(DateUtil.FORMAT_PATTERN);
+
             Date nowTime = DateUtil.StringToDate(DateUtil.date(DateUtil.YMD));
+            Date beForeTime = DateUtil.dateLessDays(nowTime,specialDay);
             int nowYear = DateUtil.DategetYear(nowTime);
             for (int i= 0; i< safeAdministratorTrains.size(); i++) {
                 String time = null;
@@ -57,17 +59,17 @@ public class AdministratorReviewSchedule {
 //                    System.out.println("存在培训时间为空");
                     continue;
                 }
-                Date date3 = null;
+                Date date2 = null;
                 try {
                     String time2 = time.substring(0, time.indexOf("至"));
                     Date date1 = DateUtil.StringToDate(time2);
-                    Date date2 = DateUtil.dateAddYears(date1, 1);
-                    date3 = DateUtil.dateAddDays(date2, specialDay);
+                    date2 = DateUtil.dateAddYears(date1, 1);
+//                    date3 = DateUtil.dateAddDays(date2, specialDay);
                 }catch (Exception e){
 //                    System.out.println("时间格式错误");
                     continue;
                 }
-                if (date3.toString().equals(nowTime.toString())) {
+                if (DateUtil.comPare(nowTime,date2) && DateUtil.comPare(date2,beForeTime)){
                     List<SafeAdministratorReview> safeAdministratorReviews = safeAdministratorReviewDAO.findReviewBySafeAdministratorId(safeAdministratorTrains.get(i).getId());
                     int num = 0;
                     for (int j = 0; j < safeAdministratorReviews.size(); j++) {

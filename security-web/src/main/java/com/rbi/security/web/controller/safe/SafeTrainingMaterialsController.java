@@ -75,15 +75,17 @@ public class SafeTrainingMaterialsController {
     public ResponseModel deleteById(@RequestBody JSONObject json){
         try {
             JSONArray array = json.getJSONArray("data");
-            safeTrainingMaterialsService.deleteByIds(array);
-            return ResponseModel.build("1000","删除成功！");
+            String result = safeTrainingMaterialsService.deleteByIds(array);
+            if(result.equals("1000")){
+                return ResponseModel.build("1000","删除成功！");
+            }else {
+                return ResponseModel.build("1001",result);
+            }
         }catch (Exception e){
             System.out.println("错误："+e);
             return ResponseModel.build("1001","处理异常");
         }
     }
-
-
 
     /**
      * 内容类型下拉框
