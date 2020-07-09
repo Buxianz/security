@@ -320,8 +320,25 @@ public class UserServiceImp implements UserService {
         }
 
     }
-
-
+    @Transactional(propagation=Propagation.REQUIRED,rollbackFor = Exception.class)
+   public void modifyPwd(String originalPassword,String latestPassword) throws RuntimeException{
+        try{
+            Subject subject = SecurityUtils.getSubject();
+            AuthenticationUserDTO user=(AuthenticationUserDTO)subject.getPrincipal();
+            Md5Hash md5Hash1=new Md5Hash(originalPassword,user.getSalf(),2);
+            Md5Hash md5Hash=new Md5Hash(latestPassword,user.getSalf(),2);
+            if(user.getPassword().equals(md5Hash1.toString())) {
+                sysUSerDAO.modifyPwdByUsername(user.getUsername(), md5Hash.toString());
+            }else throw new NonExistentException("原始密码错误，修改用户密码失败");
+        }catch (NonExistentException e){
+            logger.error("修改用户密码失败，异常为{}",e);
+            throw new RuntimeException(e.getMessage());
+        }
+        catch (Exception e){
+            logger.error("修改用户密码失败，异常为{}",e);
+            throw new RuntimeException("修改用户密码失败");
+        }
+   }
 
 //    public static   void main(String [] args){
 //        String salt = Tools.uuid();
