@@ -1,7 +1,7 @@
 #正式环境:73
 #spring:
-#  profiles:
-#    active: dev
+  #profiles:
+    #active: dev
 
 #内部测试环境:140
 spring:
