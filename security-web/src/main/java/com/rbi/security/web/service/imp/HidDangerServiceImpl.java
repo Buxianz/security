@@ -909,6 +909,7 @@ public class HidDangerServiceImpl implements HidDangerService {
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         Integer userId = currentUser.getId();
+        hidDangerDO.setProcessingStatus("1");
         String hidDangerCode  = hidDangerDO.getHidDangerCode();
         try {
             SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
