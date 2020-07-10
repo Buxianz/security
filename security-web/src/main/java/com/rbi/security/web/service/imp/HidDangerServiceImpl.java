@@ -706,7 +706,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             HidDangerProcessDO hidDangerProcessDO = new HidDangerProcessDO();
             SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
             if (sysOrganization.getLevel() == 1 && sysRole.getLevel() == 1){
-                hidDangerDO.setProcessingStatus("5");//已处理待审核
+                hidDangerDO.setProcessingStatus("5");//最高权限，完成并默认审核通过
             }else {
                 if (sysRole.getLevel() == 1) {//判断角色权限等级
                     //上报组织
