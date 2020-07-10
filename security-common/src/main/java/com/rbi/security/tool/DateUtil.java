@@ -124,7 +124,7 @@ public class DateUtil {
     public static boolean comPare(Date A, Date B){
         long begin = A.getTime();
         long end = B.getTime();
-        if (begin > end){
+        if (begin >= end){
             return true;
         }else {
             return false;
