@@ -3,6 +3,7 @@ package com.rbi.security.web.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.tool.ResponseModel;
+import com.rbi.security.web.service.LoginVerificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.DisabledAccountException;
@@ -14,6 +15,7 @@ import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.session.UnknownSessionException;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +51,8 @@ public class LoginController {
         return ResponseModel.build("1005", "他人登陆，被迫下线");
     }
 
+    @Autowired
+    LoginVerificationService loginVerificationService;
     @RequestMapping("/login")
     public ResponseModel login(@RequestBody JSONObject data, HttpServletRequest request){
         JSONObject jsonObject=new JSONObject();
@@ -60,7 +64,7 @@ public class LoginController {
             subject.login(token);
             System.out.println(subject.getSession().getId());
             //未完成获取用户的权限菜单
-            return ResponseModel.build("1000", "登陆成功", (String) subject.getSession().getId(),(AuthenticationUserDTO)subject.getPrincipal());
+            return ResponseModel.build("1000", "登陆成功", (String) subject.getSession().getId(),loginVerificationService.getUserPermissionTree());
         }catch (Exception e){
             if(e.getClass().getName()!=null){
                 if(DisabledAccountException.class.getName().equals(e.getClass().getName())) {

@@ -1,6 +1,7 @@
 package com.rbi.security.web.DAO;
 
 import com.rbi.security.entity.AuthenticationUserDTO;
+import com.rbi.security.entity.config.PermissionTreeInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -27,4 +28,11 @@ public interface LoginVerificationDAO {
             "sys_user_role sur on sur.user_id=su.id) sr INNER JOIN sys_role_permission srp on srp.role_id=sr.role_id) srp " +
             "INNER JOIN sys_permission sp on sp.id=srp.permission_id AND system_id=#{systemId}")
     Set<String> getUserPermissionOperateCode(@Param("username")String username,@Param("systemId")int systemId);
+
+    @Select("SELECT sp.* FROM\n" +
+            "(SELECT  permission_id FROM \n" +
+            "(SELECT role_id FROM sys_user_role WHERE user_id=#{userId}) sur INNER JOIN \n" +
+            "sys_role_permission srp on srp.role_id=sur.role_id) srp INNER JOIN sys_permission sp on\n" +
+            "srp.permission_id=sp.id")
+    List<PermissionTreeInfo> getUserPermissionByUserId(@Param("userId") int userId);
 }
