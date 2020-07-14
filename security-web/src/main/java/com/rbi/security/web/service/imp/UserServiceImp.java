@@ -88,16 +88,6 @@ public class UserServiceImp implements UserService {
                         sysUser.getSysUserRoleList().get(i).setUserId(sysUser.getId());
                         sysUser.getSysUserRoleList().get(i).setIdt(idt);
                     }
-//                    for(int i=0;i<sysUser.getSysUserRoleList().size();i++){
-//                        SysRole sysRole=sysRoleDAO.getRoleId(sysUser.getSysUserRoleList().get(i).getRoleId());
-//                        if(sysRole.getLevel().intValue()==1){
-//                            //是老大角色
-//                            List<SysUserRole> sysUserRoleList=sysUserRoleDAO.getSysUserRoles(sysRole.getId());
-//                            if(sysUserRoleList.size()!=0){
-//                                throw new RepeatException("该角色为1级管理人员（只能被一个人拥有），已被他人拥有");
-//                            }
-//                        }
-//                    }
                     for(int i=0;i<sysUser.getSysUserRoleList().size();i++){
                         SysRole sysRole=sysRoleDAO.getRoleId(sysUser.getSysUserRoleList().get(i).getRoleId());
                         if(sysRole.getLevel().intValue()==1){
@@ -130,16 +120,6 @@ public class UserServiceImp implements UserService {
         try{
             if (sysUSerDAO.updateDuplicateCheck(sysUser)==null) {
                 sysUSerDAO.updateUser(sysUser);
-//                for(int i=0;i<sysUser.getSysUserRoleList().size();i++){
-//                    SysRole sysRole=sysRoleDAO.getRoleId(sysUser.getSysUserRoleList().get(i).getRoleId());
-//                    if(sysRole.getLevel().intValue()==1){
-//                        //是老大角色
-//                        List<SysUserRole> sysUserRoleList=sysUserRoleDAO.getSysUserRoles(sysRole.getId());
-//                        if(sysUserRoleList.size()!=0){
-//                            throw new RepeatException("该角色为1级管理人员（只能被一个人拥有），已被他人拥有");
-//                        }
-//                    }
-//                }
                 for(int i=0;i<sysUser.getSysUserRoleList().size();i++){
                     SysRole sysRole=sysRoleDAO.getRoleId(sysUser.getSysUserRoleList().get(i).getRoleId());
                     if(sysRole.getLevel().intValue()==1){
