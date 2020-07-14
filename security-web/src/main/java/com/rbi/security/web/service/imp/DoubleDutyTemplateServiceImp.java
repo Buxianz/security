@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.AuthenticationUserDTO;
-import com.rbi.security.entity.web.doubleduty.DoubleDuty;
-import com.rbi.security.entity.web.doubleduty.DoubleDutyContent;
-import com.rbi.security.entity.web.doubleduty.DoubleDutyTemplate;
-import com.rbi.security.entity.web.doubleduty.DoubleDutyTemplateContent;
+import com.rbi.security.entity.web.doubleduty.*;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.health.OccDiseaseProtection;
 import com.rbi.security.tool.DateUtil;
@@ -21,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -98,6 +96,7 @@ public class DoubleDutyTemplateServiceImp implements DoubleDutyTemplateService {
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         String name = doubleDutyTemplateDAO.fidNameById(personnelId);
         String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
+
         DoubleDuty doubleDuty = JSON.toJavaObject(json,DoubleDuty.class);
         doubleDuty.setPersonnelId(personnelId);
         doubleDuty.setIdt(idt);
@@ -105,13 +104,25 @@ public class DoubleDutyTemplateServiceImp implements DoubleDutyTemplateService {
         doubleDutyTemplateDAO.addDuty(doubleDuty);
         JSONArray contentArry = json.getJSONArray("contentArry");
         List<DoubleDutyContent> doubleDutyContents = JSONObject.parseArray(contentArry.toJSONString(),DoubleDutyContent.class);
-
         for (int i=0;i<doubleDutyContents.size();i++){
             doubleDutyContents.get(i).setDoubleDutyId(doubleDuty.getId());
         }
         doubleDutyTemplateDAO.addContent(doubleDutyContents);
-        JSONArray array = json.getJSONArray("contentArry");
 
+        JSONArray idsArray = json.getJSONArray("personnelIds");
+        List<PersonnelIdsDTO> personnelIdsDTOS = JSONObject.parseArray(idsArray.toJSONString(),PersonnelIdsDTO.class);
+
+        List<DoubleDutyEvaluation> doubleDutyEvaluations = new ArrayList<>();
+        for (int i=0;i<personnelIdsDTOS.size();i++){
+            DoubleDutyEvaluation doubleDutyEvaluation = new DoubleDutyEvaluation();
+            doubleDutyEvaluation.setDoubleDutyId(doubleDuty.getId());
+            doubleDutyEvaluation.setPersonnelId(personnelIdsDTOS.get(i).getId());
+            doubleDutyEvaluation.setName(personnelIdsDTOS.get(i).getName());
+            doubleDutyEvaluation.setIdt(idt);
+            doubleDutyEvaluation.setStatus("1");
+            doubleDutyEvaluations.add(doubleDutyEvaluation);
+        }
+        doubleDutyTemplateDAO.addEvaluation(doubleDutyEvaluations);
         return "1000";
     }
 }

@@ -1,9 +1,6 @@
 package com.rbi.security.web.DAO.doubleduty;
 
-import com.rbi.security.entity.web.doubleduty.DoubleDuty;
-import com.rbi.security.entity.web.doubleduty.DoubleDutyContent;
-import com.rbi.security.entity.web.doubleduty.DoubleDutyTemplate;
-import com.rbi.security.entity.web.doubleduty.DoubleDutyTemplateContent;
+import com.rbi.security.entity.web.doubleduty.*;
 import com.rbi.security.entity.web.entity.SysUserRole;
 import com.rbi.security.entity.web.health.OccDiseaseProtection;
 import org.apache.ibatis.annotations.*;
@@ -45,11 +42,22 @@ public interface DoubleDutyTemplateDAO {
 
     @Insert({
             "<script>",
-            "insert into double_duty_template_content (job,personnel_id,name,idt) values ",
+            "insert into double_duty_content (double_duty_id,content,fraction) values ",
             "<foreach collection='doubleDutyContents' item='item' index='index' separator=','>",
-            "(#{item.job},#{item.personnelId},#{item.name},#{item.idt})",
+            "(#{item.doubleDutyId},#{item.content},#{item.fraction})",
             "</foreach>",
             "</script>"
     })
     void addContent(@Param("doubleDutyContents") List<DoubleDutyContent> doubleDutyContents);
+
+
+    @Insert({
+            "<script>",
+            "insert into double_duty_evaluation (double_duty_id,personnel_id,name,status,idt) values ",
+            "<foreach collection='doubleDutyEvaluations' item='item' index='index' separator=','>",
+            "(#{item.doubleDutyId},#{item.personnelId},#{item.name},#{item.status},#{item.idt})",
+            "</foreach>",
+            "</script>"
+    })
+    void addEvaluation(@Param("doubleDutyEvaluations") List<DoubleDutyEvaluation> doubleDutyEvaluations);
 }
