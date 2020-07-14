@@ -57,4 +57,6 @@ public interface HidDangerService {
     void deleteReport(String hidDangerCode);
 
     void deletePicture(Integer id);
+
+    String rectifyImmediately(HidDangerDO hidDangerDO, MultipartFile[] beforeImg, MultipartFile[] afterImg, MultipartFile plan, MultipartFile report) throws IOException;
 }

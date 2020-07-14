@@ -300,6 +300,29 @@ public class HidDangerCotroller {
         }
     }
 
+    /**
+     * 上报整改
+     **/
+//    @RequiresPermissions("hidDangerTroubleshoot:repot")
+    @PostMapping("/rectifyImmediately")
+    public ResponseModel rectifyImmediately(HidDangerDO hidDangerDO, @RequestParam(value="beforeImg",required=false) MultipartFile[] beforeImg,
+                                @RequestParam(value="afterImg",required=false) MultipartFile[] afterImg,
+                                @RequestParam(value="plan",required=false) MultipartFile plan,
+                                @RequestParam(value="report",required=false) MultipartFile report){
+        try {
+            String result = hidDangerService.rectifyImmediately(hidDangerDO,beforeImg,afterImg,plan,report);
+            if(result.equals("1000")){
+                return ResponseModel.build("1000","立即整改完成！");
+            }else {
+                return ResponseModel.build("1001",result);
+            }
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+
+    }
+
 
 
 
