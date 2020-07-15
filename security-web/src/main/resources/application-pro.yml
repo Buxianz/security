@@ -3,24 +3,17 @@ server:
   servlet:
     context-path: /security-platform
 
+
 spring:
+  jmx:
+    enabled: false
   datasource:
-    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://192.168.28.141:3945;DatabaseName=security
-    username: sa
-    password: Rbi20188
-    maxActive: 20
-    initialSize: 1
-    maxWait: 60000
-    minIdle: 1
-    timeBetweenEvictionRunsMillis: 60000
-    minEvictableIdleTimeMillis: 300000
-    validationQuery: select 1
-    testWhileIdle: true
-    testOnBorrow: true
-    testOnReturn: true
-    poolPreparedStatements: true
-    maxOpenPreparedStatements: 20
+    url: jdbc:mysql://139.9.225.140:3306/security?useUnicode=true&useSSL=true&allowMultiQueries=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    username: root
+    password: Rbi@20191006@Rbi
+    sql-script-encoding: utf-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
   servlet:
     multipart:
       max-file-size: 500MB
@@ -36,10 +29,9 @@ logging:
     path: security_web.log
   pattern:
 
-
-
 uploadfile.ip: http://192.168.28.100
 hiddenPath: /hidden/
 excelWritePath: /excelWritePath/
 seriousDangerPath: /seriousDanger/
 riskPath: /riskControl/
+spcialPath: /spcial/

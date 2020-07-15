@@ -83,7 +83,7 @@ public class SafeAdministratorReviewServiceImp implements SafeAdministratorRevie
     public String exportAdminstratorReview(int completionStatus) throws RuntimeException{
         String idt= LocalDateUtils.localDateTimeFormat(LocalDateTime.now(), LocalDateUtils.DATE_FORMAT_PATTERN);
         /*String filepath = "F:\\";*/
-        String filepath = "/usr/work/adminstratorReviewExcel/";
+        String filepath = excelWritePath;
         String downloadPath=null;
         String sheetName = "";
         List<ExportAdminstratorReview> exportAdminstratorReviews=null;

@@ -44,6 +44,10 @@ import java.util.*;
 @Service
 public class SpecialReviewServiceImp implements SpecialReviewService {
     private static final Logger logger = LoggerFactory.getLogger(SpecialReviewServiceImp.class);
+
+    @Value("${spcialPath}")
+    private String spcialPath;//此ip与此应用部署的服务区ip一致
+
     @Value("${uploadfile.ip}")
     private String fileIp;//此ip与此应用部署的服务区ip一致
     private static final String excelPath=null;
@@ -166,7 +170,7 @@ public class SpecialReviewServiceImp implements SpecialReviewService {
      */
     public String exportSpecialReview(int completionStatus) throws RuntimeException{
         String idt=LocalDateUtils.localDateTimeFormat(LocalDateTime.now(), LocalDateUtils.DATE_FORMAT_PATTERN);
-        String filepath = "/usr/work/specialReviewExcel/";
+        String filepath = spcialPath;
         String downloadPath=null;
         String sheetName = "";
         List<ExportReview> exportReviewList=null;
