@@ -97,12 +97,13 @@ public class ShiroConfig {
     @Bean
     public RedisManager redisManager() {
         RedisManager redisManager = new RedisManager();
-        redisManager.setHost("139.9.225.98");
+        redisManager.setHost("139.9.225.140");
         redisManager.setPort(6379);
         //redisManager.setExpire(60*60);// 配置缓存过期时间
         redisManager.setTimeout(12000);
-        redisManager.setPassword("rbi2018@");
-        redisManager.setDatabase(13);
+       // redisManager.setPassword("rbi2018@");
+        redisManager.setPassword("123456");
+        redisManager.setDatabase(14);
         return redisManager;
     }
 
@@ -114,7 +115,7 @@ public class ShiroConfig {
     public MyShiroSessionManager sessionManager() {
         MyShiroSessionManager sessionManager = new MyShiroSessionManager();
        sessionManager.setSessionDAO(redisSessionDAO());
-       sessionManager.setGlobalSessionTimeout(1800000);
+       sessionManager.setGlobalSessionTimeout(60*1000*60);
         sessionManager.setDeleteInvalidSessions(true);
         sessionManager.setSessionValidationSchedulerEnabled(true);
         sessionManager.setSessionValidationInterval(18000000);

@@ -88,16 +88,6 @@ public class UserServiceImp implements UserService {
                         sysUser.getSysUserRoleList().get(i).setUserId(sysUser.getId());
                         sysUser.getSysUserRoleList().get(i).setIdt(idt);
                     }
-//                    for(int i=0;i<sysUser.getSysUserRoleList().size();i++){
-//                        SysRole sysRole=sysRoleDAO.getRoleId(sysUser.getSysUserRoleList().get(i).getRoleId());
-//                        if(sysRole.getLevel().intValue()==1){
-//                            //是老大角色
-//                            List<SysUserRole> sysUserRoleList=sysUserRoleDAO.getSysUserRoles(sysRole.getId());
-//                            if(sysUserRoleList.size()!=0){
-//                                throw new RepeatException("该角色为1级管理人员（只能被一个人拥有），已被他人拥有");
-//                            }
-//                        }
-//                    }
                     for(int i=0;i<sysUser.getSysUserRoleList().size();i++){
                         SysRole sysRole=sysRoleDAO.getRoleId(sysUser.getSysUserRoleList().get(i).getRoleId());
                         if(sysRole.getLevel().intValue()==1){
@@ -130,16 +120,6 @@ public class UserServiceImp implements UserService {
         try{
             if (sysUSerDAO.updateDuplicateCheck(sysUser)==null) {
                 sysUSerDAO.updateUser(sysUser);
-//                for(int i=0;i<sysUser.getSysUserRoleList().size();i++){
-//                    SysRole sysRole=sysRoleDAO.getRoleId(sysUser.getSysUserRoleList().get(i).getRoleId());
-//                    if(sysRole.getLevel().intValue()==1){
-//                        //是老大角色
-//                        List<SysUserRole> sysUserRoleList=sysUserRoleDAO.getSysUserRoles(sysRole.getId());
-//                        if(sysUserRoleList.size()!=0){
-//                            throw new RepeatException("该角色为1级管理人员（只能被一个人拥有），已被他人拥有");
-//                        }
-//                    }
-//                }
                 for(int i=0;i<sysUser.getSysUserRoleList().size();i++){
                     SysRole sysRole=sysRoleDAO.getRoleId(sysUser.getSysUserRoleList().get(i).getRoleId());
                     if(sysRole.getLevel().intValue()==1){
@@ -320,8 +300,25 @@ public class UserServiceImp implements UserService {
         }
 
     }
-
-
+    @Transactional(propagation=Propagation.REQUIRED,rollbackFor = Exception.class)
+   public void modifyPwd(String originalPassword,String latestPassword) throws RuntimeException{
+        try{
+            Subject subject = SecurityUtils.getSubject();
+            AuthenticationUserDTO user=(AuthenticationUserDTO)subject.getPrincipal();
+            Md5Hash md5Hash1=new Md5Hash(originalPassword,user.getSalf(),2);
+            Md5Hash md5Hash=new Md5Hash(latestPassword,user.getSalf(),2);
+            if(user.getPassword().equals(md5Hash1.toString())) {
+                sysUSerDAO.modifyPwdByUsername(user.getUsername(), md5Hash.toString());
+            }else throw new NonExistentException("原始密码错误，修改用户密码失败");
+        }catch (NonExistentException e){
+            logger.error("修改用户密码失败，异常为{}",e);
+            throw new RuntimeException(e.getMessage());
+        }
+        catch (Exception e){
+            logger.error("修改用户密码失败，异常为{}",e);
+            throw new RuntimeException("修改用户密码失败");
+        }
+   }
 
 //    public static   void main(String [] args){
 //        String salt = Tools.uuid();

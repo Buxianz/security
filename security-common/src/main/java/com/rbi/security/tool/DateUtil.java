@@ -78,6 +78,22 @@ public class DateUtil {
     }
 
     /**
+     * 时间加减天数
+     * @param startDate 要处理的时间，Null则为当前时间
+     * @param days 加减的天数
+     * @return Date
+     */
+    public static Date dateLessDays(Date startDate, int days) {
+        if (startDate == null) {
+            startDate = new Date();
+        }
+        Calendar c = Calendar.getInstance();
+        c.setTime(startDate);
+        c.set(Calendar.DATE, c.get(Calendar.DATE) - days);
+        return c.getTime();
+    }
+
+    /**
      * 时间比较（如果myDate>compareDate返回1，<返回-1，相等返回0）
      * @param myDate 时间
      * @param compareDate 要比较的时间
@@ -100,6 +116,23 @@ public class DateUtil {
             Date strtodate = formatter.parse(strDate, pos);
             return strtodate;
     }
+
+
+    /**
+     * 比较日期，A>B
+     */
+    public static boolean comPare(Date A, Date B){
+        long begin = A.getTime();
+        long end = B.getTime();
+        if (begin >= end){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+
+
 
 
     /**

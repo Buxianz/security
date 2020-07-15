@@ -12,4 +12,5 @@ public interface UserService {
     PageData<PagingUser> pagingQueryUserInfo(int pageNo,int pageSize ,int startIndex) throws RuntimeException;
 
     SysCompanyPersonnel findById();
+    void modifyPwd(String originalPassword,String latestPassword) throws RuntimeException;
 }

@@ -362,7 +362,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                 companyId = sysOrganization3.getId();
             }
             SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
-            if (sysRole.getLevel() == 0 ||(sysRole.getLevel() == 1 && sysOrganization.getId() == 25)){
+            if (sysRole.getWhetherSee() == 1){
                 List<HidDangerDO> hidDangerDOS = hidDangerDAO.findAllDealHidByPage(companyId,pageNo2,pageSize);
                 for (int i = 0; i<hidDangerDOS.size(); i++){
                     List<HidDangerProcessDO> hidDangerProcessDOS = hidDangerDAO.findProcessByHidDangerCode(hidDangerDOS.get(i).getHidDangerCode());
@@ -427,7 +427,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                 companyId = sysOrganization3.getId();
             }
             SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
-            if (sysRole.getLevel() == 0 ||(sysRole.getLevel() == 1 && sysOrganization.getId() == 25)){
+            if (sysRole.getWhetherSee() == 1){
                 List<HidDangerDO> hidDangerDOS = hidDangerDAO.findAllFinishHidByPage(companyId,pageNo2,pageSize);
                 for (int i = 0;i<hidDangerDOS.size();i++){
                     if (hidDangerDOS.get(i).getProcessingStatus().equals("5")){
@@ -706,7 +706,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             HidDangerProcessDO hidDangerProcessDO = new HidDangerProcessDO();
             SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
             if (sysOrganization.getLevel() == 1 && sysRole.getLevel() == 1){
-                hidDangerDO.setProcessingStatus("5");//已处理待审核
+                hidDangerDO.setProcessingStatus("5");//最高权限，完成并默认审核通过
             }else {
                 if (sysRole.getLevel() == 1) {//判断角色权限等级
                     //上报组织
@@ -757,26 +757,24 @@ public class HidDangerServiceImpl implements HidDangerService {
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
-    public void auditPass(String hidDangerCode, String rectificationEvaluate) {
+    public void auditPass(JSONObject json) {
+        //审核修改
+        HidDangerDO hidDangerDO = JSON.toJavaObject(json,HidDangerDO.class);
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
-
-        //审核修改
         String time = DateUtil.date(DateUtil.FORMAT_PATTERN);
-        HidDangerDO hidDangerDO = new HidDangerDO();
-        hidDangerDO.setHidDangerCode(hidDangerCode);
-        hidDangerDO.setRectificationEvaluate(rectificationEvaluate);
+
         hidDangerDO.setAuditorId(sysCompanyPersonnel.getId());
         hidDangerDO.setAuditorName(sysCompanyPersonnel.getName());
         hidDangerDO.setAuditTime(time);
         hidDangerDO.setProcessingStatus("5");
 
         //添加进程
+        String hidDangerCode = hidDangerDO.getHidDangerCode();
         HidDangerProcessDO hidDangerProcessDO = new HidDangerProcessDO();
         SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
-
         hidDangerProcessDO.setHidDangerCode(hidDangerCode);
         //操作人信息
         hidDangerProcessDO.setOperatorId(sysCompanyPersonnel.getId());
@@ -793,27 +791,24 @@ public class HidDangerServiceImpl implements HidDangerService {
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
-    public void auditFalse(Integer type, String hidDangerCode, String rectificationEvaluate, Integer correctorId) {
+    public void auditFalse(JSONObject json) {
+        //审核不通过
+        HidDangerDO hidDangerDO = JSON.toJavaObject(json,HidDangerDO.class);
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
         String time = DateUtil.date(DateUtil.FORMAT_PATTERN);
-
-        HidDangerDO hidDangerDO = new HidDangerDO();
-        hidDangerDO.setHidDangerCode(hidDangerCode);
         hidDangerDO.setAuditorId(sysCompanyPersonnel.getId());
         hidDangerDO.setAuditorName(sysCompanyPersonnel.getName());
-        hidDangerDO.setRectificationEvaluate(rectificationEvaluate);
         hidDangerDO.setAuditTime(time);
         hidDangerDO.setProcessingStatus("6");
 
-
         //添加进程
+        String hidDangerCode = hidDangerDO.getHidDangerCode();
         HidDangerProcessDO hidDangerProcessDO2 = hidDangerDAO.findLastProcess(hidDangerCode);
         HidDangerProcessDO hidDangerProcessDO = new HidDangerProcessDO();
         SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
-
         hidDangerProcessDO.setHidDangerCode(hidDangerCode);
         hidDangerProcessDO.setOperatorId(sysCompanyPersonnel.getId());
         hidDangerProcessDO.setOperatorName(sysCompanyPersonnel.getName());
@@ -821,13 +816,12 @@ public class HidDangerServiceImpl implements HidDangerService {
         hidDangerProcessDO.setOperatorOrganizationName(sysOrganization.getOrganizationName());
         hidDangerProcessDO.setDealTime(time);
         hidDangerProcessDO.setDealWay("审核不通过");
-
         hidDangerProcessDO.setOrganizationId(hidDangerProcessDO2.getOperatorOrganizationId());
-        System.out.println("组织："+hidDangerProcessDO2.getOperatorOrganizationName());
         hidDangerProcessDO.setOrganizationName(hidDangerProcessDO2.getOperatorOrganizationName());
         hidDangerProcessDO.setCorrectorId(hidDangerProcessDO2.getOperatorId());
         hidDangerProcessDO.setCorrectorName(hidDangerProcessDO2.getOperatorName());
         hidDangerProcessDO.setIdt(time);
+
         hidDangerDAO.auditFalse(hidDangerDO);
         hidDangerDAO.addProcess(hidDangerProcessDO);
     }
@@ -835,11 +829,14 @@ public class HidDangerServiceImpl implements HidDangerService {
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
-    public String rectificationNotice(String hidDangerCode, String rectificationOpinions, String specifiedRectificationTime, Integer correctorId) {
+    public String rectificationNotice(JSONObject json) {
+        HidDangerDO hidDangerDO = JSON.toJavaObject(json,HidDangerDO.class);
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
+        String hidDangerCode = hidDangerDO.getHidDangerCode();
+        Integer correctorId = hidDangerDO.getCorrectorId();
         try {
             SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
             //进程表添加
@@ -862,13 +859,9 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerProcessDO.setDealWay("通知整改");
             hidDangerProcessDO.setDealTime(idt);//提交时间
             hidDangerProcessDO.setIdt(idt);
+
             //修改hid_danger
-            HidDangerDO hidDangerDO = new HidDangerDO();
-            hidDangerDO.setHidDangerCode(hidDangerCode);
-            hidDangerDO.setCorrectorId(correctorId);
             hidDangerDO.setCorrectorName(sysCompanyPersonnel2.getName());
-            hidDangerDO.setRectificationOpinions(rectificationOpinions);
-            hidDangerDO.setSpecifiedRectificationTime(specifiedRectificationTime);
             HidDangerDO hidDangerDO2 = hidDangerDAO.findAllByHidDangerCode(hidDangerCode);
             if (StringUtils.isBlank(hidDangerDO2.getRectificationNoticeTime())){
                 hidDangerDO.setRectificationNoticeTime(idt);
@@ -910,11 +903,14 @@ public class HidDangerServiceImpl implements HidDangerService {
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
-    public String report(String hidDangerCode) {
+    public String report(JSONObject json) {
+        HidDangerDO hidDangerDO = JSON.toJavaObject(json,HidDangerDO.class);
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         Integer userId = currentUser.getId();
+        hidDangerDO.setProcessingStatus("1");
+        String hidDangerCode  = hidDangerDO.getHidDangerCode();
         try {
             SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
             String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
@@ -951,7 +947,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerProcessDO.setDealWay("上报");
             hidDangerProcessDO.setDealTime(idt);
             hidDangerProcessDO.setIdt(idt);
-            hidDangerDAO.updateProcessingStatus("1",hidDangerCode);
+            hidDangerDAO.updateProcessingStatus(hidDangerDO);
             hidDangerDAO.addProcess(hidDangerProcessDO);
             return "1000";
         }catch (NullPointerException e){
@@ -994,4 +990,124 @@ public class HidDangerServiceImpl implements HidDangerService {
         }
         return map;
     }
+
+    @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
+    public String rectifyImmediately(HidDangerDO hidDangerDO, MultipartFile[] beforeImg, MultipartFile[] afterImg, MultipartFile plan, MultipartFile report) throws IOException {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        Integer userId = currentUser.getId();
+        try {
+            SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
+            String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
+            String hidDangerCode = DateUtil.timeStamp();
+            hidDangerDO.setHidDangerCode(hidDangerCode);
+            hidDangerDO.setCopyOrganizationId(123);
+            hidDangerDO.setCopyOrganizationName("安防部");
+            hidDangerDO.setHidDangerType("3");
+            hidDangerDO.setIdt(idt);
+            hidDangerDO.setHidDangerGrade("Ⅴ");
+            hidDangerDO.setIfDeal("是");
+            hidDangerDO.setCorrectorId(sysCompanyPersonnel.getId());
+            hidDangerDO.setCorrectorName(sysCompanyPersonnel.getName());
+            hidDangerDO.setIfRectificationPlan("有");
+            hidDangerDO.setIfControlMeasures("有");
+            hidDangerDO.setProcessingStatus("5");//已处理待审核
+            hidDangerDO.setCompletionTime(idt);
+
+            //排查前照片添加
+            if (beforeImg.length > 6) {
+                return "排查前照片数量不能大于6张";
+            }
+            if (beforeImg.length > 0) {
+                for (int i = 0; i < beforeImg.length; i++) {
+                    String contentType = beforeImg[i].getContentType();
+                    if (contentType.startsWith("image")) {
+                        String timestamps = DateUtil.timeStamp();
+                        String newFileName = timestamps + new Random().nextInt() + ".jpg";
+                        FileUtils.copyInputStreamToFile(beforeImg[i].getInputStream(), new File(hiddenPath, newFileName));
+                        hidDangerDAO.addBeforeImg(hidDangerCode,hiddenPath+newFileName);
+                    }
+                }
+            }
+            //排查后照片添加
+            if (afterImg.length > 6) {
+                return "排查后照片数量不能大于6张";
+            }
+            if (afterImg.length > 0) {
+                for (int i = 0; i < afterImg.length; i++) {
+                    String contentType = afterImg[i].getContentType();
+                    if (contentType.startsWith("image")) {
+                        String timestamps = DateUtil.timeStamp();
+                        String newFileName = timestamps + new Random().nextInt() + ".jpg";
+                        FileUtils.copyInputStreamToFile(afterImg[i].getInputStream(), new File(hiddenPath, newFileName));
+                        hidDangerDAO.addAfterImg(hidDangerCode,hiddenPath+newFileName);
+                    }
+                }
+            }
+//        进程表添加
+            HidDangerProcessDO hidDangerProcessDO = new HidDangerProcessDO();
+            SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+            hidDangerProcessDO.setHidDangerCode(hidDangerCode);
+            //操作人信息
+            hidDangerProcessDO.setOperatorId(sysCompanyPersonnel.getId());
+            hidDangerProcessDO.setOperatorName(sysCompanyPersonnel.getName());
+            hidDangerProcessDO.setOperatorOrganizationId(sysOrganization.getId());
+            hidDangerProcessDO.setOperatorOrganizationName(sysOrganization.getOrganizationName());
+            //处理方式
+            hidDangerProcessDO.setIfDeal("是");
+            hidDangerProcessDO.setDealWay("立即整改");
+            hidDangerProcessDO.setDealTime(idt);
+            hidDangerProcessDO.setIdt(idt);
+            hidDangerDAO.addProcess(hidDangerProcessDO);
+            //隐患所属组织表
+            SysOrganization sysOrganization2 = hidDangerDAO.findAllByOrganizationId(hidDangerDO.getOrganizationId());
+            int level = sysOrganization2.getLevel();
+            if (level == 4 ){
+                hidDangerDO.setClassId(sysOrganization2.getId());
+                hidDangerDO.setClassName(sysOrganization2.getOrganizationName());
+            }
+            if (level == 3 ){
+                hidDangerDO.setWorkshopId(sysOrganization2.getId());
+                hidDangerDO.setWorkshopName(sysOrganization2.getOrganizationName());
+            }
+            if (level == 2 ){
+                hidDangerDO.setFactoryId(sysOrganization2.getId());
+                hidDangerDO.setFactoryName(sysOrganization2.getOrganizationName());
+            }
+            if (level == 1 ){
+                hidDangerDO.setCompanyId(sysOrganization2.getId());
+                hidDangerDO.setCompanyName(sysOrganization2.getOrganizationName());
+            }
+            Integer parentId = sysOrganization2.getParentId();
+            level = level -1;
+            while (level !=0){
+                SysOrganization sysOrganization3 = hidDangerDAO.findAllByOrganizationId(parentId);
+                if (level == 3 ){
+                    hidDangerDO.setWorkshopId(sysOrganization3.getId());
+                    hidDangerDO.setWorkshopName(sysOrganization3.getOrganizationName());
+                }
+                if (level == 2 ){
+                    hidDangerDO.setFactoryId(sysOrganization3.getId());
+                    hidDangerDO.setFactoryName(sysOrganization3.getOrganizationName());
+                }
+                if (level == 1 ){
+                    hidDangerDO.setCompanyId(sysOrganization3.getId());
+                    hidDangerDO.setCompanyName(sysOrganization3.getOrganizationName());
+                }
+                parentId = sysOrganization3.getParentId();
+                level=level - 1;
+            }
+            hidDangerDAO.addHidDanger(hidDangerDO);
+            return "1000";
+        }catch (NullPointerException e){
+            return "没有创建完整的单位和对应的角色用户";
+        }catch (NumberFormatException e){
+            return "数据格式错误";
+        }catch (IndexOutOfBoundsException e){
+            return "数组溢出，配置了多个上级负责人";
+        }
+    }
+
 }

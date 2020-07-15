@@ -61,4 +61,7 @@ public interface SafeTrainingMaterialsDAO {
     @Select("select count(*) from safe_training_materials,safe_content_category where safe_training_materials.content_category_id = safe_content_category.id and " +
             "content_category_id = #{contentCategoryId} and resource_type = '视频'")
     int findVideoByCategoryNum(int contentCategoryId);
+
+    @Select("select count(*) from safe_data_plan where training_materials_id=#{id}")
+    int findPlanNum(@Param("id") Integer id);
 }

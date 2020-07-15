@@ -21,4 +21,7 @@ public class PermissionTreeInfo {
      */
     private String description;
     private List<PermissionTreeInfo> sysPermissionList;
+
+    private int numberOfLayers;
+
 }

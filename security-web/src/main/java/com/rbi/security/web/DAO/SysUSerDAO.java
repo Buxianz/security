@@ -126,8 +126,11 @@ public interface SysUSerDAO {
             "AND sys_role. LEVEL = 1 AND sys_company_personnel.organization_id = (SELECT sys_organization.id FROM sys_organization,sys_company_personnel WHERE sys_organization.id = sys_company_personnel.organization_id AND sys_company_personnel.id = #{id}) and sys_company_personnel.id != #{id}")
     int findFistLevelNum2(@Param("id") Integer id);
 
-
-
+    /**
+     * 修改用户密码
+     */
+    @Update("update sys_user set password=#{password} where username=#{username}")
+    int modifyPwdByUsername(@Param("username") String username,@Param("password")String password);
 
 
 }

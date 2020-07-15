@@ -1,6 +1,7 @@
 package com.rbi.security.web.service;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.hid.HidDangerDO;
 import com.rbi.security.tool.PageData;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,19 +42,21 @@ public interface HidDangerService {
 
     String complete(HidDangerDO hidDangerDO, MultipartFile[] beforeImg, MultipartFile[] afterImg, MultipartFile plan, MultipartFile report) throws IOException;
 
-    void auditPass(String hidDangerCode, String rectificationEvaluate);
+    void auditPass(JSONObject json);
 
-    void auditFalse(Integer type, String hidDangerCode, String rectificationEvaluate, Integer correctorId);
+    void auditFalse(JSONObject json);
 
-    String rectificationNotice(String hidDangerCode, String rectificationOpinions, String specifiedRectificationTime, Integer correctorId);
+    String rectificationNotice(JSONObject json);
 
     Map<String, Object> findCorrector();
 
-    String report(String hidDangerCode);
+    String report(JSONObject json);
 
     void deletePlan(String hidDangerCode);
 
     void deleteReport(String hidDangerCode);
 
     void deletePicture(Integer id);
+
+    String rectifyImmediately(HidDangerDO hidDangerDO, MultipartFile[] beforeImg, MultipartFile[] afterImg, MultipartFile plan, MultipartFile report) throws IOException;
 }

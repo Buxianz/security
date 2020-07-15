@@ -113,4 +113,23 @@ public class UserController {
             return ResponseModel.build("1001", e.getMessage());
         }
     }
+    /**
+     *
+     */
+    /**
+     * 谢青
+     * date:2020/6/26
+     * * */
+    @RequestMapping("/modifyPwd")
+    @ResponseBody
+    public ResponseModel modifyPwd(@RequestBody JSONObject date){
+        try {
+            String originalPassword=date.getString("originalPassword");
+            String latestPassword=date.getString("latestPassword");
+            userService.modifyPwd(originalPassword,latestPassword);
+            return  ResponseModel.build("1000", "修改成功");
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
 }

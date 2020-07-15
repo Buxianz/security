@@ -204,6 +204,7 @@ public class CompanyPersonnelServiceImpl implements CompanyPersonnelService {
             String name = jsonObject.getString("name");
             String idCardNo = jsonObject.getString("idCardNo");
             String position = jsonObject.getString("position");
+            String workType = jsonObject.getString("workType");
             if (StringUtils.isNotBlank(employeeNumber)){
                 searchCriteria = "WHERE employee_number LIKE '%"+employeeNumber+"%'";
             }
@@ -214,18 +215,25 @@ public class CompanyPersonnelServiceImpl implements CompanyPersonnelService {
                     searchCriteria = "WHERE name LIKE '%"+name+"%'";
                 }
             }
-            if (StringUtils.isNotBlank(name)){
+            if (StringUtils.isNotBlank(idCardNo)){
                 if (StringUtils.isNotBlank(searchCriteria)){
                     searchCriteria = searchCriteria + " AND id_card_no LIKE '%"+idCardNo+"%'";
                 }else {
                     searchCriteria = "WHERE id_card_no LIKE '%"+idCardNo+"%'";
                 }
             }
-            if (StringUtils.isNotBlank(name)){
+            if (StringUtils.isNotBlank(position)){
                 if (StringUtils.isNotBlank(searchCriteria)){
                     searchCriteria = searchCriteria + " AND position LIKE '%"+position+"%'";
                 }else {
                     searchCriteria = "WHERE position LIKE '%"+position+"%'";
+                }
+            }
+            if (StringUtils.isNotBlank(workType)){
+                if (StringUtils.isNotBlank(searchCriteria)){
+                    searchCriteria = searchCriteria + " AND position LIKE '%"+workType+"%'";
+                }else {
+                    searchCriteria = "WHERE position LIKE '%"+workType+"%'";
                 }
             }
         }

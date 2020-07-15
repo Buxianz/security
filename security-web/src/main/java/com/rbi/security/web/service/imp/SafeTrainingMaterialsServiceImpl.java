@@ -153,12 +153,16 @@ public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsSe
     }
 
     @Override
-    public void deleteByIds(JSONArray array) {
-        for (int i = 0; i < array.size(); i++) {
-            JSONObject obj = (JSONObject) array.get(i);
+    public String deleteByIds(JSONArray array) {
+            JSONObject obj = (JSONObject) array.get(0);
             int id = obj.getInteger("id");
-            safeTrainingMaterialsDAO.deleteById(id);
-        }
+            int num = safeTrainingMaterialsDAO.findPlanNum(id);
+            if (num == 0){
+                safeTrainingMaterialsDAO.deleteById(id);
+                return "1000";
+            }else {
+                return "该培训内容已被使用";
+            }
     }
 
     @Override

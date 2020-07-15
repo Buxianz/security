@@ -1,14 +1,10 @@
-#开发环境
+#正式环境:73
+#spring:
+#  profiles:
+#    active: dev
+
+#内部测试环境:140
 spring:
   profiles:
-    active: dev
+    active: test
 
-#测试环境
-#spring:
-#  profiles:
-#    active: test
-
-#生产环境
-#spring:
-#  profiles:
-#    active: pro

@@ -66,7 +66,7 @@ public interface SafeFourLevelDAO {
      */
     @Select("select sys_company_personnel.work_type,sys_company_personnel.`name`,sys_company_personnel.job_nature,sys_company_personnel.gender," +
             "sys_company_personnel.entry_time,sys_company_personnel.date_of_birth,safe_four_level.* from safe_four_level,sys_company_personnel " +
-            "where safe_four_level.id_card_no=sys_company_personnel.id_card_no and safe_four_level.operating_staff=#{personnelId}")
+            "where safe_four_level.id_card_no=sys_company_personnel.id_card_no and sys_company_personnel.id=#{personnelId}")
     PagingSafeFourLevel findSafeFourLevelByOperatingStaff(@Param("personnelId") int personnelId);
 
     @Select("select count(*) from safe_four_level where id_card_no = #{idCardNo}")

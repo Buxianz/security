@@ -38,9 +38,11 @@ public class HidDangerDO {
     private String rectificationUnitName;//整改单位名
     private String rectificationNoticeAnnex;//整改通知附件
     private String requiredCompletionTime;//要求完成时间
+
     private Integer hidTypeThing;
     private Integer hidTypePerson;
     private Integer hidTypeManage;
+
     private String idt;
     private String udt;
     private Integer companyId;

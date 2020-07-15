@@ -163,7 +163,7 @@ public class ConfigServiceImp implements ConfigService {
     }
 
 
-    public  List<PermissionTreeInfo> listToPermissionTree(List<PermissionTreeInfo> list) {
+    private   List<PermissionTreeInfo> listToPermissionTree(List<PermissionTreeInfo> list) {
         //用递归找子。
         List<PermissionTreeInfo> treeList = new ArrayList<PermissionTreeInfo>();
         for (PermissionTreeInfo tree : list) {
