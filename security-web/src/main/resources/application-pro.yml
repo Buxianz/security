@@ -4,15 +4,23 @@ server:
     context-path: /security-platform
 
 spring:
-  jmx:
-    enabled: false
   datasource:
-    url: jdbc:sqlserver://139.9.225.140:3306/security?useUnicode=true&useSSL=true&allowMultiQueries=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
-    username: root
-    password: Rbi@20191006@Rbi
-    sql-script-encoding: utf-8
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:sqlserver://192.168.28.141:3945;DatabaseName=security
+    username: sa
+    password: Rbi20188
+    maxActive: 20
+    initialSize: 1
+    maxWait: 60000
+    minIdle: 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 1
+    testWhileIdle: true
+    testOnBorrow: true
+    testOnReturn: true
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
   servlet:
     multipart:
       max-file-size: 500MB
@@ -27,12 +35,11 @@ logging:
   file:
     path: security_web.log
   pattern:
-#    console: %d{yyyy/MM/dd-HH:mm:ss} -- %(${PID:- }) --- [%thread] %-5level %logger- %msg%n
-#    file: %d{yyyy/MM/dd-HH:mm} -- %(${PID:- }) --- [%thread] %-5level %logger- %msg%n
 
 
-uploadfile.ip: http://139.9.153.27
-hiddenPath: /usr/work/wx/hidden/
-excelWritePath: /usr/work/wx/excelWritePath/
-seriousDangerPath: /usr/work/wx/seriousDanger/
-riskPath: /usr/work/wx/riskControl/
+
+uploadfile.ip: http://192.168.28.100
+hiddenPath: /hidden/
+excelWritePath: /excelWritePath/
+seriousDangerPath: /seriousDanger/
+riskPath: /riskControl/

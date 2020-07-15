@@ -97,13 +97,13 @@ public class ShiroConfig {
     @Bean
     public RedisManager redisManager() {
         RedisManager redisManager = new RedisManager();
-        redisManager.setHost("139.9.225.140");
+        redisManager.setHost("192.168.28.100");
         redisManager.setPort(6379);
         //redisManager.setExpire(60*60);// 配置缓存过期时间
         redisManager.setTimeout(12000);
        // redisManager.setPassword("rbi2018@");
-        redisManager.setPassword("123456");
-        redisManager.setDatabase(14);
+        redisManager.setPassword("rbi20188");
+        redisManager.setDatabase(14);//27:14   73:13
         return redisManager;
     }
 
