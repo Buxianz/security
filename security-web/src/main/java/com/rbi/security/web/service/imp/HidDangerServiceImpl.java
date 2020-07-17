@@ -53,6 +53,10 @@ public class HidDangerServiceImpl implements HidDangerService {
     private String fileIp;
     @Value("${hiddenPath}")
     private String hiddenPath;
+    @Value("${path2}")
+    private String path;
+
+
 
     @Autowired
     HidDangerDAO hidDangerDAO;
@@ -83,7 +87,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                     if (contentType.startsWith("image")) {
                         String timestamps = DateUtil.timeStamp();
                         String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(beforeImg[i].getInputStream(), new File(hiddenPath, newFileName));
+                        FileUtils.copyInputStreamToFile(beforeImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
                         hidDangerDAO.addBeforeImg(hidDangerCode,hiddenPath+newFileName);
                     }
                 }
@@ -98,7 +102,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                     if (contentType.startsWith("image")) {
                         String timestamps = DateUtil.timeStamp();
                         String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(afterImg[i].getInputStream(), new File(hiddenPath, newFileName));
+                        FileUtils.copyInputStreamToFile(afterImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
                         hidDangerDAO.addAfterImg(hidDangerCode,hiddenPath+newFileName);
                     }
                 }
@@ -110,14 +114,14 @@ public class HidDangerServiceImpl implements HidDangerService {
                 String timestamps = DateUtil.timeStamp();
                 String newFileName = timestamps + filename;
                 System.out.println(newFileName);
-                FileUtils.copyInputStreamToFile(plan.getInputStream(), new File(hiddenPath, newFileName));
+                FileUtils.copyInputStreamToFile(plan.getInputStream(), new File(path+hiddenPath, newFileName));
                 hidDangerDO.setRectificationPlan(hiddenPath+newFileName);
             }
             if (report != null){
                 String filename = report.getOriginalFilename();
                 String timestamps = DateUtil.timeStamp();
                 String newFileName = timestamps+ filename;
-                FileUtils.copyInputStreamToFile(report.getInputStream(), new File(hiddenPath, newFileName));
+                FileUtils.copyInputStreamToFile(report.getInputStream(), new File(path+hiddenPath, newFileName));
                 hidDangerDO.setAcceptanceReport(hiddenPath+newFileName);
             }
 
@@ -254,7 +258,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                     if (contentType.startsWith("image")) {
                         String timestamps = DateUtil.timeStamp();
                         String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(beforeImg[i].getInputStream(), new File(hiddenPath, newFileName));
+                        FileUtils.copyInputStreamToFile(beforeImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
                         hidDangerDAO.addBeforeImg(hidDangerCode,hiddenPath+newFileName);
                     }
                 }
@@ -266,7 +270,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                 String timestamps = DateUtil.timeStamp();
                 String newFileName = timestamps + filename;
                 System.out.println(newFileName);
-                FileUtils.copyInputStreamToFile(notice.getInputStream(), new File(hiddenPath, newFileName));
+                FileUtils.copyInputStreamToFile(notice.getInputStream(), new File(path+hiddenPath, newFileName));
                 hidDangerDO.setRectificationNoticeAnnex(hiddenPath+newFileName);
             }
 
@@ -673,7 +677,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                     if (contentType.startsWith("image")) {
                         String timestamps = DateUtil.timeStamp();
                         String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(afterImg[i].getInputStream(), new File(hiddenPath, newFileName));
+                        FileUtils.copyInputStreamToFile(afterImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
                         hidDangerDAO.addAfterImg(hidDangerCode,hiddenPath+newFileName);
                     }
                 }
@@ -685,7 +689,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                 String timestamps = DateUtil.timeStamp();
                 String newFileName = timestamps + filename;
                 System.out.println(newFileName);
-                FileUtils.copyInputStreamToFile(plan.getInputStream(), new File(hiddenPath, newFileName));
+                FileUtils.copyInputStreamToFile(plan.getInputStream(), new File(path+hiddenPath, newFileName));
                 hidDangerDO.setRectificationPlan(hiddenPath+newFileName);
             }else {
                 hidDangerDO.setRectificationPlan(oringinalDO.getRectificationPlan());
@@ -694,7 +698,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                 String filename = report.getOriginalFilename();
                 String timestamps = DateUtil.timeStamp();
                 String newFileName = timestamps+ filename;
-                FileUtils.copyInputStreamToFile(report.getInputStream(), new File(hiddenPath, newFileName));
+                FileUtils.copyInputStreamToFile(report.getInputStream(), new File(path+hiddenPath, newFileName));
                 hidDangerDO.setAcceptanceReport(hiddenPath+newFileName);
             }else {
                 hidDangerDO.setAcceptanceReport(oringinalDO.getAcceptanceReport());
@@ -1026,7 +1030,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                     if (contentType.startsWith("image")) {
                         String timestamps = DateUtil.timeStamp();
                         String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(beforeImg[i].getInputStream(), new File(hiddenPath, newFileName));
+                        FileUtils.copyInputStreamToFile(beforeImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
                         hidDangerDAO.addBeforeImg(hidDangerCode,hiddenPath+newFileName);
                     }
                 }
@@ -1041,7 +1045,7 @@ public class HidDangerServiceImpl implements HidDangerService {
                     if (contentType.startsWith("image")) {
                         String timestamps = DateUtil.timeStamp();
                         String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(afterImg[i].getInputStream(), new File(hiddenPath, newFileName));
+                        FileUtils.copyInputStreamToFile(afterImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
                         hidDangerDAO.addAfterImg(hidDangerCode,hiddenPath+newFileName);
                     }
                 }

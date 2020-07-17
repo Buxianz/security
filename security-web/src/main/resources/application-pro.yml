@@ -8,9 +8,9 @@ spring:
   jmx:
     enabled: false
   datasource:
-    url: jdbc:mysql://139.9.225.140:3306/security?useUnicode=true&useSSL=true&allowMultiQueries=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    url: jdbc:mysql://10.40.1.121:3306/security?useUnicode=true&useSSL=true&allowMultiQueries=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
     username: root
-    password: Rbi@20191006@Rbi
+    password: Rbi20188
     sql-script-encoding: utf-8
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
@@ -29,9 +29,10 @@ logging:
     path: security_web.log
   pattern:
 
-uploadfile.ip: http://192.168.28.100
-hiddenPath: /hidden/
-excelWritePath: /excelWritePath/
-seriousDangerPath: /seriousDanger/
-riskPath: /riskControl/
-spcialPath: /spcial/
+uploadfile.ip: http://10.40.1.121
+path2: D:/nginx-1.12.2/html
+hiddenPath: /file/hidden/
+excelWritePath: /file/excelWritePath/
+seriousDangerPath: /file/seriousDanger/
+riskPath: /file/riskControl/
+spcialPath: /file/special/

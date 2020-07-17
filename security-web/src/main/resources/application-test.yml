@@ -32,7 +32,9 @@ logging:
 
 
 uploadfile.ip: http://139.9.153.27
+path2:
 hiddenPath: /usr/work/wx/hidden/
 excelWritePath: /usr/work/wx/excelWritePath/
 seriousDangerPath: /usr/work/wx/seriousDanger/
 riskPath: /usr/work/wx/riskControl/
+spcialPath: /usr/work/wx/special/

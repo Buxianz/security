@@ -49,6 +49,8 @@ public class SystemManagementServiceImp implements SystemManagementService {
 
     @Value("${uploadfile.ip}")
     private String fileIp;//此ip与此应用部署的服务区ip一致
+    @Value("${path2}")
+    private String path;
     @Autowired
     SystemCategoryDAO systemCategoryDAO;
     @Autowired

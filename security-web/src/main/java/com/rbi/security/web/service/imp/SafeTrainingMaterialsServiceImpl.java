@@ -55,6 +55,8 @@ public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsSe
     private String fileIp;
     @Value("${hiddenPath}")
     private String hiddenPath;
+    @Value("${path2}")
+    private String path;
 
     @Autowired
     SafeTrainingMaterialsDAO safeTrainingMaterialsDAO;
@@ -71,7 +73,7 @@ public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsSe
         if (file!=null){
             String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
             String filename = file.getOriginalFilename();
-            FileUtils.copyInputStreamToFile(file.getInputStream(), new File(hiddenPath, filename));
+            FileUtils.copyInputStreamToFile(file.getInputStream(), new File(path+hiddenPath, filename));
             String resourcePath = hiddenPath+filename;
             int count = safeTrainingMaterialsDAO.countByResourcePath(resourcePath);
             if (count != 0 ){
@@ -193,7 +195,7 @@ public class SafeTrainingMaterialsServiceImpl implements SafeTrainingMaterialsSe
             int pageNo2 = pageSize * (pageNo - 1);
             List<SafeTrainingMaterials> safeTrainingMaterials = safeTrainingMaterialsDAO.findVideoByCategory(pageNo2, pageSize, value);
             for (int i = 0; i < safeTrainingMaterials.size(); i++) {
-                safeTrainingMaterials.get(i).setResourcePath(fileIp + safeTrainingMaterials.get(i).getResourcePath());
+                safeTrainingMaterials.get(i).setResourcePath(fileIp +safeTrainingMaterials.get(i).getResourcePath());
             }
             int totalPage = 0;
             int count = safeTrainingMaterialsDAO.findVideoByCategoryNum(value);

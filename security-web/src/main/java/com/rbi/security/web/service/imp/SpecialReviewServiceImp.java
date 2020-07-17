@@ -47,9 +47,11 @@ public class SpecialReviewServiceImp implements SpecialReviewService {
 
     @Value("${spcialPath}")
     private String spcialPath;//此ip与此应用部署的服务区ip一致
-
     @Value("${uploadfile.ip}")
     private String fileIp;//此ip与此应用部署的服务区ip一致
+    @Value("${path2}")
+    private String path;
+
     private static final String excelPath=null;
 
     //导出excel文件表头
@@ -192,7 +194,7 @@ public class SpecialReviewServiceImp implements SpecialReviewService {
             for (int i=0;i<exportReviewList.size();i++){
                 values.add(ImportExcleFactory.objectToMap(exportReviewList.get(i),titleMap));
             }
-            ExcelPOI.writeExcel(filepath,sheetName,titleMaps,values);
+            ExcelPOI.writeExcel(path+filepath,sheetName,titleMaps,values);
             downloadPath=fileIp+filepath;
         }catch (FileNotFoundException e){
             logger.error("导出主要负责人复审名单失败：表格在占用（或找不到路径），请关闭打开的excel表格");

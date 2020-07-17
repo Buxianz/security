@@ -51,6 +51,8 @@ public class SafeAdministratorReviewServiceImp implements SafeAdministratorRevie
     private String fileIp;//此ip与此应用部署的服务区ip一致
     @Value("${excelWritePath}")
     private String excelWritePath;
+    @Value("${path2}")
+    private String path;
 
     //导出excel文件表头
     private static List<String> titleMaps=new LinkedList<String>() {{
@@ -106,8 +108,8 @@ public class SafeAdministratorReviewServiceImp implements SafeAdministratorRevie
                 for (int i = 0; i < exportAdminstratorReviews.size(); i++) {
                     values.add(ImportExcleFactory.objectToMap(exportAdminstratorReviews.get(i), titleMap));
                 }
-                ExcelPOI.writeExcel(filepath, sheetName, titleMaps, values);
-                downloadPath = fileIp + filepath;
+                ExcelPOI.writeExcel(path+filepath, sheetName, titleMaps, values);
+                downloadPath = fileIp +filepath;
             }else {
                 if(exportAdminstratorReviews.size()==0){
                     throw new NonExistentException("没有复审人员");
@@ -174,7 +176,7 @@ public class SafeAdministratorReviewServiceImp implements SafeAdministratorRevie
         try {
             String filepath = excelWritePath + "主要负责人、安全生产管理人员培训台账.xlsx";
             String sheetName = "sheet1";
-            String findPath = fileIp + filepath;
+            String findPath = fileIp+filepath;
             List<String> titles = new ArrayList<>();
             titles.add("姓名");
             titles.add("身份证号");
@@ -206,7 +208,7 @@ public class SafeAdministratorReviewServiceImp implements SafeAdministratorRevie
                 map.put("备注", safeAdministratorTrainDTOS.get(i).getRemarks());
                 values.add(map);
             }
-            ExcelWrite.writeExcel(filepath, sheetName, titles, values);
+            ExcelWrite.writeExcel(path+filepath, sheetName, titles, values);
             Map<String, Object> map = new HashMap<>();
             map.put("path", findPath);
             return map;

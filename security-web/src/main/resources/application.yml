@@ -4,12 +4,12 @@
 #    active: dev
 
 #内部测试环境:140
-#spring:
-#  profiles:
-#    active: test
-
-#铝厂内网:140
 spring:
   profiles:
-    active: pro
+    active: test
+
+#铝厂内网:
+#spring:
+#  profiles:
+#    active: pro
 

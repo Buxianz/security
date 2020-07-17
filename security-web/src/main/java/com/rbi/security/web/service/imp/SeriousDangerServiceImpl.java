@@ -49,6 +49,8 @@ public class SeriousDangerServiceImpl implements SeriousDangerService {
     private String fileIp;//此ip与此应用部署的服务区ip一致
     @Value("${seriousDangerPath}")
     private String seriousDangerPath;
+    @Value("${path2}")
+    private String path;
 
     @Autowired(required = false)
     SeriousDangerDAO seriousDangerDAO;
@@ -73,7 +75,7 @@ public class SeriousDangerServiceImpl implements SeriousDangerService {
                     if (contentType.startsWith("image")) {
                         String timestamps = DateUtil.timeStamp();
                         String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(seriousDangerPicture[i].getInputStream(), new File(seriousDangerPath, newFileName));
+                        FileUtils.copyInputStreamToFile(seriousDangerPicture[i].getInputStream(), new File(path+seriousDangerPath, newFileName));
                         seriousDangerPicture1.setSeriousDangerId(seriousDanger.getId());
                         seriousDangerPicture1.setSeriousDangerPicturePath(seriousDangerPath + newFileName);
                         seriousDangerPictureDAO.insertSeriousDangerPicture(seriousDangerPicture1);
@@ -184,7 +186,7 @@ public class SeriousDangerServiceImpl implements SeriousDangerService {
                         if (contentType.startsWith("image")) {
                             String timestamps = DateUtil.timeStamp();
                             String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                            FileUtils.copyInputStreamToFile(seriousDangerPicture[i].getInputStream(), new File(seriousDangerPath, newFileName));
+                            FileUtils.copyInputStreamToFile(seriousDangerPicture[i].getInputStream(), new File(path+seriousDangerPath, newFileName));
                             seriousDangerPicture1.setSeriousDangerId(seriousDanger.getId());
                             seriousDangerPicture1.setSeriousDangerPicturePath(seriousDangerPath + newFileName);
                             seriousDangerPictureDAO.insertSeriousDangerPicture(seriousDangerPicture1);

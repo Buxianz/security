@@ -42,6 +42,8 @@ public class OccStatusEvaluationServiceImp implements OccStatusEvaluationService
     private String fileIp;
     @Value("${hiddenPath}")
     private String hiddenPath;
+    @Value("${path2}")
+    private String path;
     @Autowired
     OccStatusEvaluationDAO occStatusEvaluationDAO;
 
@@ -74,7 +76,7 @@ public class OccStatusEvaluationServiceImp implements OccStatusEvaluationService
             String filename = file.getOriginalFilename();
             String timestamps = DateUtil.timeStamp();
             String newFileName = timestamps + filename;
-            FileUtils.copyInputStreamToFile(file.getInputStream(), new File(hiddenPath, newFileName));
+            FileUtils.copyInputStreamToFile(file.getInputStream(), new File(path+hiddenPath, newFileName));
             occStatusEvaluation.setAnnex(hiddenPath+newFileName);
         }
         occStatusEvaluationDAO.add(occStatusEvaluation);
@@ -88,7 +90,7 @@ public class OccStatusEvaluationServiceImp implements OccStatusEvaluationService
             String filename = file.getOriginalFilename();
             String timestamps = DateUtil.timeStamp();
             String newFileName = timestamps + filename;
-            FileUtils.copyInputStreamToFile(file.getInputStream(), new File(hiddenPath, newFileName));
+            FileUtils.copyInputStreamToFile(file.getInputStream(), new File(path+hiddenPath, newFileName));
             occStatusEvaluation.setAnnex(hiddenPath+newFileName);
         }else {
             occStatusEvaluation.setAnnex(occStatusEvaluationDAO.findAnnex(occStatusEvaluation.getId()));

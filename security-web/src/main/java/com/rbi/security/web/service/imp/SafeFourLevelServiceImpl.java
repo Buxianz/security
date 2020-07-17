@@ -55,6 +55,8 @@ public class SafeFourLevelServiceImpl implements SafeFourLevelService {
     private String fileIp;
     @Value("${excelWritePath}")
     private String excelWritePath;
+    @Value("${path2}")
+    private String path;
 
     @Override
     public PageData findSafeFourLevelByPage(JSONObject json) {
@@ -381,7 +383,7 @@ public class SafeFourLevelServiceImpl implements SafeFourLevelService {
                 map.put("备注", safeFourLevelDTOS.get(i).getRemarks());
                 values.add(map);
             }
-            ExcelWrite.writeExcel(filepath, sheetName, titles, values);
+            ExcelWrite.writeExcel(path + filepath, sheetName, titles, values);
             Map<String, Object> map = new HashMap<>();
             map.put("path", findPath);
             return map;

@@ -46,6 +46,8 @@ public class OccRegularMonitoringServiceImp implements OccRegularMonitoringServi
     private String fileIp;
     @Value("${hiddenPath}")
     private String hiddenPath;
+    @Value("${path2}")
+    private String path;
     @Autowired
     OccRegularMonitoringDAO occRegularMonitoringDAO;
 
@@ -78,7 +80,7 @@ public class OccRegularMonitoringServiceImp implements OccRegularMonitoringServi
             String filename = file.getOriginalFilename();
             String timestamps = DateUtil.timeStamp();
             String newFileName = timestamps + filename;
-            FileUtils.copyInputStreamToFile(file.getInputStream(), new File(hiddenPath, newFileName));
+            FileUtils.copyInputStreamToFile(file.getInputStream(), new File(path+hiddenPath, newFileName));
             occRegularMonitoring.setAnnex(hiddenPath+newFileName);
         }
         occRegularMonitoringDAO.add(occRegularMonitoring);
@@ -92,7 +94,7 @@ public class OccRegularMonitoringServiceImp implements OccRegularMonitoringServi
             String filename = file.getOriginalFilename();
             String timestamps = DateUtil.timeStamp();
             String newFileName = timestamps + filename;
-            FileUtils.copyInputStreamToFile(file.getInputStream(), new File(hiddenPath, newFileName));
+            FileUtils.copyInputStreamToFile(file.getInputStream(), new File(path+hiddenPath, newFileName));
             occRegularMonitoring.setAnnex(hiddenPath+newFileName);
         }else {
             occRegularMonitoring.setAnnex(occRegularMonitoringDAO.findAnnex(occRegularMonitoring.getId()));

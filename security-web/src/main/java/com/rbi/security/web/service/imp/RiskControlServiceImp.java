@@ -52,6 +52,9 @@ public class RiskControlServiceImp implements RiskControlService {
     private String fileIp;
     @Value("${riskPath}")
     private String riskPath;
+    @Value("${path2}")
+    private String path;
+
     @Autowired
     RiskControlDAO riskControlDAO;
 
@@ -78,7 +81,7 @@ public class RiskControlServiceImp implements RiskControlService {
                     if (contentType.startsWith("image")) {
                         String timestamps = DateUtil.timeStamp();
                         String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(picture[i].getInputStream(), new File(riskPath, newFileName));
+                        FileUtils.copyInputStreamToFile(picture[i].getInputStream(), new File(path+riskPath, newFileName));
                         riskControlDAO.addPicture(riskCode,riskPath+newFileName);
                     }
                 }
@@ -149,7 +152,7 @@ public class RiskControlServiceImp implements RiskControlService {
                     if (contentType.startsWith("image")) {
                         String timestamps = DateUtil.timeStamp();
                         String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(picture[i].getInputStream(), new File(riskPath, newFileName));
+                        FileUtils.copyInputStreamToFile(picture[i].getInputStream(), new File(path+riskPath, newFileName));
                         riskControlDAO.addPicture(riskControl.getRiskCode(),riskPath+newFileName);
                     }
                 }
@@ -256,7 +259,7 @@ public class RiskControlServiceImp implements RiskControlService {
                     if (contentType.startsWith("image")) {
                         String timestamps = DateUtil.timeStamp();
                         String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(picture[i].getInputStream(), new File(riskPath, newFileName));
+                        FileUtils.copyInputStreamToFile(picture[i].getInputStream(), new File(path+riskPath, newFileName));
                         riskControlDAO.addPicture(riskCode,riskPath+newFileName);
                     }
                 }
@@ -373,7 +376,7 @@ public class RiskControlServiceImp implements RiskControlService {
             for (int j = 0; j < riskControls.size(); j++) {
                 List<RiskControlPicture> riskControlPictures = riskControlDAO.findPictureByRiskCode(riskControls.get(j).getRiskCode());
                 for (int i = 0; i < riskControlPictures.size(); i++) {
-                    riskControlPictures.get(i).setPicture(fileIp + riskControlPictures.get(i).getPicture());
+                    riskControlPictures.get(i).setPicture(fileIp +riskControlPictures.get(i).getPicture());
                 }
                 riskControls.get(j).setImg(riskControlPictures);
             }
@@ -392,7 +395,7 @@ public class RiskControlServiceImp implements RiskControlService {
             for (int j = 0; j < riskControls.size(); j++) {
                 List<RiskControlPicture> riskControlPictures = riskControlDAO.findPictureByRiskCode(riskControls.get(j).getRiskCode());
                 for (int i = 0; i < riskControlPictures.size(); i++) {
-                    riskControlPictures.get(i).setPicture(fileIp + riskControlPictures.get(i).getPicture());
+                    riskControlPictures.get(i).setPicture(fileIp +riskControlPictures.get(i).getPicture());
                 }
                 riskControls.get(j).setImg(riskControlPictures);
             }
@@ -435,7 +438,7 @@ public class RiskControlServiceImp implements RiskControlService {
             for (int j = 0; j < riskControls.size(); j++) {
                 List<RiskControlPicture> riskControlPictures = riskControlDAO.findPictureByRiskCode(riskControls.get(j).getRiskCode());
                 for (int i = 0; i < riskControlPictures.size(); i++) {
-                    riskControlPictures.get(i).setPicture(fileIp + riskControlPictures.get(i).getPicture());
+                    riskControlPictures.get(i).setPicture(fileIp +riskControlPictures.get(i).getPicture());
                 }
                 riskControls.get(j).setImg(riskControlPictures);
             }
@@ -459,7 +462,7 @@ public class RiskControlServiceImp implements RiskControlService {
             for (int j = 0; j < riskControls.size(); j++) {
                 List<RiskControlPicture> riskControlPictures = riskControlDAO.findPictureByRiskCode(riskControls.get(j).getRiskCode());
                 for (int i = 0; i < riskControlPictures.size(); i++) {
-                    riskControlPictures.get(i).setPicture(fileIp + riskControlPictures.get(i).getPicture());
+                    riskControlPictures.get(i).setPicture(fileIp +riskControlPictures.get(i).getPicture());
                 }
                 riskControls.get(j).setImg(riskControlPictures);
                 //区域内外
@@ -484,7 +487,7 @@ public class RiskControlServiceImp implements RiskControlService {
             for (int j = 0; j < riskControls.size(); j++) {
                 List<RiskControlPicture> riskControlPictures = riskControlDAO.findPictureByRiskCode(riskControls.get(j).getRiskCode());
                 for (int i = 0; i < riskControlPictures.size(); i++) {
-                    riskControlPictures.get(i).setPicture(fileIp + riskControlPictures.get(i).getPicture());
+                    riskControlPictures.get(i).setPicture(fileIp +riskControlPictures.get(i).getPicture());
                 }
                 riskControls.get(j).setImg(riskControlPictures);
             }

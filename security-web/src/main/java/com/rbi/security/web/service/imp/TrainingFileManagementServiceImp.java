@@ -58,6 +58,8 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
     private String fileIp;
     @Value("${excelWritePath}")
     private String excelWritePath;
+    @Value("${path2}")
+    private String path;
     private static final String specialColumns[] = {"no", "name", "gender", "idCardNo", "degreeOfEducation", "typeOfWork", "operationItems", "yearsOfWork", "workingYears", "theoreticalAchievements", "actualResults",
             "operationCertificateNo", "dateOfIssue", "oneReviewResults", "oneReviewTime", "towReviewResults", "towReviewTime",
             "threeReviewResults", "threeReviewTime", "fourReviewResults", "fourReviewTime", "fiveReviewResults", "fiveReviewTime", "sixReviewResults", "sixReviewTime",
@@ -172,7 +174,7 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
         try {
             String filepath = excelWritePath + "特种作业人员等级台账.xlsx";
             String sheetName = "sheet1";
-            String findPath = fileIp + filepath;
+            String findPath = fileIp +filepath;
             List<String> titles = new ArrayList<>();
             titles.add("姓名");
             titles.add("性别");
@@ -228,7 +230,7 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
                 map.put("备注", safeSpecialTrainingFiles.get(i).getRemarks());
                 values.add(map);
             }
-            ExcelWrite.writeExcel(filepath, sheetName, titles, values);
+            ExcelWrite.writeExcel(path+filepath, sheetName, titles, values);
             Map<String, Object> map = new HashMap<>();
             map.put("path", findPath);
             return map;
@@ -698,7 +700,7 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
         try {
             String filepath = excelWritePath + "主要负责人、安全生产管理人员培训台账.xlsx";
             String sheetName = "sheet1";
-            String findPath = fileIp + filepath;
+            String findPath = fileIp +filepath;
             List<String> titles = new ArrayList<>();
             titles.add("姓名");
             titles.add("身份证号");
@@ -730,7 +732,7 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
                 map.put("备注", safeAdministratorTrainDTOS.get(i).getRemarks());
                 values.add(map);
             }
-            ExcelWrite.writeExcel(filepath, sheetName, titles, values);
+            ExcelWrite.writeExcel(path+filepath, sheetName, titles, values);
             Map<String, Object> map = new HashMap<>();
             map.put("path", findPath);
             return map;

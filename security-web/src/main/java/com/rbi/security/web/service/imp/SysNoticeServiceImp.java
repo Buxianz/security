@@ -29,6 +29,8 @@ public class SysNoticeServiceImp implements SysNoticeService {
     private String fileIp;
     @Value("${hiddenPath}")
     private String hiddenPath;
+    @Value("${path2}")
+    private String path;
     @Autowired
     SysNoticeDAO sysNoticeDAO;
 
@@ -62,7 +64,7 @@ public class SysNoticeServiceImp implements SysNoticeService {
             String timestamps = DateUtil.timeStamp();
             String newFileName = timestamps + filename;
             System.out.println(newFileName);
-            FileUtils.copyInputStreamToFile(file.getInputStream(), new File(hiddenPath, newFileName));
+            FileUtils.copyInputStreamToFile(file.getInputStream(), new File(path+hiddenPath, newFileName));
             sysNotice.setAnnex(hiddenPath+newFileName);
         }
         sysNoticeDAO.add(sysNotice);
