@@ -10,12 +10,11 @@ import java.util.List;
 @Mapper
 public interface DoubleDutyTemplateDAO {
 
-    @Select("")
-    List<OccDiseaseProtection> findByPage(int pageNo2, int pageSize);
+    @Select("select * from double_duty_template where personnel_id = #{personnelId} limit #{pageNo},#{pageSize}")
+    List<DoubleDutyTemplate> findByPage(int personnelId,int pageNo, int pageSize);
 
-    @Select("")
-    @Options(useGeneratedKeys = true, keyProperty = "id",keyColumn="id")
-    int findByPageNum();
+    @Select("select count(*) from double_duty_template where personnel_id = #{personnelId}")
+    int findByPageNum(int personnelId);
 
     @Insert({
             "<script>",
@@ -60,4 +59,29 @@ public interface DoubleDutyTemplateDAO {
             "</script>"
     })
     void addEvaluation(@Param("doubleDutyEvaluations") List<DoubleDutyEvaluation> doubleDutyEvaluations);
+
+
+    @Insert("insert into double_duty_evaluation (double_duty_id,personnel_id,name,status,idt) values (#{doubleDutyId},#{personnelId},#{name},#{status},#{idt})")
+    @Options(useGeneratedKeys = true, keyProperty = "id",keyColumn="id")
+    void addSingleEvaluation(DoubleDutyEvaluation doubleDutyEvaluation);
+
+    @Update("update double_duty_template set job = #{job},udt=#{udt} where id = #{id}")
+    void updateTemplate(DoubleDutyTemplate doubleDutyTemplate);
+
+    @Delete("delete from double_duty_template_content where template_id = #{templateId}")
+    void deleteTemplateContent(Integer templateId);
+
+    @Delete("delete from double_duty_template where id = #{id}")
+    void deleteTemplate(Integer id);
+
+    @Select("select * from double_duty_template_content where template_id = #{templateId}")
+    List<DoubleDutyTemplateContent> findDoubleDutyTemplateContentsBytemplateId(Integer templateId);
+
+    @Select("select * from double_duty_content where double_duty_id = #{doubleDutyId}")
+    List<DoubleDutyContent> findDoubleDutyContentByDutyId(Integer doubleDutyId);
+
+    @Insert("insert into double_duty_evaluation_content (evaluation_id,content_id)values(#{evaluationId},#{contentId}) ")
+    void addEvaluationContent(Integer evaluationId, Integer contentId);
+
+
 }

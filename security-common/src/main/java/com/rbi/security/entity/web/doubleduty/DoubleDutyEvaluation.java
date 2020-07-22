@@ -1,6 +1,9 @@
 package com.rbi.security.entity.web.doubleduty;
 
+//import com.sun.xml.internal.messaging.saaj.packaging.mime.util.LineInputStream;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @PACKAGE_NAME: com.rbi.security.entity.web.doubleduty
@@ -34,7 +37,9 @@ public class DoubleDutyEvaluation {
     private Integer auditorId;
     private String auditorName;
     private String status;
+    private String statusName;
     private String idt;
     private String udt;
+    private List<DoubleDutyEvaluationContentDTO> doubleDutyEvaluationContentDTOS;
 
 }

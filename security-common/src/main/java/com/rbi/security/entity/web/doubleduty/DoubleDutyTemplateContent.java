@@ -25,4 +25,7 @@ public class DoubleDutyTemplateContent {
     private Integer templateId;
     private String content;;
     private String fraction;
+
+
+
 }

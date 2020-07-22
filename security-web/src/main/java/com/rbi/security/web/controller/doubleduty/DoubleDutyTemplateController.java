@@ -36,6 +36,22 @@ public class DoubleDutyTemplateController {
 
 
     /**
+     * 一岗双责模板分页
+     **/
+    @PostMapping("/findByPage")
+    public ResponseModel<PageData> findByPage(@RequestBody JSONObject json){
+        try {
+            int pageNo = json.getInteger("pageNo");
+            int pageSize = json.getInteger("pageSize");
+            PageData pageData = doubleDutyTemplateService.findByPage(pageNo,pageSize);
+            return ResponseModel.build("1000","分页查询成功！",pageData);
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+    /**
      * 一岗双责模板添加
      **/
     @PostMapping("/add")
@@ -79,7 +95,7 @@ public class DoubleDutyTemplateController {
         try {
             String result = doubleDutyTemplateService.delete(json);
             if(result.equals("1000")){
-                return ResponseModel.build("1000","添加成功");
+                return ResponseModel.build("1000","删除成功");
             }else {
                 return ResponseModel.build("1001",result);
             }
@@ -89,21 +105,7 @@ public class DoubleDutyTemplateController {
         }
     }
 
-    /**
-     * 一岗双责模板分页
-     **/
-    @PostMapping("/findByPage")
-    public ResponseModel<PageData> findByPage(@RequestBody JSONObject json){
-        try {
-            int pageNo = json.getInteger("pageNo");
-            int pageSize = json.getInteger("pageSize");
-            PageData pageData = doubleDutyTemplateService.findByPage(pageNo,pageSize);
-            return ResponseModel.build("1000","分页查询成功！",pageData);
-        }catch (Exception e){
-            System.out.println("错误："+e);
-            return ResponseModel.build("1001","处理异常");
-        }
-    }
+
 
     /**
      * 一岗双责发布
