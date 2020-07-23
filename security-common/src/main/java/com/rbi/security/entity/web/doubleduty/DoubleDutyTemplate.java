@@ -24,10 +24,17 @@ import java.util.List;
 @Data
 public class DoubleDutyTemplate {
     private Integer id;
-    private String job;
-    private Integer personnelId;;
+    private String name;
+    private String position;
+    private Integer personnelId;
     private String idt;
     private String udt;
+    private Integer organizationId;
+    private String organizationName;
+    private String companyName;
+    private String factoryName;
+    private String workshopName;
+    private String className;
     private List<DoubleDutyTemplateContent> doubleDutyTemplateContents;
 
 }

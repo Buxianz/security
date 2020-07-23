@@ -1,13 +1,11 @@
 package com.rbi.security.web.DAO.doubleduty;
 
 import com.rbi.security.entity.web.doubleduty.DoubleDutyEvaluation;
+import com.rbi.security.entity.web.doubleduty.DoubleDutyEvaluationContent;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.entity.SysRole;
 import com.rbi.security.entity.web.hid.SystemSettingDTO;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -87,6 +85,10 @@ public interface DoubleDutyEvaluationDAO {
             "(SELECT personnel_id from sys_user,sys_user_role,sys_role WHERE sys_user.id = sys_user_role.user_id and sys_user_role.role_id = sys_role.id and sys_role.`level` <= 2))")
     int findSecondLevelAuditNum(Integer organizationId);
 
-    @Update("update double_duty_evaluation set bad_situation = #{bad_situation},write_time=#{writeTime},status = #{status} where id = #{id}")
+
+    @Update("update double_duty_evaluation set bad_situation = #{badSituation},write_time=#{writeTime},status = #{status} where id = #{id}")
     void writeEvaluation(DoubleDutyEvaluation doubleDutyEvaluation);
+
+    @Update("update double_duty_evaluation_content set self_evaluation=#{selfEvaluation},self_fraction=#{selfFraction} where id = #{id}")
+    void writeEvaluationContent(DoubleDutyEvaluationContent doubleDutyEvaluationContent);
 }

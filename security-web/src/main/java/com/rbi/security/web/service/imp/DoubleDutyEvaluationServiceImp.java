@@ -1,12 +1,10 @@
 package com.rbi.security.web.service.imp;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.AuthenticationUserDTO;
-import com.rbi.security.entity.web.doubleduty.DoubleDutyEvaluation;
-import com.rbi.security.entity.web.doubleduty.DoubleDutyEvaluationContentDTO;
-import com.rbi.security.entity.web.doubleduty.DoubleDutyTemplate;
-import com.rbi.security.entity.web.doubleduty.DoubleDutyTemplateContent;
+import com.rbi.security.entity.web.doubleduty.*;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.entity.SysRole;
 import com.rbi.security.entity.web.hid.SystemSettingDTO;
@@ -19,6 +17,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -64,8 +64,8 @@ public class DoubleDutyEvaluationServiceImp implements DoubleDutyEvaluationServi
             if (doubleDutyEvaluations.get(i).getStatus().equals("3")) {
                 doubleDutyEvaluations.get(i).setStatusName("审核完成");
             }
-            List<DoubleDutyEvaluationContentDTO> doubleDutyEvaluationContentDTOS = doubleDutyFieDAO.findEvaluationContentById(doubleDutyEvaluations.get(i).getId());
-            doubleDutyEvaluations.get(i).setDoubleDutyEvaluationContentDTOS(doubleDutyEvaluationContentDTOS);
+            List<DoubleDutyEvaluationContent> doubleDutyEvaluationContents = doubleDutyFieDAO.findEvaluationContentById(doubleDutyEvaluations.get(i).getId());
+            doubleDutyEvaluations.get(i).setDoubleDutyEvaluationContents(doubleDutyEvaluationContents);
         }
         int totalPage = 0;
         int count = doubleDutyEvaluationDAO.findPersonelNum(personnelId);
@@ -96,8 +96,8 @@ public class DoubleDutyEvaluationServiceImp implements DoubleDutyEvaluationServi
                 if (doubleDutyEvaluations.get(i).getStatus().equals("2")) {
                     doubleDutyEvaluations.get(i).setStatusName("待审核");
                 }
-                List<DoubleDutyEvaluationContentDTO> doubleDutyEvaluationContentDTOS = doubleDutyFieDAO.findEvaluationContentById(doubleDutyEvaluations.get(i).getId());
-                doubleDutyEvaluations.get(i).setDoubleDutyEvaluationContentDTOS(doubleDutyEvaluationContentDTOS);
+                List<DoubleDutyEvaluationContent> doubleDutyEvaluationContents = doubleDutyFieDAO.findEvaluationContentById(doubleDutyEvaluations.get(i).getId());
+                doubleDutyEvaluations.get(i).setDoubleDutyEvaluationContents(doubleDutyEvaluationContents);
             }
             int totalPage = 0;
             int count = doubleDutyEvaluationDAO.findFirstLevelAuditNum(sysCompanyPersonnel.getOrganizationId(),personnelId);
@@ -116,8 +116,8 @@ public class DoubleDutyEvaluationServiceImp implements DoubleDutyEvaluationServi
                 if (doubleDutyEvaluations.get(i).getStatus().equals("2")) {
                     doubleDutyEvaluations.get(i).setStatusName("待审核");
                 }
-                List<DoubleDutyEvaluationContentDTO> doubleDutyEvaluationContentDTOS = doubleDutyFieDAO.findEvaluationContentById(doubleDutyEvaluations.get(i).getId());
-                doubleDutyEvaluations.get(i).setDoubleDutyEvaluationContentDTOS(doubleDutyEvaluationContentDTOS);
+                List<DoubleDutyEvaluationContent> doubleDutyEvaluationContents = doubleDutyFieDAO.findEvaluationContentById(doubleDutyEvaluations.get(i).getId());
+                doubleDutyEvaluations.get(i).setDoubleDutyEvaluationContents(doubleDutyEvaluationContents);
             }
             int totalPage = 0;
             int count = doubleDutyEvaluationDAO.findSecondLevelAuditNum(sysCompanyPersonnel.getOrganizationId());
@@ -133,11 +133,19 @@ public class DoubleDutyEvaluationServiceImp implements DoubleDutyEvaluationServi
 
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public String write(JSONObject json) {
         DoubleDutyEvaluation doubleDutyEvaluation = JSON.toJavaObject(json,DoubleDutyEvaluation.class);
+
         String time = DateUtil.date(DateUtil.FORMAT_PATTERN);
         doubleDutyEvaluation.setWriteTime(time);
+        doubleDutyEvaluation.setStatus("2");
         doubleDutyEvaluationDAO.writeEvaluation(doubleDutyEvaluation);
-        return null;
+        JSONArray array = json.getJSONArray("array");
+        List<DoubleDutyEvaluationContent> doubleDutyEvaluationContents = JSONObject.parseArray(array.toJSONString(),DoubleDutyEvaluationContent.class);
+        for (int i=0;i<doubleDutyEvaluationContents.size();i++){
+            doubleDutyEvaluationDAO.writeEvaluationContent(doubleDutyEvaluationContents.get(i));
+        }
+        return "1000";
     }
 }

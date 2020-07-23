@@ -25,11 +25,11 @@ import java.util.List;
 @Data
 public class DoubleDutyEvaluation {
     private Integer id;
-    private Integer doubleDutyId;
+    private Integer templateId;
     private Integer personnelId;
-    private String name;
-    private Integer selfFraction;
-    private Integer score;
+    private String personnelName;
+    private Integer selfFraction;////
+    private Integer score;//////
     private String badSituation;
     private String correctSituation;
     private String writeTime;
@@ -40,6 +40,16 @@ public class DoubleDutyEvaluation {
     private String statusName;
     private String idt;
     private String udt;
-    private List<DoubleDutyEvaluationContentDTO> doubleDutyEvaluationContentDTOS;
+
+    private String position;
+    private String templateName;
+    private Integer organizationId;
+    private String organizationName;
+    private String companyName;
+    private String factoryName;
+    private String workshopName;
+    private String className;
+
+    private List<DoubleDutyEvaluationContent> doubleDutyEvaluationContents;
 
 }

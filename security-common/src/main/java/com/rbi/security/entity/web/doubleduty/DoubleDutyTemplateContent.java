@@ -27,5 +27,4 @@ public class DoubleDutyTemplateContent {
     private String fraction;
 
 
-
 }

@@ -30,5 +30,4 @@ public interface DoubleDutyTemplateService {
 
     PageData findByPage(int pageNo, int pageSize);
 
-    String release(JSONObject json);
 }

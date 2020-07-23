@@ -13,3 +13,10 @@ spring:
 #  profiles:
 #    active: pro
 
+#公司局域网:
+#spring:
+#  profiles:
+#    active: native
+
+
+

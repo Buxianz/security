@@ -1,8 +1,7 @@
 package com.rbi.security.web.DAO.doubleduty;
 
 import com.rbi.security.entity.web.doubleduty.DoubleDutyEvaluation;
-import com.rbi.security.entity.web.doubleduty.DoubleDutyEvaluationContentDTO;
-import com.rbi.security.entity.web.doubleduty.DoubleDutyTemplate;
+import com.rbi.security.entity.web.doubleduty.DoubleDutyEvaluationContent;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -33,7 +32,6 @@ public interface DoubleDutyFieDAO {
     @Select("select count(*) from double_duty_evaluation")
     int findByPageNum();
 
-    @Select("select * from double_duty_evaluation_content,double_duty_content where double_duty_evaluation_content.content_id = double_duty_content.id and " +
-            "double_duty_evaluation_content.evaluation_id = #{evaluationId}")
-    List<DoubleDutyEvaluationContentDTO> findEvaluationContentById(Integer evaluationId);
+    @Select("select * from double_duty_evaluation_content where evaluation_id = #{evaluationId}")
+    List<DoubleDutyEvaluationContent> findEvaluationContentById(Integer evaluationId);
 }

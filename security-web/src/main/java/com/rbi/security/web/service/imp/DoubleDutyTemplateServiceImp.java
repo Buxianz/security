@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.entity.web.doubleduty.*;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
+import com.rbi.security.entity.web.entity.SysOrganization;
 import com.rbi.security.entity.web.health.OccDiseaseProtection;
 import com.rbi.security.tool.DateUtil;
 import com.rbi.security.tool.PageData;
@@ -73,10 +74,40 @@ public class DoubleDutyTemplateServiceImp implements DoubleDutyTemplateService {
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
         DoubleDutyTemplate doubleDutyTemplate = JSON.toJavaObject(json,DoubleDutyTemplate.class);
+        //隐患所属组织表
+        SysOrganization sysOrganization2 = doubleDutyTemplateDAO.findAllByOrganizationId(doubleDutyTemplate.getOrganizationId());
+        int level = sysOrganization2.getLevel();
+        if (level == 4 ){
+            doubleDutyTemplate.setClassName(sysOrganization2.getOrganizationName());
+        }
+        if (level == 3 ){
+            doubleDutyTemplate.setWorkshopName(sysOrganization2.getOrganizationName());
+        }
+        if (level == 2 ){
+            doubleDutyTemplate.setFactoryName(sysOrganization2.getOrganizationName());
+        }
+        if (level == 1 ){
+            doubleDutyTemplate.setCompanyName(sysOrganization2.getOrganizationName());
+        }
+        Integer parentId = sysOrganization2.getParentId();
+        level = level -1;
+        while (level !=0){
+            SysOrganization sysOrganization3 = doubleDutyTemplateDAO.findAllByOrganizationId(parentId);
+            if (level == 3 ){
+                doubleDutyTemplate.setWorkshopName(sysOrganization3.getOrganizationName());
+            }
+            if (level == 2 ){
+                doubleDutyTemplate.setFactoryName(sysOrganization3.getOrganizationName());
+            }
+            if (level == 1 ){
+                doubleDutyTemplate.setCompanyName(sysOrganization3.getOrganizationName());
+            }
+            parentId = sysOrganization3.getParentId();
+            level=level - 1;
+        }
         doubleDutyTemplate.setPersonnelId(personnelId);
         doubleDutyTemplate.setIdt(idt);
         doubleDutyTemplateDAO.addTemplate(doubleDutyTemplate);
-
         JSONArray array = json.getJSONArray("contentArry");
         List<DoubleDutyTemplateContent> doubleDutyTemplateContents = JSONObject.parseArray(array.toJSONString(),DoubleDutyTemplateContent.class);
         for (int i=0;i<doubleDutyTemplateContents.size();i++){
@@ -89,9 +120,44 @@ public class DoubleDutyTemplateServiceImp implements DoubleDutyTemplateService {
     @Override
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public String update(JSONObject json) {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
         String udt = DateUtil.date(DateUtil.FORMAT_PATTERN);
         DoubleDutyTemplate doubleDutyTemplate = JSON.toJavaObject(json,DoubleDutyTemplate.class);
+        doubleDutyTemplate.setPersonnelId(personnelId);
         doubleDutyTemplate.setUdt(udt);
+        //隐患所属组织表
+        SysOrganization sysOrganization2 = doubleDutyTemplateDAO.findAllByOrganizationId(doubleDutyTemplate.getOrganizationId());
+        int level = sysOrganization2.getLevel();
+        if (level == 4 ){
+            doubleDutyTemplate.setClassName(sysOrganization2.getOrganizationName());
+        }
+        if (level == 3 ){
+            doubleDutyTemplate.setWorkshopName(sysOrganization2.getOrganizationName());
+        }
+        if (level == 2 ){
+            doubleDutyTemplate.setFactoryName(sysOrganization2.getOrganizationName());
+        }
+        if (level == 1 ){
+            doubleDutyTemplate.setCompanyName(sysOrganization2.getOrganizationName());
+        }
+        Integer parentId = sysOrganization2.getParentId();
+        level = level -1;
+        while (level !=0){
+            SysOrganization sysOrganization3 = doubleDutyTemplateDAO.findAllByOrganizationId(parentId);
+            if (level == 3 ){
+                doubleDutyTemplate.setWorkshopName(sysOrganization3.getOrganizationName());
+            }
+            if (level == 2 ){
+                doubleDutyTemplate.setFactoryName(sysOrganization3.getOrganizationName());
+            }
+            if (level == 1 ){
+                doubleDutyTemplate.setCompanyName(sysOrganization3.getOrganizationName());
+            }
+            parentId = sysOrganization3.getParentId();
+            level=level - 1;
+        }
         doubleDutyTemplateDAO.updateTemplate(doubleDutyTemplate);
         doubleDutyTemplateDAO.deleteTemplateContent(doubleDutyTemplate.getId());
         JSONArray array = json.getJSONArray("contentArry");
@@ -112,47 +178,36 @@ public class DoubleDutyTemplateServiceImp implements DoubleDutyTemplateService {
     }
 
 
-
-    @Override
-    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
-    public String release(JSONObject json) {
-        //添加一岗双责考察内容
-        Subject subject = SecurityUtils.getSubject();
-        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-        Integer personnelId  =  currentUser.getCompanyPersonnelId();
-        String name = doubleDutyTemplateDAO.fidNameById(personnelId);
-        String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
-        DoubleDuty doubleDuty = JSON.toJavaObject(json,DoubleDuty.class);
-        doubleDuty.setPersonnelId(personnelId);
-        doubleDuty.setIdt(idt);
-        doubleDuty.setName(name);
-        doubleDutyTemplateDAO.addDuty(doubleDuty);
-        JSONArray contentArry = json.getJSONArray("contentArry");
-        List<DoubleDutyContent> doubleDutyContents = JSONObject.parseArray(contentArry.toJSONString(),DoubleDutyContent.class);
-        for (int i=0;i<doubleDutyContents.size();i++){
-            doubleDutyContents.get(i).setDoubleDutyId(doubleDuty.getId());
-        }
-        doubleDutyTemplateDAO.addContent(doubleDutyContents);
-
-        //添加一岗双责考试人
-        JSONArray idsArray = json.getJSONArray("personnelIds");
-        List<PersonnelIdsDTO> personnelIdsDTOS = JSONObject.parseArray(idsArray.toJSONString(),PersonnelIdsDTO.class);
-//        List<DoubleDutyEvaluation> doubleDutyEvaluations = new ArrayList<>();
-        for (int i=0;i<personnelIdsDTOS.size();i++){
-            DoubleDutyEvaluation doubleDutyEvaluation = new DoubleDutyEvaluation();
-            doubleDutyEvaluation.setDoubleDutyId(doubleDuty.getId());
-            doubleDutyEvaluation.setPersonnelId(personnelIdsDTOS.get(i).getId());
-            doubleDutyEvaluation.setName(personnelIdsDTOS.get(i).getName());
-            doubleDutyEvaluation.setIdt(idt);
-            doubleDutyEvaluation.setStatus("1");
-//            doubleDutyEvaluations.add(doubleDutyEvaluation);
-            doubleDutyTemplateDAO.addSingleEvaluation(doubleDutyEvaluation);
-            List<DoubleDutyContent> doubleDutyContents1 = doubleDutyTemplateDAO.findDoubleDutyContentByDutyId(doubleDuty.getId());
-            for (int j = 0;j<doubleDutyContents1.size();j++){
-                doubleDutyTemplateDAO.addEvaluationContent(doubleDutyEvaluation.getId(),doubleDutyContents1.get(j).getId());
-            }
-        }
-//        doubleDutyTemplateDAO.addEvaluation(doubleDutyEvaluations);
-        return "1000";
-    }
+//
+//    @Override
+//    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
+//    public String release(JSONObject json) {
+//        //添加一岗双责考察内容
+//        Subject subject = SecurityUtils.getSubject();
+//        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+//        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+//        String name = doubleDutyTemplateDAO.fidNameById(personnelId);
+//        String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
+//
+//        //添加一岗双责考试人
+//        JSONArray idsArray = json.getJSONArray("personnelIds");
+//        List<PersonnelIdsDTO> personnelIdsDTOS = JSONObject.parseArray(idsArray.toJSONString(),PersonnelIdsDTO.class);
+////        List<DoubleDutyEvaluation> doubleDutyEvaluations = new ArrayList<>();
+//        for (int i=0;i<personnelIdsDTOS.size();i++){
+////            DoubleDutyEvaluation doubleDutyEvaluation = new DoubleDutyEvaluation();
+////            doubleDutyEvaluation.setDoubleDutyId(doubleDuty.getId());
+////            doubleDutyEvaluation.setPersonnelId(personnelIdsDTOS.get(i).getId());
+////            doubleDutyEvaluation.setName(personnelIdsDTOS.get(i).getName());
+////            doubleDutyEvaluation.setIdt(idt);
+////            doubleDutyEvaluation.setStatus("1");
+//////            doubleDutyEvaluations.add(doubleDutyEvaluation);
+////            doubleDutyTemplateDAO.addSingleEvaluation(doubleDutyEvaluation);
+////            List<DoubleDutyContent> doubleDutyContents1 = doubleDutyTemplateDAO.findDoubleDutyContentByDutyId(doubleDuty.getId());
+////            for (int j = 0;j<doubleDutyContents1.size();j++){
+////                doubleDutyTemplateDAO.addEvaluationContent(doubleDutyEvaluation.getId(),doubleDutyContents1.get(j).getId());
+//            }
+//        }
+////        doubleDutyTemplateDAO.addEvaluation(doubleDutyEvaluations);
+//        return "1000";
+//    }
 }

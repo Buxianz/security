@@ -1,0 +1,38 @@
+server:
+  port: 8090
+  servlet:
+    context-path: /security-platform
+
+
+spring:
+  jmx:
+    enabled: false
+  datasource:
+    url: jdbc:mysql://192.168.28.100:3306/security?useUnicode=true&useSSL=true&allowMultiQueries=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    username: root
+    password: rbi20188
+    sql-script-encoding: utf-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    root: info
+  file:
+    path: security_web.log
+  pattern:
+
+uploadfile.ip: http://192.168.28.100
+path2: D:/nginx-1.12.2/html
+hiddenPath: /file/hidden/
+excelWritePath: /file/excelWritePath/
+seriousDangerPath: /file/seriousDanger/
+riskPath: /file/riskControl/
+spcialPath: /file/special/

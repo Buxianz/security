@@ -34,7 +34,6 @@ public class DoubleDutyTemplateController {
     @Autowired
     DoubleDutyTemplateService doubleDutyTemplateService;
 
-
     /**
      * 一岗双责模板分页
      **/
@@ -77,7 +76,7 @@ public class DoubleDutyTemplateController {
         try {
             String result = doubleDutyTemplateService.update(json);
             if(result.equals("1000")){
-                return ResponseModel.build("1000","添加成功");
+                return ResponseModel.build("1000","修改成功");
             }else {
                 return ResponseModel.build("1001",result);
             }
@@ -105,24 +104,5 @@ public class DoubleDutyTemplateController {
         }
     }
 
-
-
-    /**
-     * 一岗双责发布
-     **/
-    @PostMapping("/release")
-    public ResponseModel<PageData> release(@RequestBody JSONObject json){
-        try {
-            String result = doubleDutyTemplateService.release(json);
-            if(result.equals("1000")){
-                return ResponseModel.build("1000","发布成功！");
-            }else {
-                return ResponseModel.build("1001",result);
-            }
-        }catch (Exception e){
-            System.out.println("错误："+e);
-            return ResponseModel.build("1001","处理异常");
-        }
-    }
 
 }
