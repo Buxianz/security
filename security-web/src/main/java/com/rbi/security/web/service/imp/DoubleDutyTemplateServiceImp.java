@@ -74,6 +74,10 @@ public class DoubleDutyTemplateServiceImp implements DoubleDutyTemplateService {
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
         DoubleDutyTemplate doubleDutyTemplate = JSON.toJavaObject(json,DoubleDutyTemplate.class);
+        int num = doubleDutyTemplateDAO.findAddNum(doubleDutyTemplate.getOrganizationId(),doubleDutyTemplate.getPosition());
+        if (num != 0){
+            return "已添加了相同的组织和岗位名";
+        }
         //隐患所属组织表
         SysOrganization sysOrganization2 = doubleDutyTemplateDAO.findAllByOrganizationId(doubleDutyTemplate.getOrganizationId());
         int level = sysOrganization2.getLevel();
@@ -125,6 +129,11 @@ public class DoubleDutyTemplateServiceImp implements DoubleDutyTemplateService {
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         String udt = DateUtil.date(DateUtil.FORMAT_PATTERN);
         DoubleDutyTemplate doubleDutyTemplate = JSON.toJavaObject(json,DoubleDutyTemplate.class);
+
+        int num = doubleDutyTemplateDAO.findUpdateNum(doubleDutyTemplate.getOrganizationId(),doubleDutyTemplate.getPosition(),doubleDutyTemplate.getId());
+        if (num != 0){
+            return "已存在相同的组织和岗位名";
+        }
         doubleDutyTemplate.setPersonnelId(personnelId);
         doubleDutyTemplate.setUdt(udt);
         //隐患所属组织表
