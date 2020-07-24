@@ -36,7 +36,7 @@ public class SafePersonalMistakesController {
     @Autowired
     SafePersonalMistakesService safePersonalMistakesService;
     /**
-     * 分页获取自身题目
+     * 分页获取自身错题目
      * */
     @RequiresPermissions("safe:pageMistakes")
     @PostMapping("/findByPage")
