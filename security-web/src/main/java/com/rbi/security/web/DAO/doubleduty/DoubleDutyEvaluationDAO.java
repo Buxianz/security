@@ -32,17 +32,12 @@ import java.util.List;
 public interface DoubleDutyEvaluationDAO {
 
 
-    @Select("select * from double_duty_evaluation where personnel_id = #{personnelId} limit #{pageNo},#{pageSize}")
+    @Select("select * from double_duty_evaluation where DATE_FORMAT(idt, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' ) and personnel_id = #{personnelId} limit #{pageNo},#{pageSize}")
     List<DoubleDutyEvaluation> findPersonelByPage(Integer personnelId, Integer pageNo, Integer pageSize);
 
-    @Select("select count(*) from double_duty_evaluation where personnel_id = #{personnelId}")
+    @Select("select count(*) from double_duty_evaluation where DATE_FORMAT(idt, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' ) and personnel_id = #{personnelId}")
     int findPersonelNum(Integer personnelId);
 
-    /**
-     * 系统设置查询
-     * */
-    @Select("select setting_code,setting_name from system_setting where setting_type = #{settingType} and organization_id = 'RBI'")
-    List<SystemSettingDTO> findChoose(String settingType);
 
     /**
      * personnel id查组织
@@ -97,9 +92,6 @@ public interface DoubleDutyEvaluationDAO {
     @Options(useGeneratedKeys = true, keyProperty = "id",keyColumn="id")
     void writeEvaluation(DoubleDutyEvaluation doubleDutyEvaluation);
 
-    @Update("insert double_duty_evaluation_content values(evaluation_id,content,fraction,self_evaluation,self_fraction) values " +
-            "(#{evaluationId},#{content},#{fraction},#{selfEvaluation},#{selfFraction})")
-    void writeEvaluationContent(DoubleDutyEvaluationContent doubleDutyEvaluationContent);
 
     @Insert({
             "<script>",
@@ -118,6 +110,12 @@ public interface DoubleDutyEvaluationDAO {
     @Select("select * from double_duty_template_content where template_id=#{templateId}")
     List<DoubleDutyTemplateContent> findTemplateContentByTemplateId(Integer templateId);
 
+    @Select("SELECT * FROM double_duty_evaluation WHERE DATE_FORMAT(idt, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' ) and personnel_id = #{personnelId}")
+    int findMonthNum(Integer personnelId);
 
+    @Update("update double_duty_evaluation set correct_situation=#{correctSituation},auditor_name=#{auditorName},auditor_id=#{auditorId},audit_time=#{auditTime},status = #{status} where id = #{id}")
+    void auditEvaluation(DoubleDutyEvaluation doubleDutyEvaluation);
 
+    @Update("update double_duty_evaluation_content set check_result=#{checkResult},check_fraction=#{checkFraction} where id =#{id}")
+    void auditEvaluationContent(DoubleDutyEvaluationContent doubleDutyEvaluationContent);
 }

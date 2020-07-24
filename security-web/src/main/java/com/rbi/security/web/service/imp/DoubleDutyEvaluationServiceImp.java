@@ -14,6 +14,7 @@ import com.rbi.security.tool.StringUtils;
 import com.rbi.security.web.DAO.doubleduty.DoubleDutyEvaluationDAO;
 import com.rbi.security.web.DAO.doubleduty.DoubleDutyFieDAO;
 import com.rbi.security.web.service.DoubleDutyEvaluationService;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,6 +158,10 @@ public class DoubleDutyEvaluationServiceImp implements DoubleDutyEvaluationServi
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        int num = doubleDutyEvaluationDAO.findMonthNum(personnelId);
+        if (num !=0){
+            return "本月已填写了责任清单！";
+        }
         SysCompanyPersonnel sysCompanyPersonnel = doubleDutyEvaluationDAO.findPersonnelById(personnelId);
         DoubleDutyEvaluation doubleDutyEvaluation = JSON.toJavaObject(json,DoubleDutyEvaluation.class);
         doubleDutyEvaluation.setPersonnelId(personnelId);
@@ -179,22 +184,20 @@ public class DoubleDutyEvaluationServiceImp implements DoubleDutyEvaluationServi
     public String audit(JSONObject json) {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        String time = DateUtil.date(DateUtil.FORMAT_PATTERN);
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         SysCompanyPersonnel sysCompanyPersonnel = doubleDutyEvaluationDAO.findPersonnelById(personnelId);
         DoubleDutyEvaluation doubleDutyEvaluation = JSON.toJavaObject(json,DoubleDutyEvaluation.class);
-        doubleDutyEvaluation.setPersonnelId(personnelId);
-        doubleDutyEvaluation.setPersonnelName(sysCompanyPersonnel.getName());
-        String time = DateUtil.date(DateUtil.FORMAT_PATTERN);
-        doubleDutyEvaluation.setWriteTime(time);
-        doubleDutyEvaluation.setStatus("2");
-        doubleDutyEvaluation.setIdt(time);
-        doubleDutyEvaluationDAO.writeEvaluation(doubleDutyEvaluation);
+        doubleDutyEvaluation.setAuditorId(personnelId);
+        doubleDutyEvaluation.setAuditorName(sysCompanyPersonnel.getName());
+        doubleDutyEvaluation.setAuditTime(time);
+        doubleDutyEvaluation.setStatus("3");
+        doubleDutyEvaluationDAO.auditEvaluation(doubleDutyEvaluation);
         JSONArray array = json.getJSONArray("content");
         List<DoubleDutyEvaluationContent> doubleDutyEvaluationContents = JSONObject.parseArray(array.toJSONString(),DoubleDutyEvaluationContent.class);
         for (int i=0;i<doubleDutyEvaluationContents.size();i++){
-            doubleDutyEvaluationContents.get(i).setEvaluationId(doubleDutyEvaluation.getId());
+            doubleDutyEvaluationDAO.auditEvaluationContent(doubleDutyEvaluationContents.get(i));
         }
-        doubleDutyEvaluationDAO.writeEvaluationContentList(doubleDutyEvaluationContents);
         return "1000";
     }
 }
