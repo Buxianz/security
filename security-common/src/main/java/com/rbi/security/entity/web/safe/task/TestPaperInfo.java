@@ -22,7 +22,7 @@ import lombok.Data;
 @Data
 public class TestPaperInfo {
     private Integer id;//试卷id
-
+     private Integer trainingPlanId;//培训计划id
     private String testPaperName;//试卷名称
     private Integer processingStatus;//考试完成状态
     private String testResults;//考试结果

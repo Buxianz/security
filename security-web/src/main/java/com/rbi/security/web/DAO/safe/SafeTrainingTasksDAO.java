@@ -44,7 +44,7 @@ public interface SafeTrainingTasksDAO {
     /**
      * 获取任务下面的未完成试卷信息Processed
      */
-    @Select("SELECT tp.id,tp.test_paper_name,stp.processing_status,stp.test_results,tp.start_time,tp.end_time,tp.duration,stp.personnel_training_record_id,tp.exam_notes FROM (SELECT stp.id,stt.processing_status,stt.test_results,stt.personnel_training_record_id FROM " +
+    @Select("SELECT tp.id,tp.test_paper_name,stp.processing_status,stp.test_results,tp.start_time,tp.end_time,tp.duration,stp.personnel_training_record_id,tp.exam_notes,stp.training_plan_id FROM (SELECT stp.id,stt.processing_status,stt.test_results,stt.personnel_training_record_id,stt.training_plan_id FROM " +
             "(SELECT id AS 'personnel_training_record_id',training_plan_id,processing_status,test_results FROM safe_training_tasks WHERE company_personnel_id=#{companyPersonnelId} AND processing_status=#{processingStatus} ORDER BY idt DESC LIMIT #{startIndex},#{pageSize}) stt\n" +
             "LEFT JOIN safe_training_plan stp ON stt.training_plan_id=stp.id) stp LEFT JOIN safe_test_paper tp ON stp.id=tp.training_plan_id")
     List<TestPaperInfo> pagingUnprocessedTestPaperInfo(@Param("companyPersonnelId")int companyPersonnelId,@Param("processingStatus")int processingStatus,@Param("startIndex") int startIndex, @Param("pageSize") int pageSize);
@@ -56,7 +56,7 @@ public interface SafeTrainingTasksDAO {
     /**
      *获取任务下面已完成的考试信息
      */
-    @Select("SELECT tp.id,tp.test_paper_name,stp.processing_status,stp.test_results,tp.start_time,tp.end_time,tp.duration,stp.personnel_training_record_id FROM (SELECT stp.id,stt.processing_status,stt.test_results,stt.personnel_training_record_id FROM" +
+    @Select("SELECT tp.id,tp.test_paper_name,stp.processing_status,stp.test_results,tp.start_time,tp.end_time,tp.duration,stp.personnel_training_record_id,stp.training_plan_id FROM (SELECT stp.id,stt.processing_status,stt.test_results,stt.personnel_training_record_id,stt.training_plan_id FROM" +
             "(SELECT id AS 'personnel_training_record_id',training_plan_id,processing_status,test_results FROM safe_training_tasks WHERE company_personnel_id=#{companyPersonnelId} AND processing_status!=1 ORDER BY idt DESC LIMIT #{startIndex},#{pageSize}) stt\n" +
             " LEFT JOIN safe_training_plan stp ON stt.training_plan_id=stp.id) stp LEFT JOIN safe_test_paper tp ON stp.id=tp.training_plan_id")
     List<TestPaperInfo> pagingProcessedTestPaperInfo(@Param("companyPersonnelId")int companyPersonnelId,@Param("startIndex") int startIndex, @Param("pageSize") int pageSize);
