@@ -62,9 +62,9 @@ public interface DoubleDutyTemplateDAO {
     @Select("select * from sys_organization where id = #{id}")
     SysOrganization findAllByOrganizationId(@Param("id") int organizationId);
 
-    @Select("select count(*) from double_duty_template where organization_id=#{organization_id} and position=#{position}")
+    @Select("select count(*) from double_duty_template where organization_id=#{organizationId} and position=#{position}")
     int findAddNum(@Param("organizationId") Integer organizationId,@Param("position") String position);
 
-    @Select("select count(*) from double_duty_template where organization_id=#{organization_id} and position=#{position} and id !=#{id}")
+    @Select("select count(*) from double_duty_template where organization_id=#{organizationId} and position=#{position} and id !=#{id}")
     int findUpdateNum(@Param("organizationId") Integer organizationId,@Param("position") String position, @Param("id") Integer id);
 }

@@ -110,7 +110,7 @@ public interface DoubleDutyEvaluationDAO {
     @Select("select * from double_duty_template_content where template_id=#{templateId}")
     List<DoubleDutyTemplateContent> findTemplateContentByTemplateId(Integer templateId);
 
-    @Select("SELECT * FROM double_duty_evaluation WHERE DATE_FORMAT(idt, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' ) and personnel_id = #{personnelId}")
+    @Select("SELECT count(*) FROM double_duty_evaluation WHERE DATE_FORMAT(idt, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' ) and personnel_id = #{personnelId}")
     int findMonthNum(Integer personnelId);
 
     @Update("update double_duty_evaluation set correct_situation=#{correctSituation},auditor_name=#{auditorName},auditor_id=#{auditorId},audit_time=#{auditTime},status = #{status} where id = #{id}")
