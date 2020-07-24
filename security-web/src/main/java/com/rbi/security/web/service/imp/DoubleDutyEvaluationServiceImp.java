@@ -10,6 +10,7 @@ import com.rbi.security.entity.web.entity.SysRole;
 import com.rbi.security.entity.web.hid.SystemSettingDTO;
 import com.rbi.security.tool.DateUtil;
 import com.rbi.security.tool.PageData;
+import com.rbi.security.tool.StringUtils;
 import com.rbi.security.web.DAO.doubleduty.DoubleDutyEvaluationDAO;
 import com.rbi.security.web.DAO.doubleduty.DoubleDutyFieDAO;
 import com.rbi.security.web.service.DoubleDutyEvaluationService;
@@ -20,7 +21,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @PACKAGE_NAME: com.rbi.security.web.service.imp
@@ -131,21 +135,66 @@ public class DoubleDutyEvaluationServiceImp implements DoubleDutyEvaluationServi
         return null;
     }
 
+    @Override
+    public DoubleDutyTemplate findTemplate() {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = doubleDutyEvaluationDAO.findPersonnelById(personnelId);
+        Integer organizationId = sysCompanyPersonnel.getOrganizationId();
+        String position = sysCompanyPersonnel.getPosition();
+        DoubleDutyTemplate doubleDutyTemplate =  doubleDutyEvaluationDAO.findTemplate(organizationId,position);
+        if (StringUtils.isNotBlank(doubleDutyTemplate)){
+            List<DoubleDutyTemplateContent> doubleDutyTemplateContent = doubleDutyEvaluationDAO.findTemplateContentByTemplateId(doubleDutyTemplate.getId());
+            doubleDutyTemplate.setDoubleDutyTemplateContents(doubleDutyTemplateContent);
+        }
+        return doubleDutyTemplate;
+    }
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
     public String write(JSONObject json) {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = doubleDutyEvaluationDAO.findPersonnelById(personnelId);
         DoubleDutyEvaluation doubleDutyEvaluation = JSON.toJavaObject(json,DoubleDutyEvaluation.class);
-
+        doubleDutyEvaluation.setPersonnelId(personnelId);
+        doubleDutyEvaluation.setPersonnelName(sysCompanyPersonnel.getName());
         String time = DateUtil.date(DateUtil.FORMAT_PATTERN);
         doubleDutyEvaluation.setWriteTime(time);
         doubleDutyEvaluation.setStatus("2");
+        doubleDutyEvaluation.setIdt(time);
         doubleDutyEvaluationDAO.writeEvaluation(doubleDutyEvaluation);
-        JSONArray array = json.getJSONArray("array");
+        JSONArray array = json.getJSONArray("content");
         List<DoubleDutyEvaluationContent> doubleDutyEvaluationContents = JSONObject.parseArray(array.toJSONString(),DoubleDutyEvaluationContent.class);
         for (int i=0;i<doubleDutyEvaluationContents.size();i++){
-            doubleDutyEvaluationDAO.writeEvaluationContent(doubleDutyEvaluationContents.get(i));
+            doubleDutyEvaluationContents.get(i).setEvaluationId(doubleDutyEvaluation.getId());
         }
+        doubleDutyEvaluationDAO.writeEvaluationContentList(doubleDutyEvaluationContents);
+        return "1000";
+    }
+
+    @Override
+    public String audit(JSONObject json) {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = doubleDutyEvaluationDAO.findPersonnelById(personnelId);
+        DoubleDutyEvaluation doubleDutyEvaluation = JSON.toJavaObject(json,DoubleDutyEvaluation.class);
+        doubleDutyEvaluation.setPersonnelId(personnelId);
+        doubleDutyEvaluation.setPersonnelName(sysCompanyPersonnel.getName());
+        String time = DateUtil.date(DateUtil.FORMAT_PATTERN);
+        doubleDutyEvaluation.setWriteTime(time);
+        doubleDutyEvaluation.setStatus("2");
+        doubleDutyEvaluation.setIdt(time);
+        doubleDutyEvaluationDAO.writeEvaluation(doubleDutyEvaluation);
+        JSONArray array = json.getJSONArray("content");
+        List<DoubleDutyEvaluationContent> doubleDutyEvaluationContents = JSONObject.parseArray(array.toJSONString(),DoubleDutyEvaluationContent.class);
+        for (int i=0;i<doubleDutyEvaluationContents.size();i++){
+            doubleDutyEvaluationContents.get(i).setEvaluationId(doubleDutyEvaluation.getId());
+        }
+        doubleDutyEvaluationDAO.writeEvaluationContentList(doubleDutyEvaluationContents);
         return "1000";
     }
 }

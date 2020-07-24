@@ -1,7 +1,10 @@
 package com.rbi.security.web.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.rbi.security.entity.web.doubleduty.DoubleDutyTemplate;
 import com.rbi.security.tool.PageData;
+
+import java.util.Map;
 
 /**
  * @PACKAGE_NAME: com.rbi.security.web.service
@@ -25,5 +28,9 @@ public interface DoubleDutyEvaluationService {
 
     PageData findAuditByPage(int pageNo, int pageSize);
 
+    DoubleDutyTemplate findTemplate();
+
     String write(JSONObject json);
+
+    String audit(JSONObject json);
 }

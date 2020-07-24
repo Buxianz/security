@@ -1,6 +1,7 @@
 package com.rbi.security.web.controller.doubleduty;
 
 import com.alibaba.fastjson.JSONObject;
+import com.rbi.security.entity.web.doubleduty.DoubleDutyTemplate;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.DoubleDutyEvaluationService;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 /**
  * @PACKAGE_NAME: com.rbi.security.web.controller.doubleduty
@@ -56,6 +59,19 @@ public class DoubleDutyEvaluationController {
     }
 
     /**
+     * 填写清单，查询模板
+     **/
+    @PostMapping("/findTemplate")
+    public ResponseModel findTemplate(){
+        try {
+            DoubleDutyTemplate doubleDutyTemplate = doubleDutyEvaluationService.findTemplate();
+            return ResponseModel.build("1000","查询成功！",doubleDutyTemplate);
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+    /**
      * 一岗双责待审核测评提交
      **/
     @PostMapping("/write")
@@ -63,7 +79,25 @@ public class DoubleDutyEvaluationController {
         try {
             String result = doubleDutyEvaluationService.write(json);
             if(result.equals("1000")){
-                return ResponseModel.build("1000","发布成功！");
+                return ResponseModel.build("1000","已提交！");
+            }else {
+                return ResponseModel.build("1001",result);
+            }
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+    /**
+     * 一岗双责待审核
+     **/
+    @PostMapping("/audit")
+    public ResponseModel<PageData> audit(@RequestBody JSONObject json){
+        try {
+            String result = doubleDutyEvaluationService.audit(json);
+            if(result.equals("1000")){
+                return ResponseModel.build("1000","已审核！");
             }else {
                 return ResponseModel.build("1001",result);
             }

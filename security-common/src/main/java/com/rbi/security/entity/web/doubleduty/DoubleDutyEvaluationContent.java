@@ -23,8 +23,8 @@ import lombok.Data;
 public class DoubleDutyEvaluationContent {
     private Integer id;
     private Integer evaluationId;
-    private Integer content;
-    private String fraction;
+    private String content;
+    private Integer fraction;
     private String selfEvaluation;
     private Integer selfFraction;
     private String checkResult;

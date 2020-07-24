@@ -2,6 +2,8 @@ package com.rbi.security.web.DAO.doubleduty;
 
 import com.rbi.security.entity.web.doubleduty.DoubleDutyEvaluation;
 import com.rbi.security.entity.web.doubleduty.DoubleDutyEvaluationContent;
+import com.rbi.security.entity.web.doubleduty.DoubleDutyTemplate;
+import com.rbi.security.entity.web.doubleduty.DoubleDutyTemplateContent;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.entity.SysRole;
 import com.rbi.security.entity.web.hid.SystemSettingDTO;
@@ -86,9 +88,36 @@ public interface DoubleDutyEvaluationDAO {
     int findSecondLevelAuditNum(Integer organizationId);
 
 
-    @Update("update double_duty_evaluation set bad_situation = #{badSituation},write_time=#{writeTime},status = #{status} where id = #{id}")
+    @Update("insert into double_duty_evaluation (template_id,personnel_id,personnel_name,bad_situation,write_time," +
+            "status,position,template_name,organization_id,organization_name," +
+            "company_name,factory_name,workshop_name,class_name,idt) values " +
+            "(#{templateId},#{personnelId},#{personnelName},#{badSituation},#{writeTime}," +
+            "#{status},#{position},#{templateName},#{organizationId},#{organizationName}," +
+            "#{companyName},#{factoryName},#{workshopName},#{className},#{idt})")
+    @Options(useGeneratedKeys = true, keyProperty = "id",keyColumn="id")
     void writeEvaluation(DoubleDutyEvaluation doubleDutyEvaluation);
 
-    @Update("update double_duty_evaluation_content set self_evaluation=#{selfEvaluation},self_fraction=#{selfFraction} where id = #{id}")
+    @Update("insert double_duty_evaluation_content values(evaluation_id,content,fraction,self_evaluation,self_fraction) values " +
+            "(#{evaluationId},#{content},#{fraction},#{selfEvaluation},#{selfFraction})")
     void writeEvaluationContent(DoubleDutyEvaluationContent doubleDutyEvaluationContent);
+
+    @Insert({
+            "<script>",
+            "insert into double_duty_evaluation_content (evaluation_id,content,fraction,self_evaluation,self_fraction) values ",
+            "<foreach collection='doubleDutyEvaluationContents' item='item' index='index' separator=','>",
+            "(#{item.evaluationId},#{item.content},#{item.fraction},#{item.selfEvaluation},#{item.selfFraction})",
+            "</foreach>",
+            "</script>"
+    })
+    void writeEvaluationContentList(@Param("doubleDutyEvaluationContents") List<DoubleDutyEvaluationContent> doubleDutyEvaluationContents);
+
+
+    @Select("select * from double_duty_template where organization_id=#{organizationId} and position = #{position}")
+    DoubleDutyTemplate findTemplate(@Param("organizationId") Integer organizationId,@Param("position") String position);
+
+    @Select("select * from double_duty_template_content where template_id=#{templateId}")
+    List<DoubleDutyTemplateContent> findTemplateContentByTemplateId(Integer templateId);
+
+
+
 }

@@ -186,37 +186,4 @@ public class DoubleDutyTemplateServiceImp implements DoubleDutyTemplateService {
         return "1000";
     }
 
-
-//
-//    @Override
-//    @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
-//    public String release(JSONObject json) {
-//        //添加一岗双责考察内容
-//        Subject subject = SecurityUtils.getSubject();
-//        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
-//        Integer personnelId  =  currentUser.getCompanyPersonnelId();
-//        String name = doubleDutyTemplateDAO.fidNameById(personnelId);
-//        String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
-//
-//        //添加一岗双责考试人
-//        JSONArray idsArray = json.getJSONArray("personnelIds");
-//        List<PersonnelIdsDTO> personnelIdsDTOS = JSONObject.parseArray(idsArray.toJSONString(),PersonnelIdsDTO.class);
-////        List<DoubleDutyEvaluation> doubleDutyEvaluations = new ArrayList<>();
-//        for (int i=0;i<personnelIdsDTOS.size();i++){
-////            DoubleDutyEvaluation doubleDutyEvaluation = new DoubleDutyEvaluation();
-////            doubleDutyEvaluation.setDoubleDutyId(doubleDuty.getId());
-////            doubleDutyEvaluation.setPersonnelId(personnelIdsDTOS.get(i).getId());
-////            doubleDutyEvaluation.setName(personnelIdsDTOS.get(i).getName());
-////            doubleDutyEvaluation.setIdt(idt);
-////            doubleDutyEvaluation.setStatus("1");
-//////            doubleDutyEvaluations.add(doubleDutyEvaluation);
-////            doubleDutyTemplateDAO.addSingleEvaluation(doubleDutyEvaluation);
-////            List<DoubleDutyContent> doubleDutyContents1 = doubleDutyTemplateDAO.findDoubleDutyContentByDutyId(doubleDuty.getId());
-////            for (int j = 0;j<doubleDutyContents1.size();j++){
-////                doubleDutyTemplateDAO.addEvaluationContent(doubleDutyEvaluation.getId(),doubleDutyContents1.get(j).getId());
-//            }
-//        }
-////        doubleDutyTemplateDAO.addEvaluation(doubleDutyEvaluations);
-//        return "1000";
-//    }
 }
