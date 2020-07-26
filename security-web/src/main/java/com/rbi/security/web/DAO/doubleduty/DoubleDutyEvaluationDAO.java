@@ -113,7 +113,7 @@ public interface DoubleDutyEvaluationDAO {
     @Select("SELECT count(*) FROM double_duty_evaluation WHERE DATE_FORMAT(idt, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' ) and personnel_id = #{personnelId}")
     int findMonthNum(Integer personnelId);
 
-    @Update("update double_duty_evaluation set correct_situation=#{correctSituation},auditor_name=#{auditorName},auditor_id=#{auditorId},audit_time=#{auditTime},status = #{status} where id = #{id}")
+    @Update("update double_duty_evaluation set bad_situation = #{badSituation},correct_situation=#{correctSituation},auditor_name=#{auditorName},auditor_id=#{auditorId},audit_time=#{auditTime},status = #{status} where id = #{id}")
     void auditEvaluation(DoubleDutyEvaluation doubleDutyEvaluation);
 
     @Update("update double_duty_evaluation_content set check_result=#{checkResult},check_fraction=#{checkFraction} where id =#{id}")

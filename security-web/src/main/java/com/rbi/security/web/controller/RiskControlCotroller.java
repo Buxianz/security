@@ -243,4 +243,21 @@ public class RiskControlCotroller {
         }
     }
 
+    /**
+     * 删除照片
+     * */
+    @PostMapping("/findHarmKind")
+    public ResponseModel findHarmKind(@RequestBody JSONObject json){
+        try {
+            Map<String,Object> map = riskControlService.findHarmKind();
+            return ResponseModel.build("1000","风险危害种类占比查询成功！",map);
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+
+
+
 }
