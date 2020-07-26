@@ -171,4 +171,11 @@ public interface CompanyPersonnelDAO {
      */
     @Select({"<script> Select * FROM sys_company_personnel WHERE id_card_no in <foreach collection='idCardNos' index='index' item='item' open='(' separator=',' close=')'>#{item}</foreach> </script>"})
     List<SysCompanyPersonnel> getCompanyPersonnelByIdCardNos(@Param("idCardNos") List<String> idCardNos);
+
+    /**
+     * 根据公司人员信息id获取其所在的组织id
+     */
+    @Select("Select organization_id FROM sys_company_personnel WHERE id=#{companyPersonnelId}")
+    Integer  getorganizationIdById(@Param("companyPersonnelId") int companyPersonnelId);
+
 }

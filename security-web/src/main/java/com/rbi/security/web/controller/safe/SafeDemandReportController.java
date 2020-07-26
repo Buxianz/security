@@ -116,4 +116,21 @@ public class SafeDemandReportController {
             return ResponseModel.build("1001", e.getMessage());
         }
     }
+
+    /**
+     * 根据请求人，查看当前人所在部门的需求 分页查看需求 已处理或者未处理
+     */
+    //@RequiresPermissions("safe:TrainingPlanProcessedPage")
+    @RequestMapping("/pagingSafeConditionDemandReport")
+    public ResponseModel<PageData<PagingTraniningNeeds>> pagingSafeConditionDemandReport(@RequestBody JSONObject date) {
+        try{
+            int pageNo = date.getInteger("pageNo");
+            int pageSize = date.getInteger("pageSize");
+            int startIndex=(pageNo-1)*pageSize;
+            PageData<PagingTraniningNeeds> pagingTraniningNeedsList=safeDemandReportService.pagingSafeConditionDemandReport(pageNo,pageSize,startIndex);
+            return ResponseModel.build("1000", "查询成功",pagingTraniningNeedsList);
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
 }

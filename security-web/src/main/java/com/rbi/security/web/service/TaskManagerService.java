@@ -34,4 +34,12 @@ public interface TaskManagerService {
     LearningContent getLearningContent(int id) throws RuntimeException;
 
     TestPaper getTheExamDetails(Integer testPapreId,Integer personnelTrainingRecordId) throws RuntimeException;
+
+    /**
+     * 模拟试卷获取
+     */
+
+    /**
+     * 模拟试卷处理
+     */
 }

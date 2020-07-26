@@ -82,4 +82,36 @@ public interface SafeTraningNeedsDAO {
     @Select("SELECT CONCAT(start_time,\"至\",end_time) FROM safe_training_needs WHERE id=#{id}")
     String getStartAndEndTime(@Param("id")int id);
 
+    /**
+     * 分页获取请求人所在部门及其子部门下的所有提报需求
+     */
+    @Select("SELECT stn.id,sty.training_type_name,stn.training_content,stn.processing_status,stn.report_person,stn.`name`,stn.proposed_time FROM\n" +
+            "(SELECT stn.*,scp.`name` FROM\n" +
+            "(SELECT scp.id as 'company_personnel_id',scp.`name` FROM \n" +
+            "(select id as 'organization_id'  from (\n" +
+            "                          select t1.id,\n" +
+            "                          if(find_in_set(parent_id, @pids) > 0 OR find_in_set(id, @pids) > 0, @pids := concat(@pids, ',', id), 0) as ischild\n" +
+            "                        from (\n" +
+            "                               select id,parent_id from sys_organization \n" +
+            "                             ) t1,\n" +
+            "                              (select @pids := #{organizationId}) t2\n" +
+            "            ) t3 where ischild != 0) t4 INNER JOIN sys_company_personnel scp on scp.organization_id=t4.organization_id) scp INNER JOIN " +
+            "safe_training_needs stn on stn.report_person=scp.company_personnel_id  ORDER BY proposed_time DESC  LIMIT #{startIndex},#{pageSize})stn LEFT JOIN safa_training_type sty ON stn.training_type_id=sty.id")
+    List<PagingTraniningNeeds> getOrganizationNeedsByOrganizationId(@Param("startIndex") int startIndex, @Param("pageSize") int pageSize,@Param("organizationId") int organizationId);
+    /**
+     * 获取记录数
+     */
+    @Select("SELECT count(stn.id) FROM\n" +
+            "(SELECT scp.id as 'company_personnel_id',scp.`name` FROM \n" +
+            "(select id as 'organization_id'  from (\n" +
+            "                          select t1.id,\n" +
+            "                          if(find_in_set(parent_id, @pids) > 0 OR find_in_set(id, @pids) > 0, @pids := concat(@pids, ',', id), 0) as ischild\n" +
+            "                        from (\n" +
+            "                               select id,parent_id from sys_organization \n" +
+            "                             ) t1,\n" +
+            "                              (select @pids := #{organizationId}) t2\n" +
+            "            ) t3 where ischild != 0) t4 INNER JOIN sys_company_personnel scp on scp.organization_id=t4.organization_id) scp INNER JOIN safe_training_needs " +
+            "stn on stn.report_person=scp.company_personnel_id")
+   int  getOrganizationNeedsConutByOrganizationId(@Param("organizationId") int organizationId);
+
 }
