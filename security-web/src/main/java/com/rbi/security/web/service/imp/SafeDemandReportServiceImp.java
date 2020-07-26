@@ -76,6 +76,7 @@ public class SafeDemandReportServiceImp implements SafeDemandReportService {
                throw new RuntimeException("添加需求提报失败");
           }
      }
+
     /*
    新增需求和资料以及试卷
     */
@@ -232,5 +233,44 @@ public class SafeDemandReportServiceImp implements SafeDemandReportService {
             throw new RuntimeException("根据id获取培训需求计划内容失败："+e.getMessage());
         }
         return safeTrainingNeeds;
+    }
+
+    /**
+     * 根据请求人，查看当前人所在部门的需求 分页查看需求
+     * @param pageNo
+     * @param pageSize
+     * @param startIndex
+     * @return
+     * @throws RuntimeException
+     */
+    @Override
+    public PageData<PagingTraniningNeeds> pagingSafeConditionDemandReport(int pageNo, int pageSize, int startIndex) throws RuntimeException {
+        List<PagingTraniningNeeds> pagingTraniningNeedsList=null;
+        try{
+            Subject subject = SecurityUtils.getSubject();
+            AuthenticationUserDTO user=(AuthenticationUserDTO)subject.getPrincipal();
+            int count =0;
+            Integer organizationId= companyPersonnelDAO.getorganizationIdById(user.getCompanyPersonnelId());
+            pagingTraniningNeedsList=safeTraningNeedsDAO.getOrganizationNeedsByOrganizationId(startIndex,pageSize,organizationId);
+            count=safeTraningNeedsDAO.getOrganizationNeedsConutByOrganizationId(organizationId);
+            /*if(processingStatus==1) {
+               *//* pagingTraniningNeedsList = safeTraningNeedsDAO.pagingUnprocessedSafeTraningNeeds(startIndex, pageSize, processingStatus);
+                count =safeTraningNeedsDAO.getUnprocessedTrainingNeeds();*//*
+            }else{
+                *//*pagingTraniningNeedsList= safeTraningNeedsDAO.pagingProcessedSafeTraningNeeds(startIndex, pageSize);
+                count =safeTraningNeedsDAO.getProcessedTrainingNeeds();*//*
+            }*/
+
+            int totalPage;
+            if (count%pageSize==0){
+                totalPage = count/pageSize;
+            }else {
+                totalPage = count/pageSize+1;
+            }
+            return new  PageData<PagingTraniningNeeds>(pageNo,pageSize,totalPage,count,pagingTraniningNeedsList);
+        } catch (Exception e) {
+            logger.error("分页获取自身部门需求提报信息失败，异常为{}", e);
+            throw new RuntimeException("分页获取自身部门需求提报信息失败");
+        }
     }
 }
