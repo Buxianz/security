@@ -5,6 +5,7 @@ import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.DoubleDutyFileService;
 import com.rbi.security.web.service.DoubleDutyTemplateService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,6 +38,7 @@ public class DoubleDutyFileController {
     /**
      * 一岗双责档案分页
      **/
+    @RequiresPermissions("doubleDutyFile:page")
     @PostMapping("/findByPage")
     public ResponseModel<PageData> findByPage(@RequestBody JSONObject json){
         try {

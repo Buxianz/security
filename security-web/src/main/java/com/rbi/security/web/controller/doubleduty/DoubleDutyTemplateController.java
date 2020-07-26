@@ -37,6 +37,7 @@ public class DoubleDutyTemplateController {
     /**
      * 一岗双责模板分页
      **/
+    @RequiresPermissions("doubleDutyMake:page")
     @PostMapping("/findByPage")
     public ResponseModel<PageData> findByPage(@RequestBody JSONObject json){
         try {
@@ -53,6 +54,7 @@ public class DoubleDutyTemplateController {
     /**
      * 一岗双责模板添加
      **/
+    @RequiresPermissions("doubleDutyMake:add")
     @PostMapping("/add")
     public ResponseModel add(@RequestBody JSONObject json){
         try {
@@ -71,6 +73,7 @@ public class DoubleDutyTemplateController {
     /**
      * 一岗双责模板修改
      **/
+    @RequiresPermissions("doubleDutyMake:update")
     @PostMapping("/update")
     public ResponseModel update(@RequestBody JSONObject json){
         try {
@@ -89,6 +92,7 @@ public class DoubleDutyTemplateController {
     /**
      * 一岗双责模板删除
      **/
+    @RequiresPermissions("doubleDutyMake:delete")
     @PostMapping("/delete")
     public ResponseModel delete(@RequestBody JSONObject json){
         try {
