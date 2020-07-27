@@ -127,7 +127,8 @@ public class SafeDemandReportController {
             int pageNo = date.getInteger("pageNo");
             int pageSize = date.getInteger("pageSize");
             int startIndex=(pageNo-1)*pageSize;
-            PageData<PagingTraniningNeeds> pagingTraniningNeedsList=safeDemandReportService.pagingSafeConditionDemandReport(pageNo,pageSize,startIndex);
+            int processingStatus=date.getInteger("processingStatus");
+            PageData<PagingTraniningNeeds> pagingTraniningNeedsList=safeDemandReportService.pagingSafeConditionDemandReport(pageNo,pageSize,startIndex,processingStatus);
             return ResponseModel.build("1000", "查询成功",pagingTraniningNeedsList);
         }catch (Exception e){
             return ResponseModel.build("1001", e.getMessage());
