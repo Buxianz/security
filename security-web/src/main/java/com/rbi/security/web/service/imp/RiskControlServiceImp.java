@@ -560,14 +560,27 @@ public class RiskControlServiceImp implements RiskControlService {
         List<SystemSettingDTO> systemSettingDTO = riskControlDAO.findChoose("HARM_KIND");
         Map<String, Object> map = new HashMap<>();
         if (sysOrganization.getLevel() == 1){
+            Map<String, Object> map1 = new HashMap<>();
             int num1 = riskControlDAO.findByGradeNum("一级");
             int num2 = riskControlDAO.findByGradeNum("二级");
             int num3 = riskControlDAO.findByGradeNum("三级");
             int num4 = riskControlDAO.findByGradeNum("四级");
-            map.put("一级",num1);
-            map.put("二级",num2);
-            map.put("三级",num3);
-            map.put("四级",num4);
+            map1.put("一级",num1);
+            map1.put("二级",num2);
+            map1.put("三级",num3);
+            map1.put("四级",num4);
+
+            Map<String, Object> map2 = new HashMap<>();
+            int num11 = riskControlDAO.findByGradeNum2("一级");
+            int num12 = riskControlDAO.findByGradeNum2("二级");
+            int num13 = riskControlDAO.findByGradeNum2("三级");
+            int num14 = riskControlDAO.findByGradeNum2("四级");
+            map2.put("一级",num11);
+            map2.put("二级",num12);
+            map2.put("三级",num13);
+            map2.put("四级",num14);
+            map.put("区域内",map1);
+            map.put("区域外",map2);
             return map;
         }else {
             //隐患所属组织表
@@ -588,24 +601,50 @@ public class RiskControlServiceImp implements RiskControlService {
             }
             SysOrganization organization = riskControlDAO.findAllByOrganizationId(factoryId);
             if (null!=organization.getSecurity()){
+                Map<String, Object> map1 = new HashMap<>();
                 int num1 = riskControlDAO.findByGradeNum("一级");
                 int num2 = riskControlDAO.findByGradeNum("二级");
                 int num3 = riskControlDAO.findByGradeNum("三级");
                 int num4 = riskControlDAO.findByGradeNum("四级");
-                map.put("一级",num1);
-                map.put("二级",num2);
-                map.put("三级",num3);
-                map.put("四级",num4);
+                map1.put("一级",num1);
+                map1.put("二级",num2);
+                map1.put("三级",num3);
+                map1.put("四级",num4);
+
+                Map<String, Object> map2 = new HashMap<>();
+                int num11 = riskControlDAO.findByGradeNum2("一级");
+                int num12 = riskControlDAO.findByGradeNum2("二级");
+                int num13 = riskControlDAO.findByGradeNum2("三级");
+                int num14 = riskControlDAO.findByGradeNum2("四级");
+                map2.put("一级",num11);
+                map2.put("二级",num12);
+                map2.put("三级",num13);
+                map2.put("四级",num14);
+                map.put("区域内",map1);
+                map.put("区域外",map2);
                 return map;
             }else {
+                Map<String, Object> map1 = new HashMap<>();
                 int num1 = riskControlDAO.findFactoryByGradeNum("一级",factoryId);
                 int num2 = riskControlDAO.findFactoryByGradeNum("二级",factoryId);
                 int num3 = riskControlDAO.findFactoryByGradeNum("三级",factoryId);
                 int num4 = riskControlDAO.findFactoryByGradeNum("四级",factoryId);
-                map.put("一级",num1);
-                map.put("二级",num2);
-                map.put("三级",num3);
-                map.put("四级",num4);
+                map1.put("一级",num1);
+                map1.put("二级",num2);
+                map1.put("三级",num3);
+                map1.put("四级",num4);
+
+                Map<String, Object> map2 = new HashMap<>();
+                int num11 = riskControlDAO.findFactoryByGradeNum2("一级",factoryId);
+                int num12 = riskControlDAO.findFactoryByGradeNum2("二级",factoryId);
+                int num13 = riskControlDAO.findFactoryByGradeNum2("三级",factoryId);
+                int num14 = riskControlDAO.findFactoryByGradeNum2("四级",factoryId);
+                map2.put("一级",num11);
+                map2.put("二级",num12);
+                map2.put("三级",num13);
+                map2.put("四级",num14);
+                map.put("区域内",map1);
+                map.put("区域外",map2);
                 return map;
             }
         }

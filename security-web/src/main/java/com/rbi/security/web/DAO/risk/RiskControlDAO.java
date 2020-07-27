@@ -133,11 +133,17 @@ public interface RiskControlDAO {
 
 
 
-    @Select("select count(*) from risk_control where risk_grad = #{riskGrad}")
+    @Select("select count(*) from risk_control where risk_grad = #{riskGrad} and risk_type = '1'")
     int findByGradeNum(@Param("riskGrad") String riskGrad);
 
-    @Select("select count(*) from risk_control where risk_grad = #{riskGrad} and factory_id = #{factoryId}")
+    @Select("select count(*) from risk_control where risk_grad = #{riskGrad} and risk_type = '2'")
+    int findByGradeNum2(@Param("riskGrad") String riskGrad);
+
+    @Select("select count(*) from risk_control where risk_grad = #{riskGrad} and factory_id = #{factoryId} and risk_type = '1'")
     int findFactoryByGradeNum(@Param("riskGrad")String riskGrad, @Param("factoryId") Integer factoryId);
+
+    @Select("select count(*) from risk_control where risk_grad = #{riskGrad} and factory_id = #{factoryId} and risk_type = '2'")
+    int findFactoryByGradeNum2(@Param("riskGrad")String riskGrad, @Param("factoryId") Integer factoryId);
 
 
     @Select("select count(*) from risk_control where risk_category = #{riskCategory}")
