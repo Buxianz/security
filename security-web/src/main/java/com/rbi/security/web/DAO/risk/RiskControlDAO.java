@@ -2,6 +2,7 @@ package com.rbi.security.web.DAO.risk;
 
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.entity.SysOrganization;
+import com.rbi.security.entity.web.entity.SysRole;
 import com.rbi.security.entity.web.risk.RiskControl;
 import com.rbi.security.entity.web.risk.RiskControlPicture;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorReviewDTO;
@@ -116,4 +117,7 @@ public interface RiskControlDAO {
 
     @Select("select count(*) from risk_control where risk_grad = '一级' and work_type like ${workType}")
     int findSeriousWorkTypeByPageNum(@Param("workType") String workType);
+
+    @Select("select * from sys_role where sys_role.id = (select role_id from sys_user_role where sys_user_role.user_id = #{userId})")
+    SysRole findRoleByUserId(Integer userId);
 }

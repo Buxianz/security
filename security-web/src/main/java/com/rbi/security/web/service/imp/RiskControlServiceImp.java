@@ -1,7 +1,9 @@
 package com.rbi.security.web.service.imp;
 
 import com.rbi.security.entity.AuthenticationUserDTO;
+import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.entity.SysOrganization;
+import com.rbi.security.entity.web.entity.SysRole;
 import com.rbi.security.entity.web.risk.RiskControl;
 import com.rbi.security.entity.web.risk.RiskControlPicture;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorReviewDTO;
@@ -500,5 +502,17 @@ public class RiskControlServiceImp implements RiskControlService {
             }
             return new PageData(pageNo, pageSize, totalPage, count, riskControls);
         }
+    }
+
+
+    @Override
+    public Map<String, Object> findHarmKind() {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = riskControlDAO.findPersonnelById(personnelId);
+        Integer userId = currentUser.getId();
+        SysRole sysRole = riskControlDAO.findRoleByUserId(userId);
+        return null;
     }
 }
