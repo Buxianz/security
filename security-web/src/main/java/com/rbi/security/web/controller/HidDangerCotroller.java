@@ -324,6 +324,44 @@ public class HidDangerCotroller {
     }
 
 
+    /**
+     * 危害种类占比
+     * */
+    @PostMapping("/findByGrade")
+    public ResponseModel findByGrade(){
+        try {
+            Map<String,Object> map = hidDangerService.findByGrade();
+            return ResponseModel.build("1000","隐患等级占比查询成功！",map);
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+
+    /**
+     * 危害种类占比
+     * */
+    @PostMapping("/findByType")
+    public ResponseModel findByType(){
+        try {
+            Map<String,Object> map = hidDangerService.findByType();
+            return ResponseModel.build("1000","隐患等级占比查询成功！",map);
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -225,4 +225,28 @@ public interface HidDangerDAO {
     void updateProcessingStatus(HidDangerDO hidDangerDO);
 
 
+    @Select("select count(*) from hid_danger where hid_danger_grade = #{hidDangerGrade}")
+    int findByGrade(@Param("hidDangerGrade") String hidDangerGrade);
+
+    @Select("select count(*) from hid_danger where hid_danger_grade = #{hidDangerGrade} and factory_id=#{factoryId}")
+    int findFactoryByGrade(@Param("hidDangerGrade") String hidDangerGrade,@Param("factoryId") Integer factoryId);
+
+    @Select("select count(*) from hid_danger where hid_type_thing = 1")
+    int findByThing();
+
+    @Select("select count(*) from hid_danger where hid_type_person = 1")
+    int findByPerson();
+
+    @Select("select count(*) from hid_danger where hid_type_manage = 1")
+    int findBymanage();
+
+
+    @Select("select count(*) from hid_danger where hid_type_thing = 1 and factory_id=#{factoryId}")
+    int findByThing2(@Param("factoryId")Integer factoryId);
+
+    @Select("select count(*) from hid_danger where hid_type_person = 1 and factory_id=#{factoryId}")
+    int findByPerson2(@Param("factoryId")Integer factoryId);
+
+    @Select("select count(*) from hid_danger where hid_type_manage = 1 and factory_id=#{factoryId}")
+    int findBymanage2(@Param("factoryId")Integer factoryId);
 }

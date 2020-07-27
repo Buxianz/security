@@ -59,4 +59,8 @@ public interface HidDangerService {
     void deletePicture(Integer id);
 
     String rectifyImmediately(HidDangerDO hidDangerDO, MultipartFile[] beforeImg, MultipartFile[] afterImg, MultipartFile plan, MultipartFile report) throws IOException;
+
+    Map<String, Object> findByType();
+
+    Map<String, Object> findByGrade();
 }

@@ -1114,4 +1114,108 @@ public class HidDangerServiceImpl implements HidDangerService {
         }
     }
 
+    @Override
+    public Map<String, Object> findByGrade() {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
+        SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+
+        List<SystemSettingDTO> systemSettingDTO = hidDangerDAO.findChoose("HID_GRADE");
+        Map<String, Object> map = new HashMap<>();
+        if (sysOrganization.getLevel() == 1){
+            for (int i=0;i<systemSettingDTO.size();i++){
+                int num = hidDangerDAO.findByGrade(systemSettingDTO.get(i).getSettingCode());
+                map.put(systemSettingDTO.get(i).getSettingName(),num);
+            }
+            return map;
+        }else {
+            //隐患所属组织表
+            Integer factoryId = null;
+            int level = sysOrganization.getLevel();
+            if (level == 2 ){
+                factoryId = (sysOrganization.getId());
+            }
+            Integer parentId = sysOrganization.getParentId();
+            level = level -1;
+            while (level !=1){
+                SysOrganization sysOrganization3 = hidDangerDAO.findAllByOrganizationId(parentId);
+                if (level == 2 ){
+                    factoryId = (sysOrganization3.getId());
+                }
+                parentId = sysOrganization3.getParentId();
+                level=level - 1;
+            }
+            SysOrganization organization = hidDangerDAO.findAllByOrganizationId(factoryId);
+            if (null!=organization.getSecurity()){
+                for (int i=0;i<systemSettingDTO.size();i++){
+                    int num = hidDangerDAO.findByGrade(systemSettingDTO.get(i).getSettingCode());
+                    map.put(systemSettingDTO.get(i).getSettingName(),num);
+                }
+                return map;
+            }else {
+                for (int i=0;i<systemSettingDTO.size();i++){
+                    int num = hidDangerDAO.findFactoryByGrade(systemSettingDTO.get(i).getSettingCode(),factoryId);
+                    map.put(systemSettingDTO.get(i).getSettingName(),num);
+                }
+                return map;
+            }
+        }
+    }
+
+    @Override
+    public Map<String, Object> findByType() {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
+        SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+
+        Map<String, Object> map = new HashMap<>();
+        if (sysOrganization.getLevel() == 1){
+            int num1 = hidDangerDAO.findByThing();
+            int num2 = hidDangerDAO.findByPerson();
+            int num3 = hidDangerDAO.findBymanage();
+            map.put("物",num1);
+            map.put("人",num2);
+            map.put("管理",num3);
+            return map;
+        }else {
+            //隐患所属组织表
+            Integer factoryId = null;
+            int level = sysOrganization.getLevel();
+            if (level == 2 ){
+                factoryId = (sysOrganization.getId());
+            }
+            Integer parentId = sysOrganization.getParentId();
+            level = level -1;
+            while (level !=1){
+                SysOrganization sysOrganization3 = hidDangerDAO.findAllByOrganizationId(parentId);
+                if (level == 2 ){
+                    factoryId = (sysOrganization3.getId());
+                }
+                parentId = sysOrganization3.getParentId();
+                level=level - 1;
+            }
+            SysOrganization organization = hidDangerDAO.findAllByOrganizationId(factoryId);
+            if (null!=organization.getSecurity()){
+                int num1 = hidDangerDAO.findByThing();
+                int num2 = hidDangerDAO.findByPerson();
+                int num3 = hidDangerDAO.findBymanage();
+                map.put("物",num1);
+                map.put("人",num2);
+                map.put("管理",num3);
+                return map;
+            }else {
+                int num1 = hidDangerDAO.findByThing2(parentId);
+                int num2 = hidDangerDAO.findByPerson2(parentId);
+                int num3 = hidDangerDAO.findBymanage2(parentId);
+                map.put("物",num1);
+                map.put("人",num2);
+                map.put("管理",num3);
+                return map;
+            }
+        }
+    }
 }
