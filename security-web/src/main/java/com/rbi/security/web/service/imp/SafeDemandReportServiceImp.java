@@ -244,23 +244,23 @@ public class SafeDemandReportServiceImp implements SafeDemandReportService {
      * @throws RuntimeException
      */
     @Override
-    public PageData<PagingTraniningNeeds> pagingSafeConditionDemandReport(int pageNo, int pageSize, int startIndex) throws RuntimeException {
+    public PageData<PagingTraniningNeeds> pagingSafeConditionDemandReport(int pageNo, int pageSize, int startIndex,int processingStatus) throws RuntimeException {
         List<PagingTraniningNeeds> pagingTraniningNeedsList=null;
         try{
             Subject subject = SecurityUtils.getSubject();
             AuthenticationUserDTO user=(AuthenticationUserDTO)subject.getPrincipal();
             int count =0;
             Integer organizationId= companyPersonnelDAO.getorganizationIdById(user.getCompanyPersonnelId());
-            pagingTraniningNeedsList=safeTraningNeedsDAO.getOrganizationNeedsByOrganizationId(startIndex,pageSize,organizationId);
-            count=safeTraningNeedsDAO.getOrganizationNeedsConutByOrganizationId(organizationId);
-            /*if(processingStatus==1) {
-               *//* pagingTraniningNeedsList = safeTraningNeedsDAO.pagingUnprocessedSafeTraningNeeds(startIndex, pageSize, processingStatus);
-                count =safeTraningNeedsDAO.getUnprocessedTrainingNeeds();*//*
-            }else{
-                *//*pagingTraniningNeedsList= safeTraningNeedsDAO.pagingProcessedSafeTraningNeeds(startIndex, pageSize);
-                count =safeTraningNeedsDAO.getProcessedTrainingNeeds();*//*
-            }*/
+            pagingTraniningNeedsList=safeTraningNeedsDAO.getUnprocessedOrganizationNeedsByOrganizationId(startIndex,pageSize,organizationId,processingStatus);
+            count=safeTraningNeedsDAO.getUnprocessedOrganizationNeedsConutByOrganizationId(organizationId,processingStatus);
+            if(processingStatus==1) {
+                pagingTraniningNeedsList=safeTraningNeedsDAO.getUnprocessedOrganizationNeedsByOrganizationId(startIndex,pageSize,organizationId,processingStatus);
+                count=safeTraningNeedsDAO.getUnprocessedOrganizationNeedsConutByOrganizationId(organizationId,processingStatus);
 
+            }else{
+                pagingTraniningNeedsList=safeTraningNeedsDAO.getProcessedOrganizationNeedsByOrganizationId(startIndex,pageSize,organizationId);
+                count=safeTraningNeedsDAO.getProcessedOrganizationNeedsConutByOrganizationId(organizationId);
+            }
             int totalPage;
             if (count%pageSize==0){
                 totalPage = count/pageSize;
