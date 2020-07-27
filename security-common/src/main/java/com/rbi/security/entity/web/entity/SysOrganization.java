@@ -37,4 +37,8 @@ public class SysOrganization implements Serializable {
      * 操作人
      */
     private Integer operatingStaff;
+
+    private Integer security;
+
+
 }

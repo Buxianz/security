@@ -244,10 +244,10 @@ public class RiskControlCotroller {
     }
 
     /**
-     * 删除照片
+     * 危害种类占比
      * */
-    @PostMapping("/findHarmKind")
-    public ResponseModel findHarmKind(@RequestBody JSONObject json){
+    @PostMapping("/findByHarmKind")
+    public ResponseModel findHarmKind(){
         try {
             Map<String,Object> map = riskControlService.findHarmKind();
             return ResponseModel.build("1000","风险危害种类占比查询成功！",map);
@@ -256,6 +256,44 @@ public class RiskControlCotroller {
             return ResponseModel.build("1001","处理异常");
         }
     }
+
+
+    /**
+     * 风险等级数量统计
+     * */
+    @PostMapping("/findByGrade")
+    public ResponseModel findByGrade(){
+        try {
+            Map<String,Object> map = riskControlService.findByGrade();
+            return ResponseModel.build("1000","风险等级查询成功！",map);
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+    /**
+     * 风险范畴统计
+     * */
+    @PostMapping("/findByRiskCategory")
+    public ResponseModel findByRiskCategory(){
+        try {
+            Map<String,Object> map = riskControlService.findByRiskCategory();
+            return ResponseModel.build("1000","风险范畴分类查询成功！",map);
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+
+
+
+
+
+
+
+
 
 
 

@@ -3,6 +3,7 @@ package com.rbi.security.web.DAO.risk;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.entity.SysOrganization;
 import com.rbi.security.entity.web.entity.SysRole;
+import com.rbi.security.entity.web.hid.SystemSettingDTO;
 import com.rbi.security.entity.web.risk.RiskControl;
 import com.rbi.security.entity.web.risk.RiskControlPicture;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorReviewDTO;
@@ -120,4 +121,29 @@ public interface RiskControlDAO {
 
     @Select("select * from sys_role where sys_role.id = (select role_id from sys_user_role where sys_user_role.user_id = #{userId})")
     SysRole findRoleByUserId(Integer userId);
+
+    @Select("select setting_code,setting_name from system_setting where setting_type = #{settingType} and organization_id = 'RBI'")
+    List<SystemSettingDTO> findChoose(String settingType);
+
+    @Select("select count(*) from risk_control where harm_kind = #{harmKind}")
+    int findHarmKindNum(@Param("harmKind") String harmKind);
+
+    @Select("select count(*) from risk_control where harm_kind = #{harmKind} and factory_id = #{factoryId}")
+    int findFactoryHarmKindNum(@Param("harmKind") String harmKind,@Param("factoryId") Integer factoryId);
+
+
+
+    @Select("select count(*) from risk_control where risk_grad = #{riskGrad}")
+    int findByGradeNum(@Param("riskGrad") String riskGrad);
+
+    @Select("select count(*) from risk_control where risk_grad = #{riskGrad} and factory_id = #{factoryId}")
+    int findFactoryByGradeNum(@Param("riskGrad")String riskGrad, @Param("factoryId") Integer factoryId);
+
+
+    @Select("select count(*) from risk_control where risk_category = #{riskCategory}")
+    int findByCategoryNum(@Param("riskCategory") String riskCategory);
+
+
+    @Select("select count(*) from risk_control where risk_category = #{riskCategory} and factory_id = #{factoryId} ")
+    int findFatoryByCategoryNum(@Param("riskCategory") String riskCategory, @Param("factoryId") Integer factoryId);
 }

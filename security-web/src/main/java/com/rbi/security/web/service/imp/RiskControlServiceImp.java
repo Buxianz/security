@@ -3,10 +3,9 @@ package com.rbi.security.web.service.imp;
 import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.entity.SysOrganization;
-import com.rbi.security.entity.web.entity.SysRole;
+import com.rbi.security.entity.web.hid.SystemSettingDTO;
 import com.rbi.security.entity.web.risk.RiskControl;
 import com.rbi.security.entity.web.risk.RiskControlPicture;
-import com.rbi.security.entity.web.safe.administrator.SafeAdministratorReviewDTO;
 import com.rbi.security.tool.DateUtil;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.Tools;
@@ -21,11 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -511,8 +507,157 @@ public class RiskControlServiceImp implements RiskControlService {
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
         SysCompanyPersonnel sysCompanyPersonnel = riskControlDAO.findPersonnelById(personnelId);
-        Integer userId = currentUser.getId();
-        SysRole sysRole = riskControlDAO.findRoleByUserId(userId);
-        return null;
+        SysOrganization sysOrganization = riskControlDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+        List<SystemSettingDTO> systemSettingDTO = riskControlDAO.findChoose("HARM_KIND");
+        Map<String, Object> map = new HashMap<>();
+        if (sysOrganization.getLevel() == 1){
+           for (int i=0;i<systemSettingDTO.size();i++){
+               int num = riskControlDAO.findHarmKindNum(systemSettingDTO.get(i).getSettingCode());
+               map.put(systemSettingDTO.get(i).getSettingName(),num);
+           }
+           return map;
+        }else {
+            //隐患所属组织表
+            Integer factoryId = null;
+            int level = sysOrganization.getLevel();
+            if (level == 2 ){
+                factoryId = (sysOrganization.getId());
+            }
+            Integer parentId = sysOrganization.getParentId();
+            level = level -1;
+            while (level !=1){
+                SysOrganization sysOrganization3 = riskControlDAO.findAllByOrganizationId(parentId);
+                if (level == 2 ){
+                    factoryId = (sysOrganization3.getId());
+                }
+                parentId = sysOrganization3.getParentId();
+                level=level - 1;
+            }
+            SysOrganization organization = riskControlDAO.findAllByOrganizationId(factoryId);
+            if (null!=organization.getSecurity()){
+                for (int i=0;i<systemSettingDTO.size();i++){
+                    int num = riskControlDAO.findHarmKindNum(systemSettingDTO.get(i).getSettingCode());
+                    map.put(systemSettingDTO.get(i).getSettingName(),num);
+                }
+                return map;
+            }else {
+                for (int i=0;i<systemSettingDTO.size();i++){
+                    int num = riskControlDAO.findFactoryHarmKindNum(systemSettingDTO.get(i).getSettingCode(),factoryId);
+                    map.put(systemSettingDTO.get(i).getSettingName(),num);
+                }
+                return map;
+            }
+        }
+    }
+
+    @Override
+    public Map<String, Object> findByGrade() {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = riskControlDAO.findPersonnelById(personnelId);
+        SysOrganization sysOrganization = riskControlDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+        List<SystemSettingDTO> systemSettingDTO = riskControlDAO.findChoose("HARM_KIND");
+        Map<String, Object> map = new HashMap<>();
+        if (sysOrganization.getLevel() == 1){
+            int num1 = riskControlDAO.findByGradeNum("一级");
+            int num2 = riskControlDAO.findByGradeNum("二级");
+            int num3 = riskControlDAO.findByGradeNum("三级");
+            int num4 = riskControlDAO.findByGradeNum("四级");
+            map.put("一级",num1);
+            map.put("二级",num2);
+            map.put("三级",num3);
+            map.put("四级",num4);
+            return map;
+        }else {
+            //隐患所属组织表
+            Integer factoryId = null;
+            int level = sysOrganization.getLevel();
+            if (level == 2 ){
+                factoryId = (sysOrganization.getId());
+            }
+            Integer parentId = sysOrganization.getParentId();
+            level = level -1;
+            while (level !=1){
+                SysOrganization sysOrganization3 = riskControlDAO.findAllByOrganizationId(parentId);
+                if (level == 2 ){
+                    factoryId = (sysOrganization3.getId());
+                }
+                parentId = sysOrganization3.getParentId();
+                level=level - 1;
+            }
+            SysOrganization organization = riskControlDAO.findAllByOrganizationId(factoryId);
+            if (null!=organization.getSecurity()){
+                int num1 = riskControlDAO.findByGradeNum("一级");
+                int num2 = riskControlDAO.findByGradeNum("二级");
+                int num3 = riskControlDAO.findByGradeNum("三级");
+                int num4 = riskControlDAO.findByGradeNum("四级");
+                map.put("一级",num1);
+                map.put("二级",num2);
+                map.put("三级",num3);
+                map.put("四级",num4);
+                return map;
+            }else {
+                int num1 = riskControlDAO.findFactoryByGradeNum("一级",factoryId);
+                int num2 = riskControlDAO.findFactoryByGradeNum("二级",factoryId);
+                int num3 = riskControlDAO.findFactoryByGradeNum("三级",factoryId);
+                int num4 = riskControlDAO.findFactoryByGradeNum("四级",factoryId);
+                map.put("一级",num1);
+                map.put("二级",num2);
+                map.put("三级",num3);
+                map.put("四级",num4);
+                return map;
+            }
+        }
+    }
+
+
+    @Override
+    public Map<String, Object> findByRiskCategory() {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = riskControlDAO.findPersonnelById(personnelId);
+        SysOrganization sysOrganization = riskControlDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+        List<SystemSettingDTO> systemSettingDTO = riskControlDAO.findChoose("RISK_CATEGOTY");
+        Map<String, Object> map = new HashMap<>();
+        if (sysOrganization.getLevel() == 1){
+            for (int i=0;i<systemSettingDTO.size();i++){
+                int num = riskControlDAO.findByCategoryNum(systemSettingDTO.get(i).getSettingCode());
+                map.put(systemSettingDTO.get(i).getSettingName(),num);
+            }
+            return map;
+        }else {
+            //隐患所属组织表
+            Integer factoryId = null;
+            int level = sysOrganization.getLevel();
+            if (level == 2 ){
+                factoryId = (sysOrganization.getId());
+            }
+            Integer parentId = sysOrganization.getParentId();
+            level = level -1;
+            while (level !=1){
+                SysOrganization sysOrganization3 = riskControlDAO.findAllByOrganizationId(parentId);
+                if (level == 2 ){
+                    factoryId = (sysOrganization3.getId());
+                }
+                parentId = sysOrganization3.getParentId();
+                level=level - 1;
+            }
+            SysOrganization organization = riskControlDAO.findAllByOrganizationId(factoryId);
+            if (null!=organization.getSecurity()){
+                for (int i=0;i<systemSettingDTO.size();i++){
+                    int num = riskControlDAO.findByCategoryNum(systemSettingDTO.get(i).getSettingCode());
+                    map.put(systemSettingDTO.get(i).getSettingName(),num);
+                }
+                return map;
+            }else {
+                for (int i=0;i<systemSettingDTO.size();i++){
+                    int num = riskControlDAO.findFatoryByCategoryNum(systemSettingDTO.get(i).getSettingCode(),factoryId);
+                    map.put(systemSettingDTO.get(i).getSettingName(),num);
+                }
+                return map;
+            }
+        }
     }
 }

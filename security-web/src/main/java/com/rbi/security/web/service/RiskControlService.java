@@ -50,4 +50,8 @@ public interface RiskControlService {
     PageData findSeriousByCondition(String type, String value, int pageNo, int pageSize);
 
     Map<String, Object> findHarmKind();
+
+    Map<String, Object> findByGrade();
+
+    Map<String, Object> findByRiskCategory();
 }
