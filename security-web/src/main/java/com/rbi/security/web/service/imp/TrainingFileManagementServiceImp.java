@@ -511,10 +511,15 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
 
     @Override
     public PageData findAdministratorTrainByPage(int pageNo, int pageSize) {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = safeAdministratorTrainDAO.findPersonnelById(personnelId);
+
         int pageNo2 = pageSize * (pageNo - 1);
-        List<SafeAdministratorTrainDTO> safeAdministratorTrains = safeAdministratorTrainDAO.findByPage(pageNo2,pageSize);
+        List<SafeAdministratorTrainDTO> safeAdministratorTrains = safeAdministratorTrainDAO.findByPage(sysCompanyPersonnel.getOrganizationId(),pageNo2,pageSize);
         int totalPage = 0;
-        int count = safeAdministratorTrainDAO.findByPageNum();
+        int count = safeAdministratorTrainDAO.findByPageNum(sysCompanyPersonnel.getOrganizationId());
         if (0 == count % pageSize) {
             totalPage = count / pageSize;
         } else {
