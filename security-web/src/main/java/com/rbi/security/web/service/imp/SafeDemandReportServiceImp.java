@@ -251,8 +251,6 @@ public class SafeDemandReportServiceImp implements SafeDemandReportService {
             AuthenticationUserDTO user=(AuthenticationUserDTO)subject.getPrincipal();
             int count =0;
             Integer organizationId= companyPersonnelDAO.getorganizationIdById(user.getCompanyPersonnelId());
-            pagingTraniningNeedsList=safeTraningNeedsDAO.getUnprocessedOrganizationNeedsByOrganizationId(startIndex,pageSize,organizationId,processingStatus);
-            count=safeTraningNeedsDAO.getUnprocessedOrganizationNeedsConutByOrganizationId(organizationId,processingStatus);
             if(processingStatus==1) {
                 pagingTraniningNeedsList=safeTraningNeedsDAO.getUnprocessedOrganizationNeedsByOrganizationId(startIndex,pageSize,organizationId,processingStatus);
                 count=safeTraningNeedsDAO.getUnprocessedOrganizationNeedsConutByOrganizationId(organizationId,processingStatus);

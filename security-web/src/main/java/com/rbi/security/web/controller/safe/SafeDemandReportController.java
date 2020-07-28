@@ -120,7 +120,7 @@ public class SafeDemandReportController {
     /**
      * 根据请求人，查看当前人所在部门的需求 分页查看需求 已处理或者未处理
      */
-    //@RequiresPermissions("safe:TrainingPlanProcessedPage")
+    //@RequiresPermissions("safe:pagingSafeConditionDemandReport")
     @RequestMapping("/pagingSafeConditionDemandReport")
     public ResponseModel<PageData<PagingTraniningNeeds>> pagingSafeConditionDemandReport(@RequestBody JSONObject date) {
         try{

@@ -141,10 +141,18 @@ public interface CompanyPersonnelDAO {
     int queryCountByIdCardNoAndNotId(@Param("idCardNo") String idCardNo,@Param("id") long id);
 
     //分页查询公司人员数据
-    @Select("SELECT sys_company_personnel.* FROM sys_company_personnel ${searchCriteria} LIMIT ${pageNo},${pageSize}")
+    @Select("(SELECT scp.* FROM \n" +
+            "(select id as 'organization_id'  from (\n" +
+            "                          select t1.id,\n" +
+            "                          if(find_in_set(parent_id, @pids) > 0 OR find_in_set(id, @pids) > 0, @pids := concat(@pids, ',', id), 0) as ischild\n" +
+            "                        from (\n" +
+            "                               select id,parent_id from sys_organization \n" +
+            "                             ) t1,\n" +
+            "                              (select @pids := #{organizationId}) t2\n" +
+            "            ) t3 where ischild != 0) t4 INNER JOIN (SELECT sys_company_personnel.* FROM sys_company_personnel ${searchCriteria}) scp on scp.organization_id=t4.organization_id)LIMIT ${pageNo},${pageSize}")
     List<SysCompanyPersonnel> queryDataByPage(@Param("searchCriteria") String searchCriteria,
                                               @Param("pageNo") int pageNo,
-                                              @Param("pageSize") int pageSize);
+                                              @Param("pageSize") int pageSize,@Param("organizationId") int organizationId);
 
     //查询公司人员条数
     @Select("SELECT COUNT(*) FROM sys_company_personnel ${searchCriteria}")

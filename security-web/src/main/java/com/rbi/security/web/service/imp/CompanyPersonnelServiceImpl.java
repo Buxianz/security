@@ -2,6 +2,7 @@ package com.rbi.security.web.service.imp;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Joiner;
+import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.entity.SysOrganization;
 import com.rbi.security.entity.web.importlog.ImportCompanyPersonnelLogDTO;
@@ -12,6 +13,8 @@ import com.rbi.security.tool.StringUtils;
 import com.rbi.security.web.DAO.CompanyPersonnelDAO;
 import com.rbi.security.web.DAO.OrganizationDAO;
 import com.rbi.security.web.service.CompanyPersonnelService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -237,8 +240,11 @@ public class CompanyPersonnelServiceImpl implements CompanyPersonnelService {
                 }
             }
         }
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO user=(AuthenticationUserDTO)subject.getPrincipal();
+        Integer organizationId= companyPersonnelDAO.getorganizationIdById(user.getCompanyPersonnelId());
         int pageNo = (pageNum-1)*pageSize;
-        List<SysCompanyPersonnel> sysCompanyPersonnelList = companyPersonnelDAO.queryDataByPage(searchCriteria,pageNo,pageSize);
+        List<SysCompanyPersonnel> sysCompanyPersonnelList = companyPersonnelDAO.queryDataByPage(searchCriteria,pageNo,pageSize,organizationId);
         sysCompanyPersonnelList.forEach(sysCompanyPersonnel ->{
             List<SysOrganization> organizationList = organizationDAO.queryAllParentDate(sysCompanyPersonnel.getOrganizationId());
             organizationList.forEach(sysOrganization -> {

@@ -301,8 +301,11 @@ public class TrainingFileManagementServiceImp implements TrainingFileManagementS
     public PageData<PagingSpecialTraining> pagingSpecialTraining(int pageNo, int pageSize, int startIndex) throws RuntimeException{
         List<PagingSpecialTraining> pagingSpecialTrainingList=null;
         try{
-            pagingSpecialTrainingList=safeSpecialTrainingFilesDao.queryAllByLimit(startIndex,pageSize);
-            int count =safeSpecialTrainingFilesDao.getRecordCount();
+            Subject subject = SecurityUtils.getSubject();
+            AuthenticationUserDTO user=(AuthenticationUserDTO)subject.getPrincipal();
+            Integer organizationId= companyPersonnelDAO.getorganizationIdById(user.getCompanyPersonnelId());
+            pagingSpecialTrainingList=safeSpecialTrainingFilesDao.queryAllByLimit(startIndex,pageSize,organizationId);
+            int count =safeSpecialTrainingFilesDao.getRecordCount(organizationId);
             int totalPage;
             if (count%pageSize==0){
                 totalPage = count/pageSize;

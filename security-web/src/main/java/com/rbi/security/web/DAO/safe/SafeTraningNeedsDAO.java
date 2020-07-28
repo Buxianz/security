@@ -111,7 +111,7 @@ public interface SafeTraningNeedsDAO {
             "                             ) t1,\n" +
             "                              (select @pids := #{organizationId}) t2\n" +
             "            ) t3 where ischild != 0) t4 INNER JOIN sys_company_personnel scp on scp.organization_id=t4.organization_id) scp INNER JOIN safe_training_needs " +
-            "stn on stn.report_person=scp.company_personnel_id processing_status=#{processingStatus}")
+            "stn on stn.report_person=scp.company_personnel_id where processing_status=#{processingStatus}")
    int  getUnprocessedOrganizationNeedsConutByOrganizationId(@Param("organizationId") int organizationId,@Param("processingStatus") int processingStatus);
     /**
      * 分页获取请求人所在部门及其子部门下的未处理提报需求
@@ -130,7 +130,7 @@ public interface SafeTraningNeedsDAO {
             "safe_training_needs stn on stn.report_person=scp.company_personnel_id WHERE  processing_status!=1 ORDER BY proposed_time DESC  LIMIT #{startIndex},#{pageSize})stn LEFT JOIN safa_training_type sty ON stn.training_type_id=sty.id")
     List<PagingTraniningNeeds> getProcessedOrganizationNeedsByOrganizationId(@Param("startIndex") int startIndex, @Param("pageSize") int pageSize,@Param("organizationId") int organizationId);
     /**
-     * 获取未处理记录数
+     * 获取处理记录数
      */
     @Select("SELECT count(stn.id) FROM\n" +
             "(SELECT scp.id as 'company_personnel_id',scp.`name` FROM \n" +
@@ -142,7 +142,7 @@ public interface SafeTraningNeedsDAO {
             "                             ) t1,\n" +
             "                              (select @pids := #{organizationId}) t2\n" +
             "            ) t3 where ischild != 0) t4 INNER JOIN sys_company_personnel scp on scp.organization_id=t4.organization_id) scp INNER JOIN safe_training_needs " +
-            "stn on stn.report_person=scp.company_personnel_id processing_status!=1")
+            "stn on stn.report_person=scp.company_personnel_id where processing_status!=1")
     int  getProcessedOrganizationNeedsConutByOrganizationId(@Param("organizationId") int organizationId);
 
 }

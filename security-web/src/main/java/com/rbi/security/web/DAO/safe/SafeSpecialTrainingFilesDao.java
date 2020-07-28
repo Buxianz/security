@@ -31,17 +31,37 @@ public interface SafeSpecialTrainingFilesDao {
     /**
      * 获取当前记录数量
      */
-    @Select("select count(*) from safe_special_training_files")
-    int  getRecordCount();
+    @Select("SELECT COUNT(sptf.id) FROM\n" +
+            "(SELECT scp.id as 'company_personnel_id',scp.`name`,scp.degree_of_education,scp.gender FROM \n" +
+            "(select id as 'organization_id'  from (\n" +
+            "                          select t1.id,\n" +
+            "                          if(find_in_set(parent_id, @pids) > 0 OR find_in_set(id, @pids) > 0, @pids := concat(@pids, ',', id), 0) as ischild\n" +
+            "                        from (\n" +
+            "                               select id,parent_id from sys_organization \n" +
+            "                             ) t1,\n" +
+            "                              (select @pids := #{organizationId}) t2\n" +
+            "            ) t3 where ischild != 0) t4 INNER JOIN sys_company_personnel scp on scp.organization_id=t4.organization_id) scp INNER JOIN\n" +
+            "safe_special_training_files  sptf  ON scp.company_personnel_id=sptf.company_personnel_id")
+    int  getRecordCount(@Param("organizationId") int organizationId);
     /**
-     * 查询指定行数据
+     *
      *
      * @param startIndex 查询起始位置
      * @param pageSize 查询条数
      * @return 对象列表
      */
-    @Select("SELECT sptf.*,scp.`name`,scp.gender,scp.degree_of_education FROM (select * from safe_special_training_files  ORDER BY idt DESC LIMIT #{startIndex},#{pageSize}) sptf LEFT JOIN  sys_company_personnel scp ON scp.id=sptf.company_personnel_id")
-    List<PagingSpecialTraining> queryAllByLimit(@Param("startIndex") int startIndex, @Param("pageSize") int pageSize);
+    @Select("SELECT sptf.*,scp.`name`,scp.gender,scp.degree_of_education FROM\n" +
+            "(SELECT scp.id as 'company_personnel_id',scp.`name`,scp.degree_of_education,scp.gender FROM \n" +
+            "(select id as 'organization_id'  from (\n" +
+            "                          select t1.id,\n" +
+            "                          if(find_in_set(parent_id, @pids) > 0 OR find_in_set(id, @pids) > 0, @pids := concat(@pids, ',', id), 0) as ischild\n" +
+            "                        from (\n" +
+            "                               select id,parent_id from sys_organization \n" +
+            "                             ) t1,\n" +
+            "                              (select @pids := #{organizationId}) t2\n" +
+            "            ) t3 where ischild != 0) t4 INNER JOIN sys_company_personnel scp on scp.organization_id=t4.organization_id) scp INNER JOIN\n" +
+            "safe_special_training_files  sptf  ON scp.company_personnel_id=sptf.company_personnel_id ORDER BY sptf.idt DESC LIMIT #{startIndex},#{pageSize}")
+    List<PagingSpecialTraining> queryAllByLimit(@Param("startIndex") int startIndex, @Param("pageSize") int pageSize,@Param("organizationId") int organizationId);
     /**
      * 根据id获取数据
      */
