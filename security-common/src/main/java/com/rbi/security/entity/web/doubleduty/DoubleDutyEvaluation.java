@@ -28,8 +28,8 @@ public class DoubleDutyEvaluation {
     private Integer templateId;
     private Integer personnelId;
     private String personnelName;
-    private Integer selfFraction;////
-    private Integer score;//////
+    private Integer selfScore;////
+    private Integer checkScore;//////
     private String badSituation;
     private String correctSituation;
     private String writeTime;

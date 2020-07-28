@@ -170,13 +170,16 @@ public class DoubleDutyEvaluationServiceImp implements DoubleDutyEvaluationServi
         doubleDutyEvaluation.setWriteTime(time);
         doubleDutyEvaluation.setStatus("2");
         doubleDutyEvaluation.setIdt(time);
-        doubleDutyEvaluationDAO.writeEvaluation(doubleDutyEvaluation);
         JSONArray array = json.getJSONArray("content");
         List<DoubleDutyEvaluationContent> doubleDutyEvaluationContents = JSONObject.parseArray(array.toJSONString(),DoubleDutyEvaluationContent.class);
+        int selfScor = 0;
         for (int i=0;i<doubleDutyEvaluationContents.size();i++){
             doubleDutyEvaluationContents.get(i).setEvaluationId(doubleDutyEvaluation.getId());
+            selfScor = selfScor + doubleDutyEvaluationContents.get(i).getSelfFraction();
         }
+        doubleDutyEvaluation.setSelfScore(selfScor);
         doubleDutyEvaluationDAO.writeEvaluationContentList(doubleDutyEvaluationContents);
+        doubleDutyEvaluationDAO.writeEvaluation(doubleDutyEvaluation);
         return "1000";
     }
 
@@ -192,12 +195,15 @@ public class DoubleDutyEvaluationServiceImp implements DoubleDutyEvaluationServi
         doubleDutyEvaluation.setAuditorName(sysCompanyPersonnel.getName());
         doubleDutyEvaluation.setAuditTime(time);
         doubleDutyEvaluation.setStatus("3");
-        doubleDutyEvaluationDAO.auditEvaluation(doubleDutyEvaluation);
         JSONArray array = json.getJSONArray("content");
         List<DoubleDutyEvaluationContent> doubleDutyEvaluationContents = JSONObject.parseArray(array.toJSONString(),DoubleDutyEvaluationContent.class);
+        int checkScore = 0;
         for (int i=0;i<doubleDutyEvaluationContents.size();i++){
             doubleDutyEvaluationDAO.auditEvaluationContent(doubleDutyEvaluationContents.get(i));
+            checkScore = checkScore + doubleDutyEvaluationContents.get(i).getCheckFraction();
         }
+        doubleDutyEvaluation.setCheckScore(checkScore);
+        doubleDutyEvaluationDAO.auditEvaluation(doubleDutyEvaluation);
         return "1000";
     }
 }
