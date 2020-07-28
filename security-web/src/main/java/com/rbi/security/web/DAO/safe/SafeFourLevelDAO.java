@@ -2,6 +2,7 @@ package com.rbi.security.web.DAO.safe;
 
 import com.rbi.security.entity.web.entity.SafeFourLevel;
 import com.rbi.security.entity.web.entity.SafeFourLevelDTO;
+import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.importlog.LogAdministratorTrain;
 import com.rbi.security.entity.web.importlog.LogForLevel;
 import com.rbi.security.entity.web.safe.PagingSafeFourLevel;
@@ -54,12 +55,28 @@ public interface SafeFourLevelDAO {
     /**
      * 获取全部
      */
-    @Select("select sys_company_personnel.work_type,sys_company_personnel.`name`,sys_company_personnel.job_nature,sys_company_personnel.gender," +
-            "sys_company_personnel.entry_time,sys_company_personnel.date_of_birth,safe_four_level.* from safe_four_level,sys_company_personnel " +
-            "where safe_four_level.id_card_no=sys_company_personnel.id_card_no order by safe_four_level.id DESC limit #{pageNo},#{pageSize}")
-    List<PagingSafeFourLevel> getSafeFourLevelByPage(@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
-    @Select("select count(id) from safe_four_level")
-    int getCountSafeFourLevel();
+    @Select("select * from safe_four_level,sys_company_personnel where safe_four_level.id_card_no=sys_company_personnel.id_card_no and " +
+            "(sys_company_personnel.organization_id in (select id from (\n" +
+            "select t1.id,\n" +
+            "if(find_in_set(parent_id, @pids) > 0, @pids := concat(@pids, ',', id), 0) as ischild\n" +
+            "from (\n" +
+            "select id,parent_id from sys_organization t order by parent_id, id\n" +
+            ") t1,\n" +
+            "(select @pids := #{organizationId}) t2\n" +
+            ") t3 where ischild != 0) or sys_company_personnel.organization_id = #{organizationId}) " +
+            "order by safe_four_level.id DESC limit #{pageNo},#{pageSize}")
+    List<PagingSafeFourLevel> getSafeFourLevelByPage(@Param("organizationId")Integer organizationId,@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
+
+    @Select("select count(*) from safe_four_level,sys_company_personnel where safe_four_level.id_card_no=sys_company_personnel.id_card_no and " +
+            "(sys_company_personnel.organization_id in (select id from (\n" +
+            "select t1.id,\n" +
+            "if(find_in_set(parent_id, @pids) > 0, @pids := concat(@pids, ',', id), 0) as ischild\n" +
+            "from (\n" +
+            "select id,parent_id from sys_organization t order by parent_id, id\n" +
+            ") t1,\n" +
+            "(select @pids := #{organizationId}) t2\n" +
+            ") t3 where ischild != 0) or sys_company_personnel.organization_id = #{organizationId})")
+    int getCountSafeFourLevel(@Param("organizationId")Integer organizationId);
 
     /**
      * 根据当前登录人获取
@@ -108,4 +125,7 @@ public interface SafeFourLevelDAO {
 
     @Select("select * from safe_four_level,sys_company_personnel where safe_four_level.id_card_no = sys_company_personnel.id_card_no")
     List<SafeFourLevelDTO> findAll();
+
+    @Select("select * from sys_company_personnel where id = #{id}")
+    SysCompanyPersonnel findPersonnelById(Integer id);
 }

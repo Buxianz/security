@@ -6,6 +6,7 @@ import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.entity.web.entity.SafeFourLevel;
 import com.rbi.security.entity.web.entity.SafeFourLevelDTO;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
+import com.rbi.security.entity.web.entity.SysOrganization;
 import com.rbi.security.entity.web.importlog.LogAdministratorTrain;
 import com.rbi.security.entity.web.importlog.LogForLevel;
 import com.rbi.security.entity.web.safe.PagingSafeFourLevel;
@@ -60,13 +61,17 @@ public class SafeFourLevelServiceImpl implements SafeFourLevelService {
 
     @Override
     public PageData findSafeFourLevelByPage(JSONObject json) {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = safeFourLevelDAO.findPersonnelById(personnelId);
         int totalPage=0;
         int count=0;
         int pageNo = json.getInteger("pageNo");
         int pageSize = json.getInteger("pageSize");
         int recNo = pageSize * (pageNo - 1);
-        List<PagingSafeFourLevel> pagingSafeFourLevelList=safeFourLevelDAO.getSafeFourLevelByPage(recNo, pageSize);
-        count =safeFourLevelDAO.getCountSafeFourLevel();
+        List<PagingSafeFourLevel> pagingSafeFourLevelList=safeFourLevelDAO.getSafeFourLevelByPage(sysCompanyPersonnel.getOrganizationId(),recNo, pageSize);
+        count =safeFourLevelDAO.getCountSafeFourLevel(sysCompanyPersonnel.getOrganizationId());
         if (0 == count % pageSize) {
             totalPage = count / pageSize;
         } else {
