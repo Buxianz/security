@@ -158,12 +158,14 @@ public class DoubleDutyEvaluationServiceImp implements DoubleDutyEvaluationServi
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        String idCardNo = doubleDutyEvaluationDAO.findIdCardNoByPersonnelId(personnelId);
         int num = doubleDutyEvaluationDAO.findMonthNum(personnelId);
         if (num !=0){
             return "本月已填写了责任清单！";
         }
         SysCompanyPersonnel sysCompanyPersonnel = doubleDutyEvaluationDAO.findPersonnelById(personnelId);
         DoubleDutyEvaluation doubleDutyEvaluation = JSON.toJavaObject(json,DoubleDutyEvaluation.class);
+        doubleDutyEvaluation.setIdCardNo(idCardNo);
         doubleDutyEvaluation.setPersonnelId(personnelId);
         doubleDutyEvaluation.setPersonnelName(sysCompanyPersonnel.getName());
         String time = DateUtil.date(DateUtil.FORMAT_PATTERN);

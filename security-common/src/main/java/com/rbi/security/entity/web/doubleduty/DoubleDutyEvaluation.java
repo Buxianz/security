@@ -49,6 +49,7 @@ public class DoubleDutyEvaluation {
     private String factoryName;
     private String workshopName;
     private String className;
+    private String idCardNo;
 
     private List<DoubleDutyEvaluationContent> doubleDutyEvaluationContents;
 
