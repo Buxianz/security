@@ -162,7 +162,7 @@ public class UserServiceImp implements UserService {
             Subject subject = SecurityUtils.getSubject();
             AuthenticationUserDTO user=(AuthenticationUserDTO)subject.getPrincipal();
             Integer organizationId= companyPersonnelDAO.getorganizationIdById(user.getCompanyPersonnelId());
-            pagingUserList=sysUSerDAO.getAllUserInfo();
+            pagingUserList=sysUSerDAO.getAllUserInfo(organizationId);
             newPagingUserList=processingPagingData(pagingUserList,pageNo,pageSize,startIndex);
             int count =pagingUserList.size();
             int totalPage;
