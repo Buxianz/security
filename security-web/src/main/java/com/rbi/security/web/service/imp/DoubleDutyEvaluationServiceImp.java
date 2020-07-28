@@ -172,12 +172,12 @@ public class DoubleDutyEvaluationServiceImp implements DoubleDutyEvaluationServi
         doubleDutyEvaluation.setIdt(time);
         JSONArray array = json.getJSONArray("content");
         List<DoubleDutyEvaluationContent> doubleDutyEvaluationContents = JSONObject.parseArray(array.toJSONString(),DoubleDutyEvaluationContent.class);
-        int selfScor = 0;
+        int selfScore = 0;
         for (int i=0;i<doubleDutyEvaluationContents.size();i++){
             doubleDutyEvaluationContents.get(i).setEvaluationId(doubleDutyEvaluation.getId());
-            selfScor = selfScor + doubleDutyEvaluationContents.get(i).getSelfFraction();
+            selfScore = selfScore + doubleDutyEvaluationContents.get(i).getSelfFraction();
         }
-        doubleDutyEvaluation.setSelfScore(selfScor);
+        doubleDutyEvaluation.setSelfScore(selfScore);
         doubleDutyEvaluationDAO.writeEvaluationContentList(doubleDutyEvaluationContents);
         doubleDutyEvaluationDAO.writeEvaluation(doubleDutyEvaluation);
         return "1000";
