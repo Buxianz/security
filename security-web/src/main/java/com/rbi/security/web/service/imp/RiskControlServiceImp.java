@@ -313,8 +313,13 @@ public class RiskControlServiceImp implements RiskControlService {
 
     @Override
     public PageData findByPage(String riskType,int pageNo, int pageSize) {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = riskControlDAO.findPersonnelById(personnelId);
+
         int pageNo2 = pageSize * (pageNo - 1);
-        List<RiskControl> riskControls = riskControlDAO.findByPage(riskType,pageNo2,pageSize);
+        List<RiskControl> riskControls = riskControlDAO.findByPage(sysCompanyPersonnel.getOrganizationId(),riskType,pageNo2,pageSize);
         for (int j=0;j<riskControls.size();j++){
             List<RiskControlPicture> riskControlPictures = riskControlDAO.findPictureByRiskCode(riskControls.get(j).getRiskCode());
             for (int i=0; i< riskControlPictures.size(); i++){
@@ -323,7 +328,7 @@ public class RiskControlServiceImp implements RiskControlService {
             riskControls.get(j).setImg(riskControlPictures);
         }
         int totalPage = 0;
-        int count = riskControlDAO.findNum(riskType);
+        int count = riskControlDAO.findNum(sysCompanyPersonnel.getOrganizationId(),riskType);
         if (0 == count % pageSize) {
             totalPage = count / pageSize;
         } else {
@@ -334,8 +339,13 @@ public class RiskControlServiceImp implements RiskControlService {
 
     @Override
     public PageData findSeriousRiskByPage(String riskGrad, int pageNo, int pageSize) {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = riskControlDAO.findPersonnelById(personnelId);
+
         int pageNo2 = pageSize * (pageNo - 1);
-        List<RiskControl> riskControls = riskControlDAO.findSeriousRiskByPage(riskGrad,pageNo2,pageSize);
+        List<RiskControl> riskControls = riskControlDAO.findSeriousRiskByPage(sysCompanyPersonnel.getOrganizationId(),riskGrad,pageNo2,pageSize);
         for (int j=0;j<riskControls.size();j++){
             List<RiskControlPicture> riskControlPictures = riskControlDAO.findPictureByRiskCode(riskControls.get(j).getRiskCode());
             for (int i=0; i< riskControlPictures.size(); i++){
@@ -350,7 +360,7 @@ public class RiskControlServiceImp implements RiskControlService {
             }
         }
         int totalPage = 0;
-        int count = riskControlDAO.findSeriousRiskByPageNum(riskGrad);
+        int count = riskControlDAO.findSeriousRiskByPageNum(sysCompanyPersonnel.getOrganizationId(),riskGrad);
         if (0 == count % pageSize) {
             totalPage = count / pageSize;
         } else {

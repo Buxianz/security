@@ -1,5 +1,6 @@
 package com.rbi.security.web.DAO.risk;
 
+import com.rbi.security.entity.web.doubleduty.DoubleDutyEvaluation;
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.entity.SysOrganization;
 import com.rbi.security.entity.web.entity.SysRole;
@@ -77,17 +78,47 @@ public interface RiskControlDAO {
     @Delete("delete from risk_control_picture where id = #{id}")
     void deleteByPictureId(int id);
 
-    @Select("select * from risk_control where risk_type = #{riskType} order by id DESC limit #{pageNo},#{pageSize}")
-    List<RiskControl> findByPage(@Param("riskType") String riskType,@Param("pageNo") int pageNo,@Param("pageSize") int pageSize);
+    @Select("select * from risk_control where risk_type = #{riskType} and (risk_control.organization_id in (select id from (\n" +
+            "select t1.id,\n" +
+            "if(find_in_set(parent_id, @pids) > 0, @pids := concat(@pids, ',', id), 0) as ischild\n" +
+            "from (\n" +
+            "select id,parent_id from sys_organization t order by parent_id, id\n" +
+            ") t1,\n" +
+            "(select @pids := #{organizationId}) t2\n" +
+            ") t3 where ischild != 0) or risk_control.organization_id = #{organizationId}) " +
+            "order by risk_control.id DESC limit #{pageNo},#{pageSize}")
+    List<RiskControl> findByPage(@Param("organizationId")Integer organizationId,@Param("riskType") String riskType,@Param("pageNo") int pageNo,@Param("pageSize") int pageSize);
 
-    @Select("select count(*) from risk_control where risk_type = #{riskType}")
-    int findNum(@Param("riskType") String riskType);
+    @Select("select count(*) from risk_control where risk_type = #{riskType} and (risk_control.organization_id in (select id from (\n" +
+            "select t1.id,\n" +
+            "if(find_in_set(parent_id, @pids) > 0, @pids := concat(@pids, ',', id), 0) as ischild\n" +
+            "from (\n" +
+            "select id,parent_id from sys_organization t order by parent_id, id\n" +
+            ") t1,\n" +
+            "(select @pids := #{organizationId}) t2\n" +
+            ") t3 where ischild != 0) or risk_control.organization_id = #{organizationId})")
+    int findNum(@Param("organizationId")Integer organizationId,@Param("riskType") String riskType);
 
-    @Select("select * from risk_control where risk_grad = #{riskGrad} order by id DESC limit #{pageNo},#{pageSize}")
-    List<RiskControl> findSeriousRiskByPage(@Param("riskGrad") String riskGrad,@Param("pageNo") int pageNo,@Param("pageSize") int pageSize);
+    @Select("select * from risk_control where risk_grad = #{riskGrad} and (risk_control.organization_id in (select id from (\n" +
+            "select t1.id,\n" +
+            "if(find_in_set(parent_id, @pids) > 0, @pids := concat(@pids, ',', id), 0) as ischild\n" +
+            "from (\n" +
+            "select id,parent_id from sys_organization t order by parent_id, id\n" +
+            ") t1,\n" +
+            "(select @pids := #{organizationId}) t2\n" +
+            ") t3 where ischild != 0) or risk_control.organization_id = #{organizationId}) " +
+            "order by risk_control.id DESC limit #{pageNo},#{pageSize}")
+    List<RiskControl> findSeriousRiskByPage(@Param("organizationId")Integer organizationId,@Param("riskGrad") String riskGrad,@Param("pageNo") int pageNo,@Param("pageSize") int pageSize);
 
-    @Select("select count(*) from risk_control where risk_grad = #{riskGrad}")
-    int findSeriousRiskByPageNum(@Param("riskGrad") String riskGrad);
+    @Select("select count(*) from risk_control where risk_grad = #{riskGrad} and (risk_control.organization_id in (select id from (\n" +
+            "select t1.id,\n" +
+            "if(find_in_set(parent_id, @pids) > 0, @pids := concat(@pids, ',', id), 0) as ischild\n" +
+            "from (\n" +
+            "select id,parent_id from sys_organization t order by parent_id, id\n" +
+            ") t1,\n" +
+            "(select @pids := #{organizationId}) t2\n" +
+            ") t3 where ischild != 0) or risk_control.organization_id = #{organizationId})")
+    int findSeriousRiskByPageNum(@Param("organizationId")Integer organizationId,@Param("riskGrad") String riskGrad);
 
 
     @Select("select * from risk_control where risk_type = #{riskType} and organization_name like ${organizationName} order by id DESC limit #{pageNo},#{pageSize}")
