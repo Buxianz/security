@@ -1218,4 +1218,85 @@ public class HidDangerServiceImpl implements HidDangerService {
             }
         }
     }
+
+    @Override
+    public Map<String, Object> findByMonth() {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
+        SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+        Map<String, Object> map = new HashMap<>();
+        if (sysOrganization.getLevel() == 1){
+            Calendar cal = Calendar.getInstance();
+            int year = cal.get(Calendar.YEAR);
+            int month = cal.get(Calendar.MONTH) + 1;
+            while (month != 0){
+                String month2 = null;
+                if (month / 10 < 1){
+                    month2 = "0"+month;
+                }else {
+                    month2 = String.valueOf(month);
+                }
+                String time = year+"-"+month2;
+                int num = hidDangerDAO.findMonthNum(time);
+                map.put(month+"月",num);
+                month = month-1;
+            }
+            return map;
+        }else {
+            //隐患所属组织表
+            Integer factoryId = null;
+            int level = sysOrganization.getLevel();
+            if (level == 2 ){
+                factoryId = (sysOrganization.getId());
+            }
+            Integer parentId = sysOrganization.getParentId();
+            level = level -1;
+            while (level !=1){
+                SysOrganization sysOrganization3 = hidDangerDAO.findAllByOrganizationId(parentId);
+                if (level == 2 ){
+                    factoryId = (sysOrganization3.getId());
+                }
+                parentId = sysOrganization3.getParentId();
+                level=level - 1;
+            }
+            SysOrganization organization = hidDangerDAO.findAllByOrganizationId(factoryId);
+            if (null!=organization.getSecurity()){
+                Calendar cal = Calendar.getInstance();
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH) + 1;
+                while (month != 0){
+                    String month2 = null;
+                    if (month / 10 < 1){
+                        month2 = "0"+month;
+                    }else {
+                        month2 = String.valueOf(month);
+                    }
+                    String time = year+"-"+month2;
+                    int num = hidDangerDAO.findMonthNum(time);
+                    map.put(month+"月",num);
+                    month = month-1;
+                }
+                return map;
+            }else {
+                Calendar cal = Calendar.getInstance();
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH) + 1;
+                while (month != 0){
+                    String month2 = null;
+                    if (month / 10 < 1){
+                        month2 = "0"+month;
+                    }else {
+                        month2 = String.valueOf(month);
+                    }
+                    String time = year+"-"+month2;
+                    int num = hidDangerDAO.findMonthNum2(time,factoryId);
+                    map.put(month+"月",num);
+                    month = month-1;
+                }
+                return map;
+            }
+        }
+    }
 }

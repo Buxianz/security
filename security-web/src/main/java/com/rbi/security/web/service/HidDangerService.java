@@ -63,4 +63,6 @@ public interface HidDangerService {
     Map<String, Object> findByType();
 
     Map<String, Object> findByGrade();
+
+    Map<String, Object> findByMonth();
 }

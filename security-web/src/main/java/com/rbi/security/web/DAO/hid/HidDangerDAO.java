@@ -249,4 +249,10 @@ public interface HidDangerDAO {
 
     @Select("select count(*) from hid_danger where hid_type_manage = 1 and factory_id=#{factoryId}")
     int findBymanage2(@Param("factoryId")Integer factoryId);
+
+    @Select("select count(*) from hid_danger where date_format(idt,'%Y-%m')=#{time}")
+    int findMonthNum(@Param("time") String time);
+
+    @Select("select count(*) from hid_danger where date_format(idt,'%Y-%m')=#{time} and and factory_id=#{factoryId}")
+    int findMonthNum2(@Param("time") String time,@Param("factoryId")Integer factoryId);
 }

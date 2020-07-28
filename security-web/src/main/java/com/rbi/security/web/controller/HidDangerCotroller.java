@@ -354,6 +354,21 @@ public class HidDangerCotroller {
     }
 
 
+    /**
+     * 本年每月隐患数量统计
+     * */
+    @PostMapping("/findByMonth")
+    public ResponseModel findByMonth(){
+        try {
+            Map<String,Object> map = hidDangerService.findByMonth();
+            return ResponseModel.build("1000","月隐患数统计查询成功！",map);
+        }catch (Exception e){
+            System.out.println("错误："+e);
+            return ResponseModel.build("1001","处理异常");
+        }
+    }
+
+
 
 
 
