@@ -155,16 +155,16 @@ public interface CompanyPersonnelDAO {
                                               @Param("pageSize") int pageSize,@Param("organizationId") int organizationId);
 
     //查询公司人员条数
-    @Select("(SELECT COUNT(scp.id) FROM \\n\" +\n" +
-            "            \"(select id as 'organization_id'  from (\\n\" +\n" +
-            "            \"                          select t1.id,\\n\" +\n" +
-            "            \"                          if(find_in_set(parent_id, @pids) > 0 OR find_in_set(id, @pids) > 0, @pids := concat(@pids, ',', id), 0) as ischild\\n\" +\n" +
-            "            \"                        from (\\n\" +\n" +
-            "            \"                               select id,parent_id from sys_organization \\n\" +\n" +
-            "            \"                             ) t1,\\n\" +\n" +
-            "            \"                              (select @pids := #{organizationId}) t2\\n\" +\n" +
-            "            \"            ) t3 where ischild != 0) t4 INNER JOIN (SELECT sys_company_personnel.* FROM sys_company_personnel ${searchCriteria}) scp on scp.organization_id=t4.organization_id)")
-    int queryCountByPage(@Param("searchCriteria") String searchCriteria);
+    @Select("(SELECT COUNT(scp.id) FROM \n" +
+            "            (select id as 'organization_id'  from (\n" +
+            "                                      select t1.id,\n" +
+            "                                     if(find_in_set(parent_id, @pids) > 0 OR find_in_set(id, @pids) > 0, @pids := concat(@pids, ',', id), 0) as ischild\n" +
+            "                                    from (\n" +
+            "                                           select id,parent_id from sys_organization \n" +
+            "                                         ) t1,\n" +
+            "                                          (select @pids := #{organizationId}) t2\n" +
+            "                        ) t3 where ischild != 0) t4 INNER JOIN (SELECT sys_company_personnel.* FROM sys_company_personnel ${searchCriteria}) scp on scp.organization_id=t4.organization_id)")
+    int queryCountByPage(@Param("searchCriteria") String searchCriteria,@Param("organizationId") int organizationId);
 
     //获取公司所有人员信息
     @Select("select id,`name`,organization_id from sys_company_personnel")

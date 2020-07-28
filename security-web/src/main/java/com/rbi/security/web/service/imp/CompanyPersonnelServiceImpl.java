@@ -269,7 +269,7 @@ public class CompanyPersonnelServiceImpl implements CompanyPersonnelService {
             });
         });
 
-        int count = companyPersonnelDAO.queryCountByPage(searchCriteria);
+        int count = companyPersonnelDAO.queryCountByPage(searchCriteria,organizationId);
         int totalPage;
         if (count%pageSize==0){
             totalPage = count/pageSize;
