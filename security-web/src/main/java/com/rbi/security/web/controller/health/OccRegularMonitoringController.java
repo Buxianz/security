@@ -8,6 +8,8 @@ import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.OccRegularMonitoringService;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +39,7 @@ public class OccRegularMonitoringController {
     @Autowired
     OccRegularMonitoringService occRegularMonitoringService;
 
+    private final static Logger logger = LoggerFactory.getLogger(OccRegularMonitoringController.class);
     /**
      * 分页
      * */
@@ -49,7 +52,7 @@ public class OccRegularMonitoringController {
             PageData pageData = occRegularMonitoringService.findByPage(pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 定期检测分页】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -64,7 +67,7 @@ public class OccRegularMonitoringController {
             occRegularMonitoringService.add(occRegularMonitoring,file);
             return ResponseModel.build("1000","添加成功！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 定期检测添加】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -79,7 +82,7 @@ public class OccRegularMonitoringController {
             occRegularMonitoringService.update(occRegularMonitoring,file);
             return ResponseModel.build("1000","修改成功！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 定期检测修改】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -94,7 +97,7 @@ public class OccRegularMonitoringController {
             occRegularMonitoringService.delete(json);
             return ResponseModel.build("1000","删除成功！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 定期检测删除】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -110,7 +113,7 @@ public class OccRegularMonitoringController {
             occRegularMonitoringService.deleteFile(id);
             return ResponseModel.build("1000","删除成功！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 定期检测删除文件】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }

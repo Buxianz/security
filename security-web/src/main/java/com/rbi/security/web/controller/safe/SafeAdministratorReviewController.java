@@ -5,8 +5,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorReviewDTO;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
+import com.rbi.security.web.controller.health.OccStatusEvaluationController;
 import com.rbi.security.web.service.SafeAdministratorReviewService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,6 +40,8 @@ import java.util.Map;
 public class SafeAdministratorReviewController {
     @Autowired
     SafeAdministratorReviewService safeAdministratorReviewService;
+
+    private final static Logger logger = LoggerFactory.getLogger(SafeAdministratorReviewController.class);
     /**
      * 导出安全负责人复审名单
      */
@@ -46,6 +51,7 @@ public class SafeAdministratorReviewController {
             int completionStatus = date.getInteger("completionStatus");
             return  ResponseModel.build("1000", "导出成功",null,safeAdministratorReviewService.exportAdminstratorReview(completionStatus));
         }catch (Exception e){
+            logger.error("【 导出安全负责人复审名单】失败！，ERROR：{}",e);
             return ResponseModel.build("1001", e.getMessage());
         }
     }
@@ -61,7 +67,7 @@ public class SafeAdministratorReviewController {
             PageData pageData = safeAdministratorReviewService.findByPage(pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 安全负责人分页】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -77,7 +83,7 @@ public class SafeAdministratorReviewController {
             safeAdministratorReviewService.review(safeAdministratorReviewDTO);
             return ResponseModel.build("1000","完成复审！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 安全负责人复审】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -93,7 +99,7 @@ public class SafeAdministratorReviewController {
             safeAdministratorReviewService.cancel(safeAdministratorReviewDTO);
             return ResponseModel.build("1000","已取消！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 安全负责人取消】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -104,7 +110,7 @@ public class SafeAdministratorReviewController {
             Map<String,Object> map = safeAdministratorReviewService.writeAdmin();
             return ResponseModel.build("1000", "导出完成", map);
         } catch (Exception e) {
-            System.out.println("错误："+e);
+            logger.error("【 安全负责人导出】失败！，ERROR：{}",e);
             return ResponseModel.build("1002", "服务器处理异常", e);
         }
     }

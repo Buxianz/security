@@ -5,8 +5,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.hid.HidDangerDO;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
+import com.rbi.security.web.controller.safe.SafeTrainingMaterialsController;
 import com.rbi.security.web.service.HidDangerService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +37,7 @@ public class HidDangerCotroller {
     @Autowired
     HidDangerService hidDangerService;
 
+    private final static Logger logger = LoggerFactory.getLogger(HidDangerCotroller.class);
     /**
      * 上报整改
      **/
@@ -51,7 +55,7 @@ public class HidDangerCotroller {
                 return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【上报整改】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
 
@@ -64,7 +68,7 @@ public class HidDangerCotroller {
             Map<String,Object> map = hidDangerService.findAdmChoose(array);
             return ResponseModel.build("1000", "查询成功",map);
         } catch (Exception e) {
-            System.out.println("错误:" + e);
+            logger.error("【下拉框查询公共接口】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001", "服务器处理异常");
         }
     }
@@ -84,7 +88,7 @@ public class HidDangerCotroller {
                 return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【责令整改】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -101,7 +105,7 @@ public class HidDangerCotroller {
             PageData pageData = hidDangerService.findDealByPage(pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【隐患处理分页】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -118,7 +122,7 @@ public class HidDangerCotroller {
             PageData pageData = hidDangerService.findFinishByPage(pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【隐患档案分页】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -134,7 +138,7 @@ public class HidDangerCotroller {
             Map<String,Object> map = hidDangerService.findDealDetailByCode(hidDangerCode);
             return ResponseModel.build("1000","查询成功！",map);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【隐患处理详情】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -149,7 +153,7 @@ public class HidDangerCotroller {
             Map<String,Object> map = hidDangerService.findFinishDetailByCode(hidDangerCode);
             return ResponseModel.build("1000","分页查询成功！",map);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【隐患档案详情】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -170,7 +174,7 @@ public class HidDangerCotroller {
                 return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【完成整改】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
 
@@ -185,7 +189,7 @@ public class HidDangerCotroller {
             hidDangerService.auditPass(json);
             return ResponseModel.build("1000","审核成功");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【审核通过】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -199,7 +203,7 @@ public class HidDangerCotroller {
             hidDangerService.auditFalse(json);
             return ResponseModel.build("1000","审核成功");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【审核不通过】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -218,7 +222,7 @@ public class HidDangerCotroller {
                 return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【通知整改】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -232,7 +236,7 @@ public class HidDangerCotroller {
             Map<String,Object> map = hidDangerService.findCorrector();
             return ResponseModel.build("1000","查询成功！",map);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【通知整改负责人列表】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -250,7 +254,7 @@ public class HidDangerCotroller {
                 return ResponseModel.build("1000",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【上报处理按钮】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -265,7 +269,7 @@ public class HidDangerCotroller {
             hidDangerService.deletePlan(hidDangerCode);
             return ResponseModel.build("1000","删除成功!");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【整改方案删除】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -280,7 +284,7 @@ public class HidDangerCotroller {
             hidDangerService.deleteReport(hidDangerCode);
             return ResponseModel.build("1000","删除成功!");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【验收报告删除】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -295,7 +299,7 @@ public class HidDangerCotroller {
             hidDangerService.deletePicture(id);
             return ResponseModel.build("1000","删除成功!");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【删除整改后的照片】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -317,7 +321,7 @@ public class HidDangerCotroller {
                 return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【上报整改】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
 
@@ -325,7 +329,7 @@ public class HidDangerCotroller {
 
 
     /**
-     * 危害种类占比
+     * 隐患等级占比
      * */
     @PostMapping("/findByGrade")
     public ResponseModel findByGrade(){
@@ -333,7 +337,7 @@ public class HidDangerCotroller {
             Map<String,Object> map = hidDangerService.findByGrade();
             return ResponseModel.build("1000","隐患等级占比查询成功！",map);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【隐患等级占比】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -348,7 +352,7 @@ public class HidDangerCotroller {
             Map<String,Object> map = hidDangerService.findByType();
             return ResponseModel.build("1000","隐患等级占比查询成功！",map);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【危害种类占比】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -361,9 +365,9 @@ public class HidDangerCotroller {
     public ResponseModel findByMonth(){
         try {
             Map<String,Object> map = hidDangerService.findByMonth();
-            return ResponseModel.build("1000","月隐患数统计查询成功！",map);
+            return ResponseModel.build("1000","本年每月隐患数量统计查询成功！",map);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【本年每月隐患数量统计】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }

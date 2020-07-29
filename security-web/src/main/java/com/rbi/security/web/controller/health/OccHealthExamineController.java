@@ -9,6 +9,8 @@ import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.OccDailyMonitoringService;
 import com.rbi.security.web.service.OccHealthExamineService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +42,7 @@ public class OccHealthExamineController {
     @Autowired
     OccHealthExamineService occHealthExamineService;
 
+    private final static Logger logger = LoggerFactory.getLogger(OccHealthExamineController.class);
     /**
      * 分页
      * */
@@ -52,7 +55,7 @@ public class OccHealthExamineController {
             PageData pageData = occHealthExamineService.findByPage(pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 职业健康检查登记表分页】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -72,7 +75,7 @@ public class OccHealthExamineController {
                 return ResponseModel.build("1001","添加失败！",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 职业健康检查登记表添加】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -92,7 +95,7 @@ public class OccHealthExamineController {
                 return ResponseModel.build("1001","修改失败！",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 职业健康检查登记表修改】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -107,7 +110,7 @@ public class OccHealthExamineController {
             occHealthExamineService.delete(json);
             return ResponseModel.build("1000","删除成功！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 职业健康检查登记表删除】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }

@@ -6,9 +6,12 @@ import com.rbi.security.entity.web.health.OccDailyMonitoring;
 import com.rbi.security.entity.web.hid.HidDangerDO;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
+import com.rbi.security.web.controller.doubleduty.DoubleDutyTemplateController;
 import com.rbi.security.web.service.HidDangerService;
 import com.rbi.security.web.service.OccDailyMonitoringService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +41,7 @@ public class OccDailyMonitoringController {
     @Autowired
     OccDailyMonitoringService occDailyMonitoringService;
 
+    private final static Logger logger = LoggerFactory.getLogger(OccDailyMonitoringController.class);
     /**
      * 分页
      * */
@@ -50,7 +54,7 @@ public class OccDailyMonitoringController {
             PageData pageData = occDailyMonitoringService.findByPage(pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 日常监测分页】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -66,7 +70,7 @@ public class OccDailyMonitoringController {
             occDailyMonitoringService.add(occDailyMonitoring);
             return ResponseModel.build("1000","添加成功！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 日常监测添加】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -82,7 +86,7 @@ public class OccDailyMonitoringController {
             occDailyMonitoringService.update(occDailyMonitoring);
             return ResponseModel.build("1000","修改成功！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 日常监测修改】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -97,7 +101,7 @@ public class OccDailyMonitoringController {
             occDailyMonitoringService.delete(json);
             return ResponseModel.build("1000","删除成功！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 日常监测删除】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }

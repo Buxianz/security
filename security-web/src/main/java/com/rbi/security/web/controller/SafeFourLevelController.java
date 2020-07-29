@@ -36,7 +36,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/safeFourLevel")
 public class SafeFourLevelController {
-    private final static Logger logger = LoggerFactory.getLogger(SysPermissionController.class);
+    private final static Logger logger = LoggerFactory.getLogger(SafeFourLevelController.class);
 
     @Autowired(required = false)
     SafeFourLevelService safeFourLevelService;

@@ -5,6 +5,8 @@ import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.DoubleDutyTemplateService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +36,8 @@ public class DoubleDutyTemplateController {
     @Autowired
     DoubleDutyTemplateService doubleDutyTemplateService;
 
+    private final static Logger logger = LoggerFactory.getLogger(DoubleDutyTemplateController.class);
+
     /**
      * 一岗双责模板分页
      **/
@@ -46,7 +50,7 @@ public class DoubleDutyTemplateController {
             PageData pageData = doubleDutyTemplateService.findByPage(pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 一岗双责模板分页】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -65,7 +69,7 @@ public class DoubleDutyTemplateController {
                 return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 一岗双责模板添加】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -84,7 +88,7 @@ public class DoubleDutyTemplateController {
                 return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 一岗双责模板更新】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -103,7 +107,7 @@ public class DoubleDutyTemplateController {
                 return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 一岗双责模板删除】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }

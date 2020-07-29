@@ -10,6 +10,8 @@ import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.HidDangerService;
 import com.rbi.security.web.service.SysNoticeService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +27,8 @@ public class SysNoticeController {
     @Autowired
     SysNoticeService sysNoticeService;
 
+    private final static Logger logger = LoggerFactory.getLogger(SysNoticeController.class);
+
     /**
      * 分页
      * */
@@ -37,7 +41,7 @@ public class SysNoticeController {
             PageData pageData = sysNoticeService.findByPage(pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【综合信息分页】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -52,7 +56,7 @@ public class SysNoticeController {
             sysNoticeService.add(sysNotice,file);
             return ResponseModel.build("1000","添加成功！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【综合信息添加】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }

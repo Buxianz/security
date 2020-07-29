@@ -9,6 +9,8 @@ import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.RiskControlService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.xmlbeans.impl.xb.xsdschema.Public;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +40,8 @@ public class RiskControlCotroller {
     @Autowired
     RiskControlService riskControlService;
 
+    private final static Logger logger = LoggerFactory.getLogger(RiskControlCotroller.class);
+
     /**
      * 区域内添加
      * */
@@ -52,7 +56,7 @@ public class RiskControlCotroller {
                 return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【区域内风险添加】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -71,7 +75,7 @@ public class RiskControlCotroller {
                 return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【区域外风险添加】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -85,7 +89,7 @@ public class RiskControlCotroller {
             Map<String,Object> map = riskControlService.riskValueAndGrade(riskControl);
             return ResponseModel.build("1000","计算成功",map);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【风险等级计算】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -97,7 +101,7 @@ public class RiskControlCotroller {
             Map<String,Object> map = riskControlService.measuresResult(riskControl);
             return ResponseModel.build("1000","计算成功",map);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【风险计算】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -114,7 +118,7 @@ public class RiskControlCotroller {
             PageData pageData = riskControlService.findByPage("1",pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【区域内分页】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -131,7 +135,7 @@ public class RiskControlCotroller {
             PageData pageData = riskControlService.findByPage("2",pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【区域外分页】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -149,7 +153,7 @@ public class RiskControlCotroller {
             PageData pageData = riskControlService.findSeriousRiskByPage(riskGrad,pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【重大风险分页】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -169,7 +173,7 @@ public class RiskControlCotroller {
                 return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【风险档案修改】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -184,7 +188,7 @@ public class RiskControlCotroller {
             riskControlService.deleteByPictureId(id);
             return ResponseModel.build("1000","删除成功！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【照片删除】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -202,7 +206,7 @@ public class RiskControlCotroller {
             PageData pageData = riskControlService.findInsideByCondition(type,value,pageNo,pageSize);
             return ResponseModel.build("1000","条件搜索成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【区域内条件搜索】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -220,7 +224,7 @@ public class RiskControlCotroller {
             PageData pageData = riskControlService.findOutsideByCondition(type,value,pageNo,pageSize);
             return ResponseModel.build("1000","条件搜索成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【区域外条件搜索】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -238,13 +242,13 @@ public class RiskControlCotroller {
             PageData pageData = riskControlService.findSeriousByCondition(type,value,pageNo,pageSize);
             return ResponseModel.build("1000","条件搜索成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【重大风险条件搜索】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
 
     /**
-     * 危害种类占比
+     * 危害种类占比统计
      * */
     @PostMapping("/findByHarmKind")
     public ResponseModel findHarmKind(){
@@ -252,7 +256,7 @@ public class RiskControlCotroller {
             Map<String,Object> map = riskControlService.findHarmKind();
             return ResponseModel.build("1000","风险危害种类占比查询成功！",map);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【危害种类占比统计】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -267,7 +271,7 @@ public class RiskControlCotroller {
             Map<String,Object> map = riskControlService.findByGrade();
             return ResponseModel.build("1000","风险等级查询成功！",map);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【风险等级数量统计】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -281,7 +285,7 @@ public class RiskControlCotroller {
             Map<String,Object> map = riskControlService.findByRiskCategory();
             return ResponseModel.build("1000","风险范畴分类查询成功！",map);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【风险范畴统计】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }

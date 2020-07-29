@@ -9,6 +9,8 @@ import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.OccDailyMonitoringService;
 import com.rbi.security.web.service.OccDiseaseFactorsService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @PACKAGE_NAME: com.rbi.security.web.controller.health
- * @NAME: OccDailyMonitoringController
+ * @NAME: OccDiseaseFactorsController
  * @USER: "谢青"
  * @DATE: 2020/6/23
  * @TIME: 11:15
@@ -40,6 +42,7 @@ public class OccDiseaseFactorsController {
     @Autowired
     OccDiseaseFactorsService occDiseaseFactorsService;
 
+    private final static Logger logger = LoggerFactory.getLogger(OccDiseaseFactorsController.class);
     /**
      * 分页
      * */
@@ -52,7 +55,7 @@ public class OccDiseaseFactorsController {
             PageData pageData = occDiseaseFactorsService.findByPage(pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 接触职业病危害因素人员管理分页】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -69,11 +72,11 @@ public class OccDiseaseFactorsController {
            if (result.equals("1000")){
                return ResponseModel.build("1000","添加成功！");
            }else {
-               return ResponseModel.build("1001","添加失败！",result);
+               return ResponseModel.build("1001",result);
            }
 
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 接触职业病危害因素人员管理添加】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -90,10 +93,10 @@ public class OccDiseaseFactorsController {
             if (result.equals("1000")){
                 return ResponseModel.build("1000","修改成功！");
             }else {
-                return ResponseModel.build("1001","修改失败！",result);
+                return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 接触职业病危害因素人员管理更新】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -108,7 +111,7 @@ public class OccDiseaseFactorsController {
             occDiseaseFactorsService.delete(json);
             return ResponseModel.build("1000","删除成功！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 接触职业病危害因素人员管理删除】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
