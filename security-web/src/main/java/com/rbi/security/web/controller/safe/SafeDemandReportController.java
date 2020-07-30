@@ -88,7 +88,7 @@ public class SafeDemandReportController {
         }
     }
     /**
-     * 处理需求
+     * 处理需求  修改待对接
      */
     @RequiresPermissions("safe:handlingTrainingNeeds")
     @RequestMapping("/handlingRequirements")

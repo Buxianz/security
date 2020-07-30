@@ -15,6 +15,10 @@ import java.util.List;
 public class SafeTestQuestions implements Serializable {
     private static final long serialVersionUID = 888206743860220834L;
     /**
+     * 题库的题目id
+     */
+    private int questionBankSubjectId;
+    /**
     * 试卷的题目id
     */
     private Integer id;
