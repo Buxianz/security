@@ -13,11 +13,24 @@ spring:
     sql-script-encoding: utf-8
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
-  servlet:
+    #    #   数据源其他配置
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    filters: stat
     multipart:
       max-file-size: 500MB
       max-request-size: 500MB
-mybatis:
+
   configuration:
     map-underscore-to-camel-case: true
 
@@ -37,6 +50,5 @@ excelWritePath: /usr/work/wx/excelWritePath/
 seriousDangerPath: /usr/work/wx/seriousDanger/
 riskPath: /usr/work/wx/riskControl/
 spcialPath: /usr/work/wx/special/
-
 
 
