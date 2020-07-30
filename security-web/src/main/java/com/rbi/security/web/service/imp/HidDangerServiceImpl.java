@@ -78,32 +78,37 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerDO.setHidDangerType("1");
             hidDangerDO.setIdt(idt);
             //排查前照片添加
-            if (beforeImg.length > 6) {
-                return "排查前照片数量不能大于6张";
-            }
-            if (beforeImg.length > 0) {
-                for (int i = 0; i < beforeImg.length; i++) {
-                    String contentType = beforeImg[i].getContentType();
-                    if (contentType.startsWith("image")) {
-                        String timestamps = DateUtil.timeStamp();
-                        String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(beforeImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
-                        hidDangerDAO.addBeforeImg(hidDangerCode,hiddenPath+newFileName);
+            if (beforeImg != null){
+                if (beforeImg.length > 6) {
+                    return "排查前照片数量不能大于6张";
+                }
+                if (beforeImg.length > 0) {
+                    for (int i = 0; i < beforeImg.length; i++) {
+                        String contentType = beforeImg[i].getContentType();
+                        if (contentType.startsWith("image")) {
+                            String timestamps = DateUtil.timeStamp();
+                            String newFileName = timestamps + new Random().nextInt() + ".jpg";
+                            FileUtils.copyInputStreamToFile(beforeImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
+                            hidDangerDAO.addBeforeImg(hidDangerCode,hiddenPath+newFileName);
+                        }
                     }
                 }
             }
-            //排查后照片添加
-            if (afterImg.length > 6) {
-                return "排查后照片数量不能大于6张";
-            }
-            if (afterImg.length > 0) {
-                for (int i = 0; i < afterImg.length; i++) {
-                    String contentType = afterImg[i].getContentType();
-                    if (contentType.startsWith("image")) {
-                        String timestamps = DateUtil.timeStamp();
-                        String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(afterImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
-                        hidDangerDAO.addAfterImg(hidDangerCode,hiddenPath+newFileName);
+
+            if (afterImg!=null){
+                //排查后照片添加
+                if (afterImg.length > 6) {
+                    return "排查后照片数量不能大于6张";
+                }
+                if (afterImg.length > 0) {
+                    for (int i = 0; i < afterImg.length; i++) {
+                        String contentType = afterImg[i].getContentType();
+                        if (contentType.startsWith("image")) {
+                            String timestamps = DateUtil.timeStamp();
+                            String newFileName = timestamps + new Random().nextInt() + ".jpg";
+                            FileUtils.copyInputStreamToFile(afterImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
+                            hidDangerDAO.addAfterImg(hidDangerCode,hiddenPath+newFileName);
+                        }
                     }
                 }
             }
@@ -124,7 +129,6 @@ public class HidDangerServiceImpl implements HidDangerService {
                 FileUtils.copyInputStreamToFile(report.getInputStream(), new File(path+hiddenPath, newFileName));
                 hidDangerDO.setAcceptanceReport(hiddenPath+newFileName);
             }
-
 //        进程表添加
             SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
             HidDangerProcessDO hidDangerProcessDO = new HidDangerProcessDO();
@@ -245,9 +249,13 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerDO.setRectificationNoticeTime(idt);
             hidDangerDO.setHidDangerCode(hidDangerCode);
             hidDangerDO.setProcessingStatus("2");
+
+
             if (RetOrganization.getLevel() <= sysOrganization.getLevel()){
                 return "只能选择下级单位进行整改";
             }
+
+
             //排查前照片添加
             if (beforeImg.length > 6) {
                 return "排查前照片数量不能大于6张";
@@ -997,7 +1005,7 @@ public class HidDangerServiceImpl implements HidDangerService {
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
-    public String rectifyImmediately(HidDangerDO hidDangerDO, MultipartFile[] beforeImg, MultipartFile[] afterImg, MultipartFile plan, MultipartFile report) throws IOException {
+    public String rectifyImmediately(HidDangerDO hidDangerDO, MultipartFile[] beforeImg, MultipartFile[] afterImg) throws IOException {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
@@ -1021,32 +1029,36 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerDO.setCompletionTime(idt);
 
             //排查前照片添加
-            if (beforeImg.length > 6) {
-                return "排查前照片数量不能大于6张";
-            }
-            if (beforeImg.length > 0) {
-                for (int i = 0; i < beforeImg.length; i++) {
-                    String contentType = beforeImg[i].getContentType();
-                    if (contentType.startsWith("image")) {
-                        String timestamps = DateUtil.timeStamp();
-                        String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(beforeImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
-                        hidDangerDAO.addBeforeImg(hidDangerCode,hiddenPath+newFileName);
+            if (beforeImg != null){
+                if (beforeImg.length > 6) {
+                    return "排查前照片数量不能大于6张";
+                }
+                if (beforeImg.length > 0) {
+                    for (int i = 0; i < beforeImg.length; i++) {
+                        String contentType = beforeImg[i].getContentType();
+                        if (contentType.startsWith("image")) {
+                            String timestamps = DateUtil.timeStamp();
+                            String newFileName = timestamps + new Random().nextInt() + ".jpg";
+                            FileUtils.copyInputStreamToFile(beforeImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
+                            hidDangerDAO.addBeforeImg(hidDangerCode,hiddenPath+newFileName);
+                        }
                     }
                 }
             }
             //排查后照片添加
-            if (afterImg.length > 6) {
-                return "排查后照片数量不能大于6张";
-            }
-            if (afterImg.length > 0) {
-                for (int i = 0; i < afterImg.length; i++) {
-                    String contentType = afterImg[i].getContentType();
-                    if (contentType.startsWith("image")) {
-                        String timestamps = DateUtil.timeStamp();
-                        String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(afterImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
-                        hidDangerDAO.addAfterImg(hidDangerCode,hiddenPath+newFileName);
+            if(afterImg!= null){
+                if (afterImg.length > 6) {
+                    return "排查后照片数量不能大于6张";
+                }
+                if (afterImg.length > 0) {
+                    for (int i = 0; i < afterImg.length; i++) {
+                        String contentType = afterImg[i].getContentType();
+                        if (contentType.startsWith("image")) {
+                            String timestamps = DateUtil.timeStamp();
+                            String newFileName = timestamps + new Random().nextInt() + ".jpg";
+                            FileUtils.copyInputStreamToFile(afterImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
+                            hidDangerDAO.addAfterImg(hidDangerCode,hiddenPath+newFileName);
+                        }
                     }
                 }
             }

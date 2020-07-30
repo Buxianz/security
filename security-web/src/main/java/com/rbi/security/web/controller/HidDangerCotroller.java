@@ -1,8 +1,10 @@
 package com.rbi.security.web.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.hid.HidDangerDO;
+import com.rbi.security.tool.Base64Util;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.controller.safe.SafeTrainingMaterialsController;
@@ -14,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -58,8 +62,8 @@ public class HidDangerCotroller {
             logger.error("【上报整改】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
-
     }
+
 
     @PostMapping("/findAdmChoose")
     public ResponseModel<Map<String,Object>> findAdmChoose(@RequestBody JSONObject json) {
@@ -305,30 +309,6 @@ public class HidDangerCotroller {
     }
 
     /**
-     * 上报整改
-     **/
-//    @RequiresPermissions("hidDangerTroubleshoot:repot")
-    @PostMapping("/rectifyImmediately")
-    public ResponseModel rectifyImmediately(HidDangerDO hidDangerDO, @RequestParam(value="beforeImg",required=false) MultipartFile[] beforeImg,
-                                @RequestParam(value="afterImg",required=false) MultipartFile[] afterImg,
-                                @RequestParam(value="plan",required=false) MultipartFile plan,
-                                @RequestParam(value="report",required=false) MultipartFile report){
-        try {
-            String result = hidDangerService.rectifyImmediately(hidDangerDO,beforeImg,afterImg,plan,report);
-            if(result.equals("1000")){
-                return ResponseModel.build("1000","立即整改完成！");
-            }else {
-                return ResponseModel.build("1001",result);
-            }
-        }catch (Exception e){
-            logger.error("【上报整改】失败！，ERROR：{}",e);
-            return ResponseModel.build("1001","处理异常");
-        }
-
-    }
-
-
-    /**
      * 隐患等级占比
      * */
     @PostMapping("/findByGrade")
@@ -373,16 +353,132 @@ public class HidDangerCotroller {
     }
 
 
+    /**
+     * APP立即整改
+     **/
+    @PostMapping("/rectifyImmediately")
+    public ResponseModel rectifyImmediately(@RequestBody JSONObject json){
+        try {
+            HidDangerDO hidDangerDO = JSON.toJavaObject(json,HidDangerDO.class);
+            MultipartFile[] beforeImg = null;
+            MultipartFile[] afterImg = null;
+            JSONArray beforeImgJsonArray = json.getJSONArray("beforeImg");
+            if (beforeImgJsonArray != null){
+                List<String> beforeImgList = new ArrayList<>();
+                for (int i = 0;i<beforeImgJsonArray.size();i++){
+                    JSONObject jsonObject = (JSONObject)beforeImgJsonArray.get(i);
+                    beforeImgList.add(jsonObject.getString("file"));
+                }
+                beforeImg = Base64Util.base64ToListFile(beforeImgList);
+            }
+            JSONArray afterImgJsonArray = json.getJSONArray("afterImg");
+            if (afterImgJsonArray != null) {
+                List<String> afterImgList = new ArrayList<>();
+                for (int i = 0; i < afterImgJsonArray.size(); i++) {
+                    JSONObject jsonObject = (JSONObject) afterImgJsonArray.get(i);
+                    afterImgList.add(jsonObject.getString("file"));
+                }
+                afterImg = Base64Util.base64ToListFile(afterImgList);
+            }
+            String result = hidDangerService.rectifyImmediately(hidDangerDO,beforeImg,afterImg);
+            if(result.equals("1000")){
+                return ResponseModel.build("1000","立即整改完成！");
+            }else {
+                return ResponseModel.build("1001",result);
+            }
+        }catch (Exception e){
+            logger.error("【立即整改】失败！，ERROR：{}",e);
+            return ResponseModel.build("1001","处理异常");
+        }
+
+    }
+
+    /**
+     * APP上报整改
+     **/
+    @RequiresPermissions("hidDangerTroubleshoot:repot")
+    @PostMapping("/addReport2")
+    public ResponseModel report2(@RequestBody JSONObject json) {
+        try {
+            HidDangerDO hidDangerDO = JSON.toJavaObject(json, HidDangerDO.class);
+            hidDangerDO.setIfDeal("否");
+            MultipartFile[] beforeImg = null;
+            MultipartFile[] afterImg = null;
+            MultipartFile plan = null;
+            MultipartFile report = null;
+            JSONArray beforeImgJsonArray = json.getJSONArray("beforeImg");
+            if (beforeImgJsonArray != null) {
+                List<String> beforeImgList = new ArrayList<>();
+                for (int i = 0; i < beforeImgJsonArray.size(); i++) {
+                    JSONObject jsonObject = (JSONObject) beforeImgJsonArray.get(i);
+                    beforeImgList.add(jsonObject.getString("file"));
+                }
+                beforeImg = Base64Util.base64ToListFile(beforeImgList);
+            }
+            JSONArray afterImgJsonArray = json.getJSONArray("afterImg");
+            if (afterImgJsonArray != null) {
+                List<String> afterImgList = new ArrayList<>();
+                for (int i = 0; i < afterImgJsonArray.size(); i++) {
+                    JSONObject jsonObject = (JSONObject) afterImgJsonArray.get(i);
+                    afterImgList.add(jsonObject.getString("file"));
+                }
+                afterImg = Base64Util.base64ToListFile(afterImgList);
+            }
+            String result = hidDangerService.addReport(hidDangerDO,beforeImg,afterImg,plan,report);
+            if (result.equals("1000")) {
+                return ResponseModel.build("1000", "立即整改完成！");
+            } else {
+                return ResponseModel.build("1001", result);
+            }
+        } catch (Exception e) {
+            logger.error("【上报整改】失败！，ERROR：{}", e);
+            return ResponseModel.build("1001", "处理异常");
+        }
+    }
 
 
+    /**
+     * APP完成整改
+     **/
+    @PostMapping("/complete2")
+    public ResponseModel complete2(@RequestBody JSONObject json){
+        try {
+            HidDangerDO hidDangerDO = JSON.toJavaObject(json, HidDangerDO.class);
+            hidDangerDO.setIfDeal("是");
+            MultipartFile[] beforeImg = null;
+            MultipartFile[] afterImg = null;
+            MultipartFile plan = null;
+            MultipartFile report = null;
+            JSONArray beforeImgJsonArray = json.getJSONArray("beforeImg");
+            if (beforeImgJsonArray != null) {
+                List<String> beforeImgList = new ArrayList<>();
+                for (int i = 0; i < beforeImgJsonArray.size(); i++) {
+                    JSONObject jsonObject = (JSONObject) beforeImgJsonArray.get(i);
+                    beforeImgList.add(jsonObject.getString("file"));
+                }
+                beforeImg = Base64Util.base64ToListFile(beforeImgList);
+            }
+            JSONArray afterImgJsonArray = json.getJSONArray("afterImg");
+            if (afterImgJsonArray != null) {
+                List<String> afterImgList = new ArrayList<>();
+                for (int i = 0; i < afterImgJsonArray.size(); i++) {
+                    JSONObject jsonObject = (JSONObject) afterImgJsonArray.get(i);
+                    afterImgList.add(jsonObject.getString("file"));
+                }
+                afterImg = Base64Util.base64ToListFile(afterImgList);
+            }
+            String result = hidDangerService.complete(hidDangerDO,beforeImg,afterImg,plan,report);
+            if(result.equals("1000")){
+                return ResponseModel.build("1000","完成整改！");
+            }else {
+                return ResponseModel.build("1001",result);
+            }
+        }catch (Exception e){
+            logger.error("【完成整改】失败！，ERROR：{}",e);
+            return ResponseModel.build("1001","处理异常");
+        }
 
-
-
-
-
-
-
-
+    }
 
 
 }
