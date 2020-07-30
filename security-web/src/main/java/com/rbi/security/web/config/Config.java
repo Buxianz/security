@@ -122,7 +122,6 @@ public class Config {
             logger.error("druid configuration initialization filter", e);
         }
 //    	datasource.setConnectionProperties(connectionProperties);
-
         return datasource;
     }
 }

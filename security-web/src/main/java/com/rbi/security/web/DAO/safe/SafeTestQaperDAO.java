@@ -22,7 +22,7 @@ public interface SafeTestQaperDAO {
     /**
      * 添加题目
      */
-    @Insert("insert into safe_test_questions (subject,subject_type,right_key,test_papre_id,score) values (#{subject},#{subjectType},#{rightKey},#{testPapreId},#{score})")
+    @Insert("insert into safe_test_questions (subject,subject_type,right_key,test_papre_id,score,question_bank_subject_id) values (#{subject},#{subjectType},#{rightKey},#{testPapreId},#{score},#{questionBankSubjectId})")
     @Options(useGeneratedKeys = true, keyProperty = "id",keyColumn="id")
     int insertSafeTestQuestions(SafeTestQuestions safeTestQuestions);
 
