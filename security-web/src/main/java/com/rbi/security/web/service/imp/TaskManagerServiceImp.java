@@ -3,21 +3,23 @@ package com.rbi.security.web.service.imp;
 import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.entity.web.LearningContent;
 import com.rbi.security.entity.web.LearningInformations;
+import com.rbi.security.entity.web.entity.SafeSubject;
+import com.rbi.security.entity.web.entity.SafeSubjectOption;
+import com.rbi.security.entity.web.safe.PagingSafe;
 import com.rbi.security.entity.web.safe.SafePersonalMistakes;
 import com.rbi.security.entity.web.safe.content.SafeDataPlanDTO;
 import com.rbi.security.entity.web.safe.content.SafeTrainingMaterials;
 import com.rbi.security.entity.web.safe.examination.SafeAnswerRecord;
+import com.rbi.security.entity.web.safe.examination.SimulationReults;
+import com.rbi.security.entity.web.safe.examination.SimulationSafeAnswerRecord;
 import com.rbi.security.entity.web.safe.task.SafeTrainingTasks;
 import com.rbi.security.entity.web.safe.task.TestPaperInfo;
-import com.rbi.security.entity.web.safe.testpaper.SafeTestQuestionOptions;
-import com.rbi.security.entity.web.safe.testpaper.SafeTestQuestions;
-import com.rbi.security.entity.web.safe.testpaper.TestPaper;
+import com.rbi.security.entity.web.safe.testpaper.*;
 import com.rbi.security.tool.LocalDateUtils;
 import com.rbi.security.tool.PageData;
-import com.rbi.security.web.DAO.safe.SafeAnserRecordDAO;
-import com.rbi.security.web.DAO.safe.SafePersonalMistakesDAO;
-import com.rbi.security.web.DAO.safe.SafeTestQaperDAO;
-import com.rbi.security.web.DAO.safe.SafeTrainingTasksDAO;
+import com.rbi.security.web.DAO.SafeSubjectDAO;
+import com.rbi.security.web.DAO.SafeSubjectOptionDAO;
+import com.rbi.security.web.DAO.safe.*;
 import com.rbi.security.web.service.TaskManagerService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -30,6 +32,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -356,11 +359,134 @@ public class TaskManagerServiceImp implements TaskManagerService {
         }
         return testPaper;
     }
+
     /**
-      * 模拟试卷获取Simulation test paper
-    */
-     
+     * 模拟试卷获取
+     */
+    @Autowired
+    SafeSubjectOptionDAO safeSubjectOptionDAO;
+    @Autowired
+    SafeSubjectDAO safeSubjectDAO;
+    public  SimulationTestPaper getSimulationTestPaper(Integer trainingPlanId) throws RuntimeException{
+        try{
+            SimulationTestPaper simulationTestPaper = new SimulationTestPaper();
+/**
+ * 试卷的单选题目
+ */
+            List<SafeSubject> singleChoiceQuestions = new LinkedList<SafeSubject>();
+            /**
+             * 试卷的多选题目
+             */
+            List<SafeSubject> multipleChoiceQuestions = new LinkedList<SafeSubject>();
+            /**
+             * 试卷的判断题目
+             */
+            List<SafeSubject> judgmentQuestions = new LinkedList<SafeSubject>();
+            /**
+             * 试卷的填空题目
+             */
+            List<SafeSubject> completion = new LinkedList<SafeSubject>();
+            //根据计划获取题目基本信息 题库的题目id 题目类型 题库id
+            List<SafeSubject> safeSubjectLists=safeTestQaperDAO.getTestPaperSubjectByPlanId(trainingPlanId);
+            List<TestPaperTemplate> testPaperTemplates=null;
+            if(safeSubjectLists.size()!=0)
+                testPaperTemplates=getTestPaperTemplate(safeSubjectLists);
+            List<SafeSubject> simulationSubjectLists=new ArrayList<>();
+            //获取所有对应的题目
+            if(testPaperTemplates!=null)
+            for(int i=0;i<testPaperTemplates.size();i++){
+                simulationSubjectLists.addAll(safeSubjectDAO.getRandomSafeSubjectBy(testPaperTemplates.get(i).getSubjectType(),testPaperTemplates.get(i).getSubjectStoreId(),testPaperTemplates.get(i).getNumber()));
+            }
+            //整合题目和选项
+            for (int i = 0; i < simulationSubjectLists.size(); i++) {
+                List<SafeSubjectOption> safeSubjectOptionList = safeSubjectOptionDAO.getSafeSubjectOptionBySubjectId(simulationSubjectLists.get(i).getId());
+                if(safeSubjectOptionList!=null)
+                {
+                    simulationSubjectLists.get(i).setSafeSubjectOptionList(safeSubjectOptionList);
+                }
+            }
+            /**
+             * 整合题目
+             */
+            for (int i = 0; i < simulationSubjectLists.size(); i++) {
+                int subjectType = simulationSubjectLists.get(i).getSubjectType();
+                switch (subjectType) {
+                    case 1: {
+                        singleChoiceQuestions.add(simulationSubjectLists.get(i));
+                        break; //单选
+                    }
+                    case 2: {
+                        multipleChoiceQuestions.add(simulationSubjectLists.get(i));
+                        break; //可选
+                    }
+                    //你可以有任意数量的case语句
+                    case 3: {
+                        judgmentQuestions.add(simulationSubjectLists.get(i));
+                        break; //可选
+                    }
+                    case 4: {
+                        completion.add(simulationSubjectLists.get(i));
+                        break; //可选
+                    }
+
+                }
+            }
+            simulationTestPaper.setCompletion(completion);
+            simulationTestPaper.setJudgmentQuestions(judgmentQuestions);
+            simulationTestPaper.setMultipleChoiceQuestions(multipleChoiceQuestions);
+            simulationTestPaper.setSingleChoiceQuestions(singleChoiceQuestions);
+            return simulationTestPaper;
+        }catch (Exception e){
+            logger.error("获取模拟试卷信息失败，异常为{}", e);
+            throw new RuntimeException("获取模拟试卷信息失败");
+        }
+    }
+    /**
+     * 获取当前计划下试卷的试题模板
+     * 题库 类型 数量
+     */
+    private List<TestPaperTemplate> getTestPaperTemplate(List<SafeSubject> safeSubjectLists){
+     //整合：确定每个题库下各个类型的题目数量
+        List<TestPaperTemplate> testPaperTemplates=new LinkedList<TestPaperTemplate>();
+        for(int i=0;i<safeSubjectLists.size();i++){
+            int j=0;
+            for(;j<testPaperTemplates.size();j++){
+                int subjectStoreId=safeSubjectLists.get(i).getSubjectStoreId().intValue();
+                int subjectType=safeSubjectLists.get(i).getSubjectType();
+                if(subjectStoreId==testPaperTemplates.get(j).getSubjectStoreId().intValue() && subjectType==testPaperTemplates.get(j).getSubjectType()){
+                    testPaperTemplates.get(j).addNumber(1);
+                }
+            }
+            if (j==testPaperTemplates.size()){
+                testPaperTemplates.add(new TestPaperTemplate(safeSubjectLists.get(i).getSubjectType(),safeSubjectLists.get(i).getSubjectStoreId()));
+            }
+        }
+        return testPaperTemplates;
+    }
     /**
      * 模拟试卷处理
     */
+    public SimulationReults completeSimulationTheExam(List<SimulationSafeAnswerRecord> simulationSafeAnswerRecords)throws Exception{
+        try{
+            SimulationReults simulationReults=null;
+            int  totalScore=0;
+        Integer testResults = 0;
+        for (int i = 0; i < simulationSafeAnswerRecords.size(); i++) {
+            totalScore=totalScore+simulationSafeAnswerRecords.get(i).getScore();
+            if (simulationSafeAnswerRecords.get(i).getAnswerResults().equals(simulationSafeAnswerRecords.get(i).getRightKey())) {
+                simulationSafeAnswerRecords.get(i).setCorrect(1);
+                testResults = testResults + simulationSafeAnswerRecords.get(i).getScore();
+            } else {
+                simulationSafeAnswerRecords.get(i).setCorrect(0);
+            }
+        }
+            simulationReults.setResult(testResults);
+        simulationReults.setTotalScore(totalScore);
+        simulationReults.setSimulationSafeAnswerRecords(simulationSafeAnswerRecords);
+        return simulationReults;
+    } catch (Exception e) {
+        logger.error("处理模拟考试结果失败，异常为{}", e);
+        throw new RuntimeException("处理模拟考试结果失败");
+    }
+    }
 }

@@ -55,4 +55,9 @@ public interface SafeSubjectDAO {
     @Delete("delete from safe_subject where id=#{id}")
     void deleteSafeSubjectById(@Param("id") Integer id);
 
+    /**
+     * 根据题库id 题目类型 随机生成n个题目
+     */
+    @Select("select q2.* from safe_subject q2 where q2.subject_type=2 and q2.subject_store_id=13 order by rand() limit #{n}")
+    List<SafeSubject> getRandomSafeSubjectBy(@Param("subjectType") int subjectType,@Param("subjectStoreId") int subjectStoreId,@Param("n") int n);
 }
