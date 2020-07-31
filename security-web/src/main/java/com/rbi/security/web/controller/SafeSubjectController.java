@@ -37,7 +37,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/safeSubject")
 public class SafeSubjectController {
-    private final static Logger logger = LoggerFactory.getLogger(SysPermissionController.class);
+    private final static Logger logger = LoggerFactory.getLogger(SafeSubjectController.class);
 
     @Autowired(required = false)
     SafeSubjectService safeSubjectService;

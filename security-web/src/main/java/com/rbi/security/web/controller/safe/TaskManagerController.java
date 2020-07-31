@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rbi.security.entity.web.LearningContent;
 import com.rbi.security.entity.web.LearningInformations;
 import com.rbi.security.entity.web.safe.examination.SafeAnswerRecord;
+import com.rbi.security.entity.web.safe.examination.SimulationSafeAnswerRecord;
 import com.rbi.security.entity.web.safe.task.TestPaperInfo;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
@@ -123,7 +124,6 @@ public class TaskManagerController {
     @RequestMapping("/getTheExamDetails")
     public ResponseModel getTheExamDetails(@RequestBody JSONObject date){
         try {
-            //Integer personnelTrainingRecordId=date.getInteger("personnelTrainingRecordId");
             Integer testPapreId=date.getInteger("testPapreId");
             Integer personnelTrainingRecordId=date.getInteger("personnelTrainingRecordId");
             return  ResponseModel.build("1000", "获取到考试结果详情", taskManagerService.getTheExamDetails(testPapreId,personnelTrainingRecordId));
@@ -136,9 +136,31 @@ public class TaskManagerController {
     /**
      * 模拟试卷获取
      */
-
+    @RequestMapping("/getSimulationTestPaper")
+    public ResponseModel getSimulationTestPaper(@RequestBody JSONObject date){
+        try {
+            /**
+             * 根据 获取培训计划id获取试卷id，获取试卷题目，反向随机生成模拟试卷
+             */
+            Integer trainingPlanId=date.getInteger("trainingPlanId");
+            return  ResponseModel.build("1000", "获取模拟考试试卷成功",taskManagerService.getSimulationTestPaper(trainingPlanId));
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
     /**
-     * 模拟试卷处理
+     * 模拟试卷处理 completeSimulationTheExam
      */
-
+    @RequestMapping("/completeSimulationTheExam")
+    public ResponseModel completeSimulationTheExam(@RequestBody JSONObject date){
+        try {
+            /**
+             * 根据 获取培训计划id获取试卷id，获取试卷题目，反向随机生成模拟试卷
+             */
+            List<SimulationSafeAnswerRecord> simulationSafeAnswerRecords= JSONArray.parseArray(date.getJSONArray("simulationSafeAnswerRecords").toString(), SimulationSafeAnswerRecord.class);
+            return  ResponseModel.build("1000", "获取模拟考试试卷成功",taskManagerService.completeSimulationTheExam(simulationSafeAnswerRecords));
+        }catch (Exception e){
+            return ResponseModel.build("1001", e.getMessage());
+        }
+    }
 }

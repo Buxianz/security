@@ -8,6 +8,7 @@ import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.entity.SysRole;
 import com.rbi.security.entity.web.hid.SystemSettingDTO;
 import org.apache.ibatis.annotations.*;
+import org.checkerframework.checker.guieffect.qual.SafeEffect;
 
 import java.util.List;
 
@@ -85,10 +86,10 @@ public interface DoubleDutyEvaluationDAO {
 
     @Update("insert into double_duty_evaluation (template_id,personnel_id,personnel_name,bad_situation,write_time," +
             "status,position,template_name,organization_id,organization_name," +
-            "company_name,factory_name,workshop_name,class_name,idt) values " +
+            "company_name,factory_name,workshop_name,class_name,idt,self_score,id_card_no) values " +
             "(#{templateId},#{personnelId},#{personnelName},#{badSituation},#{writeTime}," +
             "#{status},#{position},#{templateName},#{organizationId},#{organizationName}," +
-            "#{companyName},#{factoryName},#{workshopName},#{className},#{idt})")
+            "#{companyName},#{factoryName},#{workshopName},#{className},#{idt},#{selfScore},#{idCardNo})")
     @Options(useGeneratedKeys = true, keyProperty = "id",keyColumn="id")
     void writeEvaluation(DoubleDutyEvaluation doubleDutyEvaluation);
 
@@ -113,9 +114,14 @@ public interface DoubleDutyEvaluationDAO {
     @Select("SELECT count(*) FROM double_duty_evaluation WHERE DATE_FORMAT(idt, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' ) and personnel_id = #{personnelId}")
     int findMonthNum(Integer personnelId);
 
-    @Update("update double_duty_evaluation set bad_situation = #{badSituation},correct_situation=#{correctSituation},auditor_name=#{auditorName},auditor_id=#{auditorId},audit_time=#{auditTime},status = #{status} where id = #{id}")
+    @Update("update double_duty_evaluation set bad_situation = #{badSituation},correct_situation=#{correctSituation}," +
+            "auditor_name=#{auditorName},auditor_id=#{auditorId},audit_time=#{auditTime}," +
+            "status = #{status},check_score = #{checkScore} where id = #{id}")
     void auditEvaluation(DoubleDutyEvaluation doubleDutyEvaluation);
 
     @Update("update double_duty_evaluation_content set check_result=#{checkResult},check_fraction=#{checkFraction} where id =#{id}")
     void auditEvaluationContent(DoubleDutyEvaluationContent doubleDutyEvaluationContent);
+
+    @Select("select id_card_no from sys_company_personnel where id = #{id}")
+    String findIdCardNoByPersonnelId(Integer id);
 }

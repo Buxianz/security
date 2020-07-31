@@ -62,8 +62,16 @@ public interface SysUSerDAO {
     分页获取用户数据
      */
     @Select("SELECT su.*,scp.employee_number,scp.organization_id,scp.`name`,scp.id_card_no FROM\n" +
-            "(SELECT id,username,company_personnel_id,enabled FROM sys_user) su LEFT JOIN sys_company_personnel scp ON scp.id=su.company_personnel_id ORDER BY id")
-    List<PagingUser> getAllUserInfo();
+            "(SELECT scp.id,scp.employee_number,scp.organization_id,scp.`name`,scp.id_card_no FROM \n" +
+            "(select id as 'organization_id'  from (\n" +
+            "                          select t1.id,\n" +
+            "                          if(find_in_set(parent_id, @pids) > 0 OR find_in_set(id, @pids) > 0, @pids := concat(@pids, ',', id), 0) as ischild\n" +
+            "                        from (\n" +
+            "                               select id,parent_id from sys_organization \n" +
+            "                             ) t1,\n" +
+            "                              (select @pids := #{organizationId}) t2\n" +
+            "            ) t3 where ischild != 0) t4 INNER JOIN sys_company_personnel scp on scp.organization_id=t4.organization_id) scp inner join sys_user su on su.company_personnel_id=scp.id ORDER BY su.idt DESC")
+    List<PagingUser> getAllUserInfo(@Param("organizationId")int organizationId);
     /**
      * 根据组织id，获取本身信息以及父级组织信息
      */

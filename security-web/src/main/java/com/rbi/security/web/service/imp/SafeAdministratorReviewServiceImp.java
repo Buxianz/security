@@ -44,7 +44,7 @@ import java.util.*;
  **/
 @Service
 public class SafeAdministratorReviewServiceImp implements SafeAdministratorReviewService {
-    private static final Logger logger = LoggerFactory.getLogger(SafeAdministratorReviewServiceImp.class);
+//    private static final Logger logger = LoggerFactory.getLogger(SafeAdministratorReviewServiceImp.class);
     @Autowired
     SafeAdministratorReviewDAO safeAdministratorReviewDAO;
     @Value("${uploadfile.ip}")
@@ -116,15 +116,15 @@ public class SafeAdministratorReviewServiceImp implements SafeAdministratorRevie
                 }
             }
         }catch (NonExistentException e){
-            logger.error(sheetName+"：不存在");
+//            logger.error(sheetName+"：不存在");
             throw new RuntimeException(e.getMessage());
         }
         catch (FileNotFoundException e){
-            logger.error("导出特种人员复审名单失败：表格在占用（或找不到路径），请关闭打开的excel表格");
+//            logger.error("导出特种人员复审名单失败：表格在占用（或找不到路径），请关闭打开的excel表格");
             throw new RuntimeException("表格在占用（或找不到路径），请关闭打开的excel表格");
         }
         catch (Exception e){
-            logger.error("导出特种人员复审名单异常，异常为{}", e.getMessage());
+//            logger.error("导出特种人员复审名单异常，异常为{}", e.getMessage());
             throw new RuntimeException("导出特种人员复审名单异常");
         }
         return downloadPath;
@@ -213,7 +213,6 @@ public class SafeAdministratorReviewServiceImp implements SafeAdministratorRevie
             map.put("path", findPath);
             return map;
         } catch (Exception e) {
-            System.out.println("错误：" + e);
             return null;
         }
 

@@ -1,5 +1,6 @@
 package com.rbi.security.web.DAO.safe;
 
+import com.rbi.security.entity.web.entity.SafeSubject;
 import com.rbi.security.entity.web.safe.testpaper.SafeTestPaper;
 import com.rbi.security.entity.web.safe.testpaper.SafeTestQuestionOptions;
 import com.rbi.security.entity.web.safe.testpaper.SafeTestQuestions;
@@ -22,7 +23,7 @@ public interface SafeTestQaperDAO {
     /**
      * 添加题目
      */
-    @Insert("insert into safe_test_questions (subject,subject_type,right_key,test_papre_id,score) values (#{subject},#{subjectType},#{rightKey},#{testPapreId},#{score})")
+    @Insert("insert into safe_test_questions (subject,subject_type,right_key,test_papre_id,score,question_bank_subject_id) values (#{subject},#{subjectType},#{rightKey},#{testPapreId},#{score},#{questionBankSubjectId})")
     @Options(useGeneratedKeys = true, keyProperty = "id",keyColumn="id")
     int insertSafeTestQuestions(SafeTestQuestions safeTestQuestions);
 
@@ -55,4 +56,14 @@ public interface SafeTestQaperDAO {
      */
     @Select("SELECT CONCAT(start_time,\"至\",end_time) FROM safe_test_paper WHERE training_plan_id=#{trainingPlanId}")
     String getStartAndEndTime(@Param("trainingPlanId")int trainingPlanId);
+
+
+    /**
+     * 根据计划id获取试卷题目的信息 题库的题目id，题目类型 题目题库id
+     */
+    @Select("SELECT ss.* FROM\n" +
+            "(SELECT stq.id,stq.question_bank_subject_id FROM\n" +
+            "(SELECT id  FROM safe_test_paper WHERE training_plan_id=#{trainingPlanId})tp inner join safe_test_questions stq on\n" +
+            "stq.test_papre_id=tp.id) stq INNER join safe_subject ss on ss.id=stq.question_bank_subject_id")
+    List<SafeSubject> getTestPaperSubjectByPlanId(@Param("trainingPlanId")int trainingPlanId);
 }

@@ -3,6 +3,8 @@ package com.rbi.security.entity.web.entity;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class SafeSubject {
 
@@ -34,4 +36,7 @@ public class SafeSubject {
    * 分值
    */
   private Integer score;
+
+  private List<SafeSubjectOption> safeSubjectOptionList;
+
 }

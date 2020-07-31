@@ -5,6 +5,8 @@ import com.rbi.security.entity.web.doubleduty.DoubleDutyTemplate;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.DoubleDutyEvaluationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +27,7 @@ import java.util.Map;
 public class DoubleDutyEvaluationController {
     @Autowired
     DoubleDutyEvaluationService doubleDutyEvaluationService;
+    private final static Logger logger = LoggerFactory.getLogger(DoubleDutyEvaluationController.class);
 
     /**
      * 一岗双责个人测评分页
@@ -37,7 +40,7 @@ public class DoubleDutyEvaluationController {
             PageData pageData = doubleDutyEvaluationService.findPersonelByPage(pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 一岗双责个人测评分页】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -53,7 +56,7 @@ public class DoubleDutyEvaluationController {
             PageData pageData = doubleDutyEvaluationService.findAuditByPage(pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 一岗双责待审核分页】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -67,7 +70,7 @@ public class DoubleDutyEvaluationController {
             DoubleDutyTemplate doubleDutyTemplate = doubleDutyEvaluationService.findTemplate();
             return ResponseModel.build("1000","查询成功！",doubleDutyTemplate);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 责任清单模板查询】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -84,7 +87,7 @@ public class DoubleDutyEvaluationController {
                 return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 责任清单填写】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -102,7 +105,7 @@ public class DoubleDutyEvaluationController {
                 return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 责任清单审核】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }

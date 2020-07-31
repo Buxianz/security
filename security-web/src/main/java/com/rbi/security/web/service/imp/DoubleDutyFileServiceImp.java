@@ -1,9 +1,13 @@
 package com.rbi.security.web.service.imp;
+import com.rbi.security.entity.AuthenticationUserDTO;
 import com.rbi.security.entity.web.doubleduty.DoubleDutyEvaluation;
 import com.rbi.security.entity.web.doubleduty.DoubleDutyEvaluationContent;
+import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.tool.PageData;
 import com.rbi.security.web.DAO.doubleduty.DoubleDutyFieDAO;
 import com.rbi.security.web.service.DoubleDutyFileService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -32,10 +36,15 @@ public class DoubleDutyFileServiceImp implements DoubleDutyFileService {
 
     @Override
     public PageData findByPage(int pageNo, int pageSize) {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = doubleDutyFieDAO.findPersonnelById(personnelId);
+
         int pageNo2 = pageSize * (pageNo - 1);
-        List<DoubleDutyEvaluation> doubleDutyEvaluations = doubleDutyFieDAO.findByPage(pageNo2,pageSize);
+        List<DoubleDutyEvaluation> doubleDutyEvaluations = doubleDutyFieDAO.findByPage(sysCompanyPersonnel.getOrganizationId(),pageNo2,pageSize);
         int totalPage = 0;
-        int count = doubleDutyFieDAO.findByPageNum();
+        int count = doubleDutyFieDAO.findByPageNum(sysCompanyPersonnel.getOrganizationId());
         for (int i=0;i<doubleDutyEvaluations.size();i++){
             List<DoubleDutyEvaluationContent> doubleDutyEvaluationContents = doubleDutyFieDAO.findEvaluationContentById(doubleDutyEvaluations.get(i).getId());
             doubleDutyEvaluations.get(i).setDoubleDutyEvaluationContents(doubleDutyEvaluationContents);

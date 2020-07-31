@@ -6,7 +6,7 @@
 #内部测试环境:140
 spring:
   profiles:
-    active: test
+    active: dev
 
 #铝厂内网:
 #spring:

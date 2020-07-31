@@ -79,6 +79,7 @@ public class DoubleDutyEvaluationServiceImp implements DoubleDutyEvaluationServi
         } else {
             totalPage = count / pageSize + 1;
         }
+        int j = 10/0;
         return new PageData(pageNo, pageSize, totalPage, count, doubleDutyEvaluations);
     }
 
@@ -158,25 +159,30 @@ public class DoubleDutyEvaluationServiceImp implements DoubleDutyEvaluationServi
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        String idCardNo = doubleDutyEvaluationDAO.findIdCardNoByPersonnelId(personnelId);
         int num = doubleDutyEvaluationDAO.findMonthNum(personnelId);
         if (num !=0){
             return "本月已填写了责任清单！";
         }
         SysCompanyPersonnel sysCompanyPersonnel = doubleDutyEvaluationDAO.findPersonnelById(personnelId);
         DoubleDutyEvaluation doubleDutyEvaluation = JSON.toJavaObject(json,DoubleDutyEvaluation.class);
+        doubleDutyEvaluation.setIdCardNo(idCardNo);
         doubleDutyEvaluation.setPersonnelId(personnelId);
         doubleDutyEvaluation.setPersonnelName(sysCompanyPersonnel.getName());
         String time = DateUtil.date(DateUtil.FORMAT_PATTERN);
         doubleDutyEvaluation.setWriteTime(time);
         doubleDutyEvaluation.setStatus("2");
         doubleDutyEvaluation.setIdt(time);
-        doubleDutyEvaluationDAO.writeEvaluation(doubleDutyEvaluation);
         JSONArray array = json.getJSONArray("content");
         List<DoubleDutyEvaluationContent> doubleDutyEvaluationContents = JSONObject.parseArray(array.toJSONString(),DoubleDutyEvaluationContent.class);
+        int selfScore = 0;
         for (int i=0;i<doubleDutyEvaluationContents.size();i++){
             doubleDutyEvaluationContents.get(i).setEvaluationId(doubleDutyEvaluation.getId());
+            selfScore = selfScore + doubleDutyEvaluationContents.get(i).getSelfFraction();
         }
+        doubleDutyEvaluation.setSelfScore(selfScore);
         doubleDutyEvaluationDAO.writeEvaluationContentList(doubleDutyEvaluationContents);
+        doubleDutyEvaluationDAO.writeEvaluation(doubleDutyEvaluation);
         return "1000";
     }
 
@@ -192,12 +198,15 @@ public class DoubleDutyEvaluationServiceImp implements DoubleDutyEvaluationServi
         doubleDutyEvaluation.setAuditorName(sysCompanyPersonnel.getName());
         doubleDutyEvaluation.setAuditTime(time);
         doubleDutyEvaluation.setStatus("3");
-        doubleDutyEvaluationDAO.auditEvaluation(doubleDutyEvaluation);
         JSONArray array = json.getJSONArray("content");
         List<DoubleDutyEvaluationContent> doubleDutyEvaluationContents = JSONObject.parseArray(array.toJSONString(),DoubleDutyEvaluationContent.class);
+        int checkScore = 0;
         for (int i=0;i<doubleDutyEvaluationContents.size();i++){
             doubleDutyEvaluationDAO.auditEvaluationContent(doubleDutyEvaluationContents.get(i));
+            checkScore = checkScore + doubleDutyEvaluationContents.get(i).getCheckFraction();
         }
+        doubleDutyEvaluation.setCheckScore(checkScore);
+        doubleDutyEvaluationDAO.auditEvaluation(doubleDutyEvaluation);
         return "1000";
     }
 }

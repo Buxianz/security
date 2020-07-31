@@ -78,32 +78,37 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerDO.setHidDangerType("1");
             hidDangerDO.setIdt(idt);
             //排查前照片添加
-            if (beforeImg.length > 6) {
-                return "排查前照片数量不能大于6张";
-            }
-            if (beforeImg.length > 0) {
-                for (int i = 0; i < beforeImg.length; i++) {
-                    String contentType = beforeImg[i].getContentType();
-                    if (contentType.startsWith("image")) {
-                        String timestamps = DateUtil.timeStamp();
-                        String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(beforeImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
-                        hidDangerDAO.addBeforeImg(hidDangerCode,hiddenPath+newFileName);
+            if (beforeImg != null){
+                if (beforeImg.length > 6) {
+                    return "排查前照片数量不能大于6张";
+                }
+                if (beforeImg.length > 0) {
+                    for (int i = 0; i < beforeImg.length; i++) {
+                        String contentType = beforeImg[i].getContentType();
+                        if (contentType.startsWith("image")) {
+                            String timestamps = DateUtil.timeStamp();
+                            String newFileName = timestamps + new Random().nextInt() + ".jpg";
+                            FileUtils.copyInputStreamToFile(beforeImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
+                            hidDangerDAO.addBeforeImg(hidDangerCode,hiddenPath+newFileName);
+                        }
                     }
                 }
             }
-            //排查后照片添加
-            if (afterImg.length > 6) {
-                return "排查后照片数量不能大于6张";
-            }
-            if (afterImg.length > 0) {
-                for (int i = 0; i < afterImg.length; i++) {
-                    String contentType = afterImg[i].getContentType();
-                    if (contentType.startsWith("image")) {
-                        String timestamps = DateUtil.timeStamp();
-                        String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(afterImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
-                        hidDangerDAO.addAfterImg(hidDangerCode,hiddenPath+newFileName);
+
+            if (afterImg!=null){
+                //排查后照片添加
+                if (afterImg.length > 6) {
+                    return "排查后照片数量不能大于6张";
+                }
+                if (afterImg.length > 0) {
+                    for (int i = 0; i < afterImg.length; i++) {
+                        String contentType = afterImg[i].getContentType();
+                        if (contentType.startsWith("image")) {
+                            String timestamps = DateUtil.timeStamp();
+                            String newFileName = timestamps + new Random().nextInt() + ".jpg";
+                            FileUtils.copyInputStreamToFile(afterImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
+                            hidDangerDAO.addAfterImg(hidDangerCode,hiddenPath+newFileName);
+                        }
                     }
                 }
             }
@@ -124,7 +129,6 @@ public class HidDangerServiceImpl implements HidDangerService {
                 FileUtils.copyInputStreamToFile(report.getInputStream(), new File(path+hiddenPath, newFileName));
                 hidDangerDO.setAcceptanceReport(hiddenPath+newFileName);
             }
-
 //        进程表添加
             SysRole sysRole = hidDangerDAO.findRoleByUserId(userId);
             HidDangerProcessDO hidDangerProcessDO = new HidDangerProcessDO();
@@ -233,7 +237,37 @@ public class HidDangerServiceImpl implements HidDangerService {
         try {
             SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
             SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
-            SysOrganization RetOrganization = hidDangerDAO.findAllByOrganizationId(hidDangerDO.getRectificationUnitId());
+
+
+            Integer personnelOrganizationId = sysCompanyPersonnel.getOrganizationId();
+            List<ListOrganizationIds> organizationIds = hidDangerDAO.findSonOrganizationIds(personnelOrganizationId);
+            //判断隐患发生单位是否符合规范
+            Integer organizationId = hidDangerDO.getOrganizationId();
+            int organizationIdNum = 0;
+            if (organizationIds != null){
+                for (int i=0;i<organizationIds.size();i++){
+                    if (organizationIds.get(i).getOrganizationId() == organizationId){
+                        organizationIdNum = 1;
+                    }
+                }
+            }
+            if (organizationIdNum == 0){
+                return "隐患发生单位只能选择下级所属单位";
+            }
+            //判断整改单位是否符合规范
+            Integer RetOrganizationId = hidDangerDO.getRectificationUnitId();
+            int ret = 0;
+            if (organizationIds != null){
+                for (int i=0;i<organizationIds.size();i++){
+                    if (organizationIds.get(i).getOrganizationId() == RetOrganizationId){
+                        ret = 1;
+                    }
+                }
+            }
+            if (ret == 0){
+                return "整改单位只能选择下级所属单位";
+            }
+
             String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
             hidDangerDO.setCopyOrganizationId(123);
             hidDangerDO.setCopyOrganizationName("安防部");
@@ -245,9 +279,7 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerDO.setRectificationNoticeTime(idt);
             hidDangerDO.setHidDangerCode(hidDangerCode);
             hidDangerDO.setProcessingStatus("2");
-            if (RetOrganization.getLevel() <= sysOrganization.getLevel()){
-                return "只能选择下级单位进行整改";
-            }
+
             //排查前照片添加
             if (beforeImg.length > 6) {
                 return "排查前照片数量不能大于6张";
@@ -997,7 +1029,7 @@ public class HidDangerServiceImpl implements HidDangerService {
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED,rollbackFor = Exception.class)
-    public String rectifyImmediately(HidDangerDO hidDangerDO, MultipartFile[] beforeImg, MultipartFile[] afterImg, MultipartFile plan, MultipartFile report) throws IOException {
+    public String rectifyImmediately(HidDangerDO hidDangerDO, MultipartFile[] beforeImg, MultipartFile[] afterImg) throws IOException {
         Subject subject = SecurityUtils.getSubject();
         AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
         Integer personnelId  =  currentUser.getCompanyPersonnelId();
@@ -1021,32 +1053,36 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerDO.setCompletionTime(idt);
 
             //排查前照片添加
-            if (beforeImg.length > 6) {
-                return "排查前照片数量不能大于6张";
-            }
-            if (beforeImg.length > 0) {
-                for (int i = 0; i < beforeImg.length; i++) {
-                    String contentType = beforeImg[i].getContentType();
-                    if (contentType.startsWith("image")) {
-                        String timestamps = DateUtil.timeStamp();
-                        String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(beforeImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
-                        hidDangerDAO.addBeforeImg(hidDangerCode,hiddenPath+newFileName);
+            if (beforeImg != null){
+                if (beforeImg.length > 6) {
+                    return "排查前照片数量不能大于6张";
+                }
+                if (beforeImg.length > 0) {
+                    for (int i = 0; i < beforeImg.length; i++) {
+                        String contentType = beforeImg[i].getContentType();
+                        if (contentType.startsWith("image")) {
+                            String timestamps = DateUtil.timeStamp();
+                            String newFileName = timestamps + new Random().nextInt() + ".jpg";
+                            FileUtils.copyInputStreamToFile(beforeImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
+                            hidDangerDAO.addBeforeImg(hidDangerCode,hiddenPath+newFileName);
+                        }
                     }
                 }
             }
             //排查后照片添加
-            if (afterImg.length > 6) {
-                return "排查后照片数量不能大于6张";
-            }
-            if (afterImg.length > 0) {
-                for (int i = 0; i < afterImg.length; i++) {
-                    String contentType = afterImg[i].getContentType();
-                    if (contentType.startsWith("image")) {
-                        String timestamps = DateUtil.timeStamp();
-                        String newFileName = timestamps + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(afterImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
-                        hidDangerDAO.addAfterImg(hidDangerCode,hiddenPath+newFileName);
+            if(afterImg!= null){
+                if (afterImg.length > 6) {
+                    return "排查后照片数量不能大于6张";
+                }
+                if (afterImg.length > 0) {
+                    for (int i = 0; i < afterImg.length; i++) {
+                        String contentType = afterImg[i].getContentType();
+                        if (contentType.startsWith("image")) {
+                            String timestamps = DateUtil.timeStamp();
+                            String newFileName = timestamps + new Random().nextInt() + ".jpg";
+                            FileUtils.copyInputStreamToFile(afterImg[i].getInputStream(), new File(path+hiddenPath, newFileName));
+                            hidDangerDAO.addAfterImg(hidDangerCode,hiddenPath+newFileName);
+                        }
                     }
                 }
             }
@@ -1114,4 +1150,189 @@ public class HidDangerServiceImpl implements HidDangerService {
         }
     }
 
+    @Override
+    public Map<String, Object> findByGrade() {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
+        SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+
+        List<SystemSettingDTO> systemSettingDTO = hidDangerDAO.findChoose("HID_GRADE");
+        Map<String, Object> map = new HashMap<>();
+        if (sysOrganization.getLevel() == 1){
+            for (int i=0;i<systemSettingDTO.size();i++){
+                int num = hidDangerDAO.findByGrade(systemSettingDTO.get(i).getSettingCode());
+                map.put(systemSettingDTO.get(i).getSettingName(),num);
+            }
+            return map;
+        }else {
+            //隐患所属组织表
+            Integer factoryId = null;
+            int level = sysOrganization.getLevel();
+            if (level == 2 ){
+                factoryId = (sysOrganization.getId());
+            }
+            Integer parentId = sysOrganization.getParentId();
+            level = level -1;
+            while (level !=1){
+                SysOrganization sysOrganization3 = hidDangerDAO.findAllByOrganizationId(parentId);
+                if (level == 2 ){
+                    factoryId = (sysOrganization3.getId());
+                }
+                parentId = sysOrganization3.getParentId();
+                level=level - 1;
+            }
+            SysOrganization organization = hidDangerDAO.findAllByOrganizationId(factoryId);
+            if (null!=organization.getSecurity()){
+                for (int i=0;i<systemSettingDTO.size();i++){
+                    int num = hidDangerDAO.findByGrade(systemSettingDTO.get(i).getSettingCode());
+                    map.put(systemSettingDTO.get(i).getSettingName(),num);
+                }
+                return map;
+            }else {
+                for (int i=0;i<systemSettingDTO.size();i++){
+                    int num = hidDangerDAO.findFactoryByGrade(systemSettingDTO.get(i).getSettingCode(),factoryId);
+                    map.put(systemSettingDTO.get(i).getSettingName(),num);
+                }
+                return map;
+            }
+        }
+    }
+
+    @Override
+    public Map<String, Object> findByType() {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
+        SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+
+        Map<String, Object> map = new HashMap<>();
+        if (sysOrganization.getLevel() == 1){
+            int num1 = hidDangerDAO.findByThing();
+            int num2 = hidDangerDAO.findByPerson();
+            int num3 = hidDangerDAO.findBymanage();
+            map.put("物",num1);
+            map.put("人",num2);
+            map.put("管理",num3);
+            return map;
+        }else {
+            //隐患所属组织表
+            Integer factoryId = null;
+            int level = sysOrganization.getLevel();
+            if (level == 2 ){
+                factoryId = (sysOrganization.getId());
+            }
+            Integer parentId = sysOrganization.getParentId();
+            level = level -1;
+            while (level !=1){
+                SysOrganization sysOrganization3 = hidDangerDAO.findAllByOrganizationId(parentId);
+                if (level == 2 ){
+                    factoryId = (sysOrganization3.getId());
+                }
+                parentId = sysOrganization3.getParentId();
+                level=level - 1;
+            }
+            SysOrganization organization = hidDangerDAO.findAllByOrganizationId(factoryId);
+            if (null!=organization.getSecurity()){
+                int num1 = hidDangerDAO.findByThing();
+                int num2 = hidDangerDAO.findByPerson();
+                int num3 = hidDangerDAO.findBymanage();
+                map.put("物",num1);
+                map.put("人",num2);
+                map.put("管理",num3);
+                return map;
+            }else {
+                int num1 = hidDangerDAO.findByThing2(parentId);
+                int num2 = hidDangerDAO.findByPerson2(parentId);
+                int num3 = hidDangerDAO.findBymanage2(parentId);
+                map.put("物",num1);
+                map.put("人",num2);
+                map.put("管理",num3);
+                return map;
+            }
+        }
+    }
+
+    @Override
+    public Map<String, Object> findByMonth() {
+        Subject subject = SecurityUtils.getSubject();
+        AuthenticationUserDTO currentUser= (AuthenticationUserDTO)subject.getPrincipal();
+        Integer personnelId  =  currentUser.getCompanyPersonnelId();
+        SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
+        SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
+        Map<String, Object> map = new HashMap<>();
+        if (sysOrganization.getLevel() == 1){
+            Calendar cal = Calendar.getInstance();
+            int year = cal.get(Calendar.YEAR);
+            int month = cal.get(Calendar.MONTH) + 1;
+            while (month != 0){
+                String month2 = null;
+                if (month / 10 < 1){
+                    month2 = "0"+month;
+                }else {
+                    month2 = String.valueOf(month);
+                }
+                String time = year+"-"+month2;
+                int num = hidDangerDAO.findMonthNum(time);
+                map.put(month+"月",num);
+                month = month-1;
+            }
+            return map;
+        }else {
+            //隐患所属组织表
+            Integer factoryId = null;
+            int level = sysOrganization.getLevel();
+            if (level == 2 ){
+                factoryId = (sysOrganization.getId());
+            }
+            Integer parentId = sysOrganization.getParentId();
+            level = level -1;
+            while (level !=1){
+                SysOrganization sysOrganization3 = hidDangerDAO.findAllByOrganizationId(parentId);
+                if (level == 2 ){
+                    factoryId = (sysOrganization3.getId());
+                }
+                parentId = sysOrganization3.getParentId();
+                level=level - 1;
+            }
+            SysOrganization organization = hidDangerDAO.findAllByOrganizationId(factoryId);
+            if (null!=organization.getSecurity()){
+                Calendar cal = Calendar.getInstance();
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH) + 1;
+                while (month != 0){
+                    String month2 = null;
+                    if (month / 10 < 1){
+                        month2 = "0"+month;
+                    }else {
+                        month2 = String.valueOf(month);
+                    }
+                    String time = year+"-"+month2;
+                    int num = hidDangerDAO.findMonthNum(time);
+                    map.put(month+"月",num);
+                    month = month-1;
+                }
+                return map;
+            }else {
+                Calendar cal = Calendar.getInstance();
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH) + 1;
+                while (month != 0){
+                    String month2 = null;
+                    if (month / 10 < 1){
+                        month2 = "0"+month;
+                    }else {
+                        month2 = String.valueOf(month);
+                    }
+                    String time = year+"-"+month2;
+                    int num = hidDangerDAO.findMonthNum2(time,factoryId);
+                    map.put(month+"月",num);
+                    month = month-1;
+                }
+                return map;
+            }
+        }
+    }
 }

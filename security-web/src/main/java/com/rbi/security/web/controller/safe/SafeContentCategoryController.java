@@ -9,6 +9,8 @@ import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.SafeContentCategoryService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,6 +40,7 @@ public class SafeContentCategoryController {
     @Autowired
     SafeContentCategoryService safeContentCategoryService;
 
+    private final static Logger logger = LoggerFactory.getLogger(SafeContentCategoryController.class);
     /**
      * 分页
      * */
@@ -50,7 +53,7 @@ public class SafeContentCategoryController {
             PageData pageData = safeContentCategoryService.findByPage(pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 内容类型分页】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -66,7 +69,7 @@ public class SafeContentCategoryController {
             safeContentCategoryService.add(safeContentCategory);
             return ResponseModel.build("1000","添加成功！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 内容类型添加】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -82,7 +85,7 @@ public class SafeContentCategoryController {
             safeContentCategoryService.update(safeContentCategory);
             return ResponseModel.build("1000","修改成功！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 内容类型修改】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -99,7 +102,7 @@ public class SafeContentCategoryController {
                 return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 内容类型删除】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -117,7 +120,7 @@ public class SafeContentCategoryController {
             PageData pageData = safeContentCategoryService.findByContentCategoryName(pageNo,pageSize,contentCategoryName);
             return ResponseModel.build("1000","查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 内容类型搜索】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }

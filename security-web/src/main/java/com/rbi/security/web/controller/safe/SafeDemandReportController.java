@@ -81,14 +81,14 @@ public class SafeDemandReportController {
             int pageSize = date.getInteger("pageSize");
             int startIndex=(pageNo-1)*pageSize;
             int processingStatus=date.getInteger("processingStatus");
-            PageData<PagingTraniningNeeds> pagingTraniningNeedsList=safeDemandReportService.pagingSafeDemandReport(pageNo,pageSize,startIndex,processingStatus);
+            PageData<PagingTraniningNeeds> pagingTraniningNeedsList=safeDemandReportService.pagingSafeConditionDemandReport(pageNo,pageSize,startIndex,processingStatus);
             return ResponseModel.build("1000", "查询成功",pagingTraniningNeedsList);
         }catch (Exception e){
             return ResponseModel.build("1001", e.getMessage());
         }
     }
     /**
-     * 处理需求
+     * 处理需求  修改待对接
      */
     @RequiresPermissions("safe:handlingTrainingNeeds")
     @RequestMapping("/handlingRequirements")
@@ -120,7 +120,7 @@ public class SafeDemandReportController {
     /**
      * 根据请求人，查看当前人所在部门的需求 分页查看需求 已处理或者未处理
      */
-    //@RequiresPermissions("safe:TrainingPlanProcessedPage")
+    //@RequiresPermissions("safe:pagingSafeConditionDemandReport")
     @RequestMapping("/pagingSafeConditionDemandReport")
     public ResponseModel<PageData<PagingTraniningNeeds>> pagingSafeConditionDemandReport(@RequestBody JSONObject date) {
         try{

@@ -2,6 +2,7 @@ package com.rbi.security.web.DAO.safe;
 
 import com.rbi.security.entity.web.entity.SysCompanyPersonnel;
 import com.rbi.security.entity.web.importlog.LogAdministratorTrain;
+import com.rbi.security.entity.web.safe.PagingSafeFourLevel;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrain;
 import com.rbi.security.entity.web.safe.administrator.SafeAdministratorTrainDTO;
 import org.apache.ibatis.annotations.*;
@@ -59,12 +60,28 @@ public interface SafeAdministratorTrainDAO {
             "id_card_no  = #{idCardNo}")
     void updateByIdNum(SafeAdministratorTrain safeAdministratorTrain);
 
-    @Select("select * from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id " +
+    @Select("select * from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id and " +
+            "(sys_company_personnel.organization_id in (select id from (\n" +
+            "select t1.id,\n" +
+            "if(find_in_set(parent_id, @pids) > 0, @pids := concat(@pids, ',', id), 0) as ischild\n" +
+            "from (\n" +
+            "select id,parent_id from sys_organization t order by parent_id, id\n" +
+            ") t1,\n" +
+            "(select @pids := #{organizationId}) t2\n" +
+            ") t3 where ischild != 0) or sys_company_personnel.organization_id = #{organizationId}) " +
             "order by safe_administrator_train.id DESC limit #{pageNo},#{pageSize}")
-    List<SafeAdministratorTrainDTO> findByPage(int pageNo, int pageSize);
+    List<SafeAdministratorTrainDTO> findByPage(@Param("organizationId")Integer organizationId,@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
 
-    @Select("select count(*) from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id")
-    int findByPageNum();
+    @Select("select count(*) from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id and " +
+            "(sys_company_personnel.organization_id in (select id from (\n" +
+            "select t1.id,\n" +
+            "if(find_in_set(parent_id, @pids) > 0, @pids := concat(@pids, ',', id), 0) as ischild\n" +
+            "from (\n" +
+            "select id,parent_id from sys_organization t order by parent_id, id\n" +
+            ") t1,\n" +
+            "(select @pids := #{organizationId}) t2\n" +
+            ") t3 where ischild != 0) or sys_company_personnel.organization_id = #{organizationId})")
+    int findByPageNum(@Param("organizationId")Integer organizationId);
 
     @Select("select * from safe_administrator_train,sys_company_personnel where safe_administrator_train.company_personnel_id = sys_company_personnel.id " +
             "and name like ${value2} order by safe_administrator_train.id DESC limit #{pageNo},#{pageSize}")
@@ -110,4 +127,7 @@ public interface SafeAdministratorTrainDAO {
 
     @Select("select * from safe_administrator_train,sys_company_personnel where safe_administrator_train.id_card_no = sys_company_personnel.id_card_no")
     List<SafeAdministratorTrainDTO> findAll();
+
+    @Select("select * from sys_company_personnel where id = #{id}")
+    SysCompanyPersonnel findPersonnelById(Integer personnelId);
 }

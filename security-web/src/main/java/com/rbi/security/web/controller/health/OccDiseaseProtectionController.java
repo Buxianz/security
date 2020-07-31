@@ -7,6 +7,8 @@ import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.OccDiseaseProtectionService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +29,7 @@ public class OccDiseaseProtectionController {
     @Autowired
     OccDiseaseProtectionService occDiseaseProtectionService;
 
+    private final static Logger logger = LoggerFactory.getLogger(OccDiseaseProtectionController.class);
     /**
      * 分页
      * */
@@ -39,7 +42,7 @@ public class OccDiseaseProtectionController {
             PageData pageData = occDiseaseProtectionService.findByPage(pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 职业病防护用户分页】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -60,7 +63,7 @@ public class OccDiseaseProtectionController {
             }
 
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 职业病防护用户添加】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -80,7 +83,7 @@ public class OccDiseaseProtectionController {
                 return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 职业病防护用户更新】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -95,7 +98,7 @@ public class OccDiseaseProtectionController {
             occDiseaseProtectionService.delete(json);
             return ResponseModel.build("1000","删除成功！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 职业病防护用户删除】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }

@@ -9,6 +9,8 @@ import com.rbi.security.tool.PageData;
 import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.SafeTrainingMaterialsService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,6 +41,7 @@ public class SafeTrainingMaterialsController {
     @Autowired
     SafeTrainingMaterialsService safeTrainingMaterialsService;
 
+    private final static Logger logger = LoggerFactory.getLogger(SafeTrainingMaterialsController.class);
     /**
      * 分页
      * */
@@ -51,7 +54,7 @@ public class SafeTrainingMaterialsController {
             PageData pageData = safeTrainingMaterialsService.findByPage(pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【培训内容分页】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -66,7 +69,7 @@ public class SafeTrainingMaterialsController {
                 return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【培训内容添加】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -82,7 +85,7 @@ public class SafeTrainingMaterialsController {
                 return ResponseModel.build("1001",result);
             }
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【培训内容删除】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -116,7 +119,7 @@ public class SafeTrainingMaterialsController {
             PageData pageData = safeTrainingMaterialsService.findByName(pageNo,pageSize,value);
             return ResponseModel.build("1000","条件查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【名称搜索】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -135,7 +138,7 @@ public class SafeTrainingMaterialsController {
             PageData pageData = safeTrainingMaterialsService.findByCondition(pageNo,pageSize,value);
             return ResponseModel.build("1000","条件查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【培训内容下拉搜索】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -154,7 +157,7 @@ public class SafeTrainingMaterialsController {
             PageData pageData = safeTrainingMaterialsService.findFileByCategory(pageNo,pageSize,value);
             return ResponseModel.build("1000","条件查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【培训内容文件下拉搜索】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -172,7 +175,7 @@ public class SafeTrainingMaterialsController {
             PageData pageData = safeTrainingMaterialsService.findVideoByCategory(pageNo,pageSize,value);
             return ResponseModel.build("1000","条件查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【培训内容视频类下拉搜索】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }

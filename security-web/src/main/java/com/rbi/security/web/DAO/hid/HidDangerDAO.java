@@ -225,4 +225,44 @@ public interface HidDangerDAO {
     void updateProcessingStatus(HidDangerDO hidDangerDO);
 
 
+    @Select("select count(*) from hid_danger where hid_danger_grade = #{hidDangerGrade}")
+    int findByGrade(@Param("hidDangerGrade") String hidDangerGrade);
+
+    @Select("select count(*) from hid_danger where hid_danger_grade = #{hidDangerGrade} and factory_id=#{factoryId}")
+    int findFactoryByGrade(@Param("hidDangerGrade") String hidDangerGrade,@Param("factoryId") Integer factoryId);
+
+    @Select("select count(*) from hid_danger where hid_type_thing = 1")
+    int findByThing();
+
+    @Select("select count(*) from hid_danger where hid_type_person = 1")
+    int findByPerson();
+
+    @Select("select count(*) from hid_danger where hid_type_manage = 1")
+    int findBymanage();
+
+
+    @Select("select count(*) from hid_danger where hid_type_thing = 1 and factory_id=#{factoryId}")
+    int findByThing2(@Param("factoryId")Integer factoryId);
+
+    @Select("select count(*) from hid_danger where hid_type_person = 1 and factory_id=#{factoryId}")
+    int findByPerson2(@Param("factoryId")Integer factoryId);
+
+    @Select("select count(*) from hid_danger where hid_type_manage = 1 and factory_id=#{factoryId}")
+    int findBymanage2(@Param("factoryId")Integer factoryId);
+
+    @Select("select count(*) from hid_danger where date_format(idt,'%Y-%m')=#{time}")
+    int findMonthNum(@Param("time") String time);
+
+    @Select("select count(*) from hid_danger where date_format(idt,'%Y-%m')=#{time} and and factory_id=#{factoryId}")
+    int findMonthNum2(@Param("time") String time,@Param("factoryId")Integer factoryId);
+
+    @Select("select id as organizatin_id from (\n" +
+            "select t1.id,\n" +
+            "if(find_in_set(parent_id, @pids) > 0, @pids := concat(@pids, ',', id), 0) as ischild\n" +
+            "from (\n" +
+            "select id,parent_id from sys_organization t order by parent_id, id\n" +
+            ") t1,\n" +
+            "(select @pids := #{personnelOrganizationId}) t2\n" +
+            ") t3 where ischild != 0")
+    List<ListOrganizationIds> findSonOrganizationIds(@Param("personnelOrganizationId") Integer personnelOrganizationId);
 }

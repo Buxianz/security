@@ -44,7 +44,7 @@ import java.util.*;
  **/
 @Service
 public class SeriousDangerServiceImpl implements SeriousDangerService {
-    private static final Logger logger = LoggerFactory.getLogger(SafeSubjectServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(SeriousDangerServiceImpl.class);
     @Value("${uploadfile.ip}")
     private String fileIp;//此ip与此应用部署的服务区ip一致
     @Value("${seriousDangerPath}")

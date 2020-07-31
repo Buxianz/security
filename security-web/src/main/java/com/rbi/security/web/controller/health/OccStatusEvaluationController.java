@@ -9,6 +9,8 @@ import com.rbi.security.tool.ResponseModel;
 import com.rbi.security.web.service.OccRegularMonitoringService;
 import com.rbi.security.web.service.OccStatusEvaluationService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +40,7 @@ public class OccStatusEvaluationController {
     @Autowired
     OccStatusEvaluationService occStatusEvaluationService;
 
+    private final static Logger logger = LoggerFactory.getLogger(OccStatusEvaluationController.class);
     /**
      * 分页
      * */
@@ -50,7 +53,7 @@ public class OccStatusEvaluationController {
             PageData pageData = occStatusEvaluationService.findByPage(pageNo,pageSize);
             return ResponseModel.build("1000","分页查询成功！",pageData);
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 现状评价分页】查询失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -65,7 +68,7 @@ public class OccStatusEvaluationController {
             occStatusEvaluationService.add(occStatusEvaluation,file);
             return ResponseModel.build("1000","添加成功！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 现状评价添加】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -80,7 +83,7 @@ public class OccStatusEvaluationController {
             occStatusEvaluationService.update(occStatusEvaluation,file);
             return ResponseModel.build("1000","修改成功！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 现状评价修改】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -95,7 +98,7 @@ public class OccStatusEvaluationController {
             occStatusEvaluationService.delete(json);
             return ResponseModel.build("1000","删除成功！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 现状评价删除】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
@@ -111,7 +114,7 @@ public class OccStatusEvaluationController {
             occStatusEvaluationService.deleteFile(id);
             return ResponseModel.build("1000","删除成功！");
         }catch (Exception e){
-            System.out.println("错误："+e);
+            logger.error("【 现状评价删除文件】失败！，ERROR：{}",e);
             return ResponseModel.build("1001","处理异常");
         }
     }
