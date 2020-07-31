@@ -255,4 +255,14 @@ public interface HidDangerDAO {
 
     @Select("select count(*) from hid_danger where date_format(idt,'%Y-%m')=#{time} and and factory_id=#{factoryId}")
     int findMonthNum2(@Param("time") String time,@Param("factoryId")Integer factoryId);
+
+    @Select("select id as organizatin_id from (\n" +
+            "select t1.id,\n" +
+            "if(find_in_set(parent_id, @pids) > 0, @pids := concat(@pids, ',', id), 0) as ischild\n" +
+            "from (\n" +
+            "select id,parent_id from sys_organization t order by parent_id, id\n" +
+            ") t1,\n" +
+            "(select @pids := #{personnelOrganizationId}) t2\n" +
+            ") t3 where ischild != 0")
+    List<ListOrganizationIds> findSonOrganizationIds(@Param("personnelOrganizationId") Integer personnelOrganizationId);
 }

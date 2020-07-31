@@ -64,7 +64,9 @@ public class HidDangerCotroller {
         }
     }
 
-
+    /**
+     * 下拉框搜索
+     * */
     @PostMapping("/findAdmChoose")
     public ResponseModel<Map<String,Object>> findAdmChoose(@RequestBody JSONObject json) {
         try {

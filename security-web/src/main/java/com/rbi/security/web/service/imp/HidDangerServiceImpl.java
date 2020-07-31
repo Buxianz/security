@@ -237,7 +237,37 @@ public class HidDangerServiceImpl implements HidDangerService {
         try {
             SysCompanyPersonnel sysCompanyPersonnel = hidDangerDAO.findPersonnelById(personnelId);
             SysOrganization sysOrganization = hidDangerDAO.findAllByOrganizationId(sysCompanyPersonnel.getOrganizationId());
-            SysOrganization RetOrganization = hidDangerDAO.findAllByOrganizationId(hidDangerDO.getRectificationUnitId());
+
+
+            Integer personnelOrganizationId = sysCompanyPersonnel.getOrganizationId();
+            List<ListOrganizationIds> organizationIds = hidDangerDAO.findSonOrganizationIds(personnelOrganizationId);
+            //判断隐患发生单位是否符合规范
+            Integer organizationId = hidDangerDO.getOrganizationId();
+            int organizationIdNum = 0;
+            if (organizationIds != null){
+                for (int i=0;i<organizationIds.size();i++){
+                    if (organizationIds.get(i).getOrganizationId() == organizationId){
+                        organizationIdNum = 1;
+                    }
+                }
+            }
+            if (organizationIdNum == 0){
+                return "隐患发生单位只能选择下级所属单位";
+            }
+            //判断整改单位是否符合规范
+            Integer RetOrganizationId = hidDangerDO.getRectificationUnitId();
+            int ret = 0;
+            if (organizationIds != null){
+                for (int i=0;i<organizationIds.size();i++){
+                    if (organizationIds.get(i).getOrganizationId() == RetOrganizationId){
+                        ret = 1;
+                    }
+                }
+            }
+            if (ret == 0){
+                return "整改单位只能选择下级所属单位";
+            }
+
             String idt = DateUtil.date(DateUtil.FORMAT_PATTERN);
             hidDangerDO.setCopyOrganizationId(123);
             hidDangerDO.setCopyOrganizationName("安防部");
@@ -249,12 +279,6 @@ public class HidDangerServiceImpl implements HidDangerService {
             hidDangerDO.setRectificationNoticeTime(idt);
             hidDangerDO.setHidDangerCode(hidDangerCode);
             hidDangerDO.setProcessingStatus("2");
-
-
-            if (RetOrganization.getLevel() <= sysOrganization.getLevel()){
-                return "只能选择下级单位进行整改";
-            }
-
 
             //排查前照片添加
             if (beforeImg.length > 6) {
