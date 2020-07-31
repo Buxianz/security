@@ -21,6 +21,7 @@ import lombok.Data;
  **/
 @Data
 public class SafeDataPlanDTO {
+    //培训资料id
     private Integer id;
     private String resourceName;
     private String resourcePath;
