@@ -110,11 +110,11 @@ public class ShiroConfig {
 //    public RedisManager redisManager() {
 //        RedisManager redisManager = new RedisManager();
 //        redisManager.setHost("10.40.1.121");
-//        redisManager.setPort(6371);
+//        redisManager.setPort(6379);
 //        //redisManager.setExpire(60*60);// 配置缓存过期时间
 //        redisManager.setTimeout(12000);
 //        // redisManager.setPassword("rbi2018@");
-//        redisManager.setPassword("Rbi20188");
+//        redisManager.setPassword("rbi20188");
 //        redisManager.setDatabase(14);//27:14   73:13
 //        return redisManager;
 //    }
