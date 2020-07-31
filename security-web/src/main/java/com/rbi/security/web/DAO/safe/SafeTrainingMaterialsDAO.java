@@ -10,8 +10,8 @@ import java.util.List;
 @Mapper
 public interface SafeTrainingMaterialsDAO {
 
-    @Insert("insert into safe_training_materials (resource_name,content_category_id,resource_type,resource_path,idt,udt,operating_staff,operator_name) values " +
-            "(#{resourceName},#{contentCategoryId},#{resourceType},#{resourcePath},#{idt},#{udt},#{operatingStaff},#{operatorName})")
+    @Insert("insert into safe_training_materials (resource_name,content_category_id,resource_type,resource_path,idt,udt,operating_staff,operator_name,study_time) values " +
+            "(#{resourceName},#{contentCategoryId},#{resourceType},#{resourcePath},#{idt},#{udt},#{operatingStaff},#{operatorName},#{studyTime})")
     void add(SafeTrainingMaterials safeTrainingMaterials);
 
     @Delete("delete from safe_training_materials where id = #{id}")

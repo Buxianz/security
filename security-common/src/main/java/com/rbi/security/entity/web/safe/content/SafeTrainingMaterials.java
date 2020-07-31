@@ -26,6 +26,7 @@ public class SafeTrainingMaterials {
     private Integer contentCategoryId;
     private String contentCategoryName;
     private String resourceType;
+    private Integer studyTime;
     private String resourcePath;
     private Integer operatingStaff;
     private String operatorName;
